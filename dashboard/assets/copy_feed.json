@@ -1,0 +1,1 @@
+{"start":"agente {id} inicia {task}","plan":"agente {id} planifica {n} pasos","shipped":"agente {id} entrega {file}","jev_ok":"{file} validado, {n} pruebas ok","jev_fail":"{file} falla en {p}, costo {cost}","done":"agente {id} cierra {task} en {s}"}

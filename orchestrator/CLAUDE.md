@@ -12,9 +12,17 @@ Dos harnesses:
   - **Thinking por tarea**: flash trae razonamiento ON por defecto ($$); el planner
     asigna `thinking: none|low|medium|high` y el harness lo apaga/gradúa por tarea
     (`thinking: disabled` / `reasoning_effort`). Temp 0.3 sin thinking, 0.6 con.
-  - **Gate Jev**: `typesafe/jev-1.13` (OpenRouter `/api/alpha/decisions`) juzga cada
-    output — noul calibrado, tipado, ~$0.00002/llamada, sin parsing. Si Jev no
-    responde, cae al gate heurístico local.
+  - **Jev inspector + enrutador**: `typesafe/jev-1.13` (OpenRouter
+    `/api/alpha/decisions`) revisa cada output con UNA llamada y TRES decisiones
+    tipadas: `cumple` (noul, gate), `calidad` (score 0-4, telemetría de deriva) y
+    `accion` (choice: aprobar / fix_con_feedback / reintentar_pensando_mas /
+    escalar_a_modelo_pro). La escalera de reintentos la decide Jev, no reglas
+    ciegas; máx 2 fixes y se shippea con `warn` (ship-first, nunca bloquear).
+    El feedback (calidad + output rechazado) viaja en el prompt del fix.
+    ~$0.00003/inspección. Si Jev cae → gate heurístico local, 1 fix, sin loops.
+  - **Modo `--plan`**: Fable (Claude Code) autorea el plan JSON y los workers lo
+    ejecutan tal cual — cero replaneo del modelo suplente. Así se construyó el
+    dashboard: plan en `orchestrator/plans/dashboard_pixel.json`.
   - **Constitución cacheada**: system prompt idéntico en todos los workers → el
     context caching automático de DeepSeek cobra el prefijo a ~2% después del 1er hit.
   - **Modelos verificados 2026-09-21**: nativos `deepseek-flash`/`deepseek-v4-pro`

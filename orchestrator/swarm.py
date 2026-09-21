@@ -218,11 +218,15 @@ def gate(output: str) -> bool:
 JEV_MODEL = "typesafe/jev-1.13"
 
 
-async def jev_gate(task_prompt: str, output: str):
-    """Gate principal: Jev (modelo de decisiones de TypeSafe vía OpenRouter).
+async def jev_review(task_prompt: str, output: str):
+    """Jev como inspector Y enrutador: UNA llamada, tres decisiones tipadas.
 
-    Devuelve (pasa, prob) o None si Jev no responde (→ usar gate heurístico).
-    Output tipado y calibrado, sin parsing; cuesta ~$0.00002 por llamada.
+    - cumple (noul): ¿el output cumple la tarea? → gate
+    - calidad (score 0-4): telemetría de deriva de calidad
+    - accion (choice): SI NO cumple, qué hacer — esto es la escalera de
+      reintentos decidida por un juez calibrado, no por reglas ciegas.
+    Devuelve dict o None si Jev no responde (→ gate heurístico local).
+    ~$0.00003 por inspección; output tipado, sin parsing, sin loops de juez.
     """
     try:
         import httpx
@@ -234,18 +238,34 @@ async def jev_gate(task_prompt: str, output: str):
                     "model": JEV_MODEL,
                     "state": f"Tarea encargada:\n{task_prompt[:4000]}\n\n"
                              f"Output entregado:\n{output[:8000]}",
-                    "questions": {"cumple": {
-                        "type": "noul",
-                        "instructions": "El output entregado cumple la tarea encargada",
-                    }},
+                    "questions": {
+                        "cumple": {"type": "noul",
+                            "instructions": "El output entregado cumple la tarea encargada"},
+                        "calidad": {"type": "score",
+                            "instructions": "Calidad del output entregado",
+                            "criteria": ["inservible", "pobre", "aceptable", "bueno", "excelente"]},
+                        "accion": {"type": "choice",
+                            "instructions": "La mejor acción sobre este output",
+                            "criteria": {
+                                "aprobar": "el output cumple, entregarlo tal cual",
+                                "fix_con_feedback": "errores menores, corregir con notas del inspector",
+                                "reintentar_pensando_mas": "fallo de razonamiento, reintentar con más pensamiento",
+                                "escalar_a_modelo_pro": "demasiado difícil para el modelo rápido, escalar",
+                            }},
+                    },
                 },
             )
             d = r.json()
             budget.spent["openrouter"] += float(d.get("usage", {}).get("cost") or 0)
-            p = float(d["answers"]["cumple"]["noul"])
-            return p >= 0.5, p
+            a = d["answers"]
+            return {"p": float(a["cumple"]["noul"]),
+                    "quality": float(a["calidad"]["score"]),
+                    "action": a["accion"]["choice"]}
     except Exception:
         return None
+
+
+THINK_UP = {"none": "low", "low": "medium", "medium": "high", "high": "high"}
 
 
 class Swarm:
@@ -260,6 +280,7 @@ class Swarm:
         self.sem = asyncio.Semaphore(MAX_AGENTS)
         self.done_events: dict[str, asyncio.Event] = {}
         self.t0 = time.monotonic()
+        self._beams: set = set()  # POSTs de telemetría en vuelo
         # Checkpoint/resume: replan solo si no hay plan previo en el jsonl.
         self.cached_plan: list | None = None
         jl = self.run_dir / "swarm.jsonl"
@@ -273,8 +294,44 @@ class Swarm:
             sys.exit(f"⛔ {jl} no tiene plan checkpointeado — nada que resumir.")
 
     def log(self, obj):
+        obj = {"t": round(time.time(), 3), **obj}
         with (self.run_dir / "swarm.jsonl").open("a") as f:
             f.write(json.dumps(obj, ensure_ascii=False) + "\n")
+        self._beam(obj)
+
+    def _beam(self, obj):
+        """Telemetría al Army Dashboard (Supabase). Fire-and-forget: un fallo
+        del dashboard JAMÁS toca al enjambre."""
+        url = os.environ.get("SUPABASE_URL", "").strip()
+        if not url:
+            return
+        try:
+            import httpx
+
+            async def _post():
+                try:
+                    async with httpx.AsyncClient(timeout=10) as c:
+                        await c.post(
+                            f"{url}/rest/v1/army_events",
+                            headers={
+                                "apikey": os.environ["SUPABASE_PUBLISHABLE_KEY"],
+                                "Content-Type": "application/json",
+                            },
+                            json={
+                                "run_id": self.run_dir.name,
+                                "event": obj.get("event", "?"),
+                                "task_id": obj.get("id"),
+                                "payload": obj,
+                            },
+                        )
+                except Exception:
+                    pass
+
+            task = asyncio.get_running_loop().create_task(_post())
+            self._beams.add(task)
+            task.add_done_callback(self._beams.discard)
+        except Exception:
+            pass
 
     def ship(self, tid: str, filename: str | None, content: str):
         """Shippear YA: el artefacto toca disco en cuanto existe."""
@@ -297,27 +354,47 @@ class Swarm:
         )
         prompt = (context + "\n\n" if context else "") + t["prompt"]
         think = t.get("thinking", "none")
+        model = "deepseek-flash"
+        warn = False
         async with self.sem:
             out = await llm(prompt, system=WORKER_CONSTITUTION, thinking=think)
-            # Gate: Jev decide en ~100ms tipado y calibrado; heurístico si no está.
-            jv = await jev_gate(t["prompt"], out)
-            passed = jv[0] if jv is not None else gate(out)
-            if jv is not None:
-                self.log({"event": "jev", "id": t["id"], "p": jv[1]})
-            if not passed:  # un solo intento de fix, sin loops de verificación
-                print(f"  🔧 {t['id']} no pasó el gate"
-                      + (f" (Jev p={jv[1]:.2f})" if jv else "") + " — un intento de fix")
+            # Escalera de reintentos ENRUTADA POR JEV (máx 2 fixes, luego se
+            # shippea con warn — ship-first, nunca bloquear la misión).
+            for attempt in range(2):
+                jv = await jev_review(t["prompt"], out)
+                if jv is None:  # Jev caído → gate heurístico local, sin reintentos ciegos
+                    if not gate(out) and attempt == 0:
+                        out = await llm(f"Este output falló ({out[:300]!r}). Entrega el "
+                                        f"resultado completo para: {t['prompt']}",
+                                        system=WORKER_CONSTITUTION, thinking=think)
+                    break
+                self.log({"event": "jev", "id": t["id"], "p": jv["p"],
+                          "quality": jv["quality"], "action": jv["action"]})
+                if jv["p"] >= 0.5 or jv["action"] == "aprobar":
+                    break
+                # Jev decide el siguiente paso; el feedback viaja en el prompt
+                if jv["action"] == "reintentar_pensando_mas":
+                    think = THINK_UP[think]
+                elif jv["action"] == "escalar_a_modelo_pro":
+                    model, think = "deepseek-v4-pro", "medium"
+                print(f"  🔧 {t['id']} rechazado por Jev (p={jv['p']:.2f}, "
+                      f"calidad={jv['quality']:.1f}) → {jv['action']}")
                 out = await llm(
-                    f"Este output falló ({out[:300]!r}). Entrega el resultado "
-                    f"completo y correcto para: {t['prompt']}",
-                    system=WORKER_CONSTITUTION, thinking=think,
-                )
+                    f"Un inspector calificó tu output {jv['quality']:.1f}/4 y lo rechazó. "
+                    f"Output rechazado:\n{out[:1500]}\n\nEntrega la versión corregida y "
+                    f"completa de: {t['prompt']}",
+                    model=model, system=WORKER_CONSTITUTION, thinking=think)
+            else:
+                warn = True
+                self.log({"event": "warn", "id": t["id"],
+                          "msg": "shippeado sin aprobación de Jev tras 2 fixes"})
         self.results[t["id"]] = out
         self.ship(t["id"], t.get("filename"), out)
-        self.log({"event": "shipped", "id": t["id"], "chars": len(out)})
+        self.log({"event": "shipped", "id": t["id"], "chars": len(out), "warn": warn})
         self.done_events[t["id"]].set()
 
     async def run(self):
+        self.log({"event": "start", "task": self.task[:500]})
         if self.cached_plan is not None:
             tasks = self.cached_plan
             print(f"♻️  Plan recuperado del checkpoint ({len(tasks)} tareas)")
@@ -331,7 +408,7 @@ class Swarm:
         for t in tasks:  # sanear deps que no existen para no colgar el DAG
             t["deps"] = [d for d in t.get("deps", []) if d in ids]
         self.done_events = {t["id"]: asyncio.Event() for t in tasks}
-        if self.cached_plan is None:
+        if self.cached_plan is None or getattr(self, "plan_needs_log", False):
             self.log({"event": "plan", "task": self.task, "tasks": tasks})
         print(f"🚀 DAG con {len(tasks)} tareas — despacho continuo, sin barreras")
 
@@ -349,13 +426,38 @@ class Swarm:
             + "\n\n".join(f"## {k}\n{v[:3000]}" for k, v in self.results.items())
         )
         (self.run_dir / "FINAL.md").write_text(final)
-        print(f"\n✅ Listo en {time.monotonic()-self.t0:.0f}s · gasto: {budget.line()}")
-        print(f"📁 {self.run_dir}/FINAL.md + {len(self.results)} artefactos")
+        self.log({"event": "done", "seconds": round(time.monotonic() - self.t0, 1),
+                  "spent": budget.spent, "tasks": len(self.results)})
+        # Parte final: "listo, aquí está lo que pediste"
+        jevs = {e["id"]: e for e in
+                (json.loads(l) for l in (self.run_dir / "swarm.jsonl").open())
+                if e.get("event") == "jev"}
+        print(f"\n✅ LISTO — aquí está lo que pediste "
+              f"({time.monotonic()-self.t0:.0f}s · {budget.line()}):")
+        for tid in self.results:
+            j = jevs.get(tid)
+            fn = tasks and next((t.get("filename") for t in tasks if t["id"] == tid), None)
+            print(f"   • {self.ship_dir / (fn or tid + '.md')}"
+                  + (f"  [Jev {j['p']*100:.0f}%]" if j else ""))
+        print(f"   • {self.run_dir}/FINAL.md  (entregable ensamblado)")
+        # drenar telemetría antes de que muera el loop (o el 'done' nunca llega)
+        if self._beams:
+            await asyncio.gather(*self._beams, return_exceptions=True)
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        sys.exit('Uso: swarm.py "reto"  |  --demo  |  --resume runs/<dir>')
+        sys.exit('Uso: swarm.py "reto" | --demo | --resume runs/<dir> | --plan plan.json')
+    if sys.argv[1] == "--plan":
+        # Plan autorado por Fable (Claude Code): los workers ejecutan tal cual.
+        # No loggear aquí: fuera del event loop el beam a Supabase se pierde;
+        # run() lo loggea porque plan_needs_log queda en True.
+        spec = json.loads(Path(sys.argv[2]).read_text())
+        s = Swarm(spec.get("task", "plan externo"))
+        s.cached_plan = spec["tasks"]
+        s.plan_needs_log = True
+        asyncio.run(s.run())
+        sys.exit(0)
     if sys.argv[1] == "--resume":
         rd = Path(sys.argv[2])
         rd = rd if rd.is_absolute() else ROOT / rd

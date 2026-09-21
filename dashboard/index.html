@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<!--
+THESIS: una sala de arcade pixel-art donde ves a TUS agentes trabajar — cada
+robot tiene cara, color y tarea; nada de dashboard genérico de tarjetas verdes.
+OWN-WORLD: baseplate azul-noche, sprites pixel 16x16 animados en canvas
+(dibujados por los propios agentes DeepSeek), bordes chunky de 3px, dithering,
+líneas Manhattan que conectan dependencias, un color propio por agente que se
+repite en su tarjeta y en sus barras del tablero.
+STORY: "miren, eso es lo que están haciendo mis agentes" — quién trabaja, en
+qué archivo, quién aprobó, cuánto costó. Denso: cero espacio muerto.
+FIRST VIEWPORT: arriba título pixel + misión + LIVE; izquierda 8 tarjetas de
+agentes con sprites animados + 3 staff; centro tablero de tareas con barras
+por color de agente; derecha inspector Jev + presupuesto + stats; abajo
+actividad en vivo.
+FORM: arcade/LEGO mission control — pinneado por Daniel ("pixel art, más
+animaciones, denso, sin jerga militar, que se vea qué hacen").
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mis Agentes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Saira:wdth,wght@75..100,300..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#10141f; --panel:#161b29; --panel2:#131724; --grid:#1e2436;
+  --text:#eef0f4; --dim:#9aa3b8; --faint:#5b6478;
+  --work:#ffd23e; --ok:#59d97e; --fail:#ff5c5c; --accent:#5aa7ff;
+  --a1:#ffd23e; --a2:#59d97e; --a3:#5aa7ff; --a4:#ff9d47;
+  --a5:#c792ea; --a6:#4dd6c1; --a7:#ff6fa5; --a8:#b8e356;
+  --px:3px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg); color:var(--text);
+  font-family:"Saira",system-ui,sans-serif; font-stretch:90%; font-size:13px; overflow:hidden}
+.pxf{font-family:"Silkscreen",monospace; letter-spacing:0}
+canvas{image-rendering:pixelated; display:block}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:var(--grid); border:2px solid var(--bg)}
+
+#app{height:100%; display:grid; gap:8px; padding:8px;
+  grid-template-rows:46px 1fr 150px;
+  grid-template-columns:332px 1fr 264px;
+  grid-template-areas:"top top top" "agents board side" "agents feed side"}
+
+.panel{background:var(--panel); border:var(--px) solid var(--grid); position:relative}
+.panel>h2{font-family:"Silkscreen"; font-size:10px; color:var(--dim); text-transform:lowercase;
+  padding:7px 10px 5px; border-bottom:var(--px) solid var(--grid);
+  display:flex; justify-content:space-between; align-items:center}
+.panel>h2 b{color:var(--work); font-weight:400}
+
+/* ── top ── */
+#top{grid-area:top; display:flex; align-items:center; gap:14px; padding:0 12px;
+  background:var(--panel); border:var(--px) solid var(--grid)}
+#title{font-family:"Silkscreen"; font-weight:700; font-size:15px; color:var(--work);
+  text-shadow:3px 3px 0 #00000066; white-space:nowrap}
+#mission{flex:1; min-width:0; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+select,button,input{background:var(--panel2); color:var(--text); border:2px solid var(--grid);
+  font:inherit; font-size:12px; padding:4px 8px; cursor:pointer}
+select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--work)}
+.pxbtn{font-family:"Silkscreen"; font-size:10px; box-shadow:2px 2px 0 #000a}
+.pxbtn:active{transform:translate(2px,2px); box-shadow:none}
+#lamp{font-family:"Silkscreen"; font-size:10px; color:var(--faint); display:flex; gap:6px; align-items:center}
+#lamp i{width:10px;height:10px;background:var(--faint)}
+#lamp.on{color:var(--ok)} #lamp.on i{background:var(--ok); animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+#clock{font-family:"Silkscreen"; font-size:11px; color:var(--dim)}
+
+/* ── agentes ── */
+#agents{grid-area:agents; overflow-y:auto; display:flex; flex-direction:column}
+#staff{display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; padding:8px}
+.staffc{background:var(--panel2); border:2px solid var(--grid); padding:6px 4px 5px; text-align:center}
+.staffc canvas{margin:0 auto 4px}
+.staffc .nm{font-family:"Silkscreen"; font-size:8px; color:var(--dim)}
+.staffc .st{font-size:10.5px; color:var(--faint); line-height:1.2; min-height:24px; padding:2px 2px 0}
+.staffc.busy{border-color:var(--work)} .staffc.busy .nm{color:var(--work)}
+.staffc.okd{border-color:var(--ok)} .staffc.okd .nm{color:var(--ok)}
+#grid8{display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:0 8px 8px; flex:1}
+.ag{background:var(--panel2); border:2px solid var(--grid); padding:6px; display:grid;
+  grid-template-columns:40px 1fr; gap:2px 8px; align-items:center; min-height:64px}
+.ag canvas{grid-row:1/3}
+.ag .nm{font-family:"Silkscreen"; font-size:9px; color:var(--dim); display:flex; justify-content:space-between}
+.ag .nm i{font-style:normal; color:var(--agc,var(--faint))}
+.ag .tk{font-size:11px; line-height:1.25; color:var(--faint); overflow:hidden;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; min-height:15px}
+.ag.busy{border-color:var(--agc)} .ag.busy .tk{color:var(--text)}
+.ag.busy .nm i{animation:blink 1s steps(2) infinite}
+.ag.okd{border-color:var(--grid)} .ag.okd .nm i{color:var(--ok)}
+
+/* ── tablero ── */
+#board{grid-area:board; overflow:hidden}
+#board svg{width:100%; height:calc(100% - 29px)}
+#empty{position:absolute; inset:29px 0 0; display:grid; place-content:center; text-align:center; gap:8px}
+#empty .big{font-family:"Silkscreen"; font-weight:700; font-size:18px; color:var(--faint)}
+#empty p{color:var(--faint)} #empty code{color:var(--dim); font-size:11px}
+.axis{stroke:var(--grid); stroke-width:2; shape-rendering:crispEdges}
+.axist{font-family:"Silkscreen"; font-size:8px; fill:var(--faint)}
+.dep{fill:none; stroke-width:2; shape-rendering:crispEdges; opacity:.7;
+  stroke-dasharray:4 3; animation:flow 1.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-7}}
+.bar{shape-rendering:crispEdges; stroke-width:2}
+.blabel{font-family:"Silkscreen"; font-size:8px; fill:var(--text)}
+.bfile{fill:var(--dim); font-family:"Saira"; font-size:10px}
+.bnum{font-family:"Silkscreen"; font-size:8px}
+
+/* ── flanco ── */
+#side{grid-area:side; display:flex; flex-direction:column; gap:8px; overflow-y:auto}
+#side .panel{flex:0 0 auto}
+#stats{display:grid; grid-template-columns:1fr 1fr; gap:0}
+.stat{padding:7px 10px; border-top:2px solid var(--grid)}
+.stat:nth-child(odd){border-right:2px solid var(--grid)}
+.stat .v{font-family:"Silkscreen"; font-size:13px; color:var(--text)}
+.stat .k{font-size:10px; color:var(--faint); text-transform:lowercase}
+.jrow{display:flex; align-items:center; gap:7px; padding:4px 10px; font-size:11px;
+  border-top:2px solid var(--panel2)}
+.jrow canvas{flex:0 0 16px}
+.jrow .f{flex:1; color:var(--dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.jrow .p{font-family:"Silkscreen"; font-size:9px}
+.jrow .p.hi{color:var(--ok)} .jrow .p.mid{color:var(--work)} .jrow .p.lo{color:var(--fail)}
+.brow{padding:6px 10px 8px}
+.brow .l{display:flex; justify-content:space-between; font-size:11px; color:var(--dim); margin-bottom:3px}
+.brow .l b{font-family:"Silkscreen"; font-size:9px; color:var(--text); font-weight:400}
+.bricks{display:flex; gap:2px}
+.bricks i{flex:1; height:8px; background:var(--panel2); border:1px solid var(--grid)}
+.bricks i.f{background:var(--agc,var(--work)); border-color:transparent}
+
+/* ── actividad ── */
+#feed{grid-area:feed; overflow:hidden; display:flex; flex-direction:column}
+#feedin{flex:1; overflow-y:auto; padding:4px 10px; columns:2; column-gap:24px}
+#feedin .l{font-size:11.5px; line-height:1.75; break-inside:avoid; display:flex; gap:8px}
+#feedin time{font-family:"Silkscreen"; font-size:8px; color:var(--faint); flex:0 0 44px; padding-top:3px}
+#feedin .ev{color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+#feedin .ev.ok{color:var(--ok)} #feedin .ev.wk{color:var(--work)} #feedin .ev.bd{color:var(--fail)}
+#feedin .l:first-child .ev{animation:pop .25s steps(3)}
+@keyframes pop{from{transform:translateY(6px); opacity:0}}
+
+/* ── config ── */
+#cfg{position:fixed; top:54px; right:8px; width:290px; z-index:9; background:var(--panel);
+  border:var(--px) solid var(--grid); padding:14px; display:none; box-shadow:6px 6px 0 #000a}
+#cfg.open{display:block}
+#cfg label{display:block; font-family:"Silkscreen"; font-size:8px; color:var(--faint); margin:10px 0 4px}
+#cfg input,#cfg select{width:100%}
+#cfg .seg{display:flex; gap:4px} #cfg .seg button{flex:1; font-size:11px}
+#cfg .seg button[aria-pressed="true"]{border-color:var(--work); color:var(--work)}
+
+@media (max-width:980px){
+  body{overflow:auto}
+  #app{height:auto; grid-template-columns:1fr;
+    grid-template-rows:auto auto minmax(300px,52vh) auto auto;
+    grid-template-areas:"top" "agents" "board" "side" "feed"}
+  #grid8{grid-template-columns:1fr 1fr}
+  #mission,#clock{display:none}
+  #feedin{columns:1}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <span id="title">MIS AGENTES</span>
+    <span id="mission">—</span>
+    <select id="runsel" aria-label="Corrida"></select>
+    <span id="lamp"><i></i><span id="lamptxt">LIVE</span></span>
+    <span id="clock"></span>
+    <button id="gear" class="pxbtn" aria-label="Ajustes">AJUSTES</button>
+  </header>
+
+  <section id="agents" class="panel" aria-label="Agentes">
+    <h2><span id="l-agents">agentes</span><b id="agcount"></b></h2>
+    <div id="staff"></div>
+    <div id="grid8"></div>
+  </section>
+
+  <section id="board" class="panel" aria-label="Tablero de tareas">
+    <h2><span id="l-board">tablero de tareas</span><b id="taskcount"></b></h2>
+    <svg id="ops" preserveAspectRatio="none"></svg>
+    <div id="empty" hidden>
+      <div class="big">SIN MISIONES</div>
+      <p id="l-emptyhint">los agentes esperan una orden</p>
+      <code>uv run --project orchestrator python orchestrator/swarm.py "tu reto"</code>
+    </div>
+  </section>
+
+  <aside id="side">
+    <div class="panel"><h2 id="l-stats">hoy</h2><div id="stats"></div></div>
+    <div class="panel"><h2><span id="l-inspector">inspector jev</span></h2><div id="stamps"></div></div>
+    <div class="panel"><h2 id="l-budget">presupuesto</h2><div id="budget"></div></div>
+  </aside>
+
+  <section id="feed" class="panel" aria-label="Actividad">
+    <h2 id="l-activity">actividad</h2>
+    <div id="feedin"></div>
+  </section>
+</div>
+
+<div id="cfg" role="dialog" aria-label="Ajustes">
+  <label for="c-src">fuente de datos</label>
+  <select id="c-src"><option value="supabase">supabase (en vivo)</option><option value="local">feed.json (local)</option></select>
+  <label for="c-url">url supabase</label><input id="c-url" spellcheck="false">
+  <label for="c-key">publishable key</label><input id="c-key" spellcheck="false">
+  <label for="c-poll">refresco (s)</label><input id="c-poll" type="number" min="1" max="60">
+  <label>escala de sprites</label>
+  <div class="seg" id="c-scale"><button data-v="2">2x</button><button data-v="3" aria-pressed="true">3x</button><button data-v="4">4x</button></div>
+</div>
+
+<script>
+/* ═══ config ═══ */
+const DEF={src:"supabase",url:"https://pwcvskguqyhbhlwnsmmy.supabase.co",
+  key:"sb_publishable_1S4AdKr4TJqGWt9LNL_XaQ_OWrCusLw",poll:3,scale:3};
+let cfg={...DEF};
+try{cfg={...DEF,...JSON.parse(localStorage.getItem("ag-cfg")||"{}")}}catch(e){}
+const save=()=>{try{localStorage.setItem("ag-cfg",JSON.stringify(cfg))}catch(e){}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const CEIL={deepseek:10,openrouter:10};
+const AGCOLORS=["--a1","--a2","--a3","--a4","--a5","--a6","--a7","--a8"]
+  .map(v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim());
+
+/* ═══ sprites: dibujados por los agentes DeepSeek (assets/*.json) ═══ */
+/* fallback embebido por si un asset no pasó QA: robot mínimo de 16x16 */
+const FALLBACK={size:16,palette:["transparent","#101418","#9aa3b8","#eef0f4"],
+ frames:[[
+  [0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0],[0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0],
+  [0,0,0,0,1,2,1,1,1,1,2,1,0,0,0,0],[0,0,0,0,1,2,1,3,3,1,2,1,0,0,0,0],
+  [0,0,0,0,1,2,1,1,1,1,2,1,0,0,0,0],[0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0],
+  [0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0],[0,0,1,1,1,2,2,2,2,2,2,1,1,1,0,0],
+  [0,1,2,2,1,2,2,2,2,2,2,1,2,2,1,0],[0,1,2,1,0,1,2,2,2,2,1,0,1,2,1,0],
+  [0,1,1,0,0,1,2,2,2,2,1,0,0,1,1,0],[0,0,0,0,0,1,2,2,2,2,1,0,0,0,0,0],
+  [0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0],[0,0,0,0,1,2,1,0,0,1,2,1,0,0,0,0],
+  [0,0,0,0,1,2,1,0,0,1,2,1,0,0,0,0],[0,0,0,1,1,1,1,0,0,1,1,1,1,0,0,0]]]};
+const SPRITES={};   // name → {size,palette,frames}
+const UI={};        // copy_ui.json
+const FEEDT={start:"misión: {task}",plan:"plan listo: {n} tareas",
+  shipped:"agente {ag} entrega {file}",jev_ok:"jev aprueba {id} ({p}%)",
+  jev_fail:"jev rechaza {id} ({p}%)",done:"misión completa: {s}s · ${cost}"};
+
+async function loadAssets(){
+  const files={sp_worker:"sprites_worker.json",sp_states:"sprites_states.json",
+    sp_main:"sprites_main.json",sp_staff:"sprites_staff.json",sp_icons:"sprites_icons.json",
+    cp_ui:"copy_ui.json",cp_feed:"copy_feed.json",tk_palette:"palette.json"};
+  await Promise.all(Object.entries(files).map(async([k,f])=>{
+    try{
+      const d=await (await fetch("assets/"+f)).json();
+      if(k==="cp_ui") Object.assign(UI,d);
+      else if(k==="cp_feed") Object.assign(FEEDT,d);
+      else if(k==="tk_palette") applyPalette(d);
+      else if(validSprite(d)) SPRITES[k]=d;
+    }catch(e){/* fallback ya cubre */}
+  }));
+  if(UI.title) $("#title").textContent=UI.title.toUpperCase();
+  for(const [id,key] of [["#l-agents","agents_panel"],["#l-board","board_panel"],
+    ["#l-inspector","inspector_panel"],["#l-budget","budget_panel"],
+    ["#l-activity","activity_panel"],["#l-emptyhint","empty_hint"]])
+    if(UI[key]) $(id).textContent=UI[key];
+}
+function validSprite(d){
+  return d&&Array.isArray(d.frames)&&d.frames.length&&Array.isArray(d.palette)&&
+    d.frames.every(f=>Array.isArray(f)&&f.length===d.size&&f.every(r=>Array.isArray(r)&&r.length===d.size));
+}
+function applyPalette(p){
+  const map={bg:"--bg",panel:"--panel",grid:"--grid",text:"--text",text_dim:"--dim",
+    working:"--work",ok:"--ok",fail:"--fail",accent:"--accent"};
+  for(const k in map) if(p[k]) document.documentElement.style.setProperty(map[k],p[k]);
+  if(Array.isArray(p.agents)) p.agents.forEach((c,i)=>{
+    document.documentElement.style.setProperty("--a"+(i+1),c); AGCOLORS[i]=c;});
+}
+
+/* motor de sprites: canvas pixelado + animación por frames */
+function drawFrame(cv,sp,fi,tint){
+  const s=sp.size, ctx=cv.getContext("2d");
+  ctx.clearRect(0,0,s,s);
+  const fr=sp.frames[fi%sp.frames.length];
+  for(let y=0;y<s;y++)for(let x=0;x<s;x++){
+    const v=fr[y][x];
+    if(!v) continue;
+    ctx.fillStyle = tint&&v>=2? tint : (sp.palette[v]||"#fff");
+    ctx.fillRect(x,y,1,1);
+  }
+}
+function spriteCanvas(spKey,frames,tint,px){
+  const sp=SPRITES[spKey]||FALLBACK;
+  const cv=document.createElement("canvas");
+  cv.width=cv.height=sp.size;
+  cv.style.width=cv.style.height=(sp.size*(px||cfg.scale))+"px";
+  cv.dataset.sp=spKey; cv.dataset.fr=JSON.stringify(frames); if(tint) cv.dataset.tint=tint;
+  drawFrame(cv,sp,frames[0],tint);
+  return cv;
+}
+let tick=0;
+setInterval(()=>{ tick++;
+  document.querySelectorAll("canvas[data-fr]").forEach(cv=>{
+    const fr=JSON.parse(cv.dataset.fr);
+    drawFrame(cv,SPRITES[cv.dataset.sp]||FALLBACK,fr[tick%fr.length],cv.dataset.tint);
+  });
+},420);
+
+/* ═══ estado ═══ */
+let runs={},curRun=null,timer=null;
+function ingest(list){
+  runs={};
+  for(const r of list){
+    const run=runs[r.run_id]??={id:r.run_id,events:[],tasks:{},order:[],task:"",
+      spent:null,done:false,t0:null,tEnd:null,jev:{},seconds:null,planMs:null};
+    const p=r.payload||{}, ts=r.ts?+new Date(r.ts):null;
+    run.events.push({...r,ms:ts});
+    if(ts!=null){run.t0=run.t0==null?ts:Math.min(run.t0,ts);
+      run.tEnd=run.tEnd==null?ts:Math.max(run.tEnd,ts);}
+    if(r.event==="start"&&p.task) run.task=p.task;
+    if(r.event==="plan"&&p.tasks){p.tasks.forEach(t=>{run.tasks[t.id]={...t,status:"pending"};run.order.push(t.id)});
+      run.task||=p.task||""; run.planMs=ts;}
+    if(r.event==="shipped"&&r.task_id){const t=run.tasks[r.task_id]; if(t){t.status="ok";t.doneMs=ts;}}
+    if(r.event==="jev"&&r.task_id){run.jev[r.task_id]=p.p; if(p.p<0.5&&run.tasks[r.task_id])run.tasks[r.task_id].fixed=true;}
+    if(r.event==="done"){run.done=true;run.spent=p.spent;run.seconds=p.seconds;}
+  }
+  for(const id in runs){const run=runs[id];
+    run.order.forEach((tid,i)=>{run.tasks[tid].agent=i%8;});
+    if(run.t0==null){let i=0;run.t0=0;run.events.forEach(e=>e.ms??=i++*1000);run.tEnd=run.events.length*1000;}
+  }
+}
+async function fetchRows(){
+  try{
+    let list;
+    if(cfg.src==="local") list=await (await fetch("feed.json?x="+Date.now())).json();
+    else{list=await (await fetch(cfg.url+"/rest/v1/army_events?select=*&order=id.asc&limit=2000",
+      {headers:{apikey:cfg.key}})).json();
+      if(!Array.isArray(list)) throw 0;}
+    ingest(list); render(); lamp(true);
+  }catch(e){lamp(false);}
+}
+function lamp(on){$("#lamp").classList.toggle("on",on);
+  $("#lamptxt").textContent=on?(UI.live||"LIVE"):(UI.offline||"OFFLINE");}
+
+/* ═══ render ═══ */
+function fmtT(ms,t0){const s=Math.max(0,(ms-t0)/1000);return s>=60?(s/60).toFixed(1)+"m":s.toFixed(0)+"s";}
+function tpl(str,vars){return str.replace(/\{(\w+)\}/g,(_,k)=>vars[k]??"");}
+
+function render(){
+  const ids=Object.keys(runs).sort().reverse();
+  const sel=$("#runsel");
+  curRun&&ids.includes(curRun)||(curRun=ids[0]);
+  sel.innerHTML=ids.map(i=>`<option ${i===curRun?"selected":""}>${esc(i)}</option>`).join("");
+  const run=runs[curRun];
+  $("#empty").hidden=!!run;
+  if(!run){$("#mission").textContent="—";return;}
+  $("#mission").textContent=run.task||curRun;
+
+  const okN=run.order.filter(id=>run.tasks[id].status==="ok").length;
+  $("#taskcount").textContent=okN+"/"+run.order.length;
+
+  /* corriendo ahora: deps listas y no shippeada */
+  const runningIds=run.done?[]:run.order.filter(id=>{const t=run.tasks[id];
+    return t.status!=="ok"&&(t.deps||[]).every(d=>run.tasks[d]?.status==="ok");});
+
+  /* staff */
+  const staff=[
+    {sp:"sp_main",fr:run.planMs?[0,1]:[2,3],nm:UI.main_agent||"agente principal",
+     st:run.planMs?`plan listo · ${run.order.length} tareas`:"planificando…",
+     cls:run.planMs?"okd":"busy"},
+    {sp:"sp_staff",fr:[0,1],nm:UI.inspector||"inspector jev",
+     st:Object.keys(run.jev).length? Object.keys(run.jev).length+" revisiones":"esperando entregas",
+     cls:Object.keys(run.jev).length?"okd":""},
+    {sp:"sp_staff",fr:[2,3],nm:UI.assembler||"ensamblador",
+     st:run.done?`entrega final · ${run.seconds??"?"}s`:okN===run.order.length&&okN?"ensamblando…":"esperando piezas",
+     cls:run.done?"okd":okN===run.order.length&&okN?"busy":""},
+  ];
+  $("#staff").innerHTML="";
+  staff.forEach(s=>{
+    const d=document.createElement("div"); d.className="staffc "+s.cls;
+    d.append(spriteCanvas(s.sp,s.fr,null,2));
+    d.insertAdjacentHTML("beforeend",`<div class="nm">${esc(s.nm)}</div><div class="st">${esc(s.st)}</div>`);
+    $("#staff").append(d);
+  });
+
+  /* 8 agentes */
+  const g=$("#grid8"); g.innerHTML="";
+  let busyN=0;
+  for(let i=0;i<8;i++){
+    const tid=runningIds.find(id=>run.tasks[id].agent===i);
+    const t=tid?run.tasks[tid]:null;
+    if(t)busyN++;
+    const div=document.createElement("div");
+    div.className="ag "+(t?"busy":run.done||okN?"okd":"");
+    div.style.setProperty("--agc",AGCOLORS[i]);
+    const key=t?"sp_worker":run.done?"sp_states":"sp_worker";
+    const fr=t?[2,3]:run.done?[0,1]:[0,1];
+    div.append(spriteCanvas(key,fr,t?null:run.done?null:null,2.5));
+    div.insertAdjacentHTML("beforeend",
+      `<div class="nm">agente ${i+1}<i>${t?"■ "+esc(tid):run.done?"✓":"·"}</i></div>
+       <div class="tk">${t? esc(t.filename||t.prompt?.slice(0,70)||tid) :
+         run.done?(UI.done_all||"misión completa"):(UI.idle||"en espera")}</div>`);
+    g.append(div);
+  }
+  $("#agcount").textContent=busyN? busyN+" trabajando":"";
+
+  /* stats del día */
+  let ds=0,or_=0,tasksAll=0,jevAll=[],runsDone=0;
+  ids.forEach(i=>{const r=runs[i];
+    if(r.spent){ds+=r.spent.deepseek||0;or_+=r.spent.openrouter||0;}
+    if(r.done)runsDone++;
+    tasksAll+=r.order.filter(id=>r.tasks[id].status==="ok").length;
+    jevAll.push(...Object.values(r.jev));});
+  const jevAvg=jevAll.length?(jevAll.reduce((a,b)=>a+b,0)/jevAll.length*100).toFixed(0):"—";
+  $("#stats").innerHTML=[["misiones",runsDone+"/"+ids.length],["entregas",tasksAll],
+    ["aprobación jev",jevAvg+"%"],["gasto",("$"+(ds+or_).toFixed(3))]]
+    .map(([k,v])=>`<div class="stat"><div class="v">${v}</div><div class="k">${k}</div></div>`).join("");
+
+  /* inspector */
+  const st=$("#stamps"); st.innerHTML="";
+  run.order.filter(id=>run.jev[id]!=null).forEach(id=>{
+    const p=run.jev[id],cls=p>=.85?"hi":p>=.5?"mid":"lo";
+    const row=document.createElement("div"); row.className="jrow";
+    if(SPRITES.sp_icons) row.append(spriteCanvas("sp_icons",[p>=.5?1:2],null,2));
+    row.insertAdjacentHTML("beforeend",`<span class="f">${esc(run.tasks[id]?.filename||id)}</span>
+      <span class="p ${cls}">${(p*100).toFixed(0)}%</span>`);
+    st.append(row);
+  });
+  if(!st.children.length) st.innerHTML=`<div class="jrow"><span class="f">sin revisiones aún</span></div>`;
+
+  /* presupuesto en ladrillos */
+  $("#budget").innerHTML=[["deepseek",ds,CEIL.deepseek,"--work"],["openrouter",or_,CEIL.openrouter,"--accent"]]
+    .map(([n,v,c,col])=>{
+      const filled=Math.min(20,Math.ceil(v/c*20));
+      return `<div class="brow" style="--agc:var(${col})"><div class="l"><span>${n}</span><b>$${v.toFixed(3)} / $${c}</b></div>
+      <div class="bricks">${Array.from({length:20},(_,i)=>`<i class="${i<filled?"f":""}"></i>`).join("")}</div></div>`;
+    }).join("")
+    +`<div class="brow"><div class="l"><span>anthropic</span><b>$100 · reservado</b></div></div>`;
+
+  drawBoard(run,runningIds);
+  drawFeed(run);
+}
+
+/* tablero: barras por agente + rutas Manhattan */
+function drawBoard(run,runningIds){
+  const svg=$("#ops"),W=svg.clientWidth||800,H=svg.clientHeight||460;
+  const n=run.order.length; if(!n){svg.innerHTML="";return;}
+  const t0=run.planMs??run.t0,tE=Math.max(run.tEnd,t0+1000);
+  const padL=14,padR=170,padT=14,padB=22;
+  const rowH=Math.min(40,(H-padT-padB)/n);
+  const X=ms=>padL+((ms??tE)-t0)/(tE-t0)*(W-padL-padR);
+  let g="";
+  const span=(tE-t0)/1000,step=span>120?60:span>40?20:span>12?5:2;
+  for(let s=0;s<=span;s+=step){const x=X(t0+s*1000);
+    g+=`<line class="axis" x1="${x}" y1="${padT}" x2="${x}" y2="${H-padB}"/>
+        <text class="axist" x="${x+4}" y="${H-8}">${s>=60?(s/60)+"m":s+"s"}</text>`;}
+  const pos={};
+  run.order.forEach((id,i)=>pos[id]={y:padT+i*rowH+rowH/2});
+  const startX=id=>{const t=run.tasks[id],deps=t.deps||[];
+    return X(deps.length?Math.max(...deps.map(d=>run.tasks[d]?.doneMs??run.planMs??run.t0)):run.planMs??run.t0);};
+  /* rutas Manhattan concretas, color del agente origen */
+  run.order.forEach(id=>{
+    (run.tasks[id].deps||[]).forEach(d=>{
+      const a=pos[d],b=pos[id]; if(!a||!b)return;
+      const x1=X(run.tasks[d].doneMs),x2=startX(id),xm=x1+6;
+      g+=`<path class="dep" stroke="${AGCOLORS[run.tasks[d].agent]}"
+          d="M${x1},${a.y} H${xm} V${b.y} H${x2}"/>`;});
+  });
+  run.order.forEach(id=>{
+    const t=run.tasks[id],y=pos[id].y,col=AGCOLORS[t.agent];
+    const x1=startX(id),x2=t.doneMs?X(t.doneMs):X(tE);
+    const w=Math.max(6,x2-x1),h=Math.min(18,rowH-8);
+    const running=runningIds.includes(id);
+    const fill=t.status==="ok"?col:running?col:"none";
+    const op=t.status==="ok"?".9":running?".45":"0";
+    g+=`<rect class="bar" x="${x1}" y="${y-h/2}" width="${w}" height="${h}"
+        fill="${fill}" fill-opacity="${op}" stroke="${t.status==="ok"||running?col:"var(--grid)"}"
+        ${t.fixed?'stroke-dasharray="5 2"':""}/>`;
+    g+=`<text class="bnum" x="${x1+4}" y="${y+3}" fill="${t.status==="ok"?"var(--bg)":col}">A${t.agent+1}</text>`;
+    g+=`<text class="blabel" x="${x2+8}" y="${y+1}" fill="${col}">${esc(id)}</text>
+        <text class="bfile" x="${x2+8}" y="${y+12}">${esc(t.filename||"")}</text>`;
+  });
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  svg.innerHTML=g;
+}
+
+function drawFeed(run){
+  const el=$("#feedin"),t0=run.planMs??run.t0;
+  el.innerHTML=[...run.events].reverse().map(e=>{
+    const p=e.payload||{},t=run.tasks[e.task_id]||{};
+    let key=e.event,cls="wk";
+    if(e.event==="shipped"){cls="ok"}
+    if(e.event==="jev"){key=p.p>=.5?"jev_ok":"jev_fail";cls=p.p>=.5?"ok":"bd";}
+    if(e.event==="done")cls="ok";
+    const str=FEEDT[key]; if(!str)return "";
+    const txt=tpl(str,{task:(p.task||"").slice(0,60),n:p.tasks?.length,id:e.task_id,
+      file:t.filename||(p.chars!=null?p.chars+" chars":e.task_id||""),p:p.p!=null?(p.p*100).toFixed(0):"",
+      s:p.seconds,cost:p.spent?(p.spent.deepseek+p.spent.openrouter).toFixed(4):"",
+      ag:t.agent!=null?t.agent+1:"?"});
+    return `<div class="l"><time>+${fmtT(e.ms,t0)}</time><span class="ev ${cls}">${esc(txt)}</span></div>`;
+  }).join("");
+}
+
+/* ═══ controles ═══ */
+$("#runsel").onchange=e=>{curRun=e.target.value;render();};
+$("#gear").onclick=e=>{e.stopPropagation();$("#cfg").classList.toggle("open");};
+document.addEventListener("click",e=>{if(!$("#cfg").contains(e.target))$("#cfg").classList.remove("open");});
+function applyCfg(){
+  $("#c-src").value=cfg.src;$("#c-url").value=cfg.url;$("#c-key").value=cfg.key;$("#c-poll").value=cfg.poll;
+  $("#c-scale").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.v===cfg.scale)));
+  clearInterval(timer);timer=setInterval(fetchRows,cfg.poll*1000);
+}
+$("#c-src").onchange=e=>{cfg.src=e.target.value;save();fetchRows();};
+$("#c-url").onchange=e=>{cfg.url=e.target.value.trim();save();fetchRows();};
+$("#c-key").onchange=e=>{cfg.key=e.target.value.trim();save();fetchRows();};
+$("#c-poll").onchange=e=>{cfg.poll=Math.max(1,+e.target.value||3);save();applyCfg();};
+$("#c-scale").onclick=e=>{const v=+e.target.dataset.v;if(v){cfg.scale=v;save();applyCfg();render();}};
+setInterval(()=>$("#clock").textContent=new Date().toLocaleTimeString("es-CO",{hour12:false}),1000);
+window.addEventListener("resize",()=>runs[curRun]&&drawBoard(runs[curRun],[]));
+
+loadAssets().then(fetchRows);
+</script>
+</body>
+</html>
