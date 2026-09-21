@@ -16,7 +16,8 @@ FORM: continuación del arcade-mission-control del visor, pinneado por Daniel.
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sim Colombia</title>
+<title>ColombIA</title>
+<link rel="icon" type="image/png" href="../assets/colombia_favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Saira:wdth,wght@75..100,300..700&display=swap" rel="stylesheet">
@@ -44,7 +45,9 @@ grid-template-areas:"top top top" "censo encuesta ficha" "banner banner banner"}
 background:var(--panel);border:var(--px) solid var(--grid);flex-wrap:wrap}
 #title{font-family:"Silkscreen";font-weight:700;font-size:16px;color:var(--work);
 text-shadow:3px 3px 0 #0007}
-#title small{color:var(--accent);font-size:16px}
+#title small{color:var(--fable,#ff8a65);font-size:16px}
+#logo{image-rendering:pixelated;border:2px solid var(--grid);margin-right:-6px;
+background:#0d1220;box-shadow:2px 2px 0 #000a}
 #dptosel{min-width:250px;font-size:13.5px;padding:7px 10px;border-color:var(--work)}
 #kpis{margin-left:auto;display:flex;gap:18px;text-align:right}
 #kpis div b{display:block;font-family:"Silkscreen";font-size:12px;color:var(--text);font-weight:400}
@@ -235,12 +238,31 @@ border:1px solid var(--grid);padding:4px 6px;font-size:10.5px;color:var(--dim)}
 padding:6px;border:1px dashed var(--grid)}
 @media(max-width:1000px){#app{grid-template-columns:1fr;
 grid-template-areas:"top" "censo" "encuesta" "ficha" "banner"}#kpis{display:none}}
+/* ═══ RONDA 8 · efectos pixel premium ═══ */
+.conclu{position:relative;animation:stamp .3s steps(4)}
+@keyframes stamp{0%{transform:translateY(-7px) scale(1.05);opacity:0}100%{transform:none;opacity:1}}
+.pxpart{position:absolute;left:50%;top:2px;width:7px;height:7px;pointer-events:none;z-index:2;will-change:transform,opacity;animation:pxburst .9s steps(5) both}
+@keyframes pxburst{0%{transform:translate(0,0) scale(1);opacity:1}55%{transform:translate(calc(var(--dx)*.6),var(--dy)) scale(1);opacity:1}100%{transform:translate(var(--dx),16px) scale(.35);opacity:0}}
+#crt{position:fixed;inset:0;z-index:90;pointer-events:none;background:repeating-linear-gradient(180deg,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.16) 2px 4px);box-shadow:inset 0 0 0 2px rgba(0,0,0,.55),inset 0 0 0 3px rgba(255,255,255,.05);animation:crtflick 5s steps(2) infinite}
+@keyframes crtflick{50%{opacity:.94}}
+#crt::after{content:'';position:absolute;left:0;right:0;top:0;height:64px;background:rgba(255,255,255,.035);will-change:transform;animation:crtroll 9s steps(90) infinite}
+@keyframes crtroll{from{transform:translateY(-64px)}to{transform:translateY(calc(100vh + 64px))}}
+#mapbar{display:flex;align-items:center;gap:8px;padding:0 8px 8px}
+#mapbar .lb{font-family:Silkscreen,monospace;font-size:8px;color:var(--faint);letter-spacing:.1em}
+#mapbar .g{flex:1;min-width:0;height:10px;border:2px solid var(--grid);background:var(--panel2);padding:1px}
+#mapbar .g i{display:block;height:100%;background:var(--work);transform-origin:left;transform:scaleX(0);transition:transform .35s steps(7);will-change:transform}
+#mapbar b{font-family:Silkscreen,monospace;font-size:9px;color:var(--dim);min-width:44px;text-align:right}
+#mapbar.full{box-shadow:0 0 0 2px var(--work);animation:mapfull .5s steps(1) 6}
+@keyframes mapfull{50%{opacity:.55}}
+#navmap path.pacha{animation:pachablink .5s steps(1) 6}
+@keyframes pachablink{50%{opacity:.2}}
 </style>
 </head>
 <body>
 <div id="app">
   <header id="top">
-    <span id="title">SIM<small>▸</small>COLOMBIA</span>
+    <img id="logo" src="../assets/colombia_logo_96.png" alt="" width="34" height="34">
+    <span id="title">Colomb<small>IA</small></span>
     <select id="dptosel" aria-label="Departamento"></select>
     <a class="back" href="../">◂ visor del enjambre</a>
     <div id="kpis"></div>
@@ -263,7 +285,7 @@ grid-template-areas:"top" "censo" "encuesta" "ficha" "banner"}#kpis{display:none
     <div id="modohelp"></div>
     <div id="selinfo"></div>
     <form id="qbar">
-      <input id="qin" placeholder="pregúntale al país lo que quieras… (toca una sugerencia y edítala)" autocomplete="off" style="font-size:13.5px;padding:8px 11px">
+      <input id="qin" aria-label="Tu pregunta al país" placeholder="pregúntale al país lo que quieras… (toca una sugerencia y edítala)" autocomplete="off" style="font-size:13.5px;padding:8px 11px">
       <select id="nsel" aria-label="Tamaño del panel" style="flex:0 0 auto">
         <option value="8">8 voces</option><option value="12">12 voces</option>
         <option value="20">20 voces</option>
@@ -272,7 +294,7 @@ grid-template-areas:"top" "censo" "encuesta" "ficha" "banner"}#kpis{display:none
     </form>
     <div id="sugg"></div>
     <div id="tally"></div>
-    <div id="resps"><div style="color:var(--faint);padding:16px;text-align:center;line-height:2">
+    <div id="resps" role="log" aria-live="polite"><div style="color:var(--faint);padding:16px;text-align:center;line-height:2">
       <b style="color:var(--work)">1.</b> toca territorios en el mapa (uno, varios, o ninguno = todo el país)<br>
       <b style="color:var(--work)">2.</b> elige el tipo de conversación arriba a la derecha<br>
       <b style="color:var(--work)">3.</b> suelta tu pregunta abajo — y míralos hablar</div></div>
@@ -377,6 +399,7 @@ async function pais(q){
     $("#resps").innerHTML="<div class='hint'>no cargó el mapa</div>";return;}}
   PAIS={q,cache:{},tally:{a_favor:0,en_contra:0,depende:0}};
   CONV={paused:false,stop:false,start:Date.now()};  // corrida fresca: sin esto, el stop de abortarCorrida() mata cada mesa al nacer
+  $("#ctrl").style.display="flex";  // en país también hay ■ CERRAR: corta las mesas en vuelo
   DECIDIDO={}; paintNav();
   $("#tally").innerHTML="";
   $("#maptag").textContent="el país responde";
@@ -448,6 +471,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   if(PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
   el.insertAdjacentHTML("beforeend",
     `<div class="conclu" style="--pc:${COLORES[pos]}"><b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(concl)}</div>`);
+  festejo(el);
   selloHumano(q,transcript,el);
   el.scrollTop=1e9;
   path?.classList.remove("hot");
@@ -477,6 +501,7 @@ function renderMesa(cod,dat,el){
   });
   el.insertAdjacentHTML("beforeend",
     `<div class="conclu" style="--pc:${COLORES[dat.pos]}"><b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(dat.concl)}</div>`);
+  festejo(el);
   el.scrollTop=1e9;
 }
 function mayoria(ts){
@@ -568,6 +593,7 @@ async function drawNav(){
   svg.addEventListener("mousemove",e=>hoverMapa(e.target.dataset?.cod||null,e));
   svg.addEventListener("mouseleave",()=>hoverMapa(null));
   svg.addEventListener("mousedown",e=>e.target.dataset?.cod&&e.target.classList.add("press"));
+  svg.addEventListener("pointerdown",e=>e.pointerType==="touch"&&hoverMapa(e.target.dataset?.cod||null,e));
   svg.addEventListener("mouseup",()=>svg.querySelectorAll(".press").forEach(x=>x.classList.remove("press")));
   /* links inversos: chips y burbujas iluminan su territorio en el mapa */
   document.addEventListener("mouseover",e=>{
@@ -590,6 +616,7 @@ function paintNav(){
   });
   $("#maptag").textContent=MODO==="pais"?"el país responde":
     SEL.size?SEL.size+" elegido"+(SEL.size>1?"s":""):"toda colombia";
+  if(window.progresoPais)progresoPais();
 }
 const AGEG=["0-4","5-9","10-14","15-19","20-24","25-29","30-34","35-39","40-44",
 "45-49","50-54","55-59","60-64","65-69","70-74","75-79","80-84","85+"];
@@ -1385,6 +1412,31 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
   $("#estado").textContent="";
 }
 boot();
+/* ═══ RONDA 8 · efectos pixel premium ═══ */
+window.festejo=el=>{const c=el&&el.querySelector('.conclu');if(!c)return;
+const pc=(getComputedStyle(c).getPropertyValue('--pc')||'').trim()||'#ffd23e';
+const col=[pc,'#ffd23e','#ff8a65'];
+for(let i=0;i<16;i++){const p=document.createElement('i');p.className='pxpart';
+p.style.setProperty('--dx',(Math.random()*190-95).toFixed(0)+'px');
+p.style.setProperty('--dy',(-22-Math.random()*66).toFixed(0)+'px');
+p.style.animationDelay=(Math.random()*.16).toFixed(2)+'s';
+p.style.background=col[i%3];c.append(p);}
+setTimeout(()=>c.querySelectorAll('.pxpart').forEach(p=>p.remove()),1300);};
+(()=>{const d=document.createElement('div');d.id='crt';d.setAttribute('aria-hidden','true');document.body.append(d);})();
+window.progresoPais=()=>{
+const nav=document.getElementById('navmap');if(!nav)return;
+let bar=document.getElementById('mapbar');
+if(!bar){bar=document.createElement('div');bar.id='mapbar';
+bar.innerHTML=`<span class='lb'>PAÍS</span><div class='g'><i></i></div><b>0/33</b>`;nav.after(bar);}
+if(typeof MODO!=='undefined'&&MODO!=='pais'){bar.style.display='none';return;}
+bar.style.display='flex';
+const tot=Object.keys(MARG).length||33,done=Object.keys(DECIDIDO).length;
+bar.querySelector('i').style.transform='scaleX('+(done/tot)+')';
+bar.querySelector('b').textContent=done+'/'+tot;
+if(done&&done===tot&&!bar.dataset.full){bar.dataset.full='1';bar.classList.add('full');
+document.querySelectorAll('#navmap path').forEach(p=>p.classList.add('pacha'));
+setTimeout(()=>document.querySelectorAll('.pacha').forEach(p=>p.classList.remove('pacha')),3200);}
+else if(!done&&bar.dataset.full){delete bar.dataset.full;bar.classList.remove('full');}};
 </script>
 </body>
 </html>

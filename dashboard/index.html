@@ -20,6 +20,7 @@ animaciones, denso, sin jerga militar, que se vea qué hacen").
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mis Agentes</title>
+<link rel="icon" type="image/png" href="assets/colombia_favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Saira:wdth,wght@75..100,300..700&display=swap" rel="stylesheet">
@@ -82,6 +83,15 @@ animation:fablein .3s steps(4)}
 background:var(--fable);margin-right:8px;vertical-align:-1px;
 animation:blink 1.2s steps(2) infinite}
 @keyframes fablein{from{transform:translateX(-50%) translateY(-8px);opacity:0}}
+/* cinta cinematográfica: dither duro + scanline coral + cursor de teletipo */
+#fablebar{background:repeating-linear-gradient(90deg,#2a1610 0 3px,#1d1410 3px 6px);
+  box-shadow:4px 4px 0 #000c;padding:6px 24px;text-shadow:2px 2px 0 #000a;overflow:hidden}
+#fablebar::after{content:"";position:absolute;top:0;bottom:0;left:0;width:24%;
+  background:repeating-linear-gradient(90deg,#ff8a6533 0 3px,#ff8a650d 3px 6px);
+  pointer-events:none;will-change:transform;animation:fableScan 2.2s steps(11) infinite}
+@keyframes fableScan{from{transform:translateX(-100%)}to{transform:translateX(560%)}}
+#fablebar i{width:10px;height:10px;box-shadow:2px 2px 0 #000a;animation:blink .5s steps(2) infinite}
+#fbacto::after{content:"▌";margin-left:3px;color:var(--fable);animation:blink .45s steps(2) infinite}
 #feedin .ev.fable{color:var(--fable);font-family:"Silkscreen";font-size:10px}
 .staffc.fable{border-color:var(--fable);box-shadow:0 0 10px #ff8a6533}
 .staffc.fable .nm{color:var(--fable)}
@@ -108,7 +118,23 @@ animation:blink 1.2s steps(2) infinite}
 .ag.okd{border-color:var(--grid)} .ag.okd .nm i{color:var(--ok)}
 
 /* ── tablero ── */
-#board{grid-area:board; overflow:hidden}
+#board{grid-area:board; overflow:hidden; position:relative}
+#board::after{content:"";position:absolute;left:0;right:0;top:29px;height:3px;
+  background:repeating-linear-gradient(90deg,var(--accent) 0 8px,transparent 8px 16px);
+  opacity:.15;pointer-events:none;will-change:transform;z-index:1;
+  animation:bsweep 3.6s steps(36) infinite}
+@keyframes bsweep{from{transform:translateY(0)}to{transform:translateY(var(--bh,420px))}}
+.ag canvas,.staffc canvas{filter:drop-shadow(2px 3px 0 #00000088);will-change:transform;
+  animation:pxbob 1.6s steps(2) infinite}
+@keyframes pxbob{50%{transform:translateY(-2px)}}
+.ag.busy canvas,.staffc.busy canvas{animation:pxbob .55s steps(2) infinite}
+.ag{position:relative}
+.ag.busy::after{content:"";position:absolute;top:5px;right:5px;width:6px;height:6px;
+  background:var(--agc,var(--work));box-shadow:2px 2px 0 #000a;animation:spark .5s steps(2) infinite}
+@keyframes spark{50%{opacity:0;transform:translateY(-3px)}}
+.staffc{position:relative}
+.staffc.busy::after{content:"";position:absolute;top:4px;right:6px;width:5px;height:5px;
+  background:var(--work);animation:spark .6s steps(2) infinite}
 #board svg{width:100%; height:calc(100% - 29px)}
 #empty{position:absolute; inset:29px 0 0; display:grid; place-content:center; text-align:center; gap:8px}
 #empty[hidden]{display:none}
@@ -433,7 +459,9 @@ function render(){
   const ids=Object.keys(runs).sort().reverse();
   const sel=$("#runsel");
   curRun&&ids.includes(curRun)||(curRun=ids[0]);
-  sel.innerHTML=ids.map(i=>`<option ${i===curRun?"selected":""}>${esc(i)}</option>`).join("");
+  const selKey=ids.join("|")+"@"+curRun;
+  if(sel.dataset.k!==selKey){sel.dataset.k=selKey;  /* no rehacer el select cada 3s: mata el dropdown abierto */
+    sel.innerHTML=ids.map(i=>`<option ${i===curRun?"selected":""}>${esc(i)}</option>`).join("");}
   const fbOn=FABLE.visto&&(Date.now()-FABLE.visto<15*60*1000);
   $("#fablebar").classList.toggle("on",!!fbOn);
   if(fbOn){$("#fbacto").textContent=FABLE.acto||"trabajando";
@@ -623,6 +651,11 @@ $("#c-poll").onchange=e=>{cfg.poll=Math.max(1,+e.target.value||3);save();applyCf
 $("#c-scale").onclick=e=>{const v=+e.target.dataset.v;if(v){cfg.scale=v;save();applyCfg();render();}};
 setInterval(()=>$("#clock").textContent=new Date().toLocaleTimeString("es-CO",{hour12:false}),1000);
 window.addEventListener("resize",()=>runs[curRun]&&drawBoard(runs[curRun]));
+/* sincroniza la altura del barrido del tablero con el svg real */
+(()=>{const sv=$("#ops"),bd=$("#board");if(!sv||!bd)return;
+const sync=()=>bd.style.setProperty("--bh",(sv.clientHeight||420)+"px");
+sync();if(window.ResizeObserver)new ResizeObserver(sync).observe(sv);
+window.addEventListener("resize",sync);})();
 
 /* ═══ modal de detalle: qué hace cada tarea/agente ═══ */
 const ACTNAMES={aprobar:"aprobar",fix_con_feedback:"fix con feedback",
