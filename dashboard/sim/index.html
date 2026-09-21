@@ -658,8 +658,8 @@ async function contexto(q){
   try{
     const r=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({online:true,max_tokens:330,messages:[
-        {role:"system",content:"Eres un servicio de contexto noticioso para Colombia. Busca qué se sabe HOY sobre el tema y devuelve máximo 5 viñetas NEUTRALES y concretas (hechos, nombres completos, cifras, fechas, estado actual). Sin opinar, sin adjetivos. Si el tema no es noticioso o no encuentras nada, responde exactamente: SIN_NOVEDADES."},
-        {role:"user",content:q+" (Colombia, septiembre 2026)"}]})});
+        {role:"system",content:"Busca noticias recientes de Colombia sobre el TEMA dado y devuelve SOLO viñetas (máximo 5) con hechos concretos: nombres completos, cifras, fechas, estado actual. Empieza directo con la primera viñeta '- '. PROHIBIDO: opinar, responder la pregunta, presentarte, explicar qué eres o qué puedes hacer. Si no hay nada noticioso, responde exactamente: SIN_NOVEDADES."},
+        {role:"user",content:"TEMA: "+q+" (Colombia, septiembre 2026)"}]})});
     if(r.ok){const c=(await r.json()).content||"";
       CTX.txt=/SIN_NOVEDADES/.test(c)?null:c.trim();}
   }catch(e){}
