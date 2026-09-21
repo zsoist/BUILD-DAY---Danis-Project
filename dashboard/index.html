@@ -42,9 +42,9 @@ canvas{image-rendering:pixelated; display:block}
 ::-webkit-scrollbar-thumb{background:var(--grid); border:2px solid var(--bg)}
 
 #app{height:100%; display:grid; gap:8px; padding:8px;
-  grid-template-rows:46px 1fr 150px;
-  grid-template-columns:332px 1fr 264px;
-  grid-template-areas:"top top top" "agents board side" "agents feed side"}
+  grid-template-rows:46px 1fr 196px;
+  grid-template-columns:332px 1fr 288px;
+  grid-template-areas:"top top top" "agents board side" "agents feed ask"}
 
 .panel{background:var(--panel); border:var(--px) solid var(--grid); position:relative}
 .panel>h2{font-family:"Silkscreen"; font-size:10px; color:var(--dim); text-transform:lowercase;
@@ -94,6 +94,7 @@ select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid 
 #board{grid-area:board; overflow:hidden}
 #board svg{width:100%; height:calc(100% - 29px)}
 #empty{position:absolute; inset:29px 0 0; display:grid; place-content:center; text-align:center; gap:8px}
+#empty[hidden]{display:none}
 #empty .big{font-family:"Silkscreen"; font-weight:700; font-size:18px; color:var(--faint)}
 #empty p{color:var(--faint)} #empty code{color:var(--dim); font-size:11px}
 .axis{stroke:var(--grid); stroke-width:2; shape-rendering:crispEdges}
@@ -137,6 +138,43 @@ select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid 
 #feedin .l:first-child .ev{animation:pop .25s steps(3)}
 @keyframes pop{from{transform:translateY(6px); opacity:0}}
 
+/* ── pregúntale al visor ── */
+#ask{grid-area:ask; display:flex; flex-direction:column; overflow:hidden}
+#askmsgs{flex:1; overflow-y:auto; padding:8px 10px; font-size:12px; line-height:1.5}
+#askmsgs .q{color:var(--work); margin-top:8px}
+#askmsgs .q::before{content:"▸ "; font-family:"Silkscreen"; font-size:9px}
+#askmsgs .a{color:var(--text); white-space:pre-wrap; margin-top:2px}
+#askmsgs .a.thinking{color:var(--faint); animation:blink 1s steps(2) infinite}
+#sugg{display:flex; flex-wrap:wrap; gap:4px; padding:0 8px 6px}
+#sugg button{font-size:10px; padding:2px 7px; color:var(--dim); border-color:var(--grid)}
+#sugg button:hover{color:var(--work); border-color:var(--work)}
+#askbar{display:flex; gap:6px; padding:8px; border-top:2px solid var(--grid)}
+#askin{flex:1; min-width:0}
+#asksend{flex:0 0 auto}
+
+/* ── modal de detalle ── */
+#mask{position:fixed; inset:0; background:#000a; z-index:20; display:none;
+  align-items:center; justify-content:center}
+#mask.open{display:flex}
+#modal{width:min(680px,92vw); max-height:82vh; overflow-y:auto; background:var(--panel);
+  border:var(--px) solid var(--grid); box-shadow:8px 8px 0 #000c; padding:0}
+#modal header{display:flex; align-items:center; gap:10px; padding:10px 14px;
+  border-bottom:var(--px) solid var(--grid); position:sticky; top:0; background:var(--panel)}
+#modal header .t{font-family:"Silkscreen"; font-size:12px; color:var(--work); flex:1}
+#modal header button{font-family:"Silkscreen"; font-size:10px}
+#modal .body{padding:12px 14px; display:grid; gap:10px}
+#modal .kv{display:grid; grid-template-columns:110px 1fr; gap:4px 12px; font-size:12px}
+#modal .kv b{color:var(--faint); font-weight:400; font-family:"Silkscreen"; font-size:9px}
+#modal .prompt{background:var(--panel2); border:2px solid var(--grid); padding:9px 11px;
+  font-size:12px; line-height:1.5; color:var(--dim); white-space:pre-wrap}
+#modal .jv{display:flex; gap:10px; align-items:baseline; font-size:11.5px;
+  border:2px solid var(--grid); padding:6px 9px; background:var(--panel2)}
+#modal .jv .p{font-family:"Silkscreen"; font-size:10px}
+#modal .jv .diag{color:var(--faint)}
+.bar.running{animation:barpulse 1.1s steps(2) infinite}
+@keyframes barpulse{50%{fill-opacity:.75}}
+.bar,.ag,.staffc{cursor:pointer}
+
 /* ── config ── */
 #cfg{position:fixed; top:54px; right:8px; width:290px; z-index:9; background:var(--panel);
   border:var(--px) solid var(--grid); padding:14px; display:none; box-shadow:6px 6px 0 #000a}
@@ -150,7 +188,8 @@ select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid 
   body{overflow:auto}
   #app{height:auto; grid-template-columns:1fr;
     grid-template-rows:auto auto minmax(300px,52vh) auto auto;
-    grid-template-areas:"top" "agents" "board" "side" "feed"}
+    grid-template-areas:"top" "agents" "board" "side" "ask" "feed"}
+  #ask{min-height:220px}
   #grid8{grid-template-columns:1fr 1fr}
   #mission,#clock{display:none}
   #feedin{columns:1}
@@ -194,7 +233,22 @@ select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid 
     <h2 id="l-activity">actividad</h2>
     <div id="feedin"></div>
   </section>
+
+  <section id="ask" class="panel" aria-label="Pregúntale al visor">
+    <h2 id="l-ask">pregúntale al visor</h2>
+    <div id="askmsgs"></div>
+    <div id="sugg"></div>
+    <form id="askbar">
+      <input id="askin" placeholder="¿qué hace el agente 3?" autocomplete="off">
+      <button id="asksend" class="pxbtn" type="submit">▸</button>
+    </form>
+  </section>
 </div>
+
+<div id="mask"><div id="modal" role="dialog">
+  <header><span class="t" id="mtitle"></span><button class="pxbtn" onclick="document.getElementById('mask').classList.remove('open')">X</button></header>
+  <div class="body" id="mbody"></div>
+</div></div>
 
 <div id="cfg" role="dialog" aria-label="Ajustes">
   <label for="c-src">fuente de datos</label>
@@ -204,12 +258,14 @@ select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid 
   <label for="c-poll">refresco (s)</label><input id="c-poll" type="number" min="1" max="60">
   <label>escala de sprites</label>
   <div class="seg" id="c-scale"><button data-v="2">2x</button><button data-v="3" aria-pressed="true">3x</button><button data-v="4">4x</button></div>
+  <label for="c-orkey">openrouter key (chat del visor)</label>
+  <input id="c-orkey" spellcheck="false" placeholder="sk-or-v1-…">
 </div>
 
 <script>
 /* ═══ config ═══ */
 const DEF={src:"supabase",url:"https://pwcvskguqyhbhlwnsmmy.supabase.co",
-  key:"sb_publishable_1S4AdKr4TJqGWt9LNL_XaQ_OWrCusLw",poll:3,scale:3};
+  key:"sb_publishable_1S4AdKr4TJqGWt9LNL_XaQ_OWrCusLw",poll:3,scale:3,orkey:""};
 let cfg={...DEF};
 try{cfg={...DEF,...JSON.parse(localStorage.getItem("ag-cfg")||"{}")}}catch(e){}
 const save=()=>{try{localStorage.setItem("ag-cfg",JSON.stringify(cfg))}catch(e){}};
@@ -233,6 +289,7 @@ const FALLBACK={size:16,palette:["transparent","#101418","#9aa3b8","#eef0f4"],
   [0,0,0,0,1,2,1,0,0,1,2,1,0,0,0,0],[0,0,0,1,1,1,1,0,0,1,1,1,1,0,0,0]]]};
 const SPRITES={};   // name → {size,palette,frames}
 const UI={};        // copy_ui.json
+const ASKC={};      // copy_ask.json
 const FEEDT={start:"misión: {task}",plan:"plan listo: {n} tareas",
   shipped:"agente {ag} entrega {file}",jev_ok:"jev aprueba {id} ({p}%)",
   jev_fail:"jev rechaza {id} ({p}%)",done:"misión completa: {s}s · ${cost}"};
@@ -240,12 +297,15 @@ const FEEDT={start:"misión: {task}",plan:"plan listo: {n} tareas",
 async function loadAssets(){
   const files={sp_worker:"sprites_worker.json",sp_states:"sprites_states.json",
     sp_main:"sprites_main.json",sp_staff:"sprites_staff.json",sp_icons:"sprites_icons.json",
-    cp_ui:"copy_ui.json",cp_feed:"copy_feed.json",tk_palette:"palette.json"};
+    cp_ui:"copy_ui.json",cp_feed:"copy_feed.json",tk_palette:"palette.json",
+    cp_ask:"copy_ask.json",local_keys:"local_keys.json"};
   await Promise.all(Object.entries(files).map(async([k,f])=>{
     try{
       const d=await (await fetch("assets/"+f)).json();
       if(k==="cp_ui") Object.assign(UI,d);
       else if(k==="cp_feed") Object.assign(FEEDT,d);
+      else if(k==="cp_ask") Object.assign(ASKC,d);
+      else if(k==="local_keys"){ if(!cfg.orkey&&d.openrouter) cfg.orkey=d.openrouter; }
       else if(k==="tk_palette") applyPalette(d);
       else if(validSprite(d)) SPRITES[k]=d;
     }catch(e){/* fallback ya cubre */}
@@ -312,7 +372,9 @@ function ingest(list){
     if(r.event==="plan"&&p.tasks){p.tasks.forEach(t=>{run.tasks[t.id]={...t,status:"pending"};run.order.push(t.id)});
       run.task||=p.task||""; run.planMs=ts;}
     if(r.event==="shipped"&&r.task_id){const t=run.tasks[r.task_id]; if(t){t.status="ok";t.doneMs=ts;}}
-    if(r.event==="jev"&&r.task_id){run.jev[r.task_id]=p.p; if(p.p<0.5&&run.tasks[r.task_id])run.tasks[r.task_id].fixed=true;}
+    if(r.event==="jev"&&r.task_id){run.jev[r.task_id]=p.p;
+      (run.jevlog??={})[r.task_id]??=[]; run.jevlog[r.task_id].push(p);
+      if(p.p<0.5&&run.tasks[r.task_id])run.tasks[r.task_id].fixed=true;}
     if(r.event==="done"){run.done=true;run.spent=p.spent;run.seconds=p.seconds;}
   }
   for(const id in runs){const run=runs[id];
@@ -359,10 +421,10 @@ function render(){
     {sp:"sp_main",fr:run.planMs?[0,1]:[2,3],nm:UI.main_agent||"agente principal",
      st:run.planMs?`plan listo · ${run.order.length} tareas`:"planificando…",
      cls:run.planMs?"okd":"busy"},
-    {sp:"sp_staff",fr:[0,1],nm:UI.inspector||"inspector jev",
+    {sp:"sp_staff",fr:[0,1,2,3],nm:UI.inspector||"inspector jev",
      st:Object.keys(run.jev).length? Object.keys(run.jev).length+" revisiones":"esperando entregas",
      cls:Object.keys(run.jev).length?"okd":""},
-    {sp:"sp_staff",fr:[2,3],nm:UI.assembler||"ensamblador",
+    {sp:"sp_staff",fr:[4,5,6,7],nm:UI.assembler||"ensamblador",
      st:run.done?`entrega final · ${run.seconds??"?"}s`:okN===run.order.length&&okN?"ensamblando…":"esperando piezas",
      cls:run.done?"okd":okN===run.order.length&&okN?"busy":""},
   ];
@@ -384,9 +446,10 @@ function render(){
     const div=document.createElement("div");
     div.className="ag "+(t?"busy":run.done||okN?"okd":"");
     div.style.setProperty("--agc",AGCOLORS[i]);
+    div.onclick=()=>openAgent(i);
     const key=t?"sp_worker":run.done?"sp_states":"sp_worker";
-    const fr=t?[2,3]:run.done?[0,1]:[0,1];
-    div.append(spriteCanvas(key,fr,t?null:run.done?null:null,2.5));
+    const fr=t?[2,3,4,5]:run.done?[0,1,2,3]:[0,1];
+    div.append(spriteCanvas(key,fr,null,2.5));
     div.insertAdjacentHTML("beforeend",
       `<div class="nm">agente ${i+1}<i>${t?"■ "+esc(tid):run.done?"✓":"·"}</i></div>
        <div class="tk">${t? esc(t.filename||t.prompt?.slice(0,70)||tid) :
@@ -464,8 +527,9 @@ function drawBoard(run,runningIds){
     const running=runningIds.includes(id);
     const fill=t.status==="ok"?col:running?col:"none";
     const op=t.status==="ok"?".9":running?".45":"0";
-    g+=`<rect class="bar" x="${x1}" y="${y-h/2}" width="${w}" height="${h}"
-        fill="${fill}" fill-opacity="${op}" stroke="${t.status==="ok"||running?col:"var(--grid)"}"
+    g+=`<rect class="bar ${running?"running":""}" data-tid="${esc(id)}" x="${x1}" y="${y-h/2}"
+        width="${w}" height="${h}" fill="${fill}" fill-opacity="${op}"
+        stroke="${t.status==="ok"||running?col:"var(--grid)"}"
         ${t.fixed?'stroke-dasharray="5 2"':""}/>`;
     g+=`<text class="bnum" x="${x1+4}" y="${y+3}" fill="${t.status==="ok"?"var(--bg)":col}">A${t.agent+1}</text>`;
     g+=`<text class="blabel" x="${x2+8}" y="${y+1}" fill="${col}">${esc(id)}</text>
@@ -509,7 +573,127 @@ $("#c-scale").onclick=e=>{const v=+e.target.dataset.v;if(v){cfg.scale=v;save();a
 setInterval(()=>$("#clock").textContent=new Date().toLocaleTimeString("es-CO",{hour12:false}),1000);
 window.addEventListener("resize",()=>runs[curRun]&&drawBoard(runs[curRun],[]));
 
-loadAssets().then(fetchRows);
+/* ═══ modal de detalle: qué hace cada tarea/agente ═══ */
+const ACTNAMES={aprobar:"aprobar",fix_con_feedback:"fix con feedback",
+  reintentar_pensando_mas:"reintentar pensando más",escalar_a_modelo_pro:"escalar a modelo pro"};
+function openModal(title,html){
+  $("#mtitle").textContent=title; $("#mbody").innerHTML=html;
+  $("#mask").classList.add("open");
+}
+$("#mask").addEventListener("click",e=>{if(e.target.id==="mask")$("#mask").classList.remove("open");});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$("#mask").classList.remove("open");});
+
+function openTask(tid){
+  const run=runs[curRun]; if(!run)return;
+  const t=run.tasks[tid]; if(!t)return;
+  const t0=run.planMs??run.t0, col=AGCOLORS[t.agent];
+  const jl=(run.jevlog?.[tid])||[];
+  const jevHtml=jl.map((j,i)=>{
+    const cls=j.p>=.85?"var(--ok)":j.p>=.5?"var(--work)":"var(--fail)";
+    const diag=j.diag?Object.entries(j.diag).filter(([,v])=>v<.5).map(([k])=>k).join(", "):"";
+    return `<div class="jv"><span class="p" style="color:${cls}">${(j.p*100).toFixed(0)}%</span>
+      <span>calidad ${j.quality?.toFixed(1)??"—"}/4</span>
+      <span>→ ${ACTNAMES[j.action]||j.action||"aprobar"}</span>
+      ${diag?`<span class="diag">falló: ${esc(diag)}</span>`:""}</div>`;
+  }).join("")||`<div class="jv"><span class="diag">sin inspecciones</span></div>`;
+  openModal(tid+" · agente "+(t.agent+1),`
+    <div class="kv">
+      <b>estado</b><span style="color:${t.status==="ok"?"var(--ok)":col}">${t.status==="ok"?"entregada":"en curso"}${t.fixed?" (con fixes)":""}</span>
+      <b>agente</b><span style="color:${col}">agente ${t.agent+1} · deepseek-flash</span>
+      <b>thinking</b><span>${esc(t.thinking||"none")}</span>
+      <b>archivo</b><span>${esc(t.filename||tid+".md")}</span>
+      <b>depende de</b><span>${(t.deps||[]).map(d=>`<a href="#" onclick="openTask('${esc(d)}');return false" style="color:${AGCOLORS[run.tasks[d]?.agent??0]}">${esc(d)}</a>`).join(" · ")||"nada — arranca de una"}</span>
+      <b>entregada en</b><span>${t.doneMs?fmtT(t.doneMs,t0):"—"}</span>
+    </div>
+    <div><b style="font-family:Silkscreen;font-size:9px;color:var(--faint)">ORDEN RECIBIDA</b>
+    <div class="prompt">${esc(t.prompt||"—")}</div></div>
+    <div><b style="font-family:Silkscreen;font-size:9px;color:var(--faint)">INSPECCIONES JEV</b>${jevHtml}</div>`);
+}
+function openAgent(i){
+  const run=runs[curRun]; if(!run)return;
+  const mine=run.order.filter(id=>run.tasks[id].agent===i);
+  if(!mine.length){openModal("agente "+(i+1),`<div class="kv"><b>estado</b><span>en espera — sin tareas en esta misión</span></div>`);return;}
+  openModal("agente "+(i+1)+" · deepseek-flash",
+    mine.map(id=>{const t=run.tasks[id],p=run.jev[id];
+      return `<div class="jv" style="cursor:pointer" onclick="openTask('${esc(id)}')">
+        <span class="p" style="color:${AGCOLORS[i]}">${esc(id)}</span>
+        <span>${esc(t.filename||"")}</span>
+        <span style="margin-left:auto;color:${t.status==="ok"?"var(--ok)":"var(--work)"}">${t.status==="ok"?"entregada":"en curso"}</span>
+        ${p!=null?`<span class="p">${(p*100).toFixed(0)}%</span>`:""}</div>`;}).join(""));
+}
+$("#ops").addEventListener("click",e=>{const tid=e.target.dataset?.tid; if(tid)openTask(tid);});
+
+/* ═══ pregúntale al visor: chat agéntico sobre el estado real ═══ */
+const askHist=[];
+function askContext(){
+  const ids=Object.keys(runs).sort().reverse(), run=runs[curRun];
+  if(!run) return "Sin corridas todavía.";
+  const t0=run.planMs??run.t0;
+  const tasks=run.order.map(id=>{const t=run.tasks[id];
+    return {id,agente:(t.agent??0)+1,estado:t.status==="ok"?"entregada":"en curso",
+      archivo:t.filename||null,thinking:t.thinking||"none",deps:t.deps||[],
+      jev:run.jev[id]!=null?Math.round(run.jev[id]*100)+"%":null,
+      seg:t.doneMs?Math.round((t.doneMs-t0)/1000):null};});
+  let ds=0,or_=0;ids.forEach(i=>{const s=runs[i].spent;if(s){ds+=s.deepseek||0;or_+=s.openrouter||0;}});
+  return JSON.stringify({
+    mision:run.task, corrida:curRun, completada:run.done,
+    duracion_seg:run.seconds, tareas:tasks,
+    corridas_de_hoy:ids.length, gasto_hoy_usd:{deepseek:+ds.toFixed(4),openrouter:+or_.toFixed(4)},
+    arquitectura:"agente principal (deepseek-v4-pro o Fable 5.1) planifica el DAG; 8 agentes deepseek-flash ejecutan en paralelo con thinking por tarea; el inspector Jev (typesafe/jev-1.13) revisa cada entrega y enruta reintentos; un ensamblador une el resultado final",
+  });
+}
+function addMsg(cls,txt){
+  const d=document.createElement("div");d.className=cls;d.textContent=txt;
+  $("#askmsgs").append(d);$("#askmsgs").scrollTop=1e9;return d;
+}
+async function ask(q){
+  if(!q.trim())return;
+  if(!cfg.orkey){addMsg("a",ASKC.nokey||"pega tu key de openrouter en ajustes para chatear");return;}
+  addMsg("q",q); askHist.push({role:"user",content:q});
+  const a=addMsg("a thinking",ASKC.thinking||"consultando…");
+  try{
+    const r=await fetch("https://openrouter.ai/api/v1/chat/completions",{
+      method:"POST",
+      headers:{Authorization:"Bearer "+cfg.orkey,"Content-Type":"application/json"},
+      body:JSON.stringify({model:"deepseek/deepseek-v4.1-flash",stream:true,max_tokens:400,
+        messages:[{role:"system",content:
+          "Eres el visor de un enjambre de agentes. Responde en español, corto y "+
+          "concreto (máx 4 líneas), SOLO con los datos del estado adjunto; si algo "+
+          "no está en los datos, dilo sin inventar. Estado actual:\n"+askContext()},
+          ...askHist.slice(-6)]}),
+    });
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    a.classList.remove("thinking"); a.textContent="";
+    const rd=r.body.getReader(), dec=new TextDecoder(); let buf="",full="";
+    for(;;){
+      const {done,value}=await rd.read(); if(done)break;
+      buf+=dec.decode(value,{stream:true});
+      for(const line of buf.split("\n")){
+        if(!line.startsWith("data: ")||line.includes("[DONE]"))continue;
+        try{const tok=JSON.parse(line.slice(6)).choices?.[0]?.delta?.content;
+          if(tok){full+=tok;a.textContent=full;$("#askmsgs").scrollTop=1e9;}}catch(e){}
+      }
+      buf=buf.slice(buf.lastIndexOf("\n")+1);
+    }
+    askHist.push({role:"assistant",content:full});
+  }catch(e){a.classList.remove("thinking");a.textContent="sin respuesta ("+e.message+")";}
+}
+$("#askbar").onsubmit=e=>{e.preventDefault();const v=$("#askin").value;$("#askin").value="";ask(v);};
+function renderSugg(){
+  const s=ASKC.suggestions||["¿qué hace el agente 3?","¿cómo va la misión?",
+    "¿qué rechazó jev y por qué?","¿cuánto hemos gastado hoy?"];
+  $("#sugg").innerHTML=s.slice(0,4).map(x=>`<button type="button">${esc(x)}</button>`).join("");
+  $("#sugg").querySelectorAll("button").forEach(b=>b.onclick=()=>ask(b.textContent));
+}
+$("#c-orkey").onchange=e=>{cfg.orkey=e.target.value.trim();save();};
+
+loadAssets().then(()=>{
+  if(ASKC.panel) $("#l-ask").textContent=ASKC.panel;
+  if(ASKC.placeholder) $("#askin").placeholder=ASKC.placeholder;
+  $("#c-orkey").value=cfg.orkey;
+  renderSugg();
+  fetchRows();
+});
 </script>
 </body>
 </html>

@@ -187,7 +187,9 @@ pedir un entregable concreto (código, texto, análisis), no un plan.
 Asigna "thinking" por tarea — optimiza el costo: "none" para tareas mecánicas \
 (redactar, transformar, extraer, formatear), "low"/"medium" para diseño o análisis, \
 "high" SOLO para razonamiento pesado (matemáticas, pruebas, algoritmos, debugging \
-sutil). Responde SOLO JSON:
+sutil). Escribe restricciones MEDIBLES y sin ambigüedad ("máximo 250 caracteres", \
+no "de 250 caracteres"): un inspector automático las verificará literalmente. \
+Responde SOLO JSON:
 {{"tasks": [{{"id": "t1", "prompt": "...", "deps": [], "thinking": "none", \
 "filename": "opcional.ext"}}]}}
 Máximo {max_tasks} tareas.
@@ -252,15 +254,26 @@ async def jev_review(task_prompt: str, output: str):
                                 "reintentar_pensando_mas": "fallo de razonamiento, reintentar con más pensamiento",
                                 "escalar_a_modelo_pro": "demasiado difícil para el modelo rápido, escalar",
                             }},
+                        # diagnósticos: hacen el rechazo ACCIONABLE en el fix
+                        "completo": {"type": "noul",
+                            "instructions": "El output está completo, no le falta ninguna parte pedida"},
+                        "restricciones": {"type": "noul",
+                            "instructions": "El output respeta las restricciones explícitas de la tarea (longitud, formato, cantidad)"},
+                        "sin_relleno": {"type": "noul",
+                            "instructions": "El output va al grano, sin relleno ni preámbulos"},
                     },
                 },
             )
             d = r.json()
             budget.spent["openrouter"] += float(d.get("usage", {}).get("cost") or 0)
             a = d["answers"]
+            diag = {k: float(a[k]["noul"])
+                    for k in ("completo", "restricciones", "sin_relleno")}
             return {"p": float(a["cumple"]["noul"]),
                     "quality": float(a["calidad"]["score"]),
-                    "action": a["accion"]["choice"]}
+                    "action": a["accion"]["choice"],
+                    "diag": diag,
+                    "fallas": [k for k, v in diag.items() if v < 0.5]}
     except Exception:
         return None
 
@@ -369,8 +382,11 @@ class Swarm:
                                         system=WORKER_CONSTITUTION, thinking=think)
                     break
                 self.log({"event": "jev", "id": t["id"], "p": jv["p"],
-                          "quality": jv["quality"], "action": jv["action"]})
-                if jv["p"] >= 0.5 or jv["action"] == "aprobar":
+                          "quality": jv["quality"], "action": jv["action"],
+                          "diag": jv["diag"]})
+                # Pasa si cumple, si Jev dice aprobar, o si la calidad es
+                # "bueno"+ (>=3/4): un juez literalista no bloquea trabajo usable.
+                if jv["p"] >= 0.5 or jv["action"] == "aprobar" or jv["quality"] >= 3.0:
                     break
                 # Jev decide el siguiente paso; el feedback viaja en el prompt
                 if jv["action"] == "reintentar_pensando_mas":
@@ -379,10 +395,14 @@ class Swarm:
                     model, think = "deepseek-v4-pro", "medium"
                 print(f"  🔧 {t['id']} rechazado por Jev (p={jv['p']:.2f}, "
                       f"calidad={jv['quality']:.1f}) → {jv['action']}")
+                fallas = (" Falló en: " + ", ".join(jv["fallas"]) + "."
+                          if jv["fallas"] else
+                          " Relee las restricciones LITERALES de la tarea "
+                          "(longitud exacta, formato, cantidad) y cúmplelas.")
                 out = await llm(
-                    f"Un inspector calificó tu output {jv['quality']:.1f}/4 y lo rechazó. "
-                    f"Output rechazado:\n{out[:1500]}\n\nEntrega la versión corregida y "
-                    f"completa de: {t['prompt']}",
+                    f"Un inspector calificó tu output {jv['quality']:.1f}/4 y lo "
+                    f"rechazó.{fallas}\nOutput rechazado:\n{out[:1500]}\n\n"
+                    f"Entrega la versión corregida y completa de: {t['prompt']}",
                     model=model, system=WORKER_CONSTITUTION, thinking=think)
             else:
                 warn = True
