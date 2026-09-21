@@ -270,7 +270,7 @@ let cfg={...DEF};
 try{cfg={...DEF,...JSON.parse(localStorage.getItem("ag-cfg")||"{}")}}catch(e){}
 const save=()=>{try{localStorage.setItem("ag-cfg",JSON.stringify(cfg))}catch(e){}};
 const $=s=>document.querySelector(s);
-const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const CEIL={deepseek:10,openrouter:10};
 const AGCOLORS=["--a1","--a2","--a3","--a4","--a5","--a6","--a7","--a8"]
   .map(v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim());
@@ -693,6 +693,7 @@ loadAssets().then(()=>{
   if(ASKC.placeholder) $("#askin").placeholder=ASKC.placeholder;
   $("#c-orkey").value=cfg.orkey;
   renderSugg();
+  applyCfg();   // arranca el timer de refresco (hallazgo del bug-hunt)
   fetchRows();
 });
 </script>

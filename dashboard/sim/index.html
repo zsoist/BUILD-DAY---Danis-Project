@@ -22,7 +22,7 @@ FORM: continuación del arcade-mission-control del visor, pinneado por Daniel.
 <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Saira:wdth,wght@75..100,300..700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#10141f;--panel:#161b29;--panel2:#131724;--grid:#1e2436;--text:#eef0f4;
---dim:#9aa3b8;--faint:#5b6478;--work:#ffd23e;--ok:#59d97e;--fail:#ff5c5c;
+--dim:#9aa3b8;--faint:#7d879c;--work:#ffd23e;--ok:#59d97e;--fail:#ff5c5c;
 --accent:#5aa7ff;--muj:#ff6fa5;--hom:#4dd6c1;--px:3px}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:"Saira",system-ui,sans-serif;
@@ -41,7 +41,7 @@ select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid 
 grid-template-columns:340px 1fr 320px;
 grid-template-areas:"top top top" "censo encuesta ficha" "banner banner banner"}
 #top{grid-area:top;display:flex;align-items:center;gap:14px;padding:8px 12px;
-background:var(--panel);border:var(--px) solid var(--grid)}
+background:var(--panel);border:var(--px) solid var(--grid);flex-wrap:wrap}
 #title{font-family:"Silkscreen";font-weight:700;font-size:16px;color:var(--work);
 text-shadow:3px 3px 0 #0007}
 #title small{color:var(--accent);font-size:16px}
@@ -112,6 +112,10 @@ border-right:4px solid var(--pc,var(--grid))}
 .resp .say.thinking::after{content:"···";animation:blink .8s steps(2) infinite;
 font-family:"Silkscreen";letter-spacing:2px}
 .resp .px{width:28px;height:28px;image-rendering:pixelated}
+.ctx{border:2px solid var(--accent);border-left-width:5px;background:var(--panel2);
+padding:8px 12px;font-size:12px;line-height:1.55;color:var(--dim);white-space:pre-wrap}
+.ctx b{font-family:"Silkscreen";font-size:8px;color:var(--accent);display:block;margin-bottom:4px}
+.ctx.off{border-color:var(--grid);opacity:.85}
 .mod{border:2px solid var(--accent);background:var(--panel2);padding:9px 12px;
 font-size:12.5px;line-height:1.5;color:var(--dim)}
 .mod b{font-family:"Silkscreen";font-size:8px;color:var(--accent);display:block;margin-bottom:4px}
@@ -229,7 +233,7 @@ background:var(--panel);border:var(--px) solid var(--grid);padding:14px;box-shad
 
 <script>
 const $=s=>document.querySelector(s);
-const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let cfg={orkey:""};
 try{cfg={...cfg,...JSON.parse(localStorage.getItem("sim-cfg")||"{}")};
   if(!cfg.orkey){const ag=JSON.parse(localStorage.getItem("ag-cfg")||"{}");if(ag.orkey)cfg.orkey=ag.orkey;}}catch(e){}
@@ -270,10 +274,12 @@ async function pais(q){
 async function mesa(cod){
   const el=$("#mesa"),d=MARG[cod],dos=DOS[cod]||{};
   if(!el)return;
+  PAIS.busy??={}; if(PAIS.busy[cod])return; PAIS.busy[cod]=true;
   const path=$(`#navmap path[data-cod="${cod}"]`);
   if(PAIS.cache[cod]){el.innerHTML=PAIS.cache[cod];return;}
   el.innerHTML=`<div class="ronda">— MESA DE ${esc(d.nombre).toUpperCase()} —</div>`;
   path?.classList.add("hot");
+  const ctx=await contexto(PAIS.q); ctxBox(ctx,el);
   const sample=RES.filter(r=>r.dpto===cod&&r.edad>=16).sort(()=>Math.random()-.5).slice(0,4);
   const transcript=[];
   for(let i=0;i<sample.length;i++){
@@ -281,7 +287,7 @@ async function mesa(cod){
     try{
       const charla=transcript.length?
         "La mesa va así:\n"+transcript.map(t=>`${t.n}: ${t.t}`).join("\n"):"abres tú la mesa";
-      const raw=await flash([{role:"system",content:persona(r,dos)+`
+      const raw=await flash([{role:"system",content:persona(r,dos)+ctxPara(ctx)+`
 Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU territorio. Reacciona a lo dicho (cita por nombre, contradice o apoya), aterriza con tu vida y tu región. 1-2 frases. Cierra con [POSTURA: a_favor|en_contra|depende].`},
         {role:"user",content:`Tema: ${PAIS.q}\n${charla}\nHabla, ${r.nombre.split(" ")[0]}.`}],160);
       const [pos,txt]=postura(raw);
@@ -312,6 +318,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
      <div class="tal con"><b>${PAIS.tally.en_contra}</b><span>dptos en contra</span></div>
      <div class="tal dep"><b>${PAIS.tally.depende}</b><span>dptos divididos</span></div>`;
   PAIS.cache[cod]=el.innerHTML;
+  PAIS.busy[cod]=false;
 }
 function mayoria(ts){
   const c={a_favor:0,en_contra:0,depende:0};ts.forEach(t=>c[t.p]++);
@@ -330,9 +337,9 @@ let SEL=new Set(["11"]);   // territorios elegidos para la muestra (vacío = tod
 let DECIDIDO={};  // cod → postura concluida (pinta ambos mapas)
 
 const MODOTXT={
-  sondeo:"SONDEO · rápido: todos contestan A LA VEZ y el contador dice cuántos dirían sí, no o depende",
-  tertulia:"TERTULIA · conversan DE A UNO, se responden y se contradicen, hasta 3 min o hasta ponerse de acuerdo",
-  pais:"EL PAÍS · escribes UNA pregunta y tocas territorios en el mapa: cada uno arma su mesa, concluye y pinta el mapa"};
+  sondeo:"SONDEO · Todos contestan a la vez. Rápido: cuántos dirían sí, no o depende.",
+  tertulia:"TERTULIA · Conversan de a uno, se responden y se contradicen. Hasta 3 minutos o hasta ponerse de acuerdo.",
+  pais:"EL PAÍS · Escribes una pregunta y tocas el mapa: cada territorio delibera, concluye y se pinta."};
 function selInfo(){
   const el=$("#selinfo"); if(!el)return;
   if(!SEL.size){el.innerHTML=`<b>muestra:</b> toda Colombia (proporcional a población real) — toca el mapa para acotar`;return;}
@@ -641,6 +648,28 @@ function postura(txt){
   const m=txt.match(/\[POSTURA:\s*(a_favor|en_contra|depende)\s*\]/i);
   return [m?m[1].toLowerCase():null,txt.replace(/\[POSTURA:[^\]]*\]/i,"").trim()];
 }
+/* ── CONTEXTO REAL: una búsqueda web por pregunta; las voces reaccionan a hechos ── */
+let CTX={q:null,txt:null};
+async function contexto(q){
+  if(CTX.q===q)return CTX.txt;
+  CTX={q,txt:null};
+  try{
+    const r=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({online:true,max_tokens:330,messages:[
+        {role:"system",content:"Eres un servicio de contexto noticioso para Colombia. Busca qué se sabe HOY sobre el tema y devuelve máximo 5 viñetas NEUTRALES y concretas (hechos, nombres completos, cifras, fechas, estado actual). Sin opinar, sin adjetivos. Si el tema no es noticioso o no encuentras nada, responde exactamente: SIN_NOVEDADES."},
+        {role:"user",content:q+" (Colombia, septiembre 2026)"}]})});
+    if(r.ok){const c=(await r.json()).content||"";
+      CTX.txt=/SIN_NOVEDADES/.test(c)?null:c.trim();}
+  }catch(e){}
+  return CTX.txt;
+}
+function ctxBox(txt,host){
+  (host||$("#resps")).insertAdjacentHTML("beforeend",
+    txt?`<div class="ctx"><b>📰 CONTEXTO REAL (búsqueda de hoy)</b>${esc(txt)}</div>`
+       :`<div class="ctx off"><b>📰 SIN NOTICIAS FRESCAS</b>opinan desde su experiencia, no desde la prensa</div>`);
+}
+const ctxPara=txt=>txt?`\nLO QUE DICEN LAS NOTICIAS HOY (hechos reales, reacciona a ESTO desde tu vida, puedes dudar de lo que leas):\n${txt}\n`:"";
+
 let API_OK=null;  // ¿existe /api/opina? (en Vercel sí; en local http.server no)
 async function flash(messages,max=170,temp=0.95){
   if(API_OK!==false){
@@ -662,6 +691,16 @@ async function flash(messages,max=170,temp=0.95){
   if(j.error)throw new Error(j.error.message||"api");
   return j.choices?.[0]?.message?.content||"";
 }
+function tallyVivo(postDe,n){
+  const c={a_favor:0,en_contra:0,depende:0};
+  Object.values(postDe).forEach(v=>c[v]++);
+  const falta=n-Object.keys(postDe).length;
+  $("#tally").innerHTML=
+   `<div class="tal fav"><b>${c.a_favor}</b><span>a favor</span></div>
+    <div class="tal con"><b>${c.en_contra}</b><span>en contra</span></div>
+    <div class="tal dep"><b>${c.depende}</b><span>depende</span></div>`+
+   (falta>0?`<div class="tal"><b>${falta}</b><span>por hablar</span></div>`:"");
+}
 function tally(p){
   $("#tally").innerHTML=
    `<div class="tal fav"><b>${p.a_favor}</b><span>a favor</span></div>
@@ -674,7 +713,8 @@ function muestraDe(sel,n){
   const pesos=codigos.map(c=>[c,MARG[c]?.poblacion||1]);
   const tot=pesos.reduce((a,[,w])=>a+w,0);
   const out=[],usados=new Set();
-  while(out.length<n){
+  let guardia=0;
+  while(out.length<n&&guardia++<n*200){
     let x=Math.random()*tot,cod=pesos[0][0];
     for(const [c,w] of pesos){x-=w;if(x<=0){cod=c;break}}
     const pool=RES.filter(r=>r.dpto===cod&&r.edad>=16&&!usados.has(r.id));
@@ -684,7 +724,8 @@ function muestraDe(sel,n){
   return out;
 }
 async function conversar(q){
-  if(!cfg.orkey){$("#resps").innerHTML=`<div style="color:var(--work);padding:16px">
+  // hay backend /api/opina en producción: solo exigir key si NO existe
+  if(API_OK===false&&!cfg.orkey){$("#resps").innerHTML=`<div style="color:var(--work);padding:16px">
     pega tu key de openrouter en AJUSTES para conversar</div>`;return;}
   if(MODO==="pais")return pais(q);
   const nac=SEL.size!==1;
@@ -698,12 +739,15 @@ async function conversar(q){
   const p={a_favor:0,en_contra:0,depende:0};
   const dosOf=r=>DOS[r.dpto]||{};
 
+  $("#estado").textContent="buscando contexto real…";
+  const ctx=await contexto(q); ctxBox(ctx);
+
   if(MODO==="sondeo"){
     $("#estado").textContent="sondeando…";
     await Promise.all(sample.map(async r=>{
       const card=bubble(r,false),say=card.querySelector(".say");
       try{
-        const raw=await flash([{role:"system",content:persona(r,dosOf(r))+
+        const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+
           "\nResponde la encuesta en 1-2 frases y cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende]."},
           {role:"user",content:q}]);
         const [pos,txt]=postura(raw);
@@ -730,7 +774,7 @@ async function conversar(q){
           const charla=transcript.length?
             "La mesa va así:\n"+transcript.slice(-10).map(t=>`${t.n}: ${t.t}`).join("\n")+
             "\nPROHIBIDO arrancar tu frase como arrancó cualquiera de los anteriores; suena a TI.":"abres tú";
-          const raw=await flash([{role:"system",content:persona(r,dosOf(r))+`
+          const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+`
 Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. Cierra con [POSTURA: a_favor|en_contra|depende].`},
             {role:"user",content:`Tema: ${q}\n${charla}\nTe toca, ${r.nombre.split(" ")[0]}.`}],85);
           const [pos,txt]=postura(raw);

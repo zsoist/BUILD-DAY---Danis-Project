@@ -153,7 +153,10 @@ for cod, d in sorted(M.items()):
             grupo, centro = sample_w([(g, w) for (g, c), w in
                 zip(EDADES, [6,7,8,8,8,8,7,7,6,6,6,5,4,3,2,2,1,1])]), None
             centro = dict(EDADES)[grupo]
-        edad = max(0, centro + rng.randint(-2, 2))
+        # edad uniforme DENTRO del grupo muestreado (sin fugas entre bins)
+        lo = int(grupo.split("-")[0]) if "-" in grupo else 85
+        hi = int(grupo.split("-")[1]) if "-" in grupo else 94
+        edad = rng.randint(lo, hi)
         regionales = dos.get("nombres_frecuentes", {}).get(sexo) or []
         apellidos = APELLIDOS + (dos.get("apellidos") or [])[:6]
         regimen = (sample_w([("contributivo", sal.get("contributivo", 50)),

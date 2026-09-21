@@ -347,12 +347,24 @@ class Swarm:
             pass
 
     def ship(self, tid: str, filename: str | None, content: str):
-        """Shippear YA: el artefacto toca disco en cuanto existe."""
+        """Shippear YA: el artefacto toca disco en cuanto existe (escritura atómica)."""
         path = self.ship_dir / (filename or f"{tid}.md")
-        path.write_text(content)
+        tmp = path.with_suffix(path.suffix + ".tmp")
+        tmp.write_text(content)
+        os.replace(tmp, path)
         print(f"  📦 [{time.monotonic()-self.t0:5.1f}s] {tid} shippeado → {path.name}")
 
     async def run_task(self, t: dict):
+        # Un fallo en UNA tarea jamás tumba la misión (hallazgo del bug-hunt).
+        try:
+            await self._run_task(t)
+        except Exception as e:
+            self.log({"event": "error", "id": t["id"], "msg": repr(e)[:400]})
+            print(f"  💥 {t['id']} falló: {repr(e)[:120]}")
+            self.results.setdefault(t["id"], f"(falló: {e})")
+            self.done_events[t["id"]].set()
+
+    async def _run_task(self, t: dict):
         # Rama ya shippeada en una corrida anterior: reusar, no re-correr.
         prior = self.ship_dir / (t.get("filename") or f"{t['id']}.md")
         if prior.exists():
@@ -366,7 +378,9 @@ class Swarm:
             f"[insumo de {d}]\n{self.results[d][:2000]}" for d in t.get("deps", [])
         )
         prompt = (context + "\n\n" if context else "") + t["prompt"]
-        think = t.get("thinking", "none")
+        think = str(t.get("thinking", "none")).strip().lower()
+        if think not in THINK_UP:
+            think = "none"
         model = "deepseek-flash"
         warn = False
         async with self.sem:

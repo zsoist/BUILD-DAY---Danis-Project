@@ -30,7 +30,7 @@ def export():
         run_id = jl.parent.name
         # corridas viejas sin "t": sintetizar desde el nombre (YYYYmmdd-HHMMSS)
         try:
-            base = datetime.strptime(run_id[:15], "%Y%m%d-%H%M%S").astimezone(timezone.utc)
+            base = datetime.strptime(run_id[:15], "%Y%m%d-%H%M%S").replace(tzinfo=timezone.utc)
         except ValueError:
             base = datetime.now(timezone.utc)
         for n, line in enumerate(jl.read_text().splitlines()):
