@@ -1096,10 +1096,16 @@ async function contexto(q){
         body:JSON.stringify({online:true,max_tokens:260,messages:[
           {role:"system",content:SIS},{role:"user",content:u}]})})
       .then(r=>r.ok?r.json():null).then(j=>j?.content||"").catch(()=>"");
-    // DOS búsquedas en paralelo: la noticia del momento + el panorama de fondo
-    const [c1,c2]=await Promise.all([
-      pide("TEMA: "+q+" (Colombia, septiembre 2026)"),
-      pide("TEMA: panorama de fondo y datos clave de: "+q+" (Colombia, el ángulo que la gente discute normalmente)")]);
+    // CINCO búsquedas en paralelo, cada una con su lente
+    const terr=SEL.size&&SEL.size<=4?[...SEL].map(c=>MARG[c]?.nombre).filter(Boolean).join(", "):null;
+    const brotes=await Promise.all([
+      pide("TEMA: "+q+" — la noticia del momento (Colombia, septiembre 2026)"),
+      pide("TEMA: cifras y datos duros sobre: "+q+" (Colombia: precios, porcentajes, fechas)"),
+      pide("TEMA: qué dice la gente de a pie y las redes sobre: "+q+" (Colombia: quejas, memes, sentir popular)"),
+      pide("TEMA: el fondo: qué ha pasado antes en Colombia con: "+q+" (historia corta, antecedentes)"),
+      pide(terr?("TEMA: cómo toca esto a "+terr+": "+q):("TEMA: diferencias regionales en Colombia sobre: "+q)),
+    ]);
+    const c1=brotes.join("\n"),c2="";
     const norm=s=>s.toLowerCase().normalize("NFD").replace(/[^a-z0-9 ]/g,"").slice(0,52);
     const vistos=new Set(),vi=[];
     for(const s of (c1+"\n"+c2).split("\n").map(x=>x.trim())){
@@ -1107,7 +1113,7 @@ async function contexto(q){
       const k=norm(s);
       if([...vistos].some(v=>v.startsWith(k.slice(0,34))||k.startsWith(v.slice(0,34))))continue;
       vistos.add(k);vi.push(s);
-      if(vi.length>=4)break;
+      if(vi.length>=6)break;
     }
     CTX.txt=vi.length?vi.join("\n"):null;
     /* Jev verifica el contexto antes de mostrarlo (fechas/consistencia) */
@@ -1242,7 +1248,7 @@ async function conversar(q){
       `<span>${esc(r.nombre.split(" ")[0])}, ${r.edad}</span>`);
     seats.append(s);
   });
-  const FRASES=["llegan los vecinos…","📡 buscando qué dicen las noticias…",
+  const FRASES=["llegan los vecinos…","📡 5 búsquedas en camino: noticia, cifras, calle, historia, región…",
     "sirven el tinto ☕","acomodan las sillas…","Jev revisa la prensa…",
     "ya casi arranca esto…"];
   let fi=0;const ticker=setInterval(()=>{
