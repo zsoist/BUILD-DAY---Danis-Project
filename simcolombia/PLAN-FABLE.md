@@ -1,52 +1,73 @@
-# El papel de Fable 5.1 — qué hacemos con los $100
+# EL PROGRAMA DE LOS $100 — Fable 5.1 sobre Sim Colombia (v2 definitiva)
 
-Diseñado sobre la literatura real (Generative Agents/Park 2024, Argyle "silicon
-sampling", los papers de Perils que miden 7x de polarización inflada, el caso
-chileno 2025 con 189k perfiles, Hidden Anchors, AgentSociety). La conclusión del
-estado del arte: lo menos explorado y más defendible NO es que el modelo grande
-actúe de títere más fino — es que actúe de **científico que audita la simulación**.
+Datos duros del lanzamiento (verificados hoy): 1M de contexto, output 128K,
+$10/$50 por Mtok, **cache reads a $0.25/Mtok (–75%)**, thinking adaptativo con
+dial de esfuerzo (low→max), campeón en trabajo agéntico largo (Terminal-Bench-
+Science ×2 vs Fable 5; sim de negocio de 30 días; sim de vida de 5 personajes
+en un solo prompt). Sin benchmark publicado de juez/calibración → nosotros lo
+medimos en escena (eso ES contenido).
 
-## El arco de la demo: "Fable como encuestado, juez y sociólogo"
+## ACTO 0 — "FABLE SE LEE A COLOMBIA ENTERA" (~$12) ⭐ la jugada imposible
 
-### Acto 1 — EL AUDITOR (~$50) ⭐ el plato fuerte
-Encuestamos con Fable 5.1 una submuestra estratificada (~1.500-2.000 residentes,
-10 preguntas por llamada, JSON forzado) con preguntas que TIENEN verdad publicada:
-Latinobarómetro Colombia (confianza en instituciones, satisfacción con la
-democracia, economía) + Pulso Social del DANE. Comparamos marginales sintéticos
-vs. reales por celda (sexo × edad × educación × región) → **mapa de calor del
-sesgo**: a qué colombianos representa mal el modelo (predicción de la literatura:
-rurales, mayores, baja educación; polarización inflada). Luego Fable, como
-auditor, escribe el "informe del sociólogo" con los modos de fallo nombrados y
-citados. Es la metodología del caso chileno aplicada por primera vez a Colombia.
+El movimiento que SOLO un modelo de 1M puede hacer y solo con cache-reads
+baratos tiene sentido económico: serializamos EL PAÍS COMPLETO en un contexto
+(~600-800K tokens): los 6.600 residentes, los 33 dossiers y voces, los
+marginales DANE con fuentes, y TODAS las tertulias/mesas/sondeos de hoy
+(sim_encuestas). Se paga una vez (~$7) y queda CACHEADO: cada pregunta
+siguiente relee el país entero por ~$0.20.
 
-### Acto 2 — FORENSE DE DELIBERACIONES (~$20)
-Nuestro activo único: TODAS las tertulias quedan logueadas (sim_encuestas).
-Fable puntúa por turno: fidelidad al personaje, trayectoria de postura (1-7),
-convergencia sicofante (dar la razón sin argumento nuevo) vs. cambio con
-argumento. Métricas contra lo que la literatura dice de humanos deliberando
-(America in One Room: actualización modesta y asimétrica, no colapso a consenso).
-Titular probable: "hasta nuestra mejor simulación es demasiado complaciente —
-y solo un modelo frontier lo detecta".
+Y entonces lo interrogamos delante del público, pregunta tras pregunta:
+- "Encuentra las 10 personas menos verosímiles del país y demuéstralo."
+- "¿Dónde traiciona el muestreo al censo? Cita celda y número."
+- "¿Qué contradicciones internas tiene este país?" 
+- "Escribe el informe del sociólogo: qué le duele a esta Colombia, con citas."
 
-### Acto 3 — DOS FUTUROS (~$25, si alcanza la noche)
-Una política viva (tarifa del metro, reforma pensional): los mismos 300
-residentes bajo encuadre A vs. B; Fable calcula efectos heterogéneos por celda
-demográfica y escribe el informe con citas en la voz de cada región. Se presenta
-como GENERACIÓN DE HIPÓTESIS, citando nosotros mismos los límites (Perils) —
-la autocrítica en escena es rigor, no debilidad.
+**El pitch:** "Ningún modelo por debajo de esta ventana puede sostener un país
+en la cabeza. Fable se lo leyó COMPLETO — y ahora respondan lo que quieran."
 
-### Reserva: ~$5-10.
+## ACTO 1 — EL AUDITOR (~$35)
 
-## Por qué esto gana
-- Es el track Breakthrough literal: tareas que un modelo pequeño hace mal
-  (juez calibrado, consistencia de persona larga, informe estructurado).
-- Verificabilidad como feature (patrón de Tekton, 1° puesto): cada número del
-  sim es DANE, cada juicio de Fable trae la cita del turno que lo prueba.
-- La demo se narra sola: el país sintético responde → Fable te dice DÓNDE miente
-  → y lo corrige delante del público.
+Silicon-poll estratificado (~1.200 residentes, 10 preguntas/llamada, effort
+medium) con preguntas que tienen verdad publicada (Latinobarómetro Colombia +
+Pulso Social DANE) → mapa de calor del sesgo por celda (sexo×edad×educación×
+región) → Fable (effort max) escribe el veredicto con evidencia. Metodología
+del caso chileno 2025, primera vez para Colombia. Predicción a confirmar:
+falla más con rurales, mayores y baja educación.
 
-## Pendientes pre-evento
-- [ ] Bajar marginales de 3-5 preguntas de Latinobarómetro 2024 Colombia (CSV).
-- [ ] Script `fable_auditor.py`: encuesta estratificada batcheada + heatmap.
-- [ ] Script `fable_forense.py`: lee sim_encuestas y puntúa turnos.
-- [ ] `FABLE_ENABLED=1` + workspace ya verificado (wrkspc_01GN…).
+## ACTO 2 — EL FORENSE (~$15)
+
+Sobre el corpus YA cacheado del Acto 0: Fable puntúa las deliberaciones de hoy
+turno a turno — ¿cambios de opinión por argumento o por complacencia?
+¿convergencia más rápida que los humanos de America in One Room? ¿anclaje?
+Barato porque relee caché. Titular esperado: "nuestra Colombia es demasiado
+amable — y solo un frontier lo ve".
+
+## ACTO 3 — COLOMBIA 2050 (~$18) ⭐ el viaje en el tiempo
+
+El archivo DANE que ya tenemos llega hasta 2050. Regeneramos la población con
+la pirámide de 2050 (un país MUCHO más viejo: la transición demográfica real)
+y le hacemos LAS MISMAS preguntas de esta noche a las dos Colombias. Fable
+(effort high) analiza el corrimiento: qué opinión envejece, cuál resiste.
+**"Le preguntamos al futuro — con los datos oficiales del futuro."**
+(Pipeline listo: `AÑO_SIM=2050` en build_marginals + regenerar. 10 minutos.)
+
+## ACTO 4 — EL DIRECTOR DE ORQUESTA (~$5, teatral)
+
+`FABLE_ENABLED=1`: Fable toma el mando del ejército en vivo con el visor
+proyectado — General de verdad por primera vez. Una misión corta.
+
+## Reserva: ~$15. · Total estimado: ~$85 + reserva.
+
+## Notas de operación (del system card)
+- Turnos LARGOS (minutos): stream siempre; effort dial por acto (medium para
+  encuestas masivas, max para veredictos).
+- Sin tool_choice forzado; manejar stop reason `refusal` con reintento suave.
+- El juez-Fable no tiene benchmark publicado de calibración → mostramos
+  spot-checks humanos en escena (rigor visible = puntos).
+
+## El cierre de la demo (2 minutos)
+"Esta mañana no existía nada de esto. Un ejército de agentes de $0.15/M
+construyó un país con el censo real y lo puso a discutir con noticias reales.
+Esta noche, el modelo más potente de Anthropic se leyó ese país ENTERO de una
+sentada, nos dijo dónde miente, cómo delibera mal, y qué opinará cuando
+envejezca. Eso es hasta dónde llega el modelo."
