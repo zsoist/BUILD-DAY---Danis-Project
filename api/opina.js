@@ -2,18 +2,62 @@
 // Corre en Vercel con las keys en variables de entorno: el navegador nunca ve
 // una key. FULL DeepSeek nativo primero; OpenRouter de respaldo.
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  // orígenes permitidos (lista coma-separada en ALLOWED_ORIGINS)
+  const ALLOW = (process.env.ALLOWED_ORIGINS ||
+    "https://build-day-danis-project.vercel.app,http://localhost:8377")
+    .split(",").map(s => s.trim()).filter(Boolean);
+  const org = req.headers.origin;
+  if (org && !ALLOW.includes(org)) return res.status(403).json({ error: "origen no autorizado" });
+  res.setHeader("Access-Control-Allow-Origin", org || ALLOW[0]);
+  res.setHeader("Vary", "Origin");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-app-token");
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") return res.status(405).json({ error: "POST" });
+  // credencial opcional: si Daniel configura APP_TOKEN en Vercel, el proxy se
+  // cierra a quien no lo traiga; sin configurar, protegen el rate-limit + cupo.
+  if (process.env.APP_TOKEN && req.headers["x-app-token"] !== process.env.APP_TOKEN)
+    return res.status(401).json({ error: "unauthorized" });
 
   // rate limit barato por IP: 30 llamadas/min (una tertulia gasta ~20)
-  const ip = (req.headers["x-forwarded-for"] || "?").split(",")[0].trim();
+  // x-real-ip lo pone Vercel y es el IP real del cliente; si falta, el
+  // ÚLTIMO hop de x-forwarded-for es el confiable: el primero lo inyecta el
+  // cliente y rotándolo se saltaba el cupo de 30/min
+  const ip = (req.headers["x-real-ip"] ||
+    (req.headers["x-forwarded-for"] || "").split(",").pop() || "?").trim();
   const now = Date.now();
   globalThis.__rl ??= new Map();
   const rl = globalThis.__rl.get(ip)?.filter(t => now - t < 60000) || [];
   if (rl.length >= 30) return res.status(429).json({ error: "calma: máximo 30/min" });
   rl.push(now); globalThis.__rl.set(ip, rl);
+  // poda SIEMPRE: antes las IPs viejas se quedaban en el Map y crecía sin
+  // límite en instancias calientes → fuga de memoria; el tope duro acota el
+  // peor caso. (El cupo sigue siendo por instancia: compartirlo exige
+  // Upstash/KV con INCR+EXPIRE.)
+  for (const [k, v] of globalThis.__rl) {
+    const vivos = v.filter(t => now - t < 60000);
+    if (vivos.length) globalThis.__rl.set(k, vivos);
+    else globalThis.__rl.delete(k);
+  }
+  if (globalThis.__rl.size > 1000) {
+    for (const k of globalThis.__rl.keys()) {
+      if (globalThis.__rl.size <= 1000) break;
+      if (k !== ip) globalThis.__rl.delete(k);
+    }
+  }
+
+  // cupo diario de gasto (USD) por token de app: el rate-limit por IP se diluye
+  // al escalar a N instancias; este cupo acota el coste agregado por día.
+  const cupoDiario = +(process.env.APP_DAILY_USD || 5);
+  const token = req.headers["x-app-token"];
+  globalThis.__cupo ??= new Map();
+  const hoy = new Date().toISOString().slice(0, 10);
+  if (globalThis.__cupo.get(token)?.dia !== hoy)
+    globalThis.__cupo.set(token, { dia: hoy, usd: 0 });
+  const cupo = globalThis.__cupo.get(token);
+  if (cupo.usd >= cupoDiario) return res.status(429).json({ error: "cupo diario agotado" });
+  // cargo estimado de la llamada (online ~$0.02, resto ~$0.002) ANTES de gastarla
+  cupo.usd += (req.body && req.body.online === true) ? 0.02 : 0.002;
 
   const body = req.body || {};
   const messages = body.messages;
@@ -64,12 +108,17 @@ export default async function handler(req, res) {
       const content = j?.choices?.[0]?.message?.content;
       if (content) {
         const u = j.usage || {};
+        // usage.cost puede venir como string: normalizar ANTES de .toFixed
+        // (si no, TypeError tras la llamada :online — la más cara — se traga la respuesta válida)
+        const cOnline = Number(u.cost);
+        const costoOnline = Number.isFinite(cOnline) && cOnline > 0 ? cOnline
+          : ((u.prompt_tokens || 0) * 0.3 + (u.completion_tokens || 0) * 1.2) / 1e6;
         fetch("https://pwcvskguqyhbhlwnsmmy.supabase.co/rest/v1/sim_calls", {
           method: "POST", headers: { apikey: "sb_publishable_1S4AdKr4TJqGWt9LNL_XaQ_OWrCusLw",
             "Content-Type": "application/json" },
           body: JSON.stringify({ proveedor: "openrouter:online", modelo: "v4.1-flash:online",
             tokens_in: u.prompt_tokens || 0, tokens_out: u.completion_tokens || 0,
-            costo_usd: +(u.cost ?? 0.02).toFixed(8) }),
+            costo_usd: +costoOnline.toFixed(8) }),
         }).catch(() => {});
         return res.status(200).json({ content, usage: u });
       }
@@ -107,7 +156,9 @@ export default async function handler(req, res) {
         const u = j.usage || {};
         const proveedor = it.url.includes("deepseek") ? "deepseek" : "openrouter";
         // flash: ~$0.30/M in, $1.20/M out (pico) — estimación si no viene costo
-        const costo = u.cost ?? ((u.prompt_tokens || 0) * 0.3 + (u.completion_tokens || 0) * 1.2) / 1e6;
+        const cNum = Number(u.cost);
+        const costo = Number.isFinite(cNum) && cNum > 0 ? cNum
+          : ((u.prompt_tokens || 0) * 0.3 + (u.completion_tokens || 0) * 1.2) / 1e6;
         fetch("https://pwcvskguqyhbhlwnsmmy.supabase.co/rest/v1/sim_calls", {
           method: "POST",
           headers: { apikey: "sb_publishable_1S4AdKr4TJqGWt9LNL_XaQ_OWrCusLw",

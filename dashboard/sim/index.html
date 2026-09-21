@@ -30,7 +30,7 @@ font-stretch:90%;font-size:13px;min-height:100vh}
 .pxf{font-family:"Silkscreen",monospace}
 .panel{background:var(--panel);border:var(--px) solid var(--grid)}
 .panel>h2{font-family:"Silkscreen";font-size:10px;color:var(--dim);padding:7px 10px 5px;
-border-bottom:var(--px) solid var(--grid);text-transform:lowercase;display:flex;justify-content:space-between}
+border-bottom:var(--px) solid var(--grid);text-transform:lowercase;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 8px}
 select,button,input{background:var(--panel2);color:var(--text);border:2px solid var(--grid);
 font:inherit;font-size:12.5px;padding:5px 9px;cursor:pointer}
 select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--work)}
@@ -60,6 +60,7 @@ a.back:hover{color:var(--work)}
 #navmap svg{width:100%;height:auto;display:block}
 #navmap path{fill:var(--panel2);stroke:#2a3350;stroke-width:1.2;cursor:pointer;transition:fill .25s}
 #navmap path:hover{stroke:var(--work);stroke-width:2}
+#navmap path:focus-visible,#navmap path:focus{outline:2px solid var(--work);outline-offset:1px}
 #navmap path.sel{stroke:var(--work);stroke-width:2.5;filter:drop-shadow(0 0 4px #ffd23e66)}
 #navmap path.fav{fill:color-mix(in srgb,var(--ok) 45%,var(--panel2))}
 #navmap path.con{fill:color-mix(in srgb,var(--fail) 45%,var(--panel2))}
@@ -95,7 +96,9 @@ h3:first-child{margin-top:0}
 .fuente{font-size:9.5px;color:var(--faint);margin-top:2px}
 
 #encuesta{grid-area:encuesta;display:flex;flex-direction:column;min-height:74vh}
-#modo{display:flex;gap:4px}
+#encuesta>h2>span{min-width:0}
+#estado{overflow-wrap:anywhere}
+#modo{display:flex;gap:4px;flex:0 0 auto}
 #modo button{font-family:"Silkscreen";font-size:8px;padding:3px 8px;color:var(--faint)}
 #modo button[aria-pressed="true"]{color:var(--work);border-color:var(--work)}
 #resps{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
@@ -144,15 +147,16 @@ padding:4px 0;letter-spacing:.2em}
 .tal.fav{border-color:var(--ok)} .tal.fav b{color:var(--ok)}
 .tal.con{border-color:var(--fail)} .tal.con b{color:var(--fail)}
 .tal.dep{border-color:var(--work)} .tal.dep b{color:var(--work)}
-#qbar{display:flex;gap:6px;padding:10px;border-top:var(--px) solid var(--grid)}
-#qin{flex:1}
+#qbar{display:flex;flex-wrap:wrap;gap:6px;padding:10px;border-top:var(--px) solid var(--grid)}
+#qin{flex:1 1 100%;min-width:0}
+#qbar select,#qbar button{flex:0 0 auto}
 #modohelp{font-size:11px;color:var(--work);padding:7px 10px 0;letter-spacing:.02em}
 #selinfo{font-size:11.5px;color:var(--dim);padding:4px 10px 6px;border-bottom:2px solid var(--grid)}
 #selinfo b{font-family:"Silkscreen";font-size:8px;color:var(--faint)}
 #selinfo .chip{display:inline-block;border:1px solid var(--work);color:var(--work);
 padding:1px 4px 1px 8px;margin:1px 3px}
-#selinfo .chip i{cursor:pointer;font-style:normal;padding:0 4px;color:var(--dim)}
-#selinfo .chip i:hover{color:var(--fail)}
+#selinfo .chip .chip-x{cursor:pointer;font-style:normal;padding:0 4px;margin:0;background:none;border:0;font:inherit;font-size:inherit;line-height:1;color:var(--dim)}
+#selinfo .chip .chip-x:hover{color:var(--fail)}
 #selinfo button{font-size:10px;padding:1px 7px;margin-left:6px;color:var(--dim)}
 #sugg{display:flex;flex-wrap:wrap;gap:4px;padding:0 10px 10px}
 #sugg button{font-size:10.5px;padding:2px 8px;color:var(--dim)}
@@ -246,6 +250,7 @@ $("#c-orkey").onchange=e=>{cfg.orkey=e.target.value.trim();try{localStorage.setI
 
 /* controles de la deliberación */
 let CONV={paused:false,stop:false,start:0};
+let RUN=0;  // token de corrida: solo la última pregunta puede escribir en pantalla
 $("#btnpausa").onclick=()=>{CONV.paused=!CONV.paused;
   $("#btnpausa").textContent=CONV.paused?"▶ SEGUIR":"⏸ PAUSAR";
   $("#btnpausa").classList.toggle("pausa",CONV.paused);};
@@ -274,12 +279,14 @@ async function pais(q){
 async function mesa(cod){
   const el=$("#mesa"),d=MARG[cod],dos=DOS[cod]||{};
   if(!el)return;
-  PAIS.busy??={}; if(PAIS.busy[cod])return; PAIS.busy[cod]=true;
+  const owner=PAIS,q=PAIS.q;
+  owner.busy??={}; if(owner.busy[cod])return; owner.busy[cod]=true;
   const path=$(`#navmap path[data-cod="${cod}"]`);
-  if(PAIS.cache[cod]){el.innerHTML=PAIS.cache[cod];return;}
+  if(PAIS!==owner||!document.body.contains(el))return;
+  if(owner.cache[cod]){el.innerHTML=owner.cache[cod];return;}
   el.innerHTML=`<div class="ronda">— MESA DE ${esc(d.nombre).toUpperCase()} —</div>`;
   path?.classList.add("hot");
-  const ctx=await contexto(PAIS.q); ctxBox(ctx,el);
+  const ctx=await contexto(q); ctxBox(ctx,el);
   const sample=RES.filter(r=>r.dpto===cod&&r.edad>=16).sort(()=>Math.random()-.5).slice(0,4);
   const transcript=[];
   for(let i=0;i<sample.length;i++){
@@ -289,7 +296,7 @@ async function mesa(cod){
         "La mesa va así:\n"+transcript.map(t=>`${t.n}: ${t.t}`).join("\n"):"abres tú la mesa";
       const raw=await flash([{role:"system",content:persona(r,dos)+ctxPara(ctx)+`
 Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU territorio. Reacciona a lo dicho (cita por nombre, contradice o apoya), aterriza con tu vida y tu región. 1-2 frases. Cierra con [POSTURA: a_favor|en_contra|depende].`},
-        {role:"user",content:`Tema: ${PAIS.q}\n${charla}\nHabla, ${r.nombre.split(" ")[0]}.`}],160);
+        {role:"user",content:`Tema: ${q}\n${charla}\nHabla, ${r.nombre.split(" ")[0]}.`}],160);
       const [pos,txt]=postura(raw);
       typewriter(say,txt);
       card.style.setProperty("--pc",COLORES[pos||"depende"]);
@@ -301,24 +308,25 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   try{
     const raw=await flash([{role:"system",content:
       `Cierras mesas de conversación. Resume EN QUÉ QUEDÓ esta mesa de ${d.nombre} en 2 frases máximo, con nombres, y da el veredicto del grupo. Cierra con [POSTURA: a_favor|en_contra|depende] (la mayoritaria).`},
-      {role:"user",content:`Tema: ${PAIS.q}\n`+transcript.map(t=>`${t.n} (${t.p}): ${t.t}`).join("\n")}],130,0.5);
+      {role:"user",content:`Tema: ${q}\n`+transcript.map(t=>`${t.n} (${t.p}): ${t.t}`).join("\n")}],130,0.5);
     [pos,concl]=[postura(raw)[0]||mayoria(transcript),postura(raw)[1]];
   }catch(e){pos=mayoria(transcript);concl="La mesa quedó dividida.";}
+  if(PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");return;}
   el.insertAdjacentHTML("beforeend",
     `<div class="conclu" style="--pc:${COLORES[pos]}"><b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(concl)}</div>`);
   el.scrollTop=1e9;
   path?.classList.remove("hot");
   path?.classList.add({a_favor:"fav",en_contra:"con",depende:"dep"}[pos]);
   DECIDIDO[cod]=pos; paintNav();
-  PAIS.tally[pos]++;
-  guardar("pais",cod,PAIS.q,{postura:pos,conclusion:concl,
+  owner.tally[pos]++;
+  guardar("pais",cod,q,{postura:pos,conclusion:concl,
     participantes:sample.map(r=>r.id),intervenciones:transcript.length});
   $("#tally").innerHTML=
-    `<div class="tal fav"><b>${PAIS.tally.a_favor}</b><span>dptos a favor</span></div>
-     <div class="tal con"><b>${PAIS.tally.en_contra}</b><span>dptos en contra</span></div>
-     <div class="tal dep"><b>${PAIS.tally.depende}</b><span>dptos divididos</span></div>`;
-  PAIS.cache[cod]=el.innerHTML;
-  PAIS.busy[cod]=false;
+    `<div class="tal fav"><b>${owner.tally.a_favor}</b><span>dptos a favor</span></div>
+     <div class="tal con"><b>${owner.tally.en_contra}</b><span>dptos en contra</span></div>
+     <div class="tal dep"><b>${owner.tally.depende}</b><span>dptos divididos</span></div>`;
+  owner.cache[cod]=el.innerHTML;
+  owner.busy[cod]=false;
 }
 function mayoria(ts){
   const c={a_favor:0,en_contra:0,depende:0};ts.forEach(t=>c[t.p]++);
@@ -344,9 +352,9 @@ function selInfo(){
   const el=$("#selinfo"); if(!el)return;
   if(!SEL.size){el.innerHTML=`<b>muestra:</b> toda Colombia (proporcional a población real) — toca el mapa para acotar`;return;}
   el.innerHTML=`<b>muestra:</b> `+[...SEL].map(c=>
-    `<span class="chip">${esc(MARG[c]?.nombre||c)}<i data-c="${c}">×</i></span>`).join("")+
+    `<span class="chip">${esc(MARG[c]?.nombre||c)}<button type="button" class="chip-x" data-c="${c}" aria-label="Quitar ${esc(MARG[c]?.nombre||c)} de la muestra">×</button></span>`).join("")+
     `<button id="cleartodo" type="button">todo el país</button>`;
-  el.querySelectorAll("i[data-c]").forEach(i=>i.onclick=()=>{SEL.delete(i.dataset.c);syncSel();});
+  el.querySelectorAll("button.chip-x[data-c]").forEach(b=>b.onclick=()=>{SEL.delete(b.dataset.c);syncSel();});
   const b=el.querySelector("#cleartodo"); if(b)b.onclick=()=>{SEL.clear();syncSel();};
 }
 function syncSel(){
@@ -357,14 +365,19 @@ function syncSel(){
 
 async function drawNav(){
   if(!GEO){try{GEO=await fetch("colombia.json").then(r=>r.json())}catch(e){return}}
-  $("#navmap").innerHTML=`<svg viewBox="${GEO.viewBox}" role="img" aria-label="Mapa de Colombia">${
-    Object.entries(GEO.paths).map(([c,p])=>`<path d="${p}" data-cod="${c}"/>`).join("")}</svg>`;
+  $("#navmap").innerHTML=`<svg viewBox="${GEO.viewBox}" role="group" aria-label="Mapa de Colombia: usa Tab y Enter para elegir territorio">${
+    Object.entries(GEO.paths).map(([c,p])=>`<path d="${p}" data-cod="${c}" role="button" tabindex="0" aria-label="${esc(MARG[c]?.nombre||c)}"/>`).join("")}</svg>`;
   const svg=$("#navmap svg");
-  svg.addEventListener("click",e=>{
-    const cod=e.target.dataset?.cod; if(!cod)return;
-    if(MODO==="pais"&&PAIS.q){cur=cod;paintNav();render();mesa(cod);return;}
+  function elegir(cod){
+    if(!cod)return;
+    if(MODO==="pais"&&PAIS.q){cur=cod;SEL=new Set([cod]);$("#dptosel").value=cod;selInfo();paintNav();render();mesa(cod);return;}
     if(SEL.has(cod)&&SEL.size>0)SEL.delete(cod);else SEL.add(cod);
     cur=cod; syncSel();
+  }
+  svg.addEventListener("click",e=>elegir(e.target.dataset?.cod));
+  svg.addEventListener("keydown",e=>{
+    const cod=e.target.dataset?.cod;
+    if(cod&&(e.key==="Enter"||e.key===" ")){e.preventDefault();elegir(cod);}
   });
   svg.addEventListener("mousemove",e=>{
     const cod=e.target.dataset?.cod;
@@ -467,20 +480,37 @@ function natMarg(){
   }
   return agg;
 }
+/* memo por firma de selección: un solo pase O(n) sobre `mine` por repintado
+   (antes: RES.filter + 2×18 pirámide + régimen = 38 pasadas y ~38 arrays por render) */
+let PIRCACHE={key:null,mine:null,c:null,tot:0,con:0};
+function piramide(mine){
+  const c=new Map();let con=0;
+  for(const r of mine){
+    const k=r.grupo_edad+"|"+r.sexo;
+    c.set(k,(c.get(k)||0)+1);
+    if(r.regimen_salud==="contributivo")con++;
+  }
+  return {c,tot:mine.length,con};
+}
 function render(){
   const nac=SEL.size===0;
   const d=nac?natMarg():MARG[cur];
-  const mine=nac?RES:RES.filter(r=>r.dpto===cur);
+  const KEY=(nac?"CO":cur)+"|"+[...SEL].sort().join(",");
+  if(PIRCACHE.key!==KEY){
+    const m0=nac?RES:RES.filter(r=>r.dpto===cur);
+    PIRCACHE={key:KEY,mine:m0,...piramide(m0)};
+  }
+  const mine=PIRCACHE.mine;
   const dos=nac?{}:(DOS[cur]||{});
   /* censo */
   let h="";
   if(d.edad&&d.sexo){
     h+=`<h3>PIRÁMIDE — real (línea) vs sintética (barra)</h3><div class="pyr">`;
-    const tot=mine.length;
+    const tot=PIRCACHE.tot||1;
     const rtotal=Object.values(d.edad).reduce((a,b)=>a+b,0);
     for(const g of [...AGEG].reverse()){
-      const sh=mine.filter(r=>r.grupo_edad===g&&r.sexo==="hombre").length/tot*100;
-      const sm=mine.filter(r=>r.grupo_edad===g&&r.sexo==="mujer").length/tot*100;
+      const sh=(PIRCACHE.c.get(g+"|hombre")||0)/tot*100;
+      const sm=(PIRCACHE.c.get(g+"|mujer")||0)/tot*100;
       const rr=(d.edad[g]||0)/rtotal*100;
       h+=`<div class="bar l"><i style="width:${sh*6}%"></i><s style="right:${rr/2*6}%"></s></div>
           <div class="lab">${g}</div>
@@ -495,7 +525,7 @@ function render(){
   }
   const sal=d.salud_pct;
   if(sal){
-    const got=mine.filter(r=>r.regimen_salud==="contributivo").length/mine.length*100;
+    const got=PIRCACHE.con/(mine.length||1)*100;
     h+=`<h3>RÉGIMEN DE SALUD</h3>
     <div class="hbar"><div class="t"><span>contributivo real</span><b>${sal.contributivo}%</b></div>
       <div class="g"><i style="width:${sal.contributivo}%"></i></div></div>
@@ -626,12 +656,22 @@ Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te 
 Referentes que puedes soltar si vienen al caso: ${lug||"—"}.
 REGLAS: primera persona, gente de verdad — concreta TU vida (tu camello, tu plata, tu edad, tu familia). Nivel de lengua acorde a tus estudios. Sin groserías pesadas. PROHIBIDO: sonar a IA, folclor de cartilla, listas, y arrancar con la misma palabra con la que arrancó cualquiera de la mesa.`;
 }
+/* scroll coalescido: N typewriters → un solo layout por frame */
+let pendScroll=false;const COLADOWN=new Set();
+function scrollAbajo(el){
+  COLADOWN.add(el);
+  if(pendScroll)return;
+  pendScroll=true;
+  requestAnimationFrame(()=>{pendScroll=false;
+    COLADOWN.forEach(e=>{e.scrollTop=1e9});COLADOWN.clear();});
+}
 function typewriter(el,txt){
+  const host=el.closest("#resps,#mesa");
   el.classList.remove("thinking");el.textContent="";
   let i=0;const paso=Math.max(1,Math.round(txt.length/60));
   const iv=setInterval(()=>{
     i+=paso;el.textContent=txt.slice(0,i);
-    el.closest("#resps,#mesa")?.scrollTo(0,1e9);
+    if(host)scrollAbajo(host);
     if(i>=txt.length)clearInterval(iv);
   },28);
 }
@@ -772,18 +812,24 @@ async function conversar(q){
     }));
   }else{
     /* ── DELIBERACIÓN CONTINUA: hasta 3 min, pausable, corta cuando hay acuerdo ── */
-    CONV={paused:false,stop:false,start:Date.now()};
+    const run=++RUN;                 // token de corrida: si entra otra pregunta, esta se aborta
+    const C={paused:false,stop:false,start:Date.now()};
+    CONV=C;                          // pausa/cerrar siguen apuntando a la corrida viva
+    const btn=$("#qbar button"); if(btn)btn.disabled=true;
     $("#ctrl").style.display="flex";
     const LIMITE=180000;
     const postDe={};                 // id → última postura de cada quien
     const transcript=[];
     let ronda=0, tallyPrev="";
-    while(!CONV.stop && Date.now()-CONV.start<LIMITE){
+    while(!C.stop && Date.now()-C.start<LIMITE){
+      if(run!==RUN)return;
       $("#resps").insertAdjacentHTML("beforeend",
         `<div class="ronda">— ${ronda===0?"ARRANCA LA TERTULIA":"VUELTA "+(ronda+1)} —</div>`);
       for(const [i,r] of sample.entries()){
-        while(CONV.paused && !CONV.stop) await new Promise(s=>setTimeout(s,300));
-        if(CONV.stop||Date.now()-CONV.start>=LIMITE)break;
+        if(run!==RUN)return;
+        while(C.paused && !C.stop && run===RUN) await new Promise(s=>setTimeout(s,300));
+        if(run!==RUN)return;
+        if(C.stop||Date.now()-C.start>=LIMITE)break;
         const card=bubble(r,i%2===1),say=card.querySelector(".say");
         try{
           const charla=transcript.length?
@@ -813,6 +859,8 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
           `<div class="ronda">— NADIE CEDE: SE LEVANTA LA MESA —</div>`);break;}
       tallyPrev=firma;
     }
+    if(run!==RUN)return;
+    if(btn)btn.disabled=false;
     $("#ctrl").style.display="none";$("#reloj").textContent="";
     Object.values(postDe).forEach(v=>p[v]++);
     /* veredicto: ¿se pusieron de acuerdo los colombianos? */
