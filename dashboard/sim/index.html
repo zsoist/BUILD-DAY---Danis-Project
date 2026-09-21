@@ -841,7 +841,7 @@ async function flash(messages,max=170,temp=0.95){
       if(r.ok){API_OK=true;return (await r.json()).content||"";}
       // el backend EXISTE y contestó con error (400/5xx/timeout): su reserva de cupo ya
       // se cargó, así que NO se reintenta contra OpenRouter (pagaríamos dos veces el intento)
-      if(r.status===404||r.status===405){API_OK=false;}
+      if(r.status===404||r.status===405||r.status===501){API_OK=false;}  // 501: http.server local sin POST
       else{API_OK=true;throw new Error("api "+r.status);}
     }catch(e){if(API_OK)throw e;API_OK=false;}
   }
