@@ -20,11 +20,20 @@ rng = random.Random(2026_09_21)
 
 import os
 SUFIJO = os.environ.get("SIM_SUFIJO", "")
+ANIO = int(os.environ.get("SIM_ANIO", os.environ.get("AÑO_SIM", "2026")))
+DESPLAZAMIENTO = ANIO - 2026  # años de escenario: la pila envejece y el banco de nombres se desplaza igual
 M = json.loads((BASE / "data" / f"marginals{SUFIJO}.json").read_text())["departamentos"]
 DOSSIERS = {}
 ddir = BASE / "data" / "dossiers"
+AVISOS = []
 if ddir.exists():
-    for f in ddir.glob("dossier_*.json"):
+    dfs = sorted(ddir.glob(f"dossier_*{SUFIJO}.json"))
+    if not dfs and SUFIJO:
+        # escenario sin dossiers propios: hereda los culturales base (efecto de
+        # composición: misma cultura, pirámide distinta) y lo deja registrado
+        dfs = sorted(ddir.glob("dossier_*.json"))
+        AVISOS.append(f"dossiers: no hay dossier_*{SUFIJO}.json; se heredan los base (composición)")
+    for f in dfs:
         try:
             d = json.loads(f.read_text())
             DOSSIERS[d["cod"]] = d
@@ -99,12 +108,14 @@ def cohorte(edad, sexo):
     return NOMBRES[sexo][key]
 
 def nombre_pila(edad, sexo, regionales):
+    # el banco de nombres está indexado por edad EN 2026: se reindexa a cohorte de nacimiento
+    edad_cohorte = max(0, edad - DESPLAZAMIENTO)
     # 15% toque regional del dossier (si es un nombre normal), 85% banco nacional
     if regionales and rng.random() < 0.15:
         cand = rng.choice(regionales)
         if cand.isalpha() and len(cand) <= 11:
             return cand
-    base = rng.choice(cohorte(edad, sexo))
+    base = rng.choice(cohorte(edad_cohorte, sexo))
     if edad >= 13 and rng.random() < 0.33:  # compuestos: María Fernanda, Luis Alberto
         pre = rng.choice(COMPUESTOS[sexo])
         if pre != base and not base.count(" "):
@@ -192,7 +203,7 @@ for cod, d in sorted(M.items()):
 
 # ── validación determinista: sintético vs marginal real ──
 val = {"n": len(residents), "por_dpto": N_POR_DPTO,
-       "bloques_provisionales": sorted(provisional), "errores": {}}
+       "bloques_provisionales": sorted(provisional), "avisos": AVISOS, "errores": {}}
 for cod, d in M.items():
     mine = [r for r in residents if r["dpto"] == cod]
     err = {}
@@ -213,5 +224,5 @@ for cod, d in M.items():
 
 json.dump(residents, (DASH / f"residents{SUFIJO}.json").open("w"), ensure_ascii=False)
 json.dump(val, (DASH / f"validacion{SUFIJO}.json").open("w"), ensure_ascii=False, indent=1)
-print(f"{len(residents)} residentes de {len(M)} dptos → {DASH}/residents.json")
-print(f"provisionales: {sorted(provisional) or 'ninguno'} · validación → validacion.json")
+print(f"{len(residents)} residentes de {len(M)} dptos → {DASH}/residents{SUFIJO}.json")
+print(f"provisionales: {sorted(provisional) or 'ninguno'} · validación → validacion{SUFIJO}.json")

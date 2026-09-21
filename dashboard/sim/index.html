@@ -353,8 +353,10 @@ window.fetch=function(u,o){
 /* controles de la deliberación */
 let CONV={paused:false,stop:false,start:0};
 let RUN=0;
-/* aborta cualquier corrida viva: invalida su token, suelta la pausa y devuelve los controles */
+const TW=new Set();   // intervals vivos del typewriter (texto y retrato): abortarCorrida los apaga
+/* aborta cualquier corrida viva: invalida su token, suelta la pausa, corta sus typewriters y devuelve los controles */
 function abortarCorrida(){RUN++;CONV.stop=true;CONV.paused=false;
+  TW.forEach(iv=>clearInterval(iv));TW.clear();
   $("#ctrl").style.display="none";$("#reloj").textContent="";
   $("#btnpausa").textContent="⏸ PAUSAR";$("#btnpausa").classList.remove("pausa");
   const b=$("#qbar button");if(b)b.disabled=false;}  // token de corrida: solo la última pregunta puede escribir en pantalla
@@ -407,19 +409,23 @@ async function mesa(cod){
     s.setAttribute("role","button");s.setAttribute("tabindex","0");
     _seats.append(s);});
   const ctx=await contexto(q);
+  if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
   el.querySelector("#ticker")?.remove();
   ctxBox(ctx,el);
   const transcript=[];
   for(let i=0;i<sample.length;i++){
     const r=sample[i],card=bubble(r,i%2===1,el),say=card.querySelector(".say");
+    if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
     try{
       const charla=transcript.length?
         "La mesa va así:\n"+transcript.map(t=>`${t.n}: ${t.t}`).join("\n"):"abres tú la mesa";
       const raw=await flash([{role:"system",content:persona(r,dos)+ctxPara(ctx)+`
 Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU territorio. Reacciona a lo dicho (cita por nombre, contradice o apoya), aterriza con tu vida y tu región. 1-2 frases. Cierra con [POSTURA: a_favor|en_contra|depende] — a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},
         {role:"user",content:`Tema: ${q}\n${charla}\nHabla, ${r.nombre.split(" ")[0]}.`}],160);
+      if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
       let [pos,txt]=postura(raw);
       if(!pos)pos=(await clasificarPostura(q,txt))||'';
+      if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
       if(!['a_favor','en_contra','depende'].includes(pos))pos='depende';
       typewriter(say,txt);
       card.style.setProperty("--pc",COLORES[pos]);
@@ -428,10 +434,12 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   }
   /* la mesa CONCLUYE — nada de conversación eterna */
   let concl="",pos="depende";
+  if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
   try{
     const raw=await flash([{role:"system",content:
       `Cierras mesas de conversación. Resume EN QUÉ QUEDÓ esta mesa de ${d.nombre} en 2 frases máximo, con nombres, y da el veredicto del grupo. Cierra con [POSTURA: a_favor|en_contra|depende] (la mayoritaria).`},
       {role:"user",content:`Tema: ${q}\n`+transcript.map(t=>`${t.n} (${t.p}): ${t.t}`).join("\n")}],130,0.5);
+    if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
     [pos,concl]=[postura(raw)[0]||mayoria(transcript),postura(raw)[1]];
   }catch(e){pos=mayoria(transcript);concl="La mesa quedó dividida.";}
   if(PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
@@ -939,16 +947,16 @@ function typewriter(el,txt){
   const r=card&&RESBY[card.dataset.rid];
   let habla=null;
   if(cv&&r){card.classList.add("talk");let b=0;
-    habla=setInterval(()=>retrato(cv,r.id,r.sexo,r.ocupacion,r.edad,(b=!b)),160);}
-  const fin=()=>{if(habla){clearInterval(habla);card.classList.remove("talk");
+    habla=setInterval(()=>retrato(cv,r.id,r.sexo,r.ocupacion,r.edad,(b=!b)),160);TW.add(habla);}
+  const fin=()=>{if(habla){clearInterval(habla);TW.delete(habla);card.classList.remove("talk");
     retrato(cv,r.id,r.sexo,r.ocupacion,r.edad);}};
   el.classList.remove("thinking");el.textContent="";
   let i=0;const paso=Math.max(1,Math.round(txt.length/60));
   const iv=setInterval(()=>{
     i+=paso;el.textContent=txt.slice(0,i);
     if(host)scrollAbajo(host);
-    if(i>=txt.length){clearInterval(iv);fin();}
-  },28);
+    if(i>=txt.length){clearInterval(iv);TW.delete(iv);fin();}
+  },28);TW.add(iv);
 }
 const RESBY={};
 function verResidente(r){
@@ -1083,7 +1091,17 @@ function ctxGuardarLS(q,txt,ok){
     localStorage.setItem(CTX_LS,JSON.stringify(o));
   }catch(e){}
 }
-async function contexto(q){
+/* memoización por PROMESA: con 33 mesas concurrentes en modo país, todas
+   comparten UNA búsqueda de contexto en vez de disparar 33 idénticas */
+const CTXP=new Map();
+function contexto(q){
+  if(CTXP.has(q))return CTXP.get(q);
+  if(CTXP.size>20)CTXP.clear();
+  const p=contexto1(q).catch(e=>{CTXP.delete(q);throw e;});
+  CTXP.set(q,p);
+  return p;
+}
+async function contexto1(q){
   if(CTX.q===q)return CTX.txt;
   // CACHE COMPARTIDA antes de cualquier llamada facturable: contexto.json pre-horneado
   // y localStorage por pregunta devuelven el mismo texto a coste cero

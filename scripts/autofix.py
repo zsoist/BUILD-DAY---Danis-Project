@@ -15,9 +15,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 ARCHIVO_POR_TAREA = {  # de qué archivo habla cada tarea de hallazgos
     "r2_api": "api/opina.js",
+    "r5_showtime": "simcolombia/fable/showtime.py",
+    "r5_effswarm": "orchestrator/swarm.py",
+    "r5_effsim": "dashboard/sim/index.html",
+    "r5_visor2": "dashboard/index.html",
+    "r5_gen2": "simcolombia/pipeline/generate_population.py",
     # nota: los parches se validan por match-único contra el archivo destino,
     # así que un mapeo errado se rechaza solo — pero mejor acertar:
 }
+SALTAR = {"r5_evento"}  # hallazgos estructurales (guion) — los arregla Claude a mano
 def archivo_de(stem):
     if stem in ARCHIVO_POR_TAREA:
         return ARCHIVO_POR_TAREA[stem]
@@ -35,6 +41,8 @@ def plan(run_dir: Path):
         try:
             d = json.loads(clean(f.read_text()))
         except Exception:
+            continue
+        if f.stem in SALTAR:
             continue
         archivo = archivo_de(f.stem)
         code = (ROOT / archivo).read_text()
@@ -64,6 +72,9 @@ def plan(run_dir: Path):
 def check(path: Path) -> bool:
     if path.suffix == ".js":
         return subprocess.run(["node", "--check", str(path)],
+                              capture_output=True).returncode == 0
+    if path.suffix == ".py":
+        return subprocess.run([sys.executable, "-m", "py_compile", str(path)],
                               capture_output=True).returncode == 0
     if path.suffix == ".html":
         js = re.search(r"<script>(.*)</script>", path.read_text(), re.S)

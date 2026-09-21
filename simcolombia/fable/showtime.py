@@ -5,7 +5,10 @@ Todo precableado: la noche del evento solo se corre esto.
 
   uv run --project orchestrator python simcolombia/fable/showtime.py ping
   ...                                                          pais serialize
-  ...                                                          pais ask "¿pregunta?"
+  ...                                                          pais "¿pregunta?"
+  ...                                                          pais 2050
+  ...                                                          preguntar   (micrófono: preguntas por input, sin shell)
+  ...                                                          replay <acto>  (re-muestra un acto ya corrido, gratis)
   ...                                                          auditor
   ...                                                          forense
   ...                                                          duelo
@@ -16,6 +19,7 @@ Economía: corpus del país se paga UNA vez; las relecturas van por caché
 ($0.25/Mtok). Todo streamea (turnos de minutos) y loguea costo real.
 """
 import asyncio
+import inspect
 import json
 import os
 import random
@@ -69,7 +73,10 @@ def cliente():
     if os.environ.get("FABLE_ENABLED", "0") != "1":
         sys.exit("🛑 FABLE_ENABLED=0 — cambia a 1 en .env cuando Daniel dé la orden.")
     from anthropic import AsyncAnthropic
-    return AsyncAnthropic(default_headers={"anthropic-workspace-id": WS} if WS else None)
+    # timeout generoso (turnos de minutos) + reintentos del SDK para 429/529:
+    # un reset a mitad de acto NO puede tumbar el show.
+    return AsyncAnthropic(timeout=900.0, max_retries=2,
+                          default_headers={"anthropic-workspace-id": WS} if WS else None)
 
 
 async def fable(system_blocks, user, max_tokens=4000, effort=None, titulo=""):
@@ -79,23 +86,26 @@ async def fable(system_blocks, user, max_tokens=4000, effort=None, titulo=""):
                   messages=[{"role": "user", "content": user}])
     if effort:
         kwargs["output_config"] = {"effort": effort}
+    # soporte de output_config se detecta UNA vez, antes de streamear: nada de
+    # retry ciego (re-ejecutar el stream paga dos veces el corpus cacheado).
+    try:
+        firma = inspect.signature(c.messages.stream).parameters
+    except (TypeError, ValueError):
+        firma = None
+    if firma is not None:
+        sobran = sorted(k for k in kwargs if k not in firma)
+        if sobran:
+            print(f"⚠️ SDK sin soporte para {', '.join(sobran)} → "
+                  "degradado a default (sin retry)")
+            kwargs = {k: v for k, v in kwargs.items() if k in firma}
     print(f"\n🧠 FABLE {('· ' + titulo) if titulo else ''} (streaming…)\n" + "─" * 60)
     beam("fable_inicio", {"acto": titulo})
     texto = []
-    try:
-        async with c.messages.stream(**kwargs) as s:
-            async for ev in s.text_stream:
-                print(ev, end="", flush=True)
-                texto.append(ev)
-            final = await s.get_final_message()
-    except TypeError:
-        # SDK sin output_config: reintento sin effort
-        kwargs.pop("output_config", None)
-        async with c.messages.stream(**kwargs) as s:
-            async for ev in s.text_stream:
-                print(ev, end="", flush=True)
-                texto.append(ev)
-            final = await s.get_final_message()
+    async with c.messages.stream(**kwargs) as s:
+        async for ev in s.text_stream:
+            print(ev, end="", flush=True)
+            texto.append(ev)
+        final = await s.get_final_message()
     print("\n" + "─" * 60)
     marcador(final.usage)
     if final.stop_reason == "refusal":
@@ -105,6 +115,24 @@ async def fable(system_blocks, user, max_tokens=4000, effort=None, titulo=""):
 
 # ── PAÍS: serializar Colombia entera y cachearla ────────────────────────────
 CORPUS = BASE / "data" / "eval" / "pais_corpus.txt"
+
+VENTANA = int(os.environ.get("FABLE_CONTEXT", "1000000"))  # Fable 5.1: 1M de contexto
+TOPE = 0.80  # margen de seguridad: nunca llegamos al 100% de la ventana
+
+
+def contar_tokens(txt):
+    """Tokens reales vía count_tokens; si no se puede, cota por bytes UTF-8
+    (len//4 subestima con multibyte: ~3 bytes/token es más honesto)."""
+    if os.environ.get("FABLE_ENABLED", "0") == "1":
+        try:
+            import anthropic
+            c = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+            r = c.messages.count_tokens(model=MODEL,
+                                        messages=[{"role": "user", "content": txt}])
+            return r.input_tokens
+        except Exception:
+            pass
+    return len(txt.encode("utf-8")) // 3
 
 
 def cargar(path):
@@ -136,29 +164,103 @@ def serializar_pais():
                   json.dumps(encu, ensure_ascii=False))
     txt = "\n".join(partes)
     CORPUS.parent.mkdir(parents=True, exist_ok=True)
+    tok = contar_tokens(txt)
+    if tok > VENTANA * TOPE:
+        CORPUS.write_text(txt)  # se deja en disco solo para inspección
+        sys.exit(
+            f"🛑 corpus de {tok:,} tokens > {TOPE:.0%} del context window "
+            f"({VENTANA:,}): la llamada fallaría DESPUÉS de pagar la subida. "
+            f"Omite/comprime residentes o parte dossiers antes de volver a "
+            f"correr, o sube FABLE_CONTEXT si la ventana es mayor. "
+            f"Corpus sin usar en {CORPUS}")
     CORPUS.write_text(txt)
-    print(f"📦 corpus: {len(txt):,} chars (~{len(txt)//4:,} tokens) → {CORPUS}")
-    print(f"   costo estimado 1ª lectura: ${len(txt)/4*PRECIOS['in']/1e6:.2f} · "
-          f"relecturas: ${len(txt)/4*PRECIOS['cache_read']/1e6:.3f}")
+    print(f"📦 corpus: {len(txt):,} chars · {len(txt.encode('utf-8')):,} bytes "
+          f"(~{tok:,} tokens) → {CORPUS}")
+    print(f"   costo estimado 1ª lectura: ${tok*PRECIOS['in']/1e6:.2f} · "
+          f"relecturas: ${tok*PRECIOS['cache_read']/1e6:.3f} · "
+          f"uso {tok/VENTANA:.0%} de la ventana")
 
 
 def system_pais():
+    cuerpo = CORPUS.read_text()
+    tok = contar_tokens(cuerpo)
+    if tok > VENTANA * TOPE:
+        i = cuerpo.find("== LOS 6.600 RESIDENTES")
+        j = cuerpo.find("\n== ", i + 1) if i != -1 else -1
+        if i != -1 and j != -1:
+            cuerpo = cuerpo[:i] + "[…residentes omitidos por tamaño…]\n" + cuerpo[j:]
+        tok2 = contar_tokens(cuerpo)
+        if tok2 > VENTANA * TOPE:
+            sys.exit(f"🛑 corpus de {tok2:,} tokens > {TOPE:.0%} de la ventana "
+                     f"({VENTANA:,}) incluso sin residentes: particiona "
+                     f"dossiers/encuestas antes de llamar a Fable.")
+        print(f"⚠️ corpus de {tok:,} tokens: omito residentes, quedan {tok2:,}")
     return [
         {"type": "text",
          "text": "Eres el científico jefe examinando a Sim Colombia, un país "
                  "sintético construido de marginales DANE reales. Respondes con "
                  "evidencia citada del corpus (ids, celdas, números). Denso, "
-                 "riguroso, en español. El corpus completo:\n\n" +
-                 CORPUS.read_text(),
+                 "riguroso, en español. El corpus completo:\n\n" + cuerpo,
          "cache_control": {"type": "ephemeral"}},
     ]
 
 
-async def pais_ask(pregunta):
+CACHE_ACTOS = BASE / "fable" / "cache"
+
+
+def grabar(slug, texto):
+    """Cada acto queda grabado → 'replay <slug>' lo re-muestra gratis."""
+    try:
+        CACHE_ACTOS.mkdir(parents=True, exist_ok=True)
+        (CACHE_ACTOS / f"{slug}.txt").write_text(texto)
+    except Exception:
+        pass
+
+
+def replay(patron=""):
+    import time
+    grabados = sorted(CACHE_ACTOS.glob("*.txt")) if CACHE_ACTOS.exists() else []
+    if not grabados:
+        sys.exit("📼 nada grabado aún — replay se llena solo cuando corren los actos.")
+    hit = next((g for g in grabados if patron and patron in g.stem), None)
+    if not hit:
+        print("📼 grabados: " + ", ".join(g.stem for g in grabados))
+        return
+    print(f"\n📼 REPLAY · {hit.stem}\n" + "─" * 60)
+    for linea in hit.read_text().splitlines():
+        print(linea)
+        time.sleep(0.02)  # ritmo de streaming, mismo teatro sin gastar un centavo
+    print("─" * 60)
+
+
+async def pais_ask(pregunta, slug="pais"):
     if not CORPUS.exists():
         serializar_pais()
-    await fable(system_pais(), pregunta, max_tokens=3000, effort="high",
-                titulo="se leyó a Colombia entera")
+    out = await fable(system_pais(), pregunta, max_tokens=3000, effort="high",
+                      titulo="se leyó a Colombia entera")
+    grabar(slug, f"PREGUNTA: {pregunta}\n\n{out}")
+
+
+def prompt_2050():
+    """Acto 3 sin pegar JSON a mano: arma el prompt desde marginals_2050.json."""
+    m26 = cargar("dashboard/sim/marginals.json")["departamentos"]
+    m50 = cargar("simcolombia/data/marginals_2050.json")["departamentos"]
+    filas = []
+    for cod in ("11", "05", "27", "88"):  # Bogotá, Antioquia, Chocó, San Andrés
+        a, b = m26.get(cod, {}), m50.get(cod, {})
+        if not (a.get("edad") and b.get("edad")):
+            continue
+        v26 = sum(v for g, v in a["edad"].items() if int(g.split("-")[0].rstrip("+")) >= 60)
+        v50 = sum(v for g, v in b["edad"].items() if int(g.split("-")[0].rstrip("+")) >= 60)
+        filas.append(f"- {a['nombre']}: 60+ pasa de {v26/max(a['poblacion'],1)*100:.1f}% "
+                     f"(2026) a {v50/max(b['poblacion'],1)*100:.1f}% (2050); población "
+                     f"{a['poblacion']:,} → {b['poblacion']:,}")
+    return ("Compara la Colombia de hoy con la de 2050 según las proyecciones "
+            "oficiales DANE (mismas fuentes del corpus). Celdas reales:\n" +
+            "\n".join(filas) +
+            "\n\n¿Qué opiniones de las tertulias de hoy crees que envejecen y "
+            "cuáles resisten? Habla de EFECTO DE COMPOSICIÓN (las cohortes de hoy "
+            "envejecidas), no de profecías. Cita residentes y celdas del corpus.")
 
 
 # ── AUDITOR: encuesta estratificada vs verdad publicada ─────────────────────
@@ -180,7 +282,7 @@ async def auditor(n_por_celda=6):
     preguntas = "\n".join(f"{i['id']}: {i['pregunta']} (responde: si|no)"
                           for i in verdad["items"])
     resultados = []
-    LOTE = 10
+    LOTE = 6  # 6 personas × 10 ítems ≈ 1.400 tk de JSON: cabe holgado en el tope
     for i in range(0, len(muestra), LOTE):
         lote = muestra[i:i+LOTE]
         fichas = "\n".join(
@@ -189,13 +291,14 @@ async def auditor(n_por_celda=6):
             f"{r['dpto_nombre']}" for r in lote)
         out = await fable(
             [{"type": "text", "text":
-              "Eres 10 colombianos sintéticos a la vez. Para CADA persona listada, "
+              "Eres varios colombianos sintéticos a la vez. Para CADA persona listada, "
               "responde cada pregunta como respondería ESA persona (su edad, "
               "educación, territorio y vida mandan; sé fiel aunque la respuesta sea "
               "impopular). Devuelve SOLO JSON: {\"<id_persona>\":{\"<id_pregunta>\":\"si|no\"}}",
               "cache_control": {"type": "ephemeral"}}],
             f"PERSONAS:\n{fichas}\n\nPREGUNTAS:\n{preguntas}",
-            max_tokens=1500, effort="medium", titulo=f"encuestando lote {i//LOTE+1}")
+            max_tokens=min(400 + len(lote) * len(verdad["items"]) * 30, 4000),
+            effort="medium", titulo=f"encuestando lote {i//LOTE+1}")
         try:
             import re
             m = re.search(r"\{.*\}", out, re.S)
@@ -264,9 +367,15 @@ async def duelo():
     pf = ROOT / "orchestrator" / "plans" / "duelo.json"
     pf.write_text(json.dumps(plan, ensure_ascii=False))
     print("🐝 enjambre trabajando…")
-    subprocess.run([sys.executable, str(ROOT / "orchestrator" / "swarm.py"),
-                    "--plan", str(pf)], cwd=ROOT)
-    run = sorted((ROOT / "runs").glob("*-swarm"))[-1]
+    t_antes = __import__("time").time()
+    sw = subprocess.run([sys.executable, str(ROOT / "orchestrator" / "swarm.py"),
+                         "--plan", str(pf)], cwd=ROOT)
+    candidatos = [p for p in (ROOT / "runs").glob("*-swarm")
+                  if p.stat().st_mtime >= t_antes - 5]
+    if sw.returncode != 0 or not candidatos:
+        sys.exit("🛑 el enjambre falló o no dejó run fresco — el duelo necesita "
+                 "las dos esquinas. Revisa orchestrator y reintenta.")
+    run = max(candidatos, key=lambda p: p.stat().st_mtime)
     lado_a = {rid: (run / "artifacts" / f"{rid}.md").read_text()
               for rid, _ in RETOS if (run / "artifacts" / f"{rid}.md").exists()}
     # lado B: Fable solo
@@ -281,7 +390,11 @@ async def duelo():
     marcador_txt = []
     puntos = {"enjambre": 0, "fable": 0}
     for rid, p in RETOS:
-        a, b = lado_a.get(rid, ""), lado_b.get(rid, "")
+        a, b = lado_a.get(rid, "").strip(), lado_b.get(rid, "").strip()
+        if not a or not b:
+            marcador_txt.append(f"{rid}: ⚠️ sin respuesta de un lado — anulado")
+            print("  " + marcador_txt[-1])
+            continue
         n = min(len(a), len(b), 1800)
         par = [("enjambre", a[:n]), ("fable", b[:n])]
         rng.shuffle(par)
@@ -295,12 +408,19 @@ async def duelo():
                                  "respuesta_2": "la segunda es mejor"}}}}).encode(),
             headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
                      "Content-Type": "application/json"})
-        try:
-            j = json.load(urllib.request.urlopen(req, timeout=30))
-            eleccion = j["answers"]["mejor"]["choice"]
-            ganador = par[0][0] if eleccion == "respuesta_1" else par[1][0]
-        except Exception as e:
-            ganador = "empate"
+        ganador = "empate"
+        for intento in range(2):
+            try:
+                j = json.load(urllib.request.urlopen(req, timeout=30))
+                eleccion = j.get("answers", {}).get("mejor", {}).get("choice")
+                if eleccion in ("respuesta_1", "respuesta_2"):
+                    ganador = par[0][0] if eleccion == "respuesta_1" else par[1][0]
+                else:
+                    print(f"  ⚠️ juez devolvió {eleccion!r} — empate técnico")
+                break
+            except Exception:
+                if intento == 0:
+                    continue  # un reintento y ya: el show no se detiene por el juez
         if ganador in puntos:
             puntos[ganador] += 1
         marcador_txt.append(f"{rid}: 🏆 {ganador}")
@@ -332,8 +452,22 @@ if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "ping"
     if cmd == "pais" and sys.argv[2:] == ["serialize"]:
         serializar_pais()
+    elif cmd == "pais" and sys.argv[2:] == ["2050"]:
+        asyncio.run(pais_ask(prompt_2050(), slug="pais_2050"))
     elif cmd == "pais":
         asyncio.run(pais_ask(" ".join(sys.argv[2:]) or "Preséntate y di qué ves."))
+    elif cmd == "preguntar":
+        # preguntas del público SIN pelear con el shell: se escriben aquí
+        while True:
+            try:
+                q = input("\n🎤 pregunta de la sala (vacío = salir): ").strip()
+            except (EOFError, KeyboardInterrupt):
+                break
+            if not q:
+                break
+            asyncio.run(pais_ask(q, slug="sala"))
+    elif cmd == "replay":
+        replay(" ".join(sys.argv[2:]))
     elif cmd == "auditor":
         asyncio.run(auditor())
     elif cmd == "forense":

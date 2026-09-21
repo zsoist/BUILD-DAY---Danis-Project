@@ -54,7 +54,7 @@ canvas{image-rendering:pixelated; display:block}
 .panel>h2 b{color:var(--work); font-weight:400}
 
 /* ── top ── */
-#top{grid-area:top; display:flex; align-items:center; gap:14px; padding:0 12px;
+#top{grid-area:top; position:relative; display:flex; align-items:center; gap:14px; padding:0 12px;
   background:var(--panel); border:var(--px) solid var(--grid)}
 #title{font-family:"Silkscreen"; font-weight:700; font-size:15px; color:var(--work);
   text-shadow:3px 3px 0 #00000066; white-space:nowrap}
@@ -71,7 +71,7 @@ select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid 
 #clock{font-family:"Silkscreen"; font-size:11px; color:var(--dim)}
 
 /* ── FABLE EN ESCENA ── */
-#fablebar{grid-area:top;display:none;position:absolute;left:50%;transform:translateX(-50%);
+#fablebar{display:none;position:absolute;left:50%;transform:translateX(-50%);
 top:100%;margin-top:-3px;z-index:5;background:linear-gradient(90deg,#2a1610,#1d1410);
 border:var(--px) solid var(--fable);box-shadow:0 6px 0 #000a;padding:5px 16px;
 font-family:"Silkscreen";font-size:10px;color:var(--fable);white-space:nowrap;
@@ -381,6 +381,7 @@ let FABLE={visto:0,acto:null,usd:0};
 function ingest(list){
   runs={};
   for(const r of list){
+    if(r.run_id==null) continue;
     const run=runs[r.run_id]??={id:r.run_id,events:[],tasks:{},order:[],task:"",
       spent:null,done:false,t0:null,tEnd:null,jev:{},seconds:null,planMs:null};
     const p=r.payload||{}, ts=r.ts?+new Date(r.ts):null;
@@ -413,7 +414,8 @@ async function fetchRows(){
     else{list=await (await fetch(cfg.url+"/rest/v1/army_events?select=*&order=id.desc&limit=2000",
       {headers:{apikey:cfg.key}})).json();
       if(!Array.isArray(list)) throw 0;}
-    list.reverse(); ingest(list); render(); lamp(true);
+    list.sort((a,b)=>(+new Date(a.ts)||a.id||0)-(+new Date(b.ts)||b.id||0));
+    ingest(list); render(); lamp(true);
   }catch(e){lamp(false);}
 }
 function lamp(on){$("#lamp").classList.toggle("on",on);
@@ -428,14 +430,14 @@ function render(){
   const sel=$("#runsel");
   curRun&&ids.includes(curRun)||(curRun=ids[0]);
   sel.innerHTML=ids.map(i=>`<option ${i===curRun?"selected":""}>${esc(i)}</option>`).join("");
-  const run=runs[curRun];
-  $("#empty").hidden=!!run;
-  if(!run){$("#mission").textContent="—";return;}
-  $("#mission").textContent=run.task||curRun;
   const fbOn=FABLE.visto&&(Date.now()-FABLE.visto<15*60*1000);
   $("#fablebar").classList.toggle("on",!!fbOn);
   if(fbOn){$("#fbacto").textContent=FABLE.acto||"trabajando";
     $("#fbusd").textContent="$"+(+FABLE.usd).toFixed(2);}
+  const run=runs[curRun];
+  $("#empty").hidden=!!run;
+  if(!run){$("#mission").textContent="—";return;}
+  $("#mission").textContent=run.task||curRun;
 
   const okN=run.order.filter(id=>run.tasks[id].status==="ok").length;
   $("#taskcount").textContent=okN+"/"+run.order.length;
@@ -527,6 +529,8 @@ function render(){
 
 /* tablero: barras por agente + rutas Manhattan */
 function drawBoard(run,runningIds){
+  runningIds??=run.done?[]:run.order.filter(id=>{const t=run.tasks[id];
+    return t.status!=="ok"&&(t.deps||[]).every(d=>run.tasks[d]?.status==="ok");});
   const svg=$("#ops"),W=svg.clientWidth||800,H=svg.clientHeight||460;
   const n=run.order.length; if(!n){svg.innerHTML="";return;}
   const t0=run.planMs??run.t0,tE=Math.max(run.tEnd,t0+1000);
@@ -571,6 +575,10 @@ function drawBoard(run,runningIds){
 
 function drawFeed(run){
   const el=$("#feedin"),t0=run.planMs??run.t0;
+  const firma=run.id+":"+run.events.length;
+  if(el.dataset.firma===firma) return;      /* nada nuevo: no tocar el scroll */
+  el.dataset.firma=firma;
+  const st=el.scrollTop;
   el.innerHTML=[...run.events].reverse().map(e=>{
     const p=e.payload||{},t=run.tasks[e.task_id]||{};
     let key=e.event,cls="wk";
@@ -592,6 +600,7 @@ function drawFeed(run){
       ag:t.agent!=null?t.agent+1:"?"});
     return `<div class="l"><time>+${fmtT(e.ms,t0)}</time><span class="ev ${cls}">${esc(txt)}</span></div>`;
   }).join("");
+  el.scrollTop=st;
 }
 
 /* ═══ controles ═══ */
@@ -609,7 +618,7 @@ $("#c-key").onchange=e=>{cfg.key=e.target.value.trim();save();fetchRows();};
 $("#c-poll").onchange=e=>{cfg.poll=Math.max(1,+e.target.value||3);save();applyCfg();};
 $("#c-scale").onclick=e=>{const v=+e.target.dataset.v;if(v){cfg.scale=v;save();applyCfg();render();}};
 setInterval(()=>$("#clock").textContent=new Date().toLocaleTimeString("es-CO",{hour12:false}),1000);
-window.addEventListener("resize",()=>runs[curRun]&&drawBoard(runs[curRun],[]));
+window.addEventListener("resize",()=>runs[curRun]&&drawBoard(runs[curRun]));
 
 /* ═══ modal de detalle: qué hace cada tarea/agente ═══ */
 const ACTNAMES={aprobar:"aprobar",fix_con_feedback:"fix con feedback",

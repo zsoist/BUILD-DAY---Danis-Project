@@ -111,15 +111,17 @@ async def llm(
         {"role": "user", "content": prompt}
     ]
     if thinking == "none":
-        extra = {"thinking": {"type": "disabled"}}
+        extra_ds = {"reasoning_effort": "none"}
+        extra_or = {"reasoning": {"enabled": False}}
         temperature = 0.3
     else:
-        extra = {"reasoning_effort": thinking}
+        extra_ds = {"reasoning_effort": thinking}
+        extra_or = {"reasoning": {"effort": thinking}}
         temperature = 0.6  # recomendación paper R1 para modo razonamiento
     try:
         r = await deepseek.chat.completions.create(
             model=model, messages=messages, timeout=600,
-            temperature=temperature, extra_body=extra,
+            temperature=temperature, extra_body=extra_ds,
         )
         budget.add("deepseek", model, r.usage)
     except RuntimeError:
@@ -128,7 +130,7 @@ async def llm(
         r = await openrouter.chat.completions.create(
             model=OPENROUTER_EQUIV.get(model, f"deepseek/{model}"),
             messages=messages, timeout=600, temperature=temperature,
-            extra_body={"usage": {"include": True}, **extra},
+            extra_body={"usage": {"include": True}, **extra_or},
         )
         budget.add("openrouter", model, r.usage)
     return r.choices[0].message.content or ""
@@ -294,6 +296,10 @@ class Swarm:
         self.done_events: dict[str, asyncio.Event] = {}
         self.t0 = time.monotonic()
         self._beams: set = set()  # POSTs de telemetría en vuelo
+        self._pending_events: list = []  # buffer de telemetría → 1 POST batch
+        self._flush_every = float(os.environ.get("SUPABASE_FLUSH_SECONDS", "2"))
+        self._flush_n = int(os.environ.get("SUPABASE_FLUSH_EVENTS", "20"))
+        self._last_flush = time.monotonic()
         # Checkpoint/resume: replan solo si no hay plan previo en el jsonl.
         self.cached_plan: list | None = None
         jl = self.run_dir / "swarm.jsonl"
@@ -314,35 +320,56 @@ class Swarm:
 
     def _beam(self, obj):
         """Telemetría al Army Dashboard (Supabase). Fire-and-forget: un fallo
-        del dashboard JAMÁS toca al enjambre."""
+        del dashboard JAMÁS toca al enjambre. Buffer en memoria: UN POST batch
+        cada ~2s o al juntar N=20 eventos (Supabase REST acepta array)."""
         url = os.environ.get("SUPABASE_URL", "").strip()
         if not url:
             return
         try:
-            import httpx
+            self._pending_events.append({
+                "run_id": self.run_dir.name,
+                "event": obj.get("event", "?"),
+                "task_id": obj.get("id"),
+                "payload": obj,
+            })
+            if (len(self._pending_events) >= self._flush_n
+                    or time.monotonic() - self._last_flush >= self._flush_every):
+                self._flush()
+        except Exception:
+            pass
 
-            async def _post():
-                try:
-                    async with httpx.AsyncClient(timeout=10) as c:
-                        await c.post(
-                            f"{url}/rest/v1/army_events",
-                            headers={
-                                "apikey": os.environ["SUPABASE_PUBLISHABLE_KEY"],
-                                "Content-Type": "application/json",
-                            },
-                            json={
-                                "run_id": self.run_dir.name,
-                                "event": obj.get("event", "?"),
-                                "task_id": obj.get("id"),
-                                "payload": obj,
-                            },
-                        )
-                except Exception:
-                    pass
+    def _flush(self):
+        """Drena el buffer en UN POST batch (array JSON, 1 round-trip)."""
+        if not self._pending_events:
+            return
+        batch, self._pending_events = self._pending_events, []
+        self._last_flush = time.monotonic()
+        url = os.environ.get("SUPABASE_URL", "").strip()
+        if not url:
+            return
+        self._spawn(self._post_batch(url, batch))
 
-            task = asyncio.get_running_loop().create_task(_post())
+    def _spawn(self, coro):
+        try:
+            task = asyncio.get_running_loop().create_task(coro)
             self._beams.add(task)
             task.add_done_callback(self._beams.discard)
+        except Exception:
+            coro.close()
+
+    async def _post_batch(self, url, batch):
+        try:
+            import httpx
+
+            async with httpx.AsyncClient(timeout=10) as c:
+                await c.post(
+                    f"{url}/rest/v1/army_events",
+                    headers={
+                        "apikey": os.environ["SUPABASE_PUBLISHABLE_KEY"],
+                        "Content-Type": "application/json",
+                    },
+                    json=batch,
+                )
         except Exception:
             pass
 
@@ -398,6 +425,16 @@ class Swarm:
             # Escalera de reintentos ENRUTADA POR JEV (máx 2 fixes, luego se
             # shippea con warn — ship-first, nunca bloquear la misión).
             for attempt in range(2):
+                # Gate heurístico ANTES de Jev: vacío, rechazo o <80 chars ya
+                # está condenado — no le pagamos una inspección Jev (~12k chars)
+                # a lo que solo puede acabar en fix.
+                if attempt == 0 and not gate(out):
+                    self.log({"event": "jev_skip", "id": t["id"], "chars": len(out)})
+                    out = await llm(f"Este output falló ({out[:300]!r}). Entrega el "
+                                    f"resultado completo para: {t['prompt']}",
+                                    model=model, system=WORKER_CONSTITUTION,
+                                    thinking=think)
+                    continue
                 jv = await jev_review(t["prompt"], out)
                 if jv is None:  # Jev caído → gate heurístico local, sin reintentos ciegos
                     if not gate(out) and attempt == 0:
@@ -485,6 +522,7 @@ class Swarm:
                   + (f"  [Jev {j['p']*100:.0f}%]" if j else ""))
         print(f"   • {self.run_dir}/FINAL.md  (entregable ensamblado)")
         # drenar telemetría antes de que muera el loop (o el 'done' nunca llega)
+        self._flush()
         if self._beams:
             await asyncio.gather(*self._beams, return_exceptions=True)
 

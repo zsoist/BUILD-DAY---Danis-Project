@@ -2,139 +2,142 @@
  "n": 6600,
  "por_dpto": 200,
  "bloques_provisionales": [],
+ "avisos": [
+  "dossiers: no hay dossier_*_2050.json; se heredan los base (composición)"
+ ],
  "errores": {
   "05": {
-   "sexo_mujer_pp": 1.6,
-   "edad_mae_pp": 0.74
+   "sexo_mujer_pp": 0.6,
+   "edad_mae_pp": 1.02
   },
   "08": {
-   "sexo_mujer_pp": 1.7,
-   "edad_mae_pp": 1.08
+   "sexo_mujer_pp": 4.7,
+   "edad_mae_pp": 0.91
   },
   "11": {
-   "sexo_mujer_pp": 1.0,
-   "edad_mae_pp": 1.36
+   "sexo_mujer_pp": 4.5,
+   "edad_mae_pp": 1.21
   },
   "13": {
-   "sexo_mujer_pp": 6.1,
-   "edad_mae_pp": 0.93
+   "sexo_mujer_pp": 0.4,
+   "edad_mae_pp": 1.08
   },
   "15": {
-   "sexo_mujer_pp": 9.2,
-   "edad_mae_pp": 1.26
+   "sexo_mujer_pp": 3.7,
+   "edad_mae_pp": 1.49
   },
   "17": {
-   "sexo_mujer_pp": 4.0,
-   "edad_mae_pp": 2.16
+   "sexo_mujer_pp": 4.5,
+   "edad_mae_pp": 1.19
   },
   "18": {
    "sexo_mujer_pp": 0.9,
-   "edad_mae_pp": 1.19
+   "edad_mae_pp": 1.48
   },
   "19": {
-   "sexo_mujer_pp": 3.1,
-   "edad_mae_pp": 1.04
+   "sexo_mujer_pp": 2.6,
+   "edad_mae_pp": 0.99
   },
   "20": {
-   "sexo_mujer_pp": 1.0,
-   "edad_mae_pp": 1.1
+   "sexo_mujer_pp": 0.5,
+   "edad_mae_pp": 1.52
   },
   "23": {
-   "sexo_mujer_pp": 2.1,
+   "sexo_mujer_pp": 1.6,
    "edad_mae_pp": 1.54
   },
   "25": {
-   "sexo_mujer_pp": 1.4,
-   "edad_mae_pp": 1.37
+   "sexo_mujer_pp": 1.6,
+   "edad_mae_pp": 1.72
   },
   "27": {
    "sexo_mujer_pp": 2.2,
-   "edad_mae_pp": 1.33
+   "edad_mae_pp": 1.28
   },
   "41": {
-   "sexo_mujer_pp": 3.1,
-   "edad_mae_pp": 1.74
-  },
-  "44": {
-   "sexo_mujer_pp": 1.9,
-   "edad_mae_pp": 1.16
-  },
-  "47": {
-   "sexo_mujer_pp": 5.9,
-   "edad_mae_pp": 1.3
-  },
-  "50": {
-   "sexo_mujer_pp": 3.4,
-   "edad_mae_pp": 1.63
-  },
-  "52": {
-   "sexo_mujer_pp": 7.4,
-   "edad_mae_pp": 1.11
-  },
-  "54": {
-   "sexo_mujer_pp": 2.9,
-   "edad_mae_pp": 1.18
-  },
-  "63": {
-   "sexo_mujer_pp": 2.0,
-   "edad_mae_pp": 1.45
-  },
-  "66": {
-   "sexo_mujer_pp": 4.5,
-   "edad_mae_pp": 1.44
-  },
-  "68": {
-   "sexo_mujer_pp": 5.3,
-   "edad_mae_pp": 1.89
-  },
-  "70": {
-   "sexo_mujer_pp": 0.0,
-   "edad_mae_pp": 1.32
-  },
-  "73": {
-   "sexo_mujer_pp": 2.9,
-   "edad_mae_pp": 1.21
-  },
-  "76": {
-   "salud_contributivo_pp": 4.8,
-   "sexo_mujer_pp": 4.2,
-   "edad_mae_pp": 1.37
-  },
-  "81": {
-   "sexo_mujer_pp": 3.1,
-   "edad_mae_pp": 1.46
-  },
-  "85": {
-   "sexo_mujer_pp": 1.3,
-   "edad_mae_pp": 1.22
-  },
-  "86": {
-   "sexo_mujer_pp": 6.5,
-   "edad_mae_pp": 1.03
-  },
-  "88": {
-   "sexo_mujer_pp": 0.6,
-   "edad_mae_pp": 1.49
-  },
-  "91": {
-   "sexo_mujer_pp": 2.9,
-   "edad_mae_pp": 1.46
-  },
-  "94": {
-   "sexo_mujer_pp": 4.3,
-   "edad_mae_pp": 1.01
-  },
-  "95": {
-   "sexo_mujer_pp": 3.3,
-   "edad_mae_pp": 1.09
-  },
-  "97": {
-   "sexo_mujer_pp": 2.4,
+   "sexo_mujer_pp": 5.6,
    "edad_mae_pp": 1.4
   },
+  "44": {
+   "sexo_mujer_pp": 6.1,
+   "edad_mae_pp": 1.6
+  },
+  "47": {
+   "sexo_mujer_pp": 4.4,
+   "edad_mae_pp": 1.04
+  },
+  "50": {
+   "sexo_mujer_pp": 6.4,
+   "edad_mae_pp": 1.31
+  },
+  "52": {
+   "sexo_mujer_pp": 2.4,
+   "edad_mae_pp": 1.05
+  },
+  "54": {
+   "sexo_mujer_pp": 3.4,
+   "edad_mae_pp": 1.16
+  },
+  "63": {
+   "sexo_mujer_pp": 3.0,
+   "edad_mae_pp": 1.46
+  },
+  "66": {
+   "sexo_mujer_pp": 2.5,
+   "edad_mae_pp": 1.43
+  },
+  "68": {
+   "sexo_mujer_pp": 1.8,
+   "edad_mae_pp": 1.93
+  },
+  "70": {
+   "sexo_mujer_pp": 2.5,
+   "edad_mae_pp": 1.17
+  },
+  "73": {
+   "sexo_mujer_pp": 1.6,
+   "edad_mae_pp": 0.87
+  },
+  "76": {
+   "salud_contributivo_pp": 3.8,
+   "sexo_mujer_pp": 2.7,
+   "edad_mae_pp": 1.48
+  },
+  "81": {
+   "sexo_mujer_pp": 1.6,
+   "edad_mae_pp": 1.56
+  },
+  "85": {
+   "sexo_mujer_pp": 1.8,
+   "edad_mae_pp": 1.07
+  },
+  "86": {
+   "sexo_mujer_pp": 4.5,
+   "edad_mae_pp": 1.02
+  },
+  "88": {
+   "sexo_mujer_pp": 5.6,
+   "edad_mae_pp": 1.52
+  },
+  "91": {
+   "sexo_mujer_pp": 2.1,
+   "edad_mae_pp": 1.23
+  },
+  "94": {
+   "sexo_mujer_pp": 0.2,
+   "edad_mae_pp": 1.22
+  },
+  "95": {
+   "sexo_mujer_pp": 3.8,
+   "edad_mae_pp": 1.86
+  },
+  "97": {
+   "sexo_mujer_pp": 2.1,
+   "edad_mae_pp": 1.24
+  },
   "99": {
-   "sexo_mujer_pp": 0.5,
-   "edad_mae_pp": 1.03
+   "sexo_mujer_pp": 2.0,
+   "edad_mae_pp": 1.14
   }
  }
 }
