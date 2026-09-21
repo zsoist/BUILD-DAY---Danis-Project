@@ -56,7 +56,38 @@ y le hacemos LAS MISMAS preguntas de esta noche a las dos Colombias. Fable
 `FABLE_ENABLED=1`: Fable toma el mando del ejército en vivo con el visor
 proyectado — General de verdad por primera vez. Una misión corta.
 
-## Reserva: ~$15. · Total estimado: ~$85 + reserva.
+## ACTO 5 — EL DUELO CIEGO (~$12) ⭐⭐ #1 del ranking académico
+
+La tesis del track Breakthrough convertida en espectáculo: los MISMOS 6 retos
+(3 fáciles, 3 duros: matemática, síntesis con trampa, redacción con
+restricciones) resueltos por (a) el enjambre de 8 flash con Jev y (b) Fable 5.1
+solo (effort high). Juicio CIEGO: Jev con orden aleatorizado y control de
+longitud + votación del público a mano alzada. La literatura ya predice el
+resultado (FrugalGPT: 98% de ahorro en lo fácil; RouteLLM: el frontier se paga
+solo en lo difícil; "More Agents": más llamadas baratas EMPEORAN lo difícil) —
+así que el crossover que aparezca en vivo confirma o refuta papers en escena.
+Riesgo de resultado nulo: el más bajo de todos los actos.
+
+## Reserva: ~$14. · Total estimado: ~$86 + reserva.
+
+## Advertencias de rigor PARA DECIR EN ESCENA (los papers mandan)
+- Colombia 2050 es efecto de COMPOSICIÓN (cohortes de hoy envejecidas), no los
+  valores de generaciones futuras — proyección demográfica legítima si se dice.
+- Bisbee et al.: los sintéticos tienen varianza artificialmente baja → mostramos
+  corrimientos de distribución, jamás "los colombianos de 2050 creen X".
+- Juez-LLM (Zheng/MT-Bench): sesgo de verbosidad y auto-preferencia → el duelo
+  va ciego, aleatorizado y con longitud controlada, o es teatro.
+- El rumor en cadena (idea B) queda EN BANCA: el RLHF amortigua la difusión y
+  puede dar plano en vivo. El mapa de imitación (D) va como slide de "próximo
+  experimento" — su reframe es bello: "a quién puede falsificar la IA" es un
+  hallazgo de sesgo, no de fidelidad.
+
+## Anexo: papers de respaldo por acto (citables en la demo)
+- 2050: Argyle 2209.06899 · Park 2411.10109 · Bisbee (Perils, Pol.Analysis 2024)
+- Duelo: FrugalGPT 2305.05176 · RouteLLM 2406.18665 · More Agents 2402.05120 ·
+  More LLM Calls 2403.02419 · MT-Bench 2306.05685
+- Forense: Hidden Anchors 2606.19494 · Deliberative Diagnostic 2609.15849
+- País entero/auditor: caso chileno 2509.09871 · AgentSociety 2502.08691
 
 ## Notas de operación (del system card)
 - Turnos LARGOS (minutos): stream siempre; effort dial por acto (medium para
