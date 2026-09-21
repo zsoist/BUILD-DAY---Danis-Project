@@ -322,9 +322,15 @@ $("#c-orkey").onchange=e=>{cfg.orkey=e.target.value.trim();try{localStorage.setI
    se cae completa. Reglas: UNA sola petición en vuelo por navegador, separación
    mínima con JITTER (los 30 navegadores no salen sincronizados) y reintento con
    backoff exponencial + Retry-After cuando el backend ya contestó 429. */
-let COLA=Promise.resolve(),T_OPINA=0,GAP=180;
+/* semáforo de 3 en vuelo (5 búsquedas paralelas caben; 30 usuarios no revientan el IP) */
+let EN_VUELO=0,T_OPINA=0,GAP=200;const ESPERAN=[];
 const dormir=ms=>new Promise(r=>setTimeout(r,ms));
-function encolar(fn){const p=COLA.then(fn);COLA=p.catch(()=>{});return p;}
+async function encolar(fn){
+  while(EN_VUELO>=3)await new Promise(r=>ESPERAN.push(r));
+  EN_VUELO++;
+  try{return await fn();}
+  finally{EN_VUELO--;ESPERAN.shift()?.();}
+}
 const _fetch=window.fetch.bind(window);
 window.fetch=function(u,o){
   if(String(u).indexOf("/api/opina")<0)return _fetch(u,o);
