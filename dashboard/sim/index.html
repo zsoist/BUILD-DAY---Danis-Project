@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<!--
+THESIS: interrogar a un país sintético construido con sus datos reales — no un
+dashboard de cifras sino gente (simulada) que responde.
+OWN-WORLD: hereda el mundo pixel del visor (baseplate azul-noche, Silkscreen,
+bordes chunky, colores por estado); aquí los protagonistas son los residentes.
+STORY: eliges un departamento, ves quién lo habita (números DANE reales vs la
+población sintética), y le preguntas lo que quieras: 8 residentes contestan en
+personaje y la postura se cuenta en vivo. Disclaimer siempre visible: simulación.
+FIRST VIEWPORT: header con selector de departamento; izquierda el censo del dpto
+(pirámide real vs sintética, régimen, economía); centro la encuesta con las
+respuestas llegando; derecha la ficha del dpto (dossier) y residentes de muestra.
+FORM: continuación del arcade-mission-control del visor, pinneado por Daniel.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sim Colombia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Saira:wdth,wght@75..100,300..700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#10141f;--panel:#161b29;--panel2:#131724;--grid:#1e2436;--text:#eef0f4;
+--dim:#9aa3b8;--faint:#5b6478;--work:#ffd23e;--ok:#59d97e;--fail:#ff5c5c;
+--accent:#5aa7ff;--muj:#ff6fa5;--hom:#4dd6c1;--px:3px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:"Saira",system-ui,sans-serif;
+font-stretch:90%;font-size:13px;min-height:100vh}
+.pxf{font-family:"Silkscreen",monospace}
+.panel{background:var(--panel);border:var(--px) solid var(--grid)}
+.panel>h2{font-family:"Silkscreen";font-size:10px;color:var(--dim);padding:7px 10px 5px;
+border-bottom:var(--px) solid var(--grid);text-transform:lowercase;display:flex;justify-content:space-between}
+select,button,input{background:var(--panel2);color:var(--text);border:2px solid var(--grid);
+font:inherit;font-size:12.5px;padding:5px 9px;cursor:pointer}
+select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--work)}
+.pxbtn{font-family:"Silkscreen";font-size:10px;box-shadow:2px 2px 0 #000a}
+.pxbtn:active{transform:translate(2px,2px);box-shadow:none}
+
+#app{max-width:1500px;margin:0 auto;padding:8px;display:grid;gap:8px;
+grid-template-columns:340px 1fr 320px;
+grid-template-areas:"top top top" "censo encuesta ficha" "banner banner banner"}
+#top{grid-area:top;display:flex;align-items:center;gap:14px;padding:8px 12px;
+background:var(--panel);border:var(--px) solid var(--grid)}
+#title{font-family:"Silkscreen";font-weight:700;font-size:16px;color:var(--work);
+text-shadow:3px 3px 0 #0007}
+#title small{color:var(--accent);font-size:16px}
+#dptosel{min-width:230px}
+#kpis{margin-left:auto;display:flex;gap:18px;text-align:right}
+#kpis div b{display:block;font-family:"Silkscreen";font-size:12px;color:var(--text);font-weight:400}
+#kpis div span{font-size:10px;color:var(--faint)}
+a.back{color:var(--faint);text-decoration:none;font-size:11px}
+a.back:hover{color:var(--work)}
+
+#censo{grid-area:censo;display:flex;flex-direction:column}
+#censo .body{padding:10px;overflow-y:auto}
+h3{font-family:"Silkscreen";font-size:9px;color:var(--faint);margin:12px 0 6px;font-weight:400}
+h3:first-child{margin-top:0}
+.pyr{display:grid;grid-template-columns:1fr 34px 1fr;gap:2px 6px;font-size:10px}
+.pyr .lab{color:var(--faint);text-align:center;font-family:"Silkscreen";font-size:7px;padding-top:1px}
+.pyr .bar{position:relative;height:11px;background:var(--panel2)}
+.pyr .bar i{position:absolute;top:1px;bottom:1px;opacity:.9}
+.pyr .bar.l i{right:0;background:var(--hom)}
+.pyr .bar.r i{left:0;background:var(--muj)}
+.pyr .bar s{position:absolute;top:-1px;bottom:-1px;width:2px;background:var(--text);opacity:.85}
+.leyenda{display:flex;gap:14px;font-size:10px;color:var(--faint);margin-top:6px}
+.leyenda i{display:inline-block;width:9px;height:9px;vertical-align:-1px;margin-right:4px}
+.hbar{margin:3px 0}
+.hbar .t{display:flex;justify-content:space-between;font-size:11px;color:var(--dim)}
+.hbar .g{height:9px;background:var(--panel2);border:1px solid var(--grid);position:relative}
+.hbar .g i{position:absolute;inset:1px auto 1px 1px;background:var(--accent)}
+.fuente{font-size:9.5px;color:var(--faint);margin-top:2px}
+
+#encuesta{grid-area:encuesta;display:flex;flex-direction:column;min-height:74vh}
+#resps{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
+.resp{display:grid;grid-template-columns:34px 1fr;gap:8px;background:var(--panel2);
+border:2px solid var(--grid);padding:8px;border-left:4px solid var(--pc,var(--grid))}
+.resp .who{font-family:"Silkscreen";font-size:8px;color:var(--dim);margin-bottom:3px}
+.resp .say{font-size:12.5px;line-height:1.45}
+.resp .say.thinking{color:var(--faint);animation:blink 1s steps(2) infinite}
+.resp .px{width:28px;height:28px;image-rendering:pixelated}
+@keyframes blink{50%{opacity:.3}}
+#tally{display:flex;gap:8px;padding:8px 10px;border-top:var(--px) solid var(--grid);flex-wrap:wrap}
+.tal{flex:1;min-width:110px;border:2px solid var(--grid);padding:6px 9px;text-align:center}
+.tal b{font-family:"Silkscreen";font-size:14px;display:block;font-weight:400}
+.tal span{font-size:10px;color:var(--faint)}
+.tal.fav{border-color:var(--ok)} .tal.fav b{color:var(--ok)}
+.tal.con{border-color:var(--fail)} .tal.con b{color:var(--fail)}
+.tal.dep{border-color:var(--work)} .tal.dep b{color:var(--work)}
+#qbar{display:flex;gap:6px;padding:10px;border-top:var(--px) solid var(--grid)}
+#qin{flex:1}
+#sugg{display:flex;flex-wrap:wrap;gap:4px;padding:0 10px 10px}
+#sugg button{font-size:10.5px;padding:2px 8px;color:var(--dim)}
+#sugg button:hover{color:var(--work);border-color:var(--work)}
+
+#ficha{grid-area:ficha;display:flex;flex-direction:column;gap:8px}
+#ficha .body{padding:10px;font-size:12px;line-height:1.5;color:var(--dim)}
+#ficha .body b{color:var(--text);font-weight:500}
+#ficha .tag{display:inline-block;border:1px solid var(--grid);padding:1px 7px;
+margin:2px 3px 2px 0;font-size:10.5px;color:var(--dim)}
+#muestra{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:8px}
+.res{display:flex;gap:6px;align-items:center;background:var(--panel2);
+border:1px solid var(--grid);padding:4px 6px;font-size:10.5px;color:var(--dim)}
+.res canvas{width:20px;height:20px;image-rendering:pixelated}
+
+#banner{grid-area:banner;text-align:center;font-size:10.5px;color:var(--faint);
+padding:6px;border:1px dashed var(--grid)}
+@media(max-width:1000px){#app{grid-template-columns:1fr;
+grid-template-areas:"top" "encuesta" "censo" "ficha" "banner"}#kpis{display:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <span id="title">SIM<small>▸</small>COLOMBIA</span>
+    <select id="dptosel" aria-label="Departamento"></select>
+    <a class="back" href="../">◂ visor del enjambre</a>
+    <div id="kpis"></div>
+    <button id="gear" class="pxbtn">AJUSTES</button>
+  </header>
+
+  <section id="censo" class="panel"><h2>el censo <b id="c-src-tag">DANE</b></h2>
+    <div class="body" id="censobody"></div>
+  </section>
+
+  <section id="encuesta" class="panel">
+    <h2>la encuesta <b id="estado"></b></h2>
+    <div id="resps"><div style="color:var(--faint);padding:20px;text-align:center">
+      elige un departamento y pregúntales lo que quieras —
+      <b style="color:var(--dim)">8 residentes sintéticos</b> contestan en personaje</div></div>
+    <div id="tally"></div>
+    <div id="sugg"></div>
+    <form id="qbar">
+      <input id="qin" placeholder="¿qué opinan de… ?" autocomplete="off">
+      <button class="pxbtn" type="submit">PREGUNTAR</button>
+    </form>
+  </section>
+
+  <aside id="ficha">
+    <div class="panel"><h2>la tierra</h2><div class="body" id="dossier"></div></div>
+    <div class="panel"><h2>residentes de muestra</h2><div id="muestra"></div></div>
+  </aside>
+
+  <div id="banner">⚠ SIMULACIÓN — residentes sintéticos generados de marginales reales
+  (DANE / datos.gov.co). Las opiniones son de personajes verosímiles, no de personas.
+  Reporte de fidelidad: <a href="validacion.json" style="color:var(--dim)">validacion.json</a></div>
+</div>
+
+<div id="cfg" style="position:fixed;top:56px;right:8px;width:290px;z-index:9;display:none;
+background:var(--panel);border:var(--px) solid var(--grid);padding:14px;box-shadow:6px 6px 0 #000a">
+  <label style="font-family:Silkscreen;font-size:8px;color:var(--faint)">openrouter key (encuesta)</label>
+  <input id="c-orkey" style="width:100%" placeholder="sk-or-v1-…">
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let cfg={orkey:""};
+try{cfg={...cfg,...JSON.parse(localStorage.getItem("sim-cfg")||"{}")};
+  if(!cfg.orkey){const ag=JSON.parse(localStorage.getItem("ag-cfg")||"{}");if(ag.orkey)cfg.orkey=ag.orkey;}}catch(e){}
+// clave local (solo existe en la máquina de Daniel; gitignoreada)
+if(!cfg.orkey)fetch("../assets/local_keys.json").then(r=>r.json())
+  .then(d=>{if(d.openrouter)cfg.orkey=d.openrouter}).catch(()=>{});
+$("#gear").onclick=e=>{e.stopPropagation();const c=$("#cfg");c.style.display=c.style.display==="none"?"block":"none"};
+document.addEventListener("click",e=>{if(!$("#cfg").contains(e.target)&&e.target.id!=="gear")$("#cfg").style.display="none"});
+$("#c-orkey").onchange=e=>{cfg.orkey=e.target.value.trim();try{localStorage.setItem("sim-cfg",JSON.stringify(cfg))}catch(_){}};
+
+let RES=[],MARG={},DOS={},VAL={},cur="11";
+const AGEG=["0-4","5-9","10-14","15-19","20-24","25-29","30-34","35-39","40-44",
+"45-49","50-54","55-59","60-64","65-69","70-74","75-79","80-84","85+"];
+
+/* mini retrato pixel procedural (determinista por id) */
+function retrato(cv,seed,sexo){
+  const ctx=cv.getContext("2d");cv.width=cv.height=12;
+  let h=0;for(const c of seed)h=(h*31+c.charCodeAt(0))>>>0;
+  const skin=["#e8b48c","#c98d5f","#8d5a3b","#f0c9a0"][h%4];
+  const pelo=["#1c1c1c","#3a2a1a","#6b4423","#555"][ (h>>2)%4];
+  const ropa=["#5aa7ff","#59d97e","#ff9d47","#c792ea","#ff6fa5","#4dd6c1"][(h>>4)%6];
+  ctx.clearRect(0,0,12,12);
+  ctx.fillStyle=skin;ctx.fillRect(3,2,6,5);
+  ctx.fillStyle=pelo;ctx.fillRect(3,1,6,2);
+  if(sexo==="mujer"&&(h&1))ctx.fillRect(2,2,1,4),ctx.fillRect(9,2,1,4);
+  ctx.fillStyle="#10141f";ctx.fillRect(4,4,1,1);ctx.fillRect(7,4,1,1);
+  ctx.fillStyle=ropa;ctx.fillRect(3,7,6,4);
+}
+
+async function boot(){
+  try{
+    [RES,MARG,VAL]=await Promise.all([
+      fetch("residents.json").then(r=>r.json()),
+      fetch("marginals.json").then(r=>r.json()).then(m=>m.departamentos),
+      fetch("validacion.json").then(r=>r.json()).catch(()=>({})),
+    ]);
+    DOS=await fetch("dossiers.json").then(r=>r.json()).catch(()=>({}));
+  }catch(e){$("#censobody").textContent="corre el pipeline: generate_population.py";return;}
+  const sel=$("#dptosel");
+  sel.innerHTML=Object.entries(MARG).sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre))
+    .map(([c,d])=>`<option value="${c}" ${c===cur?"selected":""}>${esc(d.nombre)}</option>`).join("");
+  sel.onchange=e=>{cur=e.target.value;render()};
+  $("#kpis").innerHTML=`<div><b>${RES.length.toLocaleString()}</b><span>residentes</span></div>
+    <div><b>33</b><span>territorios</span></div>
+    <div><b>${(VAL.bloques_provisionales||[]).length?"parcial":"completa"}</b><span>base DANE</span></div>`;
+  render();
+}
+
+function render(){
+  const d=MARG[cur],mine=RES.filter(r=>r.dpto===cur),dos=DOS[cur]||{};
+  /* censo */
+  let h="";
+  if(d.edad&&d.sexo){
+    h+=`<h3>PIRÁMIDE — real (línea) vs sintética (barra)</h3><div class="pyr">`;
+    const tot=mine.length;
+    const rtotal=Object.values(d.edad).reduce((a,b)=>a+b,0);
+    for(const g of [...AGEG].reverse()){
+      const sh=mine.filter(r=>r.grupo_edad===g&&r.sexo==="hombre").length/tot*100;
+      const sm=mine.filter(r=>r.grupo_edad===g&&r.sexo==="mujer").length/tot*100;
+      const rr=(d.edad[g]||0)/rtotal*100;
+      h+=`<div class="bar l"><i style="width:${sh*6}%"></i><s style="right:${rr/2*6}%"></s></div>
+          <div class="lab">${g}</div>
+          <div class="bar r"><i style="width:${sm*6}%"></i><s style="left:${rr/2*6}%"></s></div>`;
+    }
+    h+=`</div><div class="leyenda"><span><i style="background:var(--hom)"></i>hombres</span>
+        <span><i style="background:var(--muj)"></i>mujeres</span>
+        <span><i style="background:var(--text);width:2px"></i>censo real</span></div>`;
+  } else {
+    h+=`<h3>PIRÁMIDE</h3><div class="fuente">⚠ sexo/edad provisionales — a la espera del
+        archivo de proyecciones DANE (el resto de bloques ya es real)</div>`;
+  }
+  const sal=d.salud_pct;
+  if(sal){
+    const got=mine.filter(r=>r.regimen_salud==="contributivo").length/mine.length*100;
+    h+=`<h3>RÉGIMEN DE SALUD</h3>
+    <div class="hbar"><div class="t"><span>contributivo real</span><b>${sal.contributivo}%</b></div>
+      <div class="g"><i style="width:${sal.contributivo}%"></i></div></div>
+    <div class="hbar"><div class="t"><span>contributivo sintético</span><b>${got.toFixed(0)}%</b></div>
+      <div class="g"><i style="width:${got}%;background:var(--ok)"></i></div></div>
+    <div class="fuente">${esc(d.fuentes?.salud||"")}</div>`;
+  }
+  const pib=d.pib_sectores_pct;
+  if(pib){
+    h+=`<h3>DE QUÉ VIVE (PIB por sector)</h3>`;
+    for(const [s,p] of Object.entries(pib))
+      h+=`<div class="hbar"><div class="t"><span>${esc(s.slice(0,38))}</span><b>${p}%</b></div>
+          <div class="g"><i style="width:${Math.min(100,p*2)}%;background:var(--work)"></i></div></div>`;
+    h+=`<div class="fuente">${esc(d.fuentes?.pib||"")}</div>`;
+  }
+  $("#censobody").innerHTML=h;
+  /* ficha */
+  $("#dossier").innerHTML= dos.vida_cotidiana?
+    `<b>${esc(dos.apodo_gentilicio||d.nombre)}</b> · ${esc(dos.como_hablan||"")}<br><br>
+     ${esc(dos.vida_cotidiana)}<br><br><i style="color:var(--faint)">${esc(dos.economia_vivida||"")}</i><br><br>
+     ${(dos.orgullos||[]).map(o=>`<span class="tag" style="border-color:var(--ok)">${esc(o)}</span>`).join("")}
+     ${(dos.dolores||[]).map(o=>`<span class="tag" style="border-color:var(--fail)">${esc(o)}</span>`).join("")}`
+    :`<i style="color:var(--faint)">dossier en camino — lo está escribiendo el enjambre</i>`;
+  const mu=$("#muestra");mu.innerHTML="";
+  mine.slice(0,10).forEach(r=>{
+    const div=document.createElement("div");div.className="res";
+    const cv=document.createElement("canvas");retrato(cv,r.id,r.sexo);
+    div.append(cv);div.insertAdjacentHTML("beforeend",
+      `<span>${esc(r.nombre.split(" ")[0])}, ${r.edad} · ${esc(r.ocupacion)}</span>`);
+    mu.append(div);
+  });
+  renderSugg();
+}
+
+/* ── LA ENCUESTA ── */
+const SUGG=["el nuevo metro / transporte público","que la IA haga su trabajo",
+"el precio del café","irse a vivir a otra ciudad","el reggaetón",
+"que sus hijos estudien virtual"];
+function renderSugg(){
+  $("#sugg").innerHTML=SUGG.map(s=>`<button type="button">${esc(s)}</button>`).join("");
+  $("#sugg").querySelectorAll("button").forEach(b=>b.onclick=()=>encuesta("¿Qué opina de "+b.textContent+"?"));
+}
+$("#qbar").onsubmit=e=>{e.preventDefault();const v=$("#qin").value.trim();
+  if(v){$("#qin").value="";encuesta(v)}};
+
+async function encuesta(q){
+  if(!cfg.orkey){$("#resps").innerHTML=`<div style="color:var(--work);padding:16px">
+    pega tu key de openrouter en AJUSTES para encuestar</div>`;return;}
+  const d=MARG[cur],dos=DOS[cur]||{};
+  const pool=RES.filter(r=>r.dpto===cur&&r.edad>=14);
+  const sample=[...pool].sort(()=>Math.random()-.5).slice(0,8);
+  $("#resps").innerHTML=`<div style="color:var(--dim);padding:4px 2px 8px">
+    <b class="pxf" style="font-size:10px;color:var(--work)">PREGUNTA</b> ${esc(q)}
+    — respondiendo ${sample.length} residentes de ${esc(d.nombre)}…</div>`;
+  $("#tally").innerHTML="";$("#estado").textContent="encuestando…";
+  const posturas={a_favor:0,en_contra:0,depende:0};
+  const colores={a_favor:"var(--ok)",en_contra:"var(--fail)",depende:"var(--work)"};
+  await Promise.all(sample.map(async r=>{
+    const card=document.createElement("div");card.className="resp";
+    const cv=document.createElement("canvas");cv.className="px";retrato(cv,r.id,r.sexo);
+    card.append(cv);
+    card.insertAdjacentHTML("beforeend",`<div><div class="who">${esc(r.nombre)} · ${r.edad} ·
+      ${esc(r.ocupacion)} · ${esc(r.dpto_nombre)}</div>
+      <div class="say thinking">pensando…</div></div>`);
+    $("#resps").append(card);
+    const say=card.querySelector(".say");
+    try{
+      const resp=await fetch("https://openrouter.ai/api/v1/chat/completions",{
+        method:"POST",headers:{Authorization:"Bearer "+cfg.orkey,"Content-Type":"application/json"},
+        body:JSON.stringify({model:"deepseek/deepseek-v4.1-flash",max_tokens:150,temperature:0.9,
+          reasoning:{enabled:false},
+          messages:[{role:"system",content:
+`Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}, régimen de salud ${r.regimen_salud}, vives en ${r.dpto_nombre}, Colombia. Tu tierra: ${dos.vida_cotidiana||""} ${dos.como_hablan||""} Responde encuestas EN PRIMERA PERSONA como esta persona: 1-2 frases naturales, concretas, sin sonar a IA ni a caricatura regional. Cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende].`},
+          {role:"user",content:q}]})});
+      const j=await resp.json();
+      let txt=j.choices?.[0]?.message?.content||"(sin respuesta)";
+      const m=txt.match(/\[POSTURA:\s*(a_favor|en_contra|depende)\s*\]/i);
+      const pos=m?m[1].toLowerCase():"depende";
+      posturas[pos]++;txt=txt.replace(/\[POSTURA:[^\]]*\]/i,"").trim();
+      say.classList.remove("thinking");say.textContent=txt;
+      card.style.setProperty("--pc",colores[pos]);
+      $("#tally").innerHTML=
+        `<div class="tal fav"><b>${posturas.a_favor}</b><span>a favor</span></div>
+         <div class="tal con"><b>${posturas.en_contra}</b><span>en contra</span></div>
+         <div class="tal dep"><b>${posturas.depende}</b><span>depende</span></div>`;
+    }catch(e){say.classList.remove("thinking");say.textContent="(no contestó: "+e.message+")";}
+  }));
+  $("#estado").textContent="";
+}
+boot();
+</script>
+</body>
+</html>

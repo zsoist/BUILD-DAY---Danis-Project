@@ -656,6 +656,7 @@ async function ask(q){
       method:"POST",
       headers:{Authorization:"Bearer "+cfg.orkey,"Content-Type":"application/json"},
       body:JSON.stringify({model:"deepseek/deepseek-v4.1-flash",stream:true,max_tokens:400,
+        reasoning:{enabled:false},
         messages:[{role:"system",content:
           "Eres el visor de un enjambre de agentes. Responde en español, corto y "+
           "concreto (máx 4 líneas), SOLO con los datos del estado adjunto; si algo "+
