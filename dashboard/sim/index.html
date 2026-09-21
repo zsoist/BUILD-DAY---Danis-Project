@@ -609,9 +609,8 @@ Estás en una tertulia con vecinos de ${r.dpto_nombre}. Habla como en la vida re
       $("#resps").scrollTop=1e9;
       guardar("tertulia",cur,q,{posturas:p,resumen,participantes:sample.map(r=>r.id)});
     }catch(e){}
-  }else{
-    guardar("sondeo",cur,q,{posturas:p,participantes:sample.map(r=>r.id)});
   }
+  if(MODO==="sondeo")guardar("sondeo",cur,q,{posturas:p,participantes:sample.map(r=>r.id)});
   $("#estado").textContent="";
 }
 boot();
