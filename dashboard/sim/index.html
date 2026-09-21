@@ -150,8 +150,9 @@ opacity:0;animation:llega .3s steps(4) forwards}
 animation:tickblink .7s steps(2) infinite}
 @keyframes tickblink{50%{opacity:.2}}
 .ctx{border:2px solid var(--accent);border-left-width:5px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 7%,var(--panel2)),var(--panel2));
-padding:10px 14px;font-size:12.5px;line-height:1.65;color:var(--text);white-space:pre-wrap;box-shadow:3px 3px 0 #0008;overflow-wrap:anywhere}
+padding:8px 12px 9px;font-size:12px;line-height:1.5;color:var(--text);;box-shadow:3px 3px 0 #0008;overflow-wrap:anywhere}
 .ctx b{font-family:"Silkscreen";font-size:8px;color:var(--accent);display:block;margin-bottom:4px}
+.ctx .cbody{white-space:pre-line;display:block}
 .ctx.off{border-color:var(--grid);opacity:.85}
 .mod{border:2px solid var(--accent);background:var(--panel2);padding:9px 12px;
 font-size:12.5px;line-height:1.5;color:var(--dim)}
@@ -341,7 +342,7 @@ async function mesa(cod){
   const _seats=el.querySelector("#seats");
   sample.forEach((r,i)=>{const s=document.createElement("div");s.className="seat";
     s.style.animationDelay=(i*0.13)+"s";
-    const cv=document.createElement("canvas");retrato(cv,r.id,r.sexo,r.ocupacion);
+    const cv=document.createElement("canvas");retrato(cv,r.id,r.sexo,r.ocupacion,r.edad);
     s.append(cv);s.insertAdjacentHTML("beforeend",`<span>${esc(r.nombre.split(" ")[0])}, ${r.edad}</span>`);
     _seats.append(s);});
   const ctx=await contexto(q);
@@ -462,12 +463,14 @@ const AGEG=["0-4","5-9","10-14","15-19","20-24","25-29","30-34","35-39","40-44",
 "45-49","50-54","55-59","60-64","65-69","70-74","75-79","80-84","85+"];
 
 /* retrato pixel v2 procedural: peinado, tono, accesorio por oficio (determinista) */
-function retrato(cv,seed,sexo,ocup){
+function retrato(cv,seed,sexo,ocup,edad){
   const S=16,ctx=cv.getContext("2d");cv.width=cv.height=S;
   let h=0;for(const c of seed)h=(h*31+c.charCodeAt(0))>>>0;
   const skin=["#f0c9a0","#e8b48c","#c98d5f","#a06b42","#8d5a3b","#6e4429"][h%6];
   const skin2=["#d9af83","#d19c72","#b07a4c","#8a5a36","#7a4b30","#5d3820"][h%6];
-  const pelo=["#181818","#2e2013","#4a3018","#6b4423","#3d3d3d","#7a2e12"][(h>>3)%6];
+  let pelo=["#181818","#2e2013","#4a3018","#6b4423","#3d3d3d","#7a2e12"][(h>>3)%6];
+  if(edad>=62)pelo=["#cfd2d8","#aab0ba","#e8e8e8"][(h>>3)%3];         // canas
+  else if(edad>=48&&(h&4))pelo="#6f7480";                              // entrecano
   const ropa=["#5aa7ff","#59d97e","#ff9d47","#c792ea","#ff6fa5","#4dd6c1","#ffd23e","#e35d5d"][(h>>6)%8];
   const ropa2="#10141f";
   const F=(c,x,y,w,ht)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,ht)};
@@ -487,6 +490,14 @@ function retrato(cv,seed,sexo,ocup){
   F("#10141f",6,5,1,1);F("#10141f",9,5,1,1);
   F(skin2,7,7,2,1);
   if((h>>12)%5===0)F("#8a3b2e",6,8,4,1);else F("#6e4429",7,8,2,1);
+  if(sexo==="hombre"&&edad>=26){
+    const fh=(h>>14)%4;                                   // 0 nada 1 bigote 2 barba 3 candado
+    if(fh===1)F(pelo,6,7,4,1);
+    if(fh===2){F(pelo,5,7,6,2);F(pelo,6,8,4,1);}
+    if(fh===3){F(pelo,6,8,4,1);F(pelo,7,7,1,1);F(pelo,8,7,1,1);}
+  }
+  if(edad>=68){F(skin2,5,6,1,1);F(skin2,10,6,1,1);}       // patas de gallo
+  if(edad<26&&(h>>16)%3===0){F("#d98a7a",5,6,1,1);F("#d98a7a",10,6,1,1);} // rubor
   /* cuerpo */
   F(ropa,4,9,8,5);F(ropa2,7,9,2,1);F(color(ropa,-25),4,12,8,2);
   F(skin,3,10,1,3);F(skin,12,10,1,3);
@@ -650,7 +661,7 @@ function render(){
   mine.slice(0,10).forEach(r=>{
     const div=document.createElement("div");div.className="res";
     RESBY[r.id]=r;div.dataset.rid=r.id;div.title="ver ficha DANE";
-    const cv=document.createElement("canvas");retrato(cv,r.id,r.sexo,r.ocupacion);
+    const cv=document.createElement("canvas");retrato(cv,r.id,r.sexo,r.ocupacion,r.edad);
     div.append(cv);div.insertAdjacentHTML("beforeend",
       `<span>${esc(r.nombre.split(" ")[0])}, ${r.edad} · ${esc(r.ocupacion)}</span>`);
     mu.append(div);
@@ -775,7 +786,7 @@ function typewriter(el,txt){
 const RESBY={};
 function verResidente(r){
   const d=MARG[r.dpto]||{},f=d.fuentes||{},e=estiloDe(r);
-  const cv=document.getElementById("rpx");retrato(cv,r.id,r.sexo,r.ocupacion);
+  const cv=document.getElementById("rpx");retrato(cv,r.id,r.sexo,r.ocupacion,r.edad);
   $("#rnom").textContent=r.nombre;
   $("#rsub").textContent=`${r.edad} años · ${r.sexo} · ${r.dpto_nombre}`;
   const filas=[
@@ -800,7 +811,7 @@ function bubble(r,alt,parent){
   RESBY[r.id]=r;
   const host=parent||$("#resps");
   const card=document.createElement("div");card.className="resp"+(alt?" alt":"");
-  const cv=document.createElement("canvas");cv.className="px";retrato(cv,r.id,r.sexo,r.ocupacion);
+  const cv=document.createElement("canvas");cv.className="px";retrato(cv,r.id,r.sexo,r.ocupacion,r.edad);
   card.append(cv);
   card.dataset.rid=r.id;card.title="ver ficha DANE";
   card.insertAdjacentHTML("beforeend",`<div><div class="who">${esc(r.nombre)} · ${r.edad} ·
@@ -858,13 +869,18 @@ async function contexto(q){
   // real ni con texto desmedido — el cupo se cobra al recibir, no al responder el 400
   if(typeof q!=="string"||!q.trim()||q.length>400){CTX={q:null,txt:null,ok:null};return null;}
   try{
-    const r=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({online:true,max_tokens:330,messages:[
-        {role:"system",content:"HOY es 21 de septiembre de 2026. Busca noticias recientes de Colombia sobre el TEMA y devuelve SOLO 3-4 viñetas ULTRA CORTAS (máximo 18 palabras cada una) con hechos que aparezcan EXPLÍCITAMENTE en las fuentes: qué está pasando, qué ley/fallo/decisión rige, qué se propone. Cierra cada viñeta con el nombre del medio entre paréntesis, ej (El Tiempo) — JAMÁS pongas URLs ni enlaces markdown. Si un dato no cuadra con la fecha de hoy, NO lo incluyas. Empieza directo con '- '. PROHIBIDO opinar, presentarte o responder la pregunta. Sin nada noticioso: SIN_NOVEDADES."},
-        {role:"user",content:"TEMA: "+q+" (Colombia, septiembre 2026)"}]})});
-    if(r.ok){const j=await r.json();const c=j.content||"";
-      // solo viñetas citadas cuentan como contexto: un 200 del path de chat genérico NO se muestra como prensa
-      CTX.txt=(/SIN_NOVEDADES/.test(c)||!/^\s*-\s/.test(c.trim()))?null:c.trim();}
+    const SIS="HOY es 21 de septiembre de 2026. Interpreta el TEMA como lo entendería un colombiano de a pie (ej: 'Millonarios o Santa Fe' es la rivalidad futbolera de siempre, principalmente fútbol masculino, no solo la noticia del día). Busca noticias recientes de Colombia y devuelve SOLO 2-3 viñetas ULTRA CORTAS (máx 16 palabras) con hechos EXPLÍCITOS de fuentes, cada una cerrando con el medio entre paréntesis, ej (El Tiempo) — JAMÁS URLs. Si un dato no cuadra con la fecha, exclúyelo. Empieza directo con '- '. PROHIBIDO opinar o presentarte. Sin nada: SIN_NOVEDADES.";
+    const pide=u=>fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({online:true,max_tokens:260,messages:[
+          {role:"system",content:SIS},{role:"user",content:u}]})})
+      .then(r=>r.ok?r.json():null).then(j=>j?.content||"").catch(()=>"");
+    // DOS búsquedas en paralelo: la noticia del momento + el panorama de fondo
+    const [c1,c2]=await Promise.all([
+      pide("TEMA: "+q+" (Colombia, septiembre 2026)"),
+      pide("TEMA: panorama de fondo y datos clave de: "+q+" (Colombia, el ángulo que la gente discute normalmente)")]);
+    const vi=[...new Set((c1+"\n"+c2).split("\n").map(s=>s.trim())
+      .filter(s=>s.startsWith("- ")&&!/SIN_NOVEDADES/.test(s)))].slice(0,5);
+    CTX.txt=vi.length?vi.join("\n"):null;
     /* Jev verifica el contexto antes de mostrarlo (fechas/consistencia) */
     if(CTX.txt){
       try{
@@ -890,11 +906,10 @@ function ctxBox(txt,host){
   if(txt)txt=limpiaCtx(txt);
   const dudas=CTX.ok===false;
   (host||$("#resps")).insertAdjacentHTML("beforeend",
-    txt?`<div class="ctx${dudas?" off":""}" style="${dudas?"border-color:var(--fail)":""}">
-      <b style="${dudas?"color:var(--fail)":""}">${dudas?"⚠ CONTEXTO SIN VERIFICAR — tómenlo con pinzas":"📰 CONTEXTO REAL (búsqueda web verificada)"}</b>${esc(txt)}</div>`
-       :`<div class="ctx off"><b>📰 SIN NOTICIAS FRESCAS</b>opinan desde su experiencia, no desde la prensa</div>`);
+    txt?`<div class="ctx${dudas?" off":""}" style="${dudas?"border-color:var(--fail)":""}"><b style="${dudas?"color:var(--fail)":""}">${dudas?"⚠ CONTEXTO SIN VERIFICAR — con pinzas":"📰 LO QUE ESTÁ PASANDO (búsqueda verificada)"}</b><span class="cbody">${esc(txt)}</span></div>`
+       :`<div class="ctx off"><b>📰 SIN NOTICIAS FRESCAS</b><span class="cbody">opinan desde su experiencia, no desde la prensa</span></div>`);
 }
-const ctxPara=txt=>(txt&&CTX.ok!==false)?`\nLO QUE DICEN LAS NOTICIAS HOY (hechos reales, reacciona a ESTO desde tu vida, puedes dudar de lo que leas):\n${txt}\n`:"";
+const ctxPara=txt=>(txt&&CTX.ok!==false)?`\nNOTICIAS RECIENTES (por si tu personaje anda enterado — NO estás obligado a citarlas: la mayoría opina desde su vida. Si el tema es de siempre —fútbol, comida, política de fondo— habla de lo de SIEMPRE, no solo de la noticia del día):\n${txt}\n`:"";
 
 let API_OK=null;  // ¿existe /api/opina? (en Vercel sí; en local http.server no)
 async function flash(messages,max=170,temp=0.95){
@@ -997,7 +1012,7 @@ async function conversar(q){
     const s=document.createElement("div");s.className="seat";
     RESBY[r.id]=r;s.dataset.rid=r.id;s.title="ver ficha DANE";
     s.style.animationDelay=(i*0.13)+"s";
-    const cv=document.createElement("canvas");retrato(cv,r.id,r.sexo,r.ocupacion);
+    const cv=document.createElement("canvas");retrato(cv,r.id,r.sexo,r.ocupacion,r.edad);
     s.append(cv);s.insertAdjacentHTML("beforeend",
       `<span>${esc(r.nombre.split(" ")[0])}, ${r.edad}</span>`);
     seats.append(s);
