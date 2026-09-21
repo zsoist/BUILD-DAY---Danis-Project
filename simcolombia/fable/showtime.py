@@ -101,11 +101,22 @@ async def fable(system_blocks, user, max_tokens=4000, effort=None, titulo=""):
     print(f"\n🧠 FABLE {('· ' + titulo) if titulo else ''} (streaming…)\n" + "─" * 60)
     beam("fable_inicio", {"acto": titulo})
     texto = []
-    async with c.messages.stream(**kwargs) as s:
-        async for ev in s.text_stream:
-            print(ev, end="", flush=True)
-            texto.append(ev)
-        final = await s.get_final_message()
+    # max_retries del SDK solo cubre fallos ANTES del primer byte; un corte a
+    # mitad de stream se reintenta aquí (1 vez) para que el acto no muera.
+    for intento in range(2):
+        try:
+            async with c.messages.stream(**kwargs) as s:
+                async for ev in s.text_stream:
+                    print(ev, end="", flush=True)
+                    texto.append(ev)
+                final = await s.get_final_message()
+            break
+        except Exception as e:
+            if intento == 1:
+                raise
+            print(f"\n⚠️ stream cortado ({type(e).__name__}) — reintento único…")
+            texto = []
+            await asyncio.sleep(3)
     print("\n" + "─" * 60)
     marcador(final.usage)
     if final.stop_reason == "refusal":
@@ -209,10 +220,12 @@ CACHE_ACTOS = BASE / "fable" / "cache"
 
 
 def grabar(slug, texto):
-    """Cada acto queda grabado → 'replay <slug>' lo re-muestra gratis."""
+    """Cada acto queda grabado → 'replay <slug>' lo re-muestra gratis.
+    Nombre con secuencia: varias preguntas de la sala NO se pisan entre sí."""
     try:
         CACHE_ACTOS.mkdir(parents=True, exist_ok=True)
-        (CACHE_ACTOS / f"{slug}.txt").write_text(texto)
+        n = len(list(CACHE_ACTOS.glob(f"{slug}-*.txt"))) + 1
+        (CACHE_ACTOS / f"{slug}-{n:02d}.txt").write_text(texto)
     except Exception:
         pass
 
@@ -310,7 +323,11 @@ async def auditor(n_por_celda=6):
     # agregado simple + venia el informe
     agg = {i["id"]: {"si": 0, "no": 0} for i in verdad["items"]}
     for lote in resultados:
+        if not isinstance(lote, dict):
+            continue
         for rid, resp in lote.items():
+            if not isinstance(resp, dict):
+                continue
             for qid, v in resp.items():
                 if qid in agg and str(v).lower() in ("si", "sí", "no"):
                     agg[qid]["si" if str(v).lower().startswith("s") else "no"] += 1

@@ -363,7 +363,7 @@ function abortarCorrida(){RUN++;CONV.stop=true;CONV.paused=false;
 $("#btnpausa").onclick=()=>{CONV.paused=!CONV.paused;
   $("#btnpausa").textContent=CONV.paused?"▶ SEGUIR":"⏸ PAUSAR";
   $("#btnpausa").classList.toggle("pausa",CONV.paused);};
-$("#btnfin").onclick=()=>{CONV.stop=true;CONV.paused=false;};
+$("#btnfin").onclick=()=>{CONV.stop=true;abortarCorrida();};  // stop en la corrida viva + teardown (typewriters, controles, botón)
 setInterval(()=>{if($("#ctrl").style.display!=="none"&&CONV.start){
   const s=Math.round((Date.now()-CONV.start)/1000);
   $("#reloj").textContent=(CONV.paused?"⏸ ":"")+Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
@@ -376,6 +376,7 @@ async function pais(q){
   if(!GEO){try{GEO=await fetch("colombia.json").then(r=>r.json())}catch(e){
     $("#resps").innerHTML="<div class='hint'>no cargó el mapa</div>";return;}}
   PAIS={q,cache:{},tally:{a_favor:0,en_contra:0,depende:0}};
+  CONV={paused:false,stop:false,start:Date.now()};  // corrida fresca: sin esto, el stop de abortarCorrida() mata cada mesa al nacer
   DECIDIDO={}; paintNav();
   $("#tally").innerHTML="";
   $("#maptag").textContent="el país responde";
@@ -408,7 +409,8 @@ async function mesa(cod){
     s.dataset.rid=r.id;s.title="ver ficha DANE";RESBY[r.id]=r;
     s.setAttribute("role","button");s.setAttribute("tabindex","0");
     _seats.append(s);});
-  const ctx=await contexto(q);
+  let ctx=null;
+  try{ctx=await contexto(q);}catch(e){}  // sin contexto la mesa sigue: las voces hablan de lo suyo
   if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
   el.querySelector("#ticker")?.remove();
   ctxBox(ctx,el);

@@ -384,7 +384,7 @@ function ingest(list){
     if(r.run_id==null) continue;
     const run=runs[r.run_id]??={id:r.run_id,events:[],tasks:{},order:[],task:"",
       spent:null,done:false,t0:null,tEnd:null,jev:{},seconds:null,planMs:null};
-    const p=r.payload||{}, ts=r.ts?+new Date(r.ts):null;
+    const p=r.payload||{}, _t=+new Date(r.ts), ts=Number.isFinite(_t)?_t:null;
     run.events.push({...r,ms:ts});
     if(ts!=null){run.t0=run.t0==null?ts:Math.min(run.t0,ts);
       run.tEnd=run.tEnd==null?ts:Math.max(run.tEnd,ts);}
@@ -397,7 +397,7 @@ function ingest(list){
       if(p.p<0.5&&run.tasks[r.task_id])run.tasks[r.task_id].fixed=true;}
     if(r.event==="done"){run.done=true;run.spent=p.spent;run.seconds=p.seconds;}
     if(r.event&&r.event.startsWith("fable")){
-      FABLE.visto=ts||Date.now();
+      if(ts!=null&&ts>FABLE.visto)FABLE.visto=ts;  // solo tiempo real: sin ts no se renueva la marquesina
       if(r.event==="fable_inicio"&&p.acto)FABLE.acto=p.acto;
       if(r.event==="fable_costo"&&p.usd!=null)FABLE.usd=p.usd;
     }
@@ -414,7 +414,9 @@ async function fetchRows(){
     else{list=await (await fetch(cfg.url+"/rest/v1/army_events?select=*&order=id.desc&limit=2000",
       {headers:{apikey:cfg.key}})).json();
       if(!Array.isArray(list)) throw 0;}
-    list.sort((a,b)=>(+new Date(a.ts)||a.id||0)-(+new Date(b.ts)||b.id||0));
+    /* UNA escala de orden: ts si todos parsean; si no, id; si no, orden de llegada */
+    if(list.every(r=>Number.isFinite(Date.parse(r.ts)))) list.sort((a,b)=>Date.parse(a.ts)-Date.parse(b.ts));
+    else if(list.every(r=>Number.isFinite(+r.id))) list.sort((a,b)=>a.id-b.id);
     ingest(list); render(); lamp(true);
   }catch(e){lamp(false);}
 }

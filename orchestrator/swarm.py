@@ -362,7 +362,7 @@ class Swarm:
             import httpx
 
             async with httpx.AsyncClient(timeout=10) as c:
-                await c.post(
+                r = await c.post(
                     f"{url}/rest/v1/army_events",
                     headers={
                         "apikey": os.environ["SUPABASE_PUBLISHABLE_KEY"],
@@ -370,8 +370,11 @@ class Swarm:
                     },
                     json=batch,
                 )
+                if r.status_code >= 500 and len(self._pending_events) < 200:
+                    self._pending_events[:0] = batch  # 5xx transitorio: reencolar acotado (4xx = veneno, se suelta)
         except Exception:
-            pass
+            if len(self._pending_events) < 200:
+                self._pending_events[:0] = batch
 
     def ship(self, tid: str, filename: str | None, content: str):
         """Shippear YA: el artefacto toca disco en cuanto existe (escritura atómica)."""
@@ -500,13 +503,22 @@ class Swarm:
             for t in tasks
         ):
             print("♻️  FINAL.md ya existe y todas las ramas están shippeadas — nada que hacer.")
+            self._flush()  # el resume idempotente también drena su telemetría
+            if self._beams:
+                await asyncio.gather(*self._beams, return_exceptions=True)
             return
         print("🧠 Assembler…")
-        final = await brain(rank="officer", prompt=
-            f"Ensambla el entregable final para: {self.task}\n\nPiezas:\n"
-            + "\n\n".join(f"## {k}\n{v[:3000]}" for k, v in self.results.items())
-        )
-        (self.run_dir / "FINAL.md").write_text(final)
+        try:
+            final = await brain(rank="officer", prompt=
+                f"Ensambla el entregable final para: {self.task}\n\nPiezas:\n"
+                + "\n\n".join(f"## {k}\n{v[:3000]}" for k, v in self.results.items())
+            )
+            (self.run_dir / "FINAL.md").write_text(final)
+        except Exception as e:
+            # ship-first hasta el final: las piezas YA están en artifacts/; un
+            # assembler caído no puede silenciar el 'done' ni perder telemetría.
+            print(f"⚠️ assembler caído ({type(e).__name__}: {e}) — las piezas "
+                  f"quedan en {self.ship_dir}, FINAL.md pendiente")
         self.log({"event": "done", "seconds": round(time.monotonic() - self.t0, 1),
                   "spent": budget.spent, "tasks": len(self.results)})
         # Parte final: "listo, aquí está lo que pediste"
