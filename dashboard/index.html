@@ -28,6 +28,7 @@ animaciones, denso, sin jerga militar, que se vea qué hacen").
   --bg:#10141f; --panel:#161b29; --panel2:#131724; --grid:#1e2436;
   --text:#eef0f4; --dim:#9aa3b8; --faint:#5b6478;
   --work:#ffd23e; --ok:#59d97e; --fail:#ff5c5c; --accent:#5aa7ff;
+  --fable:#ff8a65;
   --a1:#ffd23e; --a2:#59d97e; --a3:#5aa7ff; --a4:#ff9d47;
   --a5:#c792ea; --a6:#4dd6c1; --a7:#ff6fa5; --a8:#b8e356;
   --px:3px;
@@ -68,6 +69,22 @@ select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid 
 #lamp.on{color:var(--ok)} #lamp.on i{background:var(--ok); animation:blink 1s steps(2) infinite}
 @keyframes blink{50%{opacity:.25}}
 #clock{font-family:"Silkscreen"; font-size:11px; color:var(--dim)}
+
+/* ── FABLE EN ESCENA ── */
+#fablebar{grid-area:top;display:none;position:absolute;left:50%;transform:translateX(-50%);
+top:100%;margin-top:-3px;z-index:5;background:linear-gradient(90deg,#2a1610,#1d1410);
+border:var(--px) solid var(--fable);box-shadow:0 6px 0 #000a;padding:5px 16px;
+font-family:"Silkscreen";font-size:10px;color:var(--fable);white-space:nowrap;
+animation:fablein .3s steps(4)}
+#fablebar.on{display:block}
+#fablebar b{color:#ffd8c2;font-weight:400}
+#fablebar i{font-style:normal;display:inline-block;width:9px;height:9px;
+background:var(--fable);margin-right:8px;vertical-align:-1px;
+animation:blink 1.2s steps(2) infinite}
+@keyframes fablein{from{transform:translateX(-50%) translateY(-8px);opacity:0}}
+#feedin .ev.fable{color:var(--fable);font-family:"Silkscreen";font-size:10px}
+.staffc.fable{border-color:var(--fable);box-shadow:0 0 10px #ff8a6533}
+.staffc.fable .nm{color:var(--fable)}
 
 /* ── agentes ── */
 #agents{grid-area:agents; overflow-y:auto; display:flex; flex-direction:column}
@@ -205,6 +222,7 @@ select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid 
     <span id="lamp"><i></i><span id="lamptxt">LIVE</span></span>
     <span id="clock"></span>
     <button id="gear" class="pxbtn" aria-label="Ajustes">AJUSTES</button>
+    <div id="fablebar"><i></i>FABLE 5.1 EN ESCENA · <b id="fbacto">—</b> · gasto <b id="fbusd">$0</b></div>
   </header>
 
   <section id="agents" class="panel" aria-label="Agentes">
@@ -359,6 +377,7 @@ setInterval(()=>{ tick++;
 
 /* ═══ estado ═══ */
 let runs={},curRun=null,timer=null;
+let FABLE={visto:0,acto:null,usd:0};
 function ingest(list){
   runs={};
   for(const r of list){
@@ -376,6 +395,11 @@ function ingest(list){
       (run.jevlog??={})[r.task_id]??=[]; run.jevlog[r.task_id].push(p);
       if(p.p<0.5&&run.tasks[r.task_id])run.tasks[r.task_id].fixed=true;}
     if(r.event==="done"){run.done=true;run.spent=p.spent;run.seconds=p.seconds;}
+    if(r.event&&r.event.startsWith("fable")){
+      FABLE.visto=ts||Date.now();
+      if(r.event==="fable_inicio"&&p.acto)FABLE.acto=p.acto;
+      if(r.event==="fable_costo"&&p.usd!=null)FABLE.usd=p.usd;
+    }
   }
   for(const id in runs){const run=runs[id];
     run.order.forEach((tid,i)=>{run.tasks[tid].agent=i%8;});
@@ -408,6 +432,10 @@ function render(){
   $("#empty").hidden=!!run;
   if(!run){$("#mission").textContent="—";return;}
   $("#mission").textContent=run.task||curRun;
+  const fbOn=FABLE.visto&&(Date.now()-FABLE.visto<15*60*1000);
+  $("#fablebar").classList.toggle("on",!!fbOn);
+  if(fbOn){$("#fbacto").textContent=FABLE.acto||"trabajando";
+    $("#fbusd").textContent="$"+(+FABLE.usd).toFixed(2);}
 
   const okN=run.order.filter(id=>run.tasks[id].status==="ok").length;
   $("#taskcount").textContent=okN+"/"+run.order.length;
@@ -418,7 +446,8 @@ function render(){
 
   /* staff */
   const staff=[
-    {sp:"sp_main",fr:run.planMs?[0,1]:[2,3],nm:UI.main_agent||"agente principal",
+    {sp:"sp_main",fr:run.planMs?[0,1]:[2,3],
+     nm:(FABLE.visto&&Date.now()-FABLE.visto<15*60*1000)?"👑 FABLE 5.1":(UI.main_agent||"agente principal"),
      st:run.planMs?`plan listo · ${run.order.length} tareas`:"planificando…",
      cls:run.planMs?"okd":"busy"},
     {sp:"sp_staff",fr:[0,1,2,3],nm:UI.inspector||"inspector jev",
@@ -430,7 +459,8 @@ function render(){
   ];
   $("#staff").innerHTML="";
   staff.forEach(s=>{
-    const d=document.createElement("div"); d.className="staffc "+s.cls;
+    const d=document.createElement("div");
+    d.className="staffc "+s.cls+(s.nm.includes("FABLE")?" fable":"");
     d.append(spriteCanvas(s.sp,s.fr,null,2));
     d.insertAdjacentHTML("beforeend",`<div class="nm">${esc(s.nm)}</div><div class="st">${esc(s.st)}</div>`);
     $("#staff").append(d);
@@ -553,7 +583,7 @@ function drawFeed(run){
         e.event==="fable_costo"?("FABLE gasto: $"+pl.usd+" · caché "+((pl.cache_read||0).toLocaleString())+" tk"):
         e.event==="fable_duelo"?("⚔️ DUELO: enjambre "+(pl.marcador?.enjambre??"?")+" — "+(pl.marcador?.fable??"?")+" fable"):
         e.event;
-      return `<div class="l"><time class="num">·</time><span class="ev live">${esc(txt)}</span></div>`;
+      return `<div class="l"><time class="num">·</time><span class="ev fable">${esc(txt)}</span></div>`;
     }
     const str=FEEDT[key]; if(!str)return "";
     const txt=tpl(str,{task:(p.task||"").slice(0,60),n:p.tasks?.length,id:e.task_id,
