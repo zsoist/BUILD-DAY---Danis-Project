@@ -406,7 +406,9 @@ async function boot(){
   sel.innerHTML=`<option value="CO">★ Toda Colombia (panel nacional)</option>`+
     Object.entries(MARG).sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre))
     .map(([c,d])=>`<option value="${c}" ${c===cur?"selected":""}>${esc(d.nombre)}</option>`).join("");
-  sel.onchange=e=>{cur=e.target.value;render()};
+  sel.onchange=e=>{cur=e.target.value;render();paintNav();
+    $("#maplabel").textContent=MARG[cur]?.nombre||"—";};
+  drawNav();
   $("#kpis").innerHTML=`<div><b>${RES.length.toLocaleString()}</b><span>residentes</span></div>
     <div><b>33</b><span>territorios</span></div>
     <div><b>${(VAL.bloques_provisionales||[]).length?"parcial":"completa"}</b><span>base DANE</span></div>`;
