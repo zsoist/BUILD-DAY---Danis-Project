@@ -604,13 +604,15 @@ const TEMPERAMENTOS=[
  "tímido/a: opinas bajito, con 'no sé, pero…', y aún así opinas",
  "indignado/a: esto te toca personal y se nota",
  "profesoral: explicas con calma, un dato y listo"];
-const LEAN=["llegas INCLINADO/A A FAVOR por algo de tu vida",
- "llegas INCLINADO/A EN CONTRA por algo que viviste",
- "llegas SIN DECIDIR y te dejas llevar por los argumentos"];
+const LEAN=["estás A FAVOR por algo concreto que viviste, y lo defiendes",
+ "estás A FAVOR por algo concreto que viviste, y lo defiendes",
+ "estás EN CONTRA por algo concreto que viviste, y lo defiendes",
+ "estás EN CONTRA por algo concreto que viviste, y lo defiendes",
+ "llegas dividido/a de verdad: tu vida te jala para los dos lados"];
 function estiloDe(r){
   let h=0;for(const c of r.id)h=(h*37+c.charCodeAt(0))>>>0;
   return {temp:TEMPERAMENTOS[h%TEMPERAMENTOS.length],
-          lean:LEAN[(h>>4)%3]};
+          lean:LEAN[(h>>4)%5]};
 }
 function persona(r,dos){
   const mule=(dos.muletillas||[]).slice(0,6).join(" · ");
@@ -619,7 +621,7 @@ function persona(r,dos){
   const edu=r.educacion&&!/colegio|infancia/.test(r.educacion)?`, estudios: ${r.educacion}`:"";
   return `Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}${vida(r)?", "+vida(r):""}${edu}, régimen ${r.regimen_salud}, de ${r.dpto_nombre}, Colombia.
 Tu tierra: ${dos.vida_cotidiana||""} ${dos.economia_vivida||""}
-QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre este tema, ${estiloDe(r).lean}.
+QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre el tema de hoy, ${estiloDe(r).lean}. NO eres tibio/a: en Colombia la gente toma partido — "depende" es la salida del político y solo la usas si tu vida DE VERDAD te parte en dos, y aun así dices qué te haría decidirte.
 Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te puede escapar UN rasgo de tu tierra (${dialectoDe(r.dpto).split(":")[0]||"tu región"}) de vez en cuando, y JAMÁS repites un cliché regional que ya haya dicho otro en la mesa ni el mismo tuyo dos veces.
 Referentes que puedes soltar si vienen al caso: ${lug||"—"}.
 REGLAS: primera persona, gente de verdad — concreta TU vida (tu camello, tu plata, tu edad, tu familia). Nivel de lengua acorde a tus estudios. Sin groserías pesadas. PROHIBIDO: sonar a IA, folclor de cartilla, listas, y arrancar con la misma palabra con la que arrancó cualquiera de la mesa.`;
@@ -748,7 +750,7 @@ async function conversar(q){
       const card=bubble(r,false),say=card.querySelector(".say");
       try{
         const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+
-          "\nResponde la encuesta en 1-2 frases y cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende]."},
+          "\nResponde la encuesta en 1-2 frases con POSTURA CLARA (a favor o en contra; depende solo si es irrenunciable) y cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende]."},
           {role:"user",content:q}]);
         const [pos,txt]=postura(raw);
         p[pos||"depende"]++;typewriter(say,txt);
