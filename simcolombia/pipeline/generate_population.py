@@ -167,8 +167,11 @@ for cod, d in sorted(M.items()):
             "nombre": f"{nombre_pila(edad, sexo, regionales)} {rng.choice(apellidos)} {rng.choice(apellidos)}",
             "sexo": sexo, "edad": edad, "grupo_edad": grupo,
             "regimen_salud": regimen, "educacion": educacion,
-            "ocupacion": (rng.choice(ocs) if edad >= 18 else
-                          "estudiante" if edad >= 6 else "niño(a) de casa"),
+            "ocupacion": (
+                rng.choice(["pensionado(a)", "pensionado(a)", "del hogar",
+                            rng.choice(ocs)]) if edad >= 66 else
+                rng.choice(ocs) if edad >= 18 else
+                "estudiante" if edad >= 6 else "niño(a) de casa"),
         })
 
 # ── validación determinista: sintético vs marginal real ──

@@ -4,137 +4,137 @@
  "bloques_provisionales": [],
  "errores": {
   "05": {
-   "sexo_mujer_pp": 0.3,
-   "edad_mae_pp": 0.95
+   "sexo_mujer_pp": 5.3,
+   "edad_mae_pp": 1.6
   },
   "08": {
-   "sexo_mujer_pp": 5.9,
-   "edad_mae_pp": 1.22
+   "sexo_mujer_pp": 0.9,
+   "edad_mae_pp": 0.99
   },
   "11": {
    "sexo_mujer_pp": 1.1,
-   "edad_mae_pp": 1.3
+   "edad_mae_pp": 1.2
   },
   "13": {
-   "sexo_mujer_pp": 6.6,
-   "edad_mae_pp": 1.27
+   "sexo_mujer_pp": 1.6,
+   "edad_mae_pp": 1.24
   },
   "15": {
-   "sexo_mujer_pp": 3.6,
-   "edad_mae_pp": 1.41
+   "sexo_mujer_pp": 1.6,
+   "edad_mae_pp": 1.21
   },
   "17": {
-   "sexo_mujer_pp": 2.3,
-   "edad_mae_pp": 1.14
+   "sexo_mujer_pp": 1.8,
+   "edad_mae_pp": 1.66
   },
   "18": {
-   "sexo_mujer_pp": 1.9,
-   "edad_mae_pp": 1.15
+   "sexo_mujer_pp": 0.6,
+   "edad_mae_pp": 1.43
   },
   "19": {
-   "sexo_mujer_pp": 1.3,
-   "edad_mae_pp": 0.83
+   "sexo_mujer_pp": 5.8,
+   "edad_mae_pp": 1.66
   },
   "20": {
-   "sexo_mujer_pp": 0.0,
-   "edad_mae_pp": 1.38
+   "sexo_mujer_pp": 0.5,
+   "edad_mae_pp": 1.27
   },
   "23": {
-   "sexo_mujer_pp": 0.7,
-   "edad_mae_pp": 1.11
+   "sexo_mujer_pp": 0.2,
+   "edad_mae_pp": 1.46
   },
   "25": {
-   "sexo_mujer_pp": 0.6,
-   "edad_mae_pp": 1.7
+   "sexo_mujer_pp": 3.9,
+   "edad_mae_pp": 1.32
   },
   "27": {
-   "sexo_mujer_pp": 3.6,
-   "edad_mae_pp": 1.17
+   "sexo_mujer_pp": 3.9,
+   "edad_mae_pp": 1.12
   },
   "41": {
-   "sexo_mujer_pp": 0.2,
-   "edad_mae_pp": 1.17
+   "sexo_mujer_pp": 2.7,
+   "edad_mae_pp": 1.3
   },
   "44": {
-   "sexo_mujer_pp": 4.7,
-   "edad_mae_pp": 1.28
+   "sexo_mujer_pp": 0.8,
+   "edad_mae_pp": 1.12
   },
   "47": {
-   "sexo_mujer_pp": 1.0,
-   "edad_mae_pp": 1.29
+   "sexo_mujer_pp": 3.0,
+   "edad_mae_pp": 1.27
   },
   "50": {
-   "sexo_mujer_pp": 4.4,
-   "edad_mae_pp": 1.06
+   "sexo_mujer_pp": 0.4,
+   "edad_mae_pp": 1.23
   },
   "52": {
-   "sexo_mujer_pp": 0.4,
-   "edad_mae_pp": 1.13
+   "sexo_mujer_pp": 0.1,
+   "edad_mae_pp": 0.82
   },
   "54": {
-   "sexo_mujer_pp": 2.3,
-   "edad_mae_pp": 1.43
+   "sexo_mujer_pp": 2.7,
+   "edad_mae_pp": 1.25
   },
   "63": {
    "sexo_mujer_pp": 1.8,
-   "edad_mae_pp": 1.32
+   "edad_mae_pp": 1.56
   },
   "66": {
-   "sexo_mujer_pp": 4.2,
-   "edad_mae_pp": 1.38
-  },
-  "68": {
-   "sexo_mujer_pp": 0.6,
-   "edad_mae_pp": 1.37
-  },
-  "70": {
-   "sexo_mujer_pp": 0.1,
+   "sexo_mujer_pp": 1.7,
    "edad_mae_pp": 1.2
   },
+  "68": {
+   "sexo_mujer_pp": 0.4,
+   "edad_mae_pp": 1.41
+  },
+  "70": {
+   "sexo_mujer_pp": 1.4,
+   "edad_mae_pp": 1.35
+  },
   "73": {
-   "sexo_mujer_pp": 8.6,
-   "edad_mae_pp": 1.6
+   "sexo_mujer_pp": 0.1,
+   "edad_mae_pp": 1.77
   },
   "76": {
-   "salud_contributivo_pp": 7.8,
-   "sexo_mujer_pp": 2.4,
-   "edad_mae_pp": 0.96
-  },
-  "81": {
-   "sexo_mujer_pp": 4.9,
+   "salud_contributivo_pp": 12.8,
+   "sexo_mujer_pp": 6.1,
    "edad_mae_pp": 1.18
   },
+  "81": {
+   "sexo_mujer_pp": 0.9,
+   "edad_mae_pp": 1.55
+  },
   "85": {
-   "sexo_mujer_pp": 0.5,
+   "sexo_mujer_pp": 2.5,
    "edad_mae_pp": 1.34
   },
   "86": {
-   "sexo_mujer_pp": 1.2,
-   "edad_mae_pp": 1.11
+   "sexo_mujer_pp": 3.3,
+   "edad_mae_pp": 1.36
   },
   "88": {
-   "sexo_mujer_pp": 0.7,
-   "edad_mae_pp": 1.25
+   "sexo_mujer_pp": 3.8,
+   "edad_mae_pp": 1.44
   },
   "91": {
-   "sexo_mujer_pp": 5.8,
-   "edad_mae_pp": 1.2
+   "sexo_mujer_pp": 3.8,
+   "edad_mae_pp": 0.85
   },
   "94": {
-   "sexo_mujer_pp": 1.0,
-   "edad_mae_pp": 1.04
+   "sexo_mujer_pp": 3.5,
+   "edad_mae_pp": 1.08
   },
   "95": {
-   "sexo_mujer_pp": 4.3,
-   "edad_mae_pp": 0.95
+   "sexo_mujer_pp": 2.3,
+   "edad_mae_pp": 1.15
   },
   "97": {
-   "sexo_mujer_pp": 9.4,
-   "edad_mae_pp": 1.25
+   "sexo_mujer_pp": 6.4,
+   "edad_mae_pp": 1.0
   },
   "99": {
-   "sexo_mujer_pp": 1.3,
-   "edad_mae_pp": 1.04
+   "sexo_mujer_pp": 2.3,
+   "edad_mae_pp": 1.14
   }
  }
 }
