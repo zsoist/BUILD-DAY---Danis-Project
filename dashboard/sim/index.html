@@ -177,9 +177,13 @@ padding:4px 0;letter-spacing:.2em}
 @keyframes blink{50%{opacity:.3}}
 #tally{display:flex;gap:8px;padding:8px 10px;flex-wrap:wrap}
 #tally:not(:empty){border-bottom:var(--px) solid var(--grid)}
-.tal{flex:1;min-width:110px;border:2px solid var(--grid);padding:6px 9px;text-align:center}
-.tal b{font-family:"Silkscreen";font-size:14px;display:block;font-weight:400}
-.tal span{font-size:10px;color:var(--faint)}
+.tal{flex:1;min-width:110px;border:2px solid var(--grid);padding:8px 9px 7px;text-align:center;
+position:relative;background:var(--panel2);box-shadow:3px 3px 0 #0007}
+.tal::before{content:"";position:absolute;top:3px;left:3px;width:6px;height:6px;background:var(--grid)}
+.tal.fav::before{background:var(--ok)}.tal.con::before{background:var(--fail)}.tal.dep::before{background:var(--work)}
+.tal b{font-family:"Silkscreen";font-size:18px;display:block;font-weight:700;animation:pop2 .2s steps(3)}
+@keyframes pop2{from{transform:scale(1.5)}}
+.tal span{font-size:10px;color:var(--faint);text-transform:lowercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
 .tal.fav{border-color:var(--ok)} .tal.fav b{color:var(--ok)}
 .tal.con{border-color:var(--fail)} .tal.con b{color:var(--fail)}
 .tal.dep{border-color:var(--work)} .tal.dep b{color:var(--work)}
@@ -313,6 +317,7 @@ setInterval(()=>{if($("#ctrl").style.display!=="none"&&CONV.start){
 /* ═══ MODO PAÍS: una pregunta, 33 mesas — el mapa se pinta con las conclusiones ═══ */
 let GEO=null,PAIS={q:null,cache:{},tally:{a_favor:0,en_contra:0,depende:0}};
 async function pais(q){
+  OPC=opcionesDe(q);
   if(!GEO){try{GEO=await fetch("colombia.json").then(r=>r.json())}catch(e){
     $("#resps").innerHTML="<div class='hint'>no cargó el mapa</div>";return;}}
   PAIS={q,cache:{},tally:{a_favor:0,en_contra:0,depende:0}};
@@ -758,7 +763,7 @@ function persona(r,dos){
   const edu=r.educacion&&!/colegio|infancia/.test(r.educacion)?`, estudios: ${r.educacion}`:"";
   return `Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}${vida(r)?", "+vida(r):""}${edu}, régimen ${r.regimen_salud}, de ${r.dpto_nombre}, Colombia.
 Tu tierra: ${dos.vida_cotidiana||""} ${dos.economia_vivida||""}
-QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre el tema de hoy, ${estiloDe(r).lean}. Tu postura asignada ES la tuya: tu historia la justifica y NO la cambias porque el contexto o los demás digan otra cosa. Franqueza: eres ${estiloDe(r).franq}.
+QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre el tema de hoy, ${estiloDe(r).lean}. ${OPC?`LA PREGUNTA ES UNA ELECCIÓN: [POSTURA: a_favor] = eliges «${OPC.a}», [POSTURA: en_contra] = eliges «${OPC.b}», [depende] solo si no vas con ninguno.\n`:""}Tu postura asignada ES la tuya: tu historia la justifica y NO la cambias porque el contexto o los demás digan otra cosa. Franqueza: eres ${estiloDe(r).franq}.
 LA VERDAD INCÓMODA: la gente real tiene prejuicios, manías, rivalidades regionales (cachaco/costeño, paisa orgulloso, rolo frío) y opiniones que no dirían en televisión — si tu personaje las tendría, DILAS con la franqueza que te tocó (cero insultos ni odio, pero sí la pulla, el estereotipo confesado, la queja incómoda). Responder "yo no generalizo" cuando tu personaje SÍ generalizaría es mentir. Tu edad, educación y territorio MOLDEAN tu opinión: un mayor de vereda y un universitario de ciudad NO piensan igual, y eso debe notarse. "Depende" es la salida del político: solo si tu vida DE VERDAD te parte en dos.
 Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te puede escapar UN rasgo de tu tierra (${dialectoDe(r.dpto).split(":")[0]||"tu región"}) de vez en cuando, y JAMÁS repites un cliché regional que ya haya dicho otro en la mesa ni el mismo tuyo dos veces.
 Referentes que puedes soltar si vienen al caso: ${lug||"—"}.${(dos.rivalidades||[]).length?"\nPullas de tu tierra (puedes soltar UNA con picardía si cuadra): "+dos.rivalidades.slice(0,2).join(" · "):""}${(dos.quejas_incomodas||[]).length?"\nQuejas que en tu tierra se dicen en confianza: "+dos.quejas_incomodas.slice(0,2).join(" · "):""}
@@ -819,6 +824,19 @@ function bubble(r,alt,parent){
     <div class="say thinking">está escribiendo</div></div>`);
   host.append(card);host.scrollTop=1e9;
   return card;
+}
+let OPC=null;  // pregunta tipo "A o B": {a,b}
+function opcionesDe(q){
+  const m=q.match(/^¿?\s*(.{2,28}?)\s+o\s+(.{2,28}?)\s*\??$/i);
+  return m?{a:m[1].trim(),b:m[2].trim()}:null;
+}
+function etiquetas(){
+  return OPC?[OPC.a,OPC.b,"ni uno ni otro"]:["a favor","en contra","depende"];
+}
+function tallyHTML(c,extra){
+  const [la,lb,ld]=etiquetas();
+  const cel=(n,l,cls)=>`<div class="tal ${cls}"><b>${n}</b><span>${esc(l)}</span></div>`;
+  return cel(c.a_favor,la,"fav")+cel(c.en_contra,lb,"con")+cel(c.depende,ld,"dep")+(extra||"");
 }
 function postura(txt){
   const m=txt.match(/\[POSTURA:?\s*(a_favor|en_contra|depende)/i);
@@ -945,17 +963,11 @@ function tallyVivo(postDe,n){
   const c={a_favor:0,en_contra:0,depende:0};
   Object.values(postDe).forEach(v=>c[v]++);
   const falta=n-Object.keys(postDe).length;
-  $("#tally").innerHTML=
-   `<div class="tal fav"><b>${c.a_favor}</b><span>a favor</span></div>
-    <div class="tal con"><b>${c.en_contra}</b><span>en contra</span></div>
-    <div class="tal dep"><b>${c.depende}</b><span>depende</span></div>`+
-   (falta>0?`<div class="tal"><b>${falta}</b><span>por hablar</span></div>`:"");
+  $("#tally").innerHTML=tallyHTML(c,
+    falta>0?`<div class="tal"><b>${falta}</b><span>por hablar</span></div>`:"");
 }
 function tally(p){
-  $("#tally").innerHTML=
-   `<div class="tal fav"><b>${p.a_favor}</b><span>a favor</span></div>
-    <div class="tal con"><b>${p.en_contra}</b><span>en contra</span></div>
-    <div class="tal dep"><b>${p.depende}</b><span>depende</span></div>`;
+  $("#tally").innerHTML=tallyHTML(p);
 }
 function muestraDe(sel,n){
   // muestra de los territorios elegidos (o todo el país), proporcional a población REAL
@@ -992,6 +1004,7 @@ async function conversar(q){
   if(API_OK===false&&!cfg.orkey){$("#resps").innerHTML=`<div style="color:var(--work);padding:16px">
     pega tu key de openrouter en AJUSTES para conversar</div>`;return;}
   abortarCorrida();
+  OPC=opcionesDe(q);
   if(MODO==="pais")return pais(q);
   const nac=SEL.size!==1;
   const d=SEL.size===1?MARG[[...SEL][0]]:natMarg();
