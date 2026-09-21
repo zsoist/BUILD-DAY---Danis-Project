@@ -230,6 +230,17 @@ $("#gear").onclick=e=>{e.stopPropagation();const c=$("#cfg");c.style.display=c.s
 document.addEventListener("click",e=>{if(!$("#cfg").contains(e.target)&&e.target.id!=="gear")$("#cfg").style.display="none"});
 $("#c-orkey").onchange=e=>{cfg.orkey=e.target.value.trim();try{localStorage.setItem("sim-cfg",JSON.stringify(cfg))}catch(_){}};
 
+/* controles de la deliberación */
+let CONV={paused:false,stop:false,start:0};
+$("#btnpausa").onclick=()=>{CONV.paused=!CONV.paused;
+  $("#btnpausa").textContent=CONV.paused?"▶ SEGUIR":"⏸ PAUSAR";
+  $("#btnpausa").classList.toggle("pausa",CONV.paused);};
+$("#btnfin").onclick=()=>{CONV.stop=true;CONV.paused=false;};
+setInterval(()=>{if($("#ctrl").style.display!=="none"&&CONV.start){
+  const s=Math.round((Date.now()-CONV.start)/1000);
+  $("#reloj").textContent=(CONV.paused?"⏸ ":"")+Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+}},1000);
+
 /* ═══ MODO PAÍS: una pregunta, 33 mesas — el mapa se pinta con las conclusiones ═══ */
 let GEO=null,PAIS={q:null,cache:{},tally:{a_favor:0,en_contra:0,depende:0}};
 async function pais(q){
