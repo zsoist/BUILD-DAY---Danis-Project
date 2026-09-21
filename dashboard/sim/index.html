@@ -58,15 +58,20 @@ a.back:hover{color:var(--work)}
 /* mapa-navegador: el país siempre a la vista, clic = elegir territorio */
 #navmap{padding:8px 8px 4px;position:relative}
 #navmap svg{width:100%;height:auto;display:block}
-#navmap path{fill:var(--panel2);stroke:#2a3350;stroke-width:1.2;cursor:pointer;transition:fill .22s,stroke .15s}
+#navmap path{fill:var(--panel2);stroke:#2a3350;stroke-width:1.2;cursor:pointer;
+transition:fill .6s ease,stroke .25s ease,stroke-width .25s ease;stroke-linejoin:round;stroke-linecap:round}
 #navmap svg{filter:drop-shadow(0 5px 0 #00000055)}
 #navmap path:hover{stroke:var(--work);stroke-width:2}
 #navmap path:focus-visible,#navmap path:focus{outline:2px solid var(--work);outline-offset:1px}
 #navmap path.sel{stroke:var(--work);stroke-width:2.5;filter:drop-shadow(0 0 4px #ffd23e66)}
+#navmap path.fav,#navmap path.con,#navmap path.dep{animation:aterriza .7s ease}
+@keyframes aterriza{0%{fill-opacity:.2}60%{fill-opacity:1;filter:brightness(1.35)}100%{filter:none}}
 #navmap path.fav{fill:color-mix(in srgb,var(--ok) 45%,var(--panel2))}
 #navmap path.con{fill:color-mix(in srgb,var(--fail) 45%,var(--panel2))}
 #navmap path.dep{fill:color-mix(in srgb,var(--work) 40%,var(--panel2))}
-#navmap path.hot{stroke:var(--work);stroke-width:2;animation:blink 1s steps(2) infinite}
+#navmap path.hot{stroke:var(--work);animation:pulsohot 1.1s ease-in-out infinite}
+@keyframes pulsohot{0%,100%{stroke-width:1.6;filter:drop-shadow(0 0 1px var(--work))}
+50%{stroke-width:3;filter:drop-shadow(0 0 7px var(--work))}}
 #maplabel{font-family:"Silkscreen";font-size:9px;color:var(--work);text-align:center;
 padding:5px 0 3px;min-height:20px;letter-spacing:.06em}
 #ctrl{display:none;gap:4px}
