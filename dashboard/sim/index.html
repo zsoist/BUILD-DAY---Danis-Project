@@ -52,8 +52,30 @@ text-shadow:3px 3px 0 #0007}
 a.back{color:var(--faint);text-decoration:none;font-size:11px}
 a.back:hover{color:var(--work)}
 
-#censo{grid-area:censo;display:flex;flex-direction:column}
+#censo{grid-area:censo;display:flex;flex-direction:column;gap:8px;background:none;border:none}
+#censo .panel{display:flex;flex-direction:column;min-height:0}
 #censo .body{padding:10px;overflow-y:auto}
+/* mapa-navegador: el país siempre a la vista, clic = elegir territorio */
+#navmap{padding:8px 8px 4px;position:relative}
+#navmap svg{width:100%;height:auto;display:block}
+#navmap path{fill:var(--panel2);stroke:#2a3350;stroke-width:1.2;cursor:pointer;transition:fill .25s}
+#navmap path:hover{stroke:var(--work);stroke-width:2}
+#navmap path.sel{stroke:var(--work);stroke-width:2.5;filter:drop-shadow(0 0 4px #ffd23e66)}
+#navmap path.fav{fill:color-mix(in srgb,var(--ok) 45%,var(--panel2))}
+#navmap path.con{fill:color-mix(in srgb,var(--fail) 45%,var(--panel2))}
+#navmap path.dep{fill:color-mix(in srgb,var(--work) 40%,var(--panel2))}
+#navmap path.hot{stroke:var(--work);stroke-width:2;animation:blink 1s steps(2) infinite}
+#maplabel{font-family:"Silkscreen";font-size:9px;color:var(--work);text-align:center;
+padding:5px 0 3px;min-height:20px;letter-spacing:.06em}
+#ctrl{display:none;gap:4px}
+#ctrl button{font-family:"Silkscreen";font-size:8px;padding:3px 8px}
+#ctrl button.pausa{color:var(--work);border-color:var(--work)}
+#reloj{font-family:"Silkscreen";font-size:9px;color:var(--faint)}
+.acuerdo{flex:1 1 100%;border:2px solid var(--grid);padding:6px 10px}
+.acuerdo .t{display:flex;justify-content:space-between;font-size:10.5px;color:var(--dim);margin-bottom:4px}
+.acuerdo .t b{font-family:"Silkscreen";font-size:10px;color:var(--text);font-weight:400}
+.acuerdo .g{height:10px;background:var(--panel2);border:1px solid var(--grid);display:flex}
+.acuerdo .g i{height:100%}
 h3{font-family:"Silkscreen";font-size:9px;color:var(--faint);margin:12px 0 6px;font-weight:400}
 h3:first-child{margin-top:0}
 .pyr{display:grid;grid-template-columns:1fr 34px 1fr;gap:2px 6px;font-size:10px}
@@ -150,12 +172,18 @@ grid-template-areas:"top" "encuesta" "censo" "ficha" "banner"}#kpis{display:none
     <button id="gear" class="pxbtn">AJUSTES</button>
   </header>
 
-  <section id="censo" class="panel"><h2>el censo <b id="c-src-tag">DANE</b></h2>
-    <div class="body" id="censobody"></div>
+  <section id="censo">
+    <div class="panel"><h2>colombia <b id="maptag">toca un territorio</b></h2>
+      <div id="navmap"></div><div id="maplabel">—</div>
+    </div>
+    <div class="panel" style="flex:1"><h2>el censo <b id="c-src-tag">DANE</b></h2>
+      <div class="body" id="censobody"></div>
+    </div>
   </section>
 
   <section id="encuesta" class="panel">
-    <h2><span>la conversación <b id="estado"></b></span>
+    <h2><span>la conversación <b id="estado"></b> <span id="reloj"></span></span>
+      <span id="ctrl"><button id="btnpausa" type="button">⏸ PAUSAR</button><button id="btnfin" type="button">■ CERRAR</button></span>
       <span id="modo"><button data-m="pais" aria-pressed="false">PAÍS</button><button data-m="tertulia" aria-pressed="true">TERTULIA</button><button data-m="sondeo" aria-pressed="false">SONDEO</button></span></h2>
     <div id="resps"><div style="color:var(--faint);padding:20px;text-align:center">
       elige un departamento y suelta un tema —<br>
@@ -208,27 +236,20 @@ async function pais(q){
   if(!GEO){try{GEO=await fetch("colombia.json").then(r=>r.json())}catch(e){
     $("#resps").innerHTML="<div class='hint'>no cargó el mapa</div>";return;}}
   PAIS={q,cache:{},tally:{a_favor:0,en_contra:0,depende:0}};
+  DECIDIDO={}; paintNav();
   $("#tally").innerHTML="";
+  $("#maptag").textContent="el país responde";
   $("#resps").innerHTML=`
     <div style="color:var(--dim);padding:2px 2px 8px">
-      <b class="pxf" style="font-size:10px;color:var(--work)">EL PAÍS RESPONDE</b> ${esc(q)}
-      — toca un departamento y escucha su mesa llegar a una conclusión</div>
-    <div id="mapa">
-      <svg viewBox="${GEO.viewBox}" role="img" aria-label="Mapa de Colombia">${
-        Object.entries(GEO.paths).map(([c,p])=>
-          `<path d="${p}" data-cod="${c}"><title>${esc(MARG[c]?.nombre||c)}</title></path>`).join("")
-      }</svg>
-      <div id="mesa"><div class="hint">☝ el mapa espera tu dedo<br><br>
-        cada departamento arma una mesa de 4 residentes reales-sintéticos,
-        conversa y CONCLUYE — y el mapa se pinta con lo que decidan</div></div>
-    </div>`;
-  $("#resps").querySelector("svg").addEventListener("click",e=>{
-    const cod=e.target.dataset?.cod; if(cod)mesa(cod);
-  });
+      <b class="pxf" style="font-size:10px;color:var(--work)">EL PAÍS RESPONDE</b> ${esc(q)}</div>
+    <div id="mesa"><div class="hint">◂ toca un departamento en el mapa<br><br>
+      cada territorio arma su mesa de 4, conversa corto y CONCLUYE —
+      el mapa se va pintando con los veredictos</div></div>`;
 }
 async function mesa(cod){
   const el=$("#mesa"),d=MARG[cod],dos=DOS[cod]||{};
-  const path=$("#resps").querySelector(`path[data-cod="${cod}"]`);
+  if(!el)return;
+  const path=$(`#navmap path[data-cod="${cod}"]`);
   if(PAIS.cache[cod]){el.innerHTML=PAIS.cache[cod];return;}
   el.innerHTML=`<div class="ronda">— MESA DE ${esc(d.nombre).toUpperCase()} —</div>`;
   path?.classList.add("hot");
@@ -261,6 +282,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   el.scrollTop=1e9;
   path?.classList.remove("hot");
   path?.classList.add({a_favor:"fav",en_contra:"con",depende:"dep"}[pos]);
+  DECIDIDO[cod]=pos; paintNav();
   PAIS.tally[pos]++;
   guardar("pais",cod,PAIS.q,{postura:pos,conclusion:concl,
     participantes:sample.map(r=>r.id),intervenciones:transcript.length});
@@ -283,6 +305,34 @@ function guardar(modo,dpto,pregunta,resultado){
 }
 
 let RES=[],MARG={},DOS={},VAL={},cur="11";
+let DECIDIDO={};  // cod → postura concluida (pinta ambos mapas)
+
+async function drawNav(){
+  if(!GEO){try{GEO=await fetch("colombia.json").then(r=>r.json())}catch(e){return}}
+  $("#navmap").innerHTML=`<svg viewBox="${GEO.viewBox}" role="img" aria-label="Mapa de Colombia">${
+    Object.entries(GEO.paths).map(([c,p])=>`<path d="${p}" data-cod="${c}"/>`).join("")}</svg>`;
+  const svg=$("#navmap svg");
+  svg.addEventListener("click",e=>{
+    const cod=e.target.dataset?.cod; if(!cod)return;
+    cur=cod; $("#dptosel").value=cod; render();
+    if(MODO==="pais"&&PAIS.q)mesa(cod);
+  });
+  svg.addEventListener("mousemove",e=>{
+    const cod=e.target.dataset?.cod;
+    $("#maplabel").textContent=cod?
+      (MARG[cod]?.nombre||cod)+(DECIDIDO[cod]?" · "+({a_favor:"a favor",en_contra:"en contra",depende:"dividido"})[DECIDIDO[cod]]:""):"—";
+  });
+  svg.addEventListener("mouseleave",()=>{$("#maplabel").textContent=MARG[cur]?.nombre||"—"});
+  paintNav();
+}
+function paintNav(){
+  document.querySelectorAll("#navmap path").forEach(p=>{
+    const c=p.dataset.cod;
+    p.classList.toggle("sel",c===cur);
+    p.classList.remove("fav","con","dep");
+    if(DECIDIDO[c])p.classList.add({a_favor:"fav",en_contra:"con",depende:"dep"}[DECIDIDO[c]]);
+  });
+}
 const AGEG=["0-4","5-9","10-14","15-19","20-24","25-29","30-34","35-39","40-44",
 "45-49","50-54","55-59","60-64","65-69","70-74","75-79","80-84","85+"];
 
@@ -469,6 +519,43 @@ function vida(r){
   const barrio=r.edad>=30&&(h>>3)%3===0?"de toda la vida en el barrio":"";
   return [hijos,barrio].filter(Boolean).join(", ");
 }
+/* dialectos reales por región — la diferencia se ESCRIBE, no se declara */
+const DIALECTOS=[
+ [["08","13","20","23","44","47","70"],"CARIBE: te comes las eses finales al escribir ('vamo a vé', 'ere loco'), ritmo rápido, exageras con gracia; 'ajá', 'ombe', 'no joda' suave, 'mi amol' cariñoso. Ejemplo: 'Ajá ¿y quién va a pagá eso, ombe?'"],
+ [["05","17","63","66"],"PAISA: VOSEAS siempre ('vos sabés', '¿vos qué decís?'), rematas con 'pues' y '¿cierto?', 'eh avemaría', 'mijo/mija', diminutivos ('platica','ratico'). Ejemplo: 'Eh avemaría pues, ¿vos sí creés en eso, mijo?'"],
+ [["54","68"],"SANTANDEREANO: seco, directo, golpeado, USTEDEO siempre, 'mano', sin rodeos ni diminutivos; afirmas fuerte. Ejemplo: '¡Pues claro que no, mano, eso es plata botada!'"],
+ [["11","15","25"],"CUNDIBOYACENSE/ROLO: 'usted' y 'sumercé' (más sumercé si eres mayor o de pueblo), 'o sea', '¿sí o qué?'; jóvenes urbanos meten 'parce'. Ejemplo: 'Sumercé sabe que eso aquí nunca llega, ¿sí o no?'"],
+ [["76","19"],"VALLUNO: voseo con 'vé' y 'oís' ('mirá vé', '¿oís?'), cadencia cantada, 've' suelto. Ejemplo: 'Mirá vé, eso está bueno pero ¿quién lo cuida, oís?'"],
+ [["52"],"PASTUSO/NARIÑENSE: pausado, amable, respetuoso, 'achichay' si hace frío al caso, nada de afán; humor fino sin bulla."],
+ [["50","81","85","95","99"],"LLANERO: recio y franco, 'camarita', hablas de trabajo y madrugada, frases directas de sabana."],
+ [["41","73"],"OPITA/TOLIMENSE: tranquilo, 'ala', sin afán ('despacio que llevo prisa'), amable."],
+ [["27"],"PACÍFICO CHOCOANO: expresivo y musical, 've hombe', energía cálida, hablas con el cuerpo."],
+ [["18","86","91","94","97"],"AMAZÓNICO: pausado, sencillo, concreto, cercano al río y al monte; pocas palabras y bien puestas."],
+ [["88"],"RAIZAL SANANDRESANO: mezclas palabritas de creole/inglés ('man', 'right'), calmado isleño."],
+];
+const dialectoDe=cod=>DIALECTOS.find(([cs])=>cs.includes(cod))?.[1]||"";
+/* estilo INDIVIDUAL: cada quien es una persona, no un folleto regional */
+const TEMPERAMENTOS=[
+ "seco/a y de pocas palabras: respondes en UNA frase corta y ya",
+ "parlanchín/a: metes una anécdota tuya concreta en 2-3 frases",
+ "sarcástico/a suave: rematas con ironía fina",
+ "conciliador/a: buscas el punto medio y bajas los ánimos",
+ "quejumbroso/a: todo te recuerda una queja concreta de tu vida",
+ "entusiasta: le ves lo bueno y lo dices con energía",
+ "escéptico/a: pides pruebas, desconfías de promesas",
+ "pragmático/a: hablas de plata y números concretos",
+ "chistoso/a: metes una broma corta sin payasada",
+ "tímido/a: opinas bajito, con 'no sé, pero…', y aún así opinas",
+ "indignado/a: esto te toca personal y se nota",
+ "profesoral: explicas con calma, un dato y listo"];
+const LEAN=["llegas INCLINADO/A A FAVOR por algo de tu vida",
+ "llegas INCLINADO/A EN CONTRA por algo que viviste",
+ "llegas SIN DECIDIR y te dejas llevar por los argumentos"];
+function estiloDe(r){
+  let h=0;for(const c of r.id)h=(h*37+c.charCodeAt(0))>>>0;
+  return {temp:TEMPERAMENTOS[h%TEMPERAMENTOS.length],
+          lean:LEAN[(h>>4)%3]};
+}
 function persona(r,dos){
   const mule=(dos.muletillas||[]).slice(0,6).join(" · ");
   const lug=(dos.lugares||[]).slice(0,4).join(", ");
@@ -476,10 +563,10 @@ function persona(r,dos){
   const edu=r.educacion&&!/colegio|infancia/.test(r.educacion)?`, estudios: ${r.educacion}`:"";
   return `Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}${vida(r)?", "+vida(r):""}${edu}, régimen ${r.regimen_salud}, de ${r.dpto_nombre}, Colombia.
 Tu tierra: ${dos.vida_cotidiana||""} ${dos.economia_vivida||""}
-Cómo hablas: ${dos.como_hablan||"español colombiano natural"}${dos.picardia?" · "+dos.picardia:""}.
-Expresiones tuyas de calle (usa 1-2 por intervención, las que cuadren): ${mule||"—"}.
-Tu humor: ${humor||"picardía criolla sin pesadez"}. Referentes que sueltas si vienen al caso: ${lug||"—"}.
-REGLAS: hablas EN PRIMERA PERSONA como gente de verdad — confianzudo, con humor y mamando gallo cuando cuadre, frases a veces cortadas, concreta tu vida (tu camello, tu plata, tu edad). Nivel de lengua acorde a tus estudios. Sin groserías pesadas. Cero tono de IA, cero folclor de cartilla, cero listas.`;
+QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre este tema, ${estiloDe(r).lean}.
+Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te puede escapar UN rasgo de tu tierra (${dialectoDe(r.dpto).split(":")[0]||"tu región"}) de vez en cuando, y JAMÁS repites un cliché regional que ya haya dicho otro en la mesa ni el mismo tuyo dos veces.
+Referentes que puedes soltar si vienen al caso: ${lug||"—"}.
+REGLAS: primera persona, gente de verdad — concreta TU vida (tu camello, tu plata, tu edad, tu familia). Nivel de lengua acorde a tus estudios. Sin groserías pesadas. PROHIBIDO: sonar a IA, folclor de cartilla, listas, y arrancar con la misma palabra con la que arrancó cualquiera de la mesa.`;
 }
 function typewriter(el,txt){
   el.classList.remove("thinking");el.textContent="";
@@ -576,38 +663,62 @@ async function conversar(q){
       }catch(e){say.classList.remove("thinking");say.textContent="(no contestó)";}
     }));
   }else{
-    $("#estado").textContent="conversando…";
+    /* ── DELIBERACIÓN CONTINUA: hasta 3 min, pausable, corta cuando hay acuerdo ── */
+    CONV={paused:false,stop:false,start:Date.now()};
+    $("#ctrl").style.display="flex";
+    const LIMITE=180000;
+    const postDe={};                 // id → última postura de cada quien
     const transcript=[];
-    const rondas=n>=12?1:2;  // panel grande: una vuelta, que no se haga eterno
-    for(let ronda=0;ronda<rondas;ronda++){
+    let ronda=0, tallyPrev="";
+    while(!CONV.stop && Date.now()-CONV.start<LIMITE){
       $("#resps").insertAdjacentHTML("beforeend",
-        `<div class="ronda">— ${ronda?"SEGUNDA VUELTA":"ARRANCA LA TERTULIA"} —</div>`);
-      for(let i=0;i<sample.length;i++){
-        const r=sample[i],card=bubble(r,i%2===1),say=card.querySelector(".say");
+        `<div class="ronda">— ${ronda===0?"ARRANCA LA TERTULIA":"VUELTA "+(ronda+1)} —</div>`);
+      for(const [i,r] of sample.entries()){
+        while(CONV.paused && !CONV.stop) await new Promise(s=>setTimeout(s,300));
+        if(CONV.stop||Date.now()-CONV.start>=LIMITE)break;
+        const card=bubble(r,i%2===1),say=card.querySelector(".say");
         try{
           const charla=transcript.length?
-            "Lo que se ha dicho en la mesa:\n"+transcript.map(t=>`${t.n} (${t.d}): ${t.t}`).join("\n"):"nadie ha hablado aún, abres tú";
+            "La mesa va así:\n"+transcript.slice(-10).map(t=>`${t.n}: ${t.t}`).join("\n")+
+            "\nPROHIBIDO arrancar tu frase como arrancó cualquiera de los anteriores; suena a TI.":"abres tú";
           const raw=await flash([{role:"system",content:persona(r,dosOf(r))+`
-Estás en una tertulia con vecinos de ${r.dpto_nombre}. Habla como en la vida real: puedes REACCIONAR a lo que dijeron otros (cítalos por su nombre de pila, dales la razón o contradícelos con respeto o con picardía), meter tu experiencia propia, hasta cambiar de opinión${ronda?" si te convencieron":""}. 1-3 frases, tono de conversación, no de discurso. Cierra con [POSTURA: a_favor|en_contra|depende].`},
-            {role:"user",content:`Tema de la mesa: ${q}\n${charla}\nTe toca hablar, ${r.nombre.split(" ")[0]}.`}],190);
+Tertulia de vecinos${cur==="CO"?" de todo el país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. Cierra con [POSTURA: a_favor|en_contra|depende].`},
+            {role:"user",content:`Tema: ${q}\n${charla}\nTe toca, ${r.nombre.split(" ")[0]}.`}],85);
           const [pos,txt]=postura(raw);
-          if(ronda===rondas-1)p[pos||"depende"]++;
+          postDe[r.id]=pos||"depende";
           typewriter(say,txt);
           card.style.setProperty("--pc",COLORES[pos||"depende"]);
           transcript.push({id:r.id,n:r.nombre.split(" ")[0],d:r.dpto_nombre,t:txt});
-          if(ronda===rondas-1)tally(p);
+          tallyVivo(postDe,sample.length);
         }catch(e){say.classList.remove("thinking");say.textContent="(se quedó callado)";}
       }
+      ronda++;
+      const votos=Object.values(postDe);
+      const c={a_favor:0,en_contra:0,depende:0};votos.forEach(v=>c[v]++);
+      const maxP=Math.max(...Object.values(c));
+      if(votos.length===sample.length && maxP>=Math.ceil(sample.length*0.8)){
+        $("#resps").insertAdjacentHTML("beforeend",
+          `<div class="ronda">— HAY ACUERDO —</div>`);break;}
+      const firma=JSON.stringify(c);
+      if(ronda>=2 && firma===tallyPrev){
+        $("#resps").insertAdjacentHTML("beforeend",
+          `<div class="ronda">— NADIE CEDE: SE LEVANTA LA MESA —</div>`);break;}
+      tallyPrev=firma;
     }
-    /* el moderador cierra */
+    $("#ctrl").style.display="none";$("#reloj").textContent="";
+    Object.values(postDe).forEach(v=>p[v]++);
+    /* veredicto: ¿se pusieron de acuerdo los colombianos? */
     try{
       const resumen=await flash([{role:"system",content:
-        "Eres el moderador de una tertulia. Resume en 2 frases qué se dijo y dónde quedó el desacuerdo, con los nombres. Neutral, vivo, español colombiano."},
-        {role:"user",content:`Tema: ${q}\n`+transcript.map(t=>`${t.n}: ${t.t}`).join("\n")}],140,0.6);
+        "Cierras tertulias. En máximo 2 frases: di si HUBO ACUERDO o no, quién quedó en qué orilla (nombres), y el porqué en una pincelada. Español colombiano vivo, neutral."},
+        {role:"user",content:`Tema: ${q}\n`+transcript.map(t=>`${t.n}: ${t.t}`).join("\n")}],120,0.5);
+      const acordo=Math.max(p.a_favor,p.en_contra,p.depende)>=Math.ceil(sample.length*0.8);
       $("#resps").insertAdjacentHTML("beforeend",
-        `<div class="mod"><b>EL MODERADOR CIERRA</b>${esc(resumen)}</div>`);
+        `<div class="mod" style="border-color:${acordo?"var(--ok)":"var(--fail)"}">
+         <b style="color:${acordo?"var(--ok)":"var(--fail)"}">${acordo?"✔ SE PUSIERON DE ACUERDO":"✘ NO HUBO ACUERDO"} · ${Math.round((Date.now()-CONV.start)/1000)}s · ${transcript.length} intervenciones</b>${esc(resumen)}</div>`);
       $("#resps").scrollTop=1e9;
-      guardar("tertulia",cur,q,{posturas:p,resumen,participantes:sample.map(r=>r.id)});
+      guardar("tertulia",cur,q,{posturas:p,resumen,acordo,rondas:ronda,
+        segundos:Math.round((Date.now()-CONV.start)/1000),participantes:sample.map(r=>r.id)});
     }catch(e){}
   }
   if(MODO==="sondeo")guardar("sondeo",cur,q,{posturas:p,participantes:sample.map(r=>r.id)});
