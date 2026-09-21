@@ -18,7 +18,9 @@ DASH.mkdir(parents=True, exist_ok=True)
 N_POR_DPTO = 200
 rng = random.Random(2026_09_21)
 
-M = json.loads((BASE / "data" / "marginals.json").read_text())["departamentos"]
+import os
+SUFIJO = os.environ.get("SIM_SUFIJO", "")
+M = json.loads((BASE / "data" / f"marginals{SUFIJO}.json").read_text())["departamentos"]
 DOSSIERS = {}
 ddir = BASE / "data" / "dossiers"
 if ddir.exists():
@@ -209,7 +211,7 @@ for cod, d in M.items():
             for g, n in d["edad"].items()) / len(d["edad"]), 2)
     val["errores"][cod] = err
 
-json.dump(residents, (DASH / "residents.json").open("w"), ensure_ascii=False)
-json.dump(val, (DASH / "validacion.json").open("w"), ensure_ascii=False, indent=1)
+json.dump(residents, (DASH / f"residents{SUFIJO}.json").open("w"), ensure_ascii=False)
+json.dump(val, (DASH / f"validacion{SUFIJO}.json").open("w"), ensure_ascii=False, indent=1)
 print(f"{len(residents)} residentes de {len(M)} dptos → {DASH}/residents.json")
 print(f"provisionales: {sorted(provisional) or 'ninguno'} · validación → validacion.json")

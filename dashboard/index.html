@@ -547,6 +547,14 @@ function drawFeed(run){
     if(e.event==="shipped"){cls="ok"}
     if(e.event==="jev"){key=p.p>=.5?"jev_ok":"jev_fail";cls=p.p>=.5?"ok":"bd";}
     if(e.event==="done")cls="ok";
+    if(e.event&&e.event.startsWith("fable")){
+      const pl=e.payload||{};
+      const txt=e.event==="fable_inicio"?"🧠 FABLE 5.1 · "+(pl.acto||"trabajando"):
+        e.event==="fable_costo"?("FABLE gasto: $"+pl.usd+" · caché "+((pl.cache_read||0).toLocaleString())+" tk"):
+        e.event==="fable_duelo"?("⚔️ DUELO: enjambre "+(pl.marcador?.enjambre??"?")+" — "+(pl.marcador?.fable??"?")+" fable"):
+        e.event;
+      return `<div class="l"><time class="num">·</time><span class="ev live">${esc(txt)}</span></div>`;
+    }
     const str=FEEDT[key]; if(!str)return "";
     const txt=tpl(str,{task:(p.task||"").slice(0,60),n:p.tasks?.length,id:e.task_id,
       file:t.filename||(p.chars!=null?p.chars+" chars":e.task_id||""),p:p.p!=null?(p.p*100).toFixed(0):"",

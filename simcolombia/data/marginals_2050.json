@@ -1,0 +1,2980 @@
+{
+ "generado": "2026-09-21",
+ "departamentos": {
+  "05": {
+   "nombre": "Antioquia",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.8,
+    "Industrias manufactureras": 13.4,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 11.2,
+    "Impuestos": 9.4,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 8.7,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 7.7
+   },
+   "educacion_pct": {
+    "ninguna": 4.0,
+    "primaria": 30.7,
+    "secundaria": 42.7,
+    "superior": 21.3
+   },
+   "poblacion": 7440163,
+   "sexo": {
+    "hombre": 3604287,
+    "mujer": 3835876
+   },
+   "edad": {
+    "0-4": 317375,
+    "5-9": 336776,
+    "10-14": 357612,
+    "15-19": 379284,
+    "20-24": 405077,
+    "25-29": 432950,
+    "30-34": 480991,
+    "35-39": 487759,
+    "40-44": 495645,
+    "45-49": 528923,
+    "50-54": 578424,
+    "55-59": 569696,
+    "60-64": 505524,
+    "65-69": 446220,
+    "70-74": 360538,
+    "75-79": 286507,
+    "80-84": 239121,
+    "85+": 231741
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 162128,
+     "5-9": 172154,
+     "10-14": 182683,
+     "15-19": 193154,
+     "20-24": 205464,
+     "25-29": 219269,
+     "30-34": 243794,
+     "35-39": 246704,
+     "40-44": 249318,
+     "45-49": 264128,
+     "50-54": 285342,
+     "55-59": 277859,
+     "60-64": 242013,
+     "65-69": 207103,
+     "70-74": 159949,
+     "75-79": 120018,
+     "80-84": 94070,
+     "85+": 79137
+    },
+    "mujer": {
+     "0-4": 155247,
+     "5-9": 164622,
+     "10-14": 174929,
+     "15-19": 186130,
+     "20-24": 199613,
+     "25-29": 213681,
+     "30-34": 237197,
+     "35-39": 241055,
+     "40-44": 246327,
+     "45-49": 264795,
+     "50-54": 293082,
+     "55-59": 291837,
+     "60-64": 263511,
+     "65-69": 239117,
+     "70-74": 200589,
+     "75-79": 166489,
+     "80-84": 145051,
+     "85+": 152604
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "08": {
+   "nombre": "Atlántico",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 21.9,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 15.2,
+    "Industrias manufactureras": 15.1,
+    "Impuestos": 10.3,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 9.6,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 6.8
+   },
+   "educacion_pct": {
+    "ninguna": 3.2,
+    "primaria": 26.0,
+    "secundaria": 45.6,
+    "superior": 23.9
+   },
+   "poblacion": 2922132,
+   "sexo": {
+    "hombre": 1441119,
+    "mujer": 1481013
+   },
+   "edad": {
+    "0-4": 126132,
+    "5-9": 137929,
+    "10-14": 149345,
+    "15-19": 160808,
+    "20-24": 174281,
+    "25-29": 187658,
+    "30-34": 206438,
+    "35-39": 206355,
+    "40-44": 200199,
+    "45-49": 203592,
+    "50-54": 208153,
+    "55-59": 203619,
+    "60-64": 185868,
+    "65-69": 167133,
+    "70-74": 137993,
+    "75-79": 108030,
+    "80-84": 83796,
+    "85+": 74803
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 64578,
+     "5-9": 70671,
+     "10-14": 76718,
+     "15-19": 82718,
+     "20-24": 89541,
+     "25-29": 96437,
+     "30-34": 105964,
+     "35-39": 105666,
+     "40-44": 101940,
+     "45-49": 102290,
+     "50-54": 103423,
+     "55-59": 100035,
+     "60-64": 89943,
+     "65-69": 78997,
+     "70-74": 63174,
+     "75-79": 47427,
+     "80-84": 34685,
+     "85+": 26912
+    },
+    "mujer": {
+     "0-4": 61554,
+     "5-9": 67258,
+     "10-14": 72627,
+     "15-19": 78090,
+     "20-24": 84740,
+     "25-29": 91221,
+     "30-34": 100474,
+     "35-39": 100689,
+     "40-44": 98259,
+     "45-49": 101302,
+     "50-54": 104730,
+     "55-59": 103584,
+     "60-64": 95925,
+     "65-69": 88136,
+     "70-74": 74819,
+     "75-79": 60603,
+     "80-84": 49111,
+     "85+": 47891
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "11": {
+   "nombre": "Bogotá D.C.",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 22.7,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 14.6,
+    "Impuestos": 12.1,
+    "Actividades inmobiliarias": 11.1,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 8.6,
+    "Actividades financieras y de seguros": 7.9
+   },
+   "educacion_pct": {
+    "ninguna": 1.6,
+    "primaria": 21.3,
+    "secundaria": 39.6,
+    "superior": 35.0
+   },
+   "poblacion": 7332164,
+   "sexo": {
+    "hombre": 3515924,
+    "mujer": 3816240
+   },
+   "edad": {
+    "0-4": 284286,
+    "5-9": 301578,
+    "10-14": 315320,
+    "15-19": 336751,
+    "20-24": 392042,
+    "25-29": 449763,
+    "30-34": 491672,
+    "35-39": 495610,
+    "40-44": 510633,
+    "45-49": 557100,
+    "50-54": 617144,
+    "55-59": 571303,
+    "60-64": 482859,
+    "65-69": 423071,
+    "70-74": 352766,
+    "75-79": 283648,
+    "80-84": 231599,
+    "85+": 235019
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 145546,
+     "5-9": 154250,
+     "10-14": 161044,
+     "15-19": 171437,
+     "20-24": 197948,
+     "25-29": 228656,
+     "30-34": 251247,
+     "35-39": 252902,
+     "40-44": 259031,
+     "45-49": 278380,
+     "50-54": 304260,
+     "55-59": 275396,
+     "60-64": 223820,
+     "65-69": 187505,
+     "70-74": 148639,
+     "75-79": 112782,
+     "80-84": 86404,
+     "85+": 76677
+    },
+    "mujer": {
+     "0-4": 138740,
+     "5-9": 147328,
+     "10-14": 154276,
+     "15-19": 165314,
+     "20-24": 194094,
+     "25-29": 221107,
+     "30-34": 240425,
+     "35-39": 242708,
+     "40-44": 251602,
+     "45-49": 278720,
+     "50-54": 312884,
+     "55-59": 295907,
+     "60-64": 259039,
+     "65-69": 235566,
+     "70-74": 204127,
+     "75-79": 170866,
+     "80-84": 145195,
+     "85+": 158342
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "13": {
+   "nombre": "Bolívar",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Industrias manufactureras": 18.1,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 17.3,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 16.6,
+    "Impuestos": 11.3,
+    "Construcción": 7.1,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 6.6
+   },
+   "educacion_pct": {
+    "ninguna": 6.2,
+    "primaria": 31.9,
+    "secundaria": 43.8,
+    "superior": 17.1
+   },
+   "poblacion": 2376170,
+   "sexo": {
+    "hombre": 1179321,
+    "mujer": 1196849
+   },
+   "edad": {
+    "0-4": 118851,
+    "5-9": 125727,
+    "10-14": 133207,
+    "15-19": 140684,
+    "20-24": 147940,
+    "25-29": 156087,
+    "30-34": 168410,
+    "35-39": 166235,
+    "40-44": 160962,
+    "45-49": 162538,
+    "50-54": 163502,
+    "55-59": 156174,
+    "60-64": 140574,
+    "65-69": 123953,
+    "70-74": 103698,
+    "75-79": 83548,
+    "80-84": 64917,
+    "85+": 59163
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 60872,
+     "5-9": 64431,
+     "10-14": 68280,
+     "15-19": 72101,
+     "20-24": 75758,
+     "25-29": 79628,
+     "30-34": 85443,
+     "35-39": 84440,
+     "40-44": 81601,
+     "45-49": 81558,
+     "50-54": 80975,
+     "55-59": 76821,
+     "60-64": 68505,
+     "65-69": 59430,
+     "70-74": 48762,
+     "75-79": 38349,
+     "80-84": 28699,
+     "85+": 23668
+    },
+    "mujer": {
+     "0-4": 57979,
+     "5-9": 61296,
+     "10-14": 64927,
+     "15-19": 68583,
+     "20-24": 72182,
+     "25-29": 76459,
+     "30-34": 82967,
+     "35-39": 81795,
+     "40-44": 79361,
+     "45-49": 80980,
+     "50-54": 82527,
+     "55-59": 79353,
+     "60-64": 72069,
+     "65-69": 64523,
+     "70-74": 54936,
+     "75-79": 45199,
+     "80-84": 36218,
+     "85+": 35495
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "15": {
+   "nombre": "Boyacá",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.1,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 14.5,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 12.8,
+    "Industrias manufactureras": 10.3,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 8.5,
+    "Impuestos": 7.7
+   },
+   "educacion_pct": {
+    "ninguna": 4.7,
+    "primaria": 37.9,
+    "secundaria": 37.6,
+    "superior": 18.3
+   },
+   "poblacion": 1490926,
+   "sexo": {
+    "hombre": 749195,
+    "mujer": 741731
+   },
+   "edad": {
+    "0-4": 67318,
+    "5-9": 71179,
+    "10-14": 75983,
+    "15-19": 80578,
+    "20-24": 82057,
+    "25-29": 84996,
+    "30-34": 94524,
+    "35-39": 97546,
+    "40-44": 98290,
+    "45-49": 101159,
+    "50-54": 107540,
+    "55-59": 105148,
+    "60-64": 95427,
+    "65-69": 88520,
+    "70-74": 76961,
+    "75-79": 63155,
+    "80-84": 49513,
+    "85+": 51032
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 34540,
+     "5-9": 36594,
+     "10-14": 39135,
+     "15-19": 41640,
+     "20-24": 42687,
+     "25-29": 44104,
+     "30-34": 48750,
+     "35-39": 50389,
+     "40-44": 50959,
+     "45-49": 52263,
+     "50-54": 54901,
+     "55-59": 53189,
+     "60-64": 47753,
+     "65-69": 43740,
+     "70-74": 37244,
+     "75-79": 29412,
+     "80-84": 21837,
+     "85+": 20058
+    },
+    "mujer": {
+     "0-4": 32778,
+     "5-9": 34585,
+     "10-14": 36848,
+     "15-19": 38938,
+     "20-24": 39370,
+     "25-29": 40892,
+     "30-34": 45774,
+     "35-39": 47157,
+     "40-44": 47331,
+     "45-49": 48896,
+     "50-54": 52639,
+     "55-59": 51959,
+     "60-64": 47674,
+     "65-69": 44780,
+     "70-74": 39717,
+     "75-79": 33743,
+     "80-84": 27676,
+     "85+": 30974
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "17": {
+   "nombre": "Caldas",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.3,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 14.9,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 14.5,
+    "Industrias manufactureras": 10.5,
+    "Impuestos": 8.1,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 6.9
+   },
+   "educacion_pct": {
+    "ninguna": 4.1,
+    "primaria": 34.9,
+    "secundaria": 41.0,
+    "superior": 18.9
+   },
+   "poblacion": 1098853,
+   "sexo": {
+    "hombre": 533444,
+    "mujer": 565409
+   },
+   "edad": {
+    "0-4": 45534,
+    "5-9": 48528,
+    "10-14": 51813,
+    "15-19": 55011,
+    "20-24": 57854,
+    "25-29": 60889,
+    "30-34": 67946,
+    "35-39": 68861,
+    "40-44": 70155,
+    "45-49": 75309,
+    "50-54": 81709,
+    "55-59": 81874,
+    "60-64": 74055,
+    "65-69": 68456,
+    "70-74": 58481,
+    "75-79": 48876,
+    "80-84": 40907,
+    "85+": 42595
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 23293,
+     "5-9": 24788,
+     "10-14": 26462,
+     "15-19": 28053,
+     "20-24": 29257,
+     "25-29": 30541,
+     "30-34": 33920,
+     "35-39": 34315,
+     "40-44": 34817,
+     "45-49": 37191,
+     "50-54": 40312,
+     "55-59": 40216,
+     "60-64": 36002,
+     "65-69": 32682,
+     "70-74": 27172,
+     "75-79": 21839,
+     "80-84": 17220,
+     "85+": 15364
+    },
+    "mujer": {
+     "0-4": 22241,
+     "5-9": 23740,
+     "10-14": 25351,
+     "15-19": 26958,
+     "20-24": 28597,
+     "25-29": 30348,
+     "30-34": 34026,
+     "35-39": 34546,
+     "40-44": 35338,
+     "45-49": 38118,
+     "50-54": 41397,
+     "55-59": 41658,
+     "60-64": 38053,
+     "65-69": 35774,
+     "70-74": 31309,
+     "75-79": 27037,
+     "80-84": 23687,
+     "85+": 27231
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "18": {
+   "nombre": "Caquetá",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 31.2,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 19.1,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.6,
+    "Actividades inmobiliarias": 6.0,
+    "Impuestos": 6.0,
+    "Construcción": 5.2
+   },
+   "educacion_pct": {
+    "ninguna": 5.4,
+    "primaria": 42.2,
+    "secundaria": 38.3,
+    "superior": 11.1
+   },
+   "poblacion": 436416,
+   "sexo": {
+    "hombre": 214410,
+    "mujer": 222006
+   },
+   "edad": {
+    "0-4": 24375,
+    "5-9": 25392,
+    "10-14": 26679,
+    "15-19": 27890,
+    "20-24": 28602,
+    "25-29": 29319,
+    "30-34": 31033,
+    "35-39": 30626,
+    "40-44": 29722,
+    "45-49": 29583,
+    "50-54": 29876,
+    "55-59": 27988,
+    "60-64": 24220,
+    "65-69": 21030,
+    "70-74": 17453,
+    "75-79": 13850,
+    "80-84": 10316,
+    "85+": 8462
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 12518,
+     "5-9": 13065,
+     "10-14": 13676,
+     "15-19": 14241,
+     "20-24": 14676,
+     "25-29": 15071,
+     "30-34": 15722,
+     "35-39": 15246,
+     "40-44": 14709,
+     "45-49": 14662,
+     "50-54": 14713,
+     "55-59": 13548,
+     "60-64": 11557,
+     "65-69": 9889,
+     "70-74": 7895,
+     "75-79": 5936,
+     "80-84": 4186,
+     "85+": 3100
+    },
+    "mujer": {
+     "0-4": 11857,
+     "5-9": 12327,
+     "10-14": 13003,
+     "15-19": 13649,
+     "20-24": 13926,
+     "25-29": 14248,
+     "30-34": 15311,
+     "35-39": 15380,
+     "40-44": 15013,
+     "45-49": 14921,
+     "50-54": 15163,
+     "55-59": 14440,
+     "60-64": 12663,
+     "65-69": 11141,
+     "70-74": 9558,
+     "75-79": 7914,
+     "80-84": 6130,
+     "85+": 5362
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "19": {
+   "nombre": "Cauca",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 19.8,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 17.1,
+    "Industrias manufactureras": 15.1,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 12.5,
+    "Impuestos": 9.8,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 6.7
+   },
+   "educacion_pct": {
+    "ninguna": 4.9,
+    "primaria": 41.8,
+    "secundaria": 39.1,
+    "superior": 12.7
+   },
+   "poblacion": 1839610,
+   "sexo": {
+    "hombre": 903719,
+    "mujer": 935891
+   },
+   "edad": {
+    "0-4": 93611,
+    "5-9": 97874,
+    "10-14": 102758,
+    "15-19": 107111,
+    "20-24": 110183,
+    "25-29": 112568,
+    "30-34": 121710,
+    "35-39": 122272,
+    "40-44": 123958,
+    "45-49": 130434,
+    "50-54": 134463,
+    "55-59": 125687,
+    "60-64": 110981,
+    "65-69": 100331,
+    "70-74": 82197,
+    "75-79": 63188,
+    "80-84": 48595,
+    "85+": 51689
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 47960,
+     "5-9": 50129,
+     "10-14": 52537,
+     "15-19": 54625,
+     "20-24": 56011,
+     "25-29": 56876,
+     "30-34": 60874,
+     "35-39": 60633,
+     "40-44": 61219,
+     "45-49": 64247,
+     "50-54": 65932,
+     "55-59": 61170,
+     "60-64": 53658,
+     "65-69": 48163,
+     "70-74": 38824,
+     "75-79": 28977,
+     "80-84": 21346,
+     "85+": 20538
+    },
+    "mujer": {
+     "0-4": 45651,
+     "5-9": 47745,
+     "10-14": 50221,
+     "15-19": 52486,
+     "20-24": 54172,
+     "25-29": 55692,
+     "30-34": 60836,
+     "35-39": 61639,
+     "40-44": 62739,
+     "45-49": 66187,
+     "50-54": 68531,
+     "55-59": 64517,
+     "60-64": 57323,
+     "65-69": 52168,
+     "70-74": 43373,
+     "75-79": 34211,
+     "80-84": 27249,
+     "85+": 31151
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "20": {
+   "nombre": "Cesar",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Explotación de minas y canteras": 41.8,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 14.3,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 10.8,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 10.2,
+    "Construcción": 3.8,
+    "Actividades inmobiliarias": 3.6
+   },
+   "educacion_pct": {
+    "ninguna": 7.3,
+    "primaria": 33.7,
+    "secundaria": 41.0,
+    "superior": 16.6
+   },
+   "poblacion": 1696420,
+   "sexo": {
+    "hombre": 840304,
+    "mujer": 856116
+   },
+   "edad": {
+    "0-4": 91616,
+    "5-9": 96680,
+    "10-14": 102108,
+    "15-19": 107338,
+    "20-24": 111384,
+    "25-29": 116216,
+    "30-34": 124949,
+    "35-39": 124068,
+    "40-44": 119067,
+    "45-49": 116011,
+    "50-54": 114470,
+    "55-59": 108700,
+    "60-64": 95421,
+    "65-69": 81494,
+    "70-74": 66561,
+    "75-79": 51647,
+    "80-84": 37257,
+    "85+": 31433
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 46867,
+     "5-9": 49404,
+     "10-14": 52176,
+     "15-19": 54807,
+     "20-24": 56752,
+     "25-29": 58853,
+     "30-34": 63071,
+     "35-39": 62733,
+     "40-44": 60045,
+     "45-49": 57782,
+     "50-54": 56439,
+     "55-59": 53211,
+     "60-64": 46288,
+     "65-69": 39003,
+     "70-74": 31087,
+     "75-79": 23291,
+     "80-84": 16123,
+     "85+": 12372
+    },
+    "mujer": {
+     "0-4": 44749,
+     "5-9": 47276,
+     "10-14": 49932,
+     "15-19": 52531,
+     "20-24": 54632,
+     "25-29": 57363,
+     "30-34": 61878,
+     "35-39": 61335,
+     "40-44": 59022,
+     "45-49": 58229,
+     "50-54": 58031,
+     "55-59": 55489,
+     "60-64": 49133,
+     "65-69": 42491,
+     "70-74": 35474,
+     "75-79": 28356,
+     "80-84": 21134,
+     "85+": 19061
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "23": {
+   "nombre": "Córdoba",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 24.9,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 14.9,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 13.9,
+    "Industrias manufactureras": 10.6,
+    "Impuestos": 6.6,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 6.2
+   },
+   "educacion_pct": {
+    "ninguna": 9.0,
+    "primaria": 34.5,
+    "secundaria": 41.0,
+    "superior": 14.6
+   },
+   "poblacion": 2101344,
+   "sexo": {
+    "hombre": 1041397,
+    "mujer": 1059947
+   },
+   "edad": {
+    "0-4": 112486,
+    "5-9": 117115,
+    "10-14": 122732,
+    "15-19": 127929,
+    "20-24": 129876,
+    "25-29": 132323,
+    "30-34": 143071,
+    "35-39": 142220,
+    "40-44": 138482,
+    "45-49": 137255,
+    "50-54": 138547,
+    "55-59": 133470,
+    "60-64": 120281,
+    "65-69": 109226,
+    "70-74": 94915,
+    "75-79": 79290,
+    "80-84": 62037,
+    "85+": 60089
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 57597,
+     "5-9": 59986,
+     "10-14": 62919,
+     "15-19": 65729,
+     "20-24": 66712,
+     "25-29": 67364,
+     "30-34": 72529,
+     "35-39": 71857,
+     "40-44": 69507,
+     "45-49": 68156,
+     "50-54": 68099,
+     "55-59": 65485,
+     "60-64": 58511,
+     "65-69": 52465,
+     "70-74": 44946,
+     "75-79": 36862,
+     "80-84": 28036,
+     "85+": 24637
+    },
+    "mujer": {
+     "0-4": 54889,
+     "5-9": 57129,
+     "10-14": 59813,
+     "15-19": 62200,
+     "20-24": 63164,
+     "25-29": 64959,
+     "30-34": 70542,
+     "35-39": 70363,
+     "40-44": 68975,
+     "45-49": 69099,
+     "50-54": 70448,
+     "55-59": 67985,
+     "60-64": 61770,
+     "65-69": 56761,
+     "70-74": 49969,
+     "75-79": 42428,
+     "80-84": 34001,
+     "85+": 35452
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "25": {
+   "nombre": "Cundinamarca",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Industrias manufactureras": 19.0,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 16.5,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 16.3,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 10.8,
+    "Impuestos": 10.8,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 7.9
+   },
+   "educacion_pct": {
+    "ninguna": 2.9,
+    "primaria": 32.4,
+    "secundaria": 42.5,
+    "superior": 20.7
+   },
+   "poblacion": 5730649,
+   "sexo": {
+    "hombre": 2839782,
+    "mujer": 2890867
+   },
+   "edad": {
+    "0-4": 253814,
+    "5-9": 271099,
+    "10-14": 288765,
+    "15-19": 305597,
+    "20-24": 322593,
+    "25-29": 345082,
+    "30-34": 383809,
+    "35-39": 390481,
+    "40-44": 400022,
+    "45-49": 424321,
+    "50-54": 450214,
+    "55-59": 430060,
+    "60-64": 373352,
+    "65-69": 323191,
+    "70-74": 259558,
+    "75-79": 202478,
+    "80-84": 157156,
+    "85+": 149057
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 130009,
+     "5-9": 138888,
+     "10-14": 147944,
+     "15-19": 156492,
+     "20-24": 164910,
+     "25-29": 175498,
+     "30-34": 194222,
+     "35-39": 197437,
+     "40-44": 202425,
+     "45-49": 214316,
+     "50-54": 226015,
+     "55-59": 214175,
+     "60-64": 183632,
+     "65-69": 156148,
+     "70-74": 121771,
+     "75-79": 91155,
+     "80-84": 67412,
+     "85+": 57333
+    },
+    "mujer": {
+     "0-4": 123805,
+     "5-9": 132211,
+     "10-14": 140821,
+     "15-19": 149105,
+     "20-24": 157683,
+     "25-29": 169584,
+     "30-34": 189587,
+     "35-39": 193044,
+     "40-44": 197597,
+     "45-49": 210005,
+     "50-54": 224199,
+     "55-59": 215885,
+     "60-64": 189720,
+     "65-69": 167043,
+     "70-74": 137787,
+     "75-79": 111323,
+     "80-84": 89744,
+     "85+": 91724
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "27": {
+   "nombre": "Chocó",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 32.2,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 23.2,
+    "Explotación de minas y canteras": 17.8,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 12.7,
+    "Impuestos": 3.5,
+    "Construcción": 3.3
+   },
+   "educacion_pct": {
+    "ninguna": 8.7,
+    "primaria": 36.4,
+    "secundaria": 35.1,
+    "superior": 11.9
+   },
+   "poblacion": 764599,
+   "sexo": {
+    "hombre": 377106,
+    "mujer": 387493
+   },
+   "edad": {
+    "0-4": 48058,
+    "5-9": 49489,
+    "10-14": 51482,
+    "15-19": 52895,
+    "20-24": 53311,
+    "25-29": 53175,
+    "30-34": 55120,
+    "35-39": 55805,
+    "40-44": 53915,
+    "45-49": 51204,
+    "50-54": 47651,
+    "55-59": 43983,
+    "60-64": 39059,
+    "65-69": 32036,
+    "70-74": 25520,
+    "75-79": 19885,
+    "80-84": 14659,
+    "85+": 17352
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 24596,
+     "5-9": 25331,
+     "10-14": 26379,
+     "15-19": 27094,
+     "20-24": 27206,
+     "25-29": 26810,
+     "30-34": 27365,
+     "35-39": 27295,
+     "40-44": 26107,
+     "45-49": 24752,
+     "50-54": 23009,
+     "55-59": 21036,
+     "60-64": 18655,
+     "65-69": 15458,
+     "70-74": 12320,
+     "75-79": 9498,
+     "80-84": 6793,
+     "85+": 7402
+    },
+    "mujer": {
+     "0-4": 23462,
+     "5-9": 24158,
+     "10-14": 25103,
+     "15-19": 25801,
+     "20-24": 26105,
+     "25-29": 26365,
+     "30-34": 27755,
+     "35-39": 28510,
+     "40-44": 27808,
+     "45-49": 26452,
+     "50-54": 24642,
+     "55-59": 22947,
+     "60-64": 20404,
+     "65-69": 16578,
+     "70-74": 13200,
+     "75-79": 10387,
+     "80-84": 7866,
+     "85+": 9950
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "41": {
+   "nombre": "Huila",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Agricultura, ganadería, caza, silvicultura y pesca": 22.7,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 17.7,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 17.6,
+    "Construcción": 6.1,
+    "Impuestos": 6.1,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 5.6
+   },
+   "educacion_pct": {
+    "ninguna": 4.3,
+    "primaria": 40.5,
+    "secundaria": 39.7,
+    "superior": 14.0
+   },
+   "poblacion": 1394898,
+   "sexo": {
+    "hombre": 691963,
+    "mujer": 702935
+   },
+   "edad": {
+    "0-4": 75018,
+    "5-9": 78291,
+    "10-14": 82322,
+    "15-19": 85898,
+    "20-24": 88024,
+    "25-29": 90836,
+    "30-34": 98156,
+    "35-39": 97162,
+    "40-44": 94688,
+    "45-49": 94491,
+    "50-54": 95596,
+    "55-59": 91190,
+    "60-64": 80078,
+    "65-69": 70626,
+    "70-74": 58674,
+    "75-79": 46350,
+    "80-84": 35413,
+    "85+": 32085
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 38513,
+     "5-9": 40105,
+     "10-14": 42034,
+     "15-19": 43786,
+     "20-24": 44879,
+     "25-29": 46053,
+     "30-34": 49272,
+     "35-39": 48736,
+     "40-44": 47635,
+     "45-49": 47467,
+     "50-54": 47713,
+     "55-59": 45225,
+     "60-64": 39476,
+     "65-69": 34368,
+     "70-74": 27805,
+     "75-79": 21120,
+     "80-84": 15377,
+     "85+": 12399
+    },
+    "mujer": {
+     "0-4": 36505,
+     "5-9": 38186,
+     "10-14": 40288,
+     "15-19": 42112,
+     "20-24": 43145,
+     "25-29": 44783,
+     "30-34": 48884,
+     "35-39": 48426,
+     "40-44": 47053,
+     "45-49": 47024,
+     "50-54": 47883,
+     "55-59": 45965,
+     "60-64": 40602,
+     "65-69": 36258,
+     "70-74": 30869,
+     "75-79": 25230,
+     "80-84": 20036,
+     "85+": 19686
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "44": {
+   "nombre": "La Guajira",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Explotación de minas y canteras": 45.7,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 17.6,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 11.7,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 5.8,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 4.6,
+    "Construcción": 4.2
+   },
+   "educacion_pct": {
+    "ninguna": 13.9,
+    "primaria": 36.5,
+    "secundaria": 35.5,
+    "superior": 12.4
+   },
+   "poblacion": 1360264,
+   "sexo": {
+    "hombre": 671603,
+    "mujer": 688661
+   },
+   "edad": {
+    "0-4": 88158,
+    "5-9": 91380,
+    "10-14": 94961,
+    "15-19": 98129,
+    "20-24": 101343,
+    "25-29": 104838,
+    "30-34": 108813,
+    "35-39": 106363,
+    "40-44": 96491,
+    "45-49": 92431,
+    "50-54": 87145,
+    "55-59": 74620,
+    "60-64": 62323,
+    "65-69": 51378,
+    "70-74": 39064,
+    "75-79": 27822,
+    "80-84": 18669,
+    "85+": 16336
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 45181,
+     "5-9": 46848,
+     "10-14": 48700,
+     "15-19": 50351,
+     "20-24": 51876,
+     "25-29": 53488,
+     "30-34": 55116,
+     "35-39": 53493,
+     "40-44": 48013,
+     "45-49": 45176,
+     "50-54": 42080,
+     "55-59": 35612,
+     "60-64": 29268,
+     "65-69": 23600,
+     "70-74": 17396,
+     "75-79": 11946,
+     "80-84": 7579,
+     "85+": 5880
+    },
+    "mujer": {
+     "0-4": 42977,
+     "5-9": 44532,
+     "10-14": 46261,
+     "15-19": 47778,
+     "20-24": 49467,
+     "25-29": 51350,
+     "30-34": 53697,
+     "35-39": 52870,
+     "40-44": 48478,
+     "45-49": 47255,
+     "50-54": 45065,
+     "55-59": 39008,
+     "60-64": 33055,
+     "65-69": 27778,
+     "70-74": 21668,
+     "75-79": 15876,
+     "80-84": 11090,
+     "85+": 10456
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "47": {
+   "nombre": "Magdalena",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 26.4,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 21.4,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 20.3,
+    "Impuestos": 5.4,
+    "Construcción": 5.2,
+    "Actividades inmobiliarias": 4.8
+   },
+   "educacion_pct": {
+    "ninguna": 7.2,
+    "primaria": 33.3,
+    "secundaria": 43.4,
+    "superior": 14.9
+   },
+   "poblacion": 1722017,
+   "sexo": {
+    "hombre": 859868,
+    "mujer": 862149
+   },
+   "edad": {
+    "0-4": 91424,
+    "5-9": 96238,
+    "10-14": 101705,
+    "15-19": 106558,
+    "20-24": 110385,
+    "25-29": 113807,
+    "30-34": 120966,
+    "35-39": 123410,
+    "40-44": 120773,
+    "45-49": 118605,
+    "50-54": 117188,
+    "55-59": 109145,
+    "60-64": 96738,
+    "65-69": 85230,
+    "70-74": 72040,
+    "75-79": 57450,
+    "80-84": 42537,
+    "85+": 37818
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 46865,
+     "5-9": 49344,
+     "10-14": 52160,
+     "15-19": 54802,
+     "20-24": 56679,
+     "25-29": 58204,
+     "30-34": 61567,
+     "35-39": 62828,
+     "40-44": 61467,
+     "45-49": 59727,
+     "50-54": 58462,
+     "55-59": 54264,
+     "60-64": 47542,
+     "65-69": 41166,
+     "70-74": 34119,
+     "75-79": 26536,
+     "80-84": 18876,
+     "85+": 15260
+    },
+    "mujer": {
+     "0-4": 44559,
+     "5-9": 46894,
+     "10-14": 49545,
+     "15-19": 51756,
+     "20-24": 53706,
+     "25-29": 55603,
+     "30-34": 59399,
+     "35-39": 60582,
+     "40-44": 59306,
+     "45-49": 58878,
+     "50-54": 58726,
+     "55-59": 54881,
+     "60-64": 49196,
+     "65-69": 44064,
+     "70-74": 37921,
+     "75-79": 30914,
+     "80-84": 23661,
+     "85+": 22558
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "50": {
+   "nombre": "Meta",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Explotación de minas y canteras": 46.1,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 15.8,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 11.5,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 8.2,
+    "Impuestos": 4.0,
+    "Industrias manufactureras": 2.6
+   },
+   "educacion_pct": {
+    "ninguna": 4.0,
+    "primaria": 34.0,
+    "secundaria": 41.6,
+    "superior": 17.9
+   },
+   "poblacion": 1383966,
+   "sexo": {
+    "hombre": 686830,
+    "mujer": 697136
+   },
+   "edad": {
+    "0-4": 66000,
+    "5-9": 70083,
+    "10-14": 74647,
+    "15-19": 78630,
+    "20-24": 82078,
+    "25-29": 86023,
+    "30-34": 94448,
+    "35-39": 95186,
+    "40-44": 94305,
+    "45-49": 96763,
+    "50-54": 100488,
+    "55-59": 97275,
+    "60-64": 86798,
+    "65-69": 76886,
+    "70-74": 63539,
+    "75-79": 49640,
+    "80-84": 37539,
+    "85+": 33638
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 33655,
+     "5-9": 35717,
+     "10-14": 38100,
+     "15-19": 40081,
+     "20-24": 41663,
+     "25-29": 43474,
+     "30-34": 47682,
+     "35-39": 47992,
+     "40-44": 47369,
+     "45-49": 48508,
+     "50-54": 50322,
+     "55-59": 48451,
+     "60-64": 42889,
+     "65-69": 37586,
+     "70-74": 30321,
+     "75-79": 22832,
+     "80-84": 16532,
+     "85+": 13656
+    },
+    "mujer": {
+     "0-4": 32345,
+     "5-9": 34366,
+     "10-14": 36547,
+     "15-19": 38549,
+     "20-24": 40415,
+     "25-29": 42549,
+     "30-34": 46766,
+     "35-39": 47194,
+     "40-44": 46936,
+     "45-49": 48255,
+     "50-54": 50166,
+     "55-59": 48824,
+     "60-64": 43909,
+     "65-69": 39300,
+     "70-74": 33218,
+     "75-79": 26808,
+     "80-84": 21007,
+     "85+": 19982
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "52": {
+   "nombre": "Nariño",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 27.0,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 21.4,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 19.0,
+    "Actividades inmobiliarias": 6.6,
+    "Impuestos": 5.9,
+    "Construcción": 4.8
+   },
+   "educacion_pct": {
+    "ninguna": 5.8,
+    "primaria": 43.2,
+    "secundaria": 35.6,
+    "superior": 13.1
+   },
+   "poblacion": 1806176,
+   "sexo": {
+    "hombre": 873650,
+    "mujer": 932526
+   },
+   "edad": {
+    "0-4": 88019,
+    "5-9": 91976,
+    "10-14": 96861,
+    "15-19": 101270,
+    "20-24": 104592,
+    "25-29": 108736,
+    "30-34": 119286,
+    "35-39": 118085,
+    "40-44": 118311,
+    "45-49": 126080,
+    "50-54": 133053,
+    "55-59": 125640,
+    "60-64": 111853,
+    "65-69": 101668,
+    "70-74": 85733,
+    "75-79": 69018,
+    "80-84": 53160,
+    "85+": 52835
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 44914,
+     "5-9": 46823,
+     "10-14": 49342,
+     "15-19": 51466,
+     "20-24": 52980,
+     "25-29": 54658,
+     "30-34": 59733,
+     "35-39": 58844,
+     "40-44": 58453,
+     "45-49": 61923,
+     "50-54": 64856,
+     "55-59": 60573,
+     "60-64": 52816,
+     "65-69": 46829,
+     "70-74": 38319,
+     "75-79": 29767,
+     "80-84": 21943,
+     "85+": 19411
+    },
+    "mujer": {
+     "0-4": 43105,
+     "5-9": 45153,
+     "10-14": 47519,
+     "15-19": 49804,
+     "20-24": 51612,
+     "25-29": 54078,
+     "30-34": 59553,
+     "35-39": 59241,
+     "40-44": 59858,
+     "45-49": 64157,
+     "50-54": 68197,
+     "55-59": 65067,
+     "60-64": 59037,
+     "65-69": 54839,
+     "70-74": 47414,
+     "75-79": 39251,
+     "80-84": 31217,
+     "85+": 33424
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "54": {
+   "nombre": "Norte de Santander",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 23.3,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 19.6,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 12.5,
+    "Actividades inmobiliarias": 7.0,
+    "Construcción": 6.2,
+    "Impuestos": 5.8
+   },
+   "educacion_pct": {
+    "ninguna": 5.7,
+    "primaria": 36.9,
+    "secundaria": 40.3,
+    "superior": 15.8
+   },
+   "poblacion": 1726846,
+   "sexo": {
+    "hombre": 853403,
+    "mujer": 873443
+   },
+   "edad": {
+    "0-4": 82884,
+    "5-9": 87925,
+    "10-14": 93062,
+    "15-19": 98609,
+    "20-24": 104749,
+    "25-29": 111153,
+    "30-34": 118892,
+    "35-39": 117351,
+    "40-44": 112905,
+    "45-49": 116225,
+    "50-54": 122832,
+    "55-59": 120003,
+    "60-64": 108804,
+    "65-69": 97206,
+    "70-74": 80156,
+    "75-79": 63483,
+    "80-84": 47700,
+    "85+": 42907
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 42435,
+     "5-9": 45031,
+     "10-14": 47687,
+     "15-19": 50477,
+     "20-24": 53475,
+     "25-29": 56693,
+     "30-34": 60478,
+     "35-39": 59830,
+     "40-44": 57526,
+     "45-49": 58583,
+     "50-54": 61319,
+     "55-59": 59592,
+     "60-64": 53431,
+     "65-69": 46679,
+     "70-74": 37167,
+     "75-79": 27977,
+     "80-84": 19674,
+     "85+": 15349
+    },
+    "mujer": {
+     "0-4": 40449,
+     "5-9": 42894,
+     "10-14": 45375,
+     "15-19": 48132,
+     "20-24": 51274,
+     "25-29": 54460,
+     "30-34": 58414,
+     "35-39": 57521,
+     "40-44": 55379,
+     "45-49": 57642,
+     "50-54": 61513,
+     "55-59": 60411,
+     "60-64": 55373,
+     "65-69": 50527,
+     "70-74": 42989,
+     "75-79": 35506,
+     "80-84": 28026,
+     "85+": 27558
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "63": {
+   "nombre": "Quindío",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 22.3,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 21.7,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 16.9,
+    "Actividades inmobiliarias": 8.4,
+    "Impuestos": 6.0,
+    "Construcción": 5.2
+   },
+   "educacion_pct": {
+    "ninguna": 4.0,
+    "primaria": 29.8,
+    "secundaria": 44.5,
+    "superior": 20.4
+   },
+   "poblacion": 589149,
+   "sexo": {
+    "hombre": 288768,
+    "mujer": 300381
+   },
+   "edad": {
+    "0-4": 21867,
+    "5-9": 23676,
+    "10-14": 25848,
+    "15-19": 28007,
+    "20-24": 29900,
+    "25-29": 31673,
+    "30-34": 35595,
+    "35-39": 35543,
+    "40-44": 36227,
+    "45-49": 40273,
+    "50-54": 45638,
+    "55-59": 46186,
+    "60-64": 41634,
+    "65-69": 38904,
+    "70-74": 33318,
+    "75-79": 27544,
+    "80-84": 23314,
+    "85+": 24002
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 11218,
+     "5-9": 12181,
+     "10-14": 13322,
+     "15-19": 14412,
+     "20-24": 15334,
+     "25-29": 16226,
+     "30-34": 18109,
+     "35-39": 17974,
+     "40-44": 18301,
+     "45-49": 20346,
+     "50-54": 22996,
+     "55-59": 23126,
+     "60-64": 20620,
+     "65-69": 18906,
+     "70-74": 15626,
+     "75-79": 12134,
+     "80-84": 9497,
+     "85+": 8440
+    },
+    "mujer": {
+     "0-4": 10649,
+     "5-9": 11495,
+     "10-14": 12526,
+     "15-19": 13595,
+     "20-24": 14566,
+     "25-29": 15447,
+     "30-34": 17486,
+     "35-39": 17569,
+     "40-44": 17926,
+     "45-49": 19927,
+     "50-54": 22642,
+     "55-59": 23060,
+     "60-64": 21014,
+     "65-69": 19998,
+     "70-74": 17692,
+     "75-79": 15410,
+     "80-84": 13817,
+     "85+": 15562
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "66": {
+   "nombre": "Risaralda",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 22.2,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 15.7,
+    "Industrias manufactureras": 12.4,
+    "Impuestos": 9.3,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 9.1,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 7.5
+   },
+   "educacion_pct": {
+    "ninguna": 3.9,
+    "primaria": 32.7,
+    "secundaria": 42.3,
+    "superior": 20.0
+   },
+   "poblacion": 921956,
+   "sexo": {
+    "hombre": 438210,
+    "mujer": 483746
+   },
+   "edad": {
+    "0-4": 38224,
+    "5-9": 41059,
+    "10-14": 44279,
+    "15-19": 47302,
+    "20-24": 50076,
+    "25-29": 52695,
+    "30-34": 58700,
+    "35-39": 57520,
+    "40-44": 56786,
+    "45-49": 61065,
+    "50-54": 67336,
+    "55-59": 67751,
+    "60-64": 61461,
+    "65-69": 57988,
+    "70-74": 49390,
+    "75-79": 40314,
+    "80-84": 34270,
+    "85+": 35740
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 19617,
+     "5-9": 21044,
+     "10-14": 22712,
+     "15-19": 24258,
+     "20-24": 25551,
+     "25-29": 26809,
+     "30-34": 29661,
+     "35-39": 28896,
+     "40-44": 28219,
+     "45-49": 29744,
+     "50-54": 32203,
+     "55-59": 31733,
+     "60-64": 28146,
+     "65-69": 25985,
+     "70-74": 21562,
+     "75-79": 16858,
+     "80-84": 13401,
+     "85+": 11811
+    },
+    "mujer": {
+     "0-4": 18607,
+     "5-9": 20015,
+     "10-14": 21567,
+     "15-19": 23044,
+     "20-24": 24525,
+     "25-29": 25886,
+     "30-34": 29039,
+     "35-39": 28624,
+     "40-44": 28567,
+     "45-49": 31321,
+     "50-54": 35133,
+     "55-59": 36018,
+     "60-64": 33315,
+     "65-69": 32003,
+     "70-74": 27828,
+     "75-79": 23456,
+     "80-84": 20869,
+     "85+": 23929
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "68": {
+   "nombre": "Santander",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Industrias manufactureras": 19.7,
+    "Impuestos": 16.6,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 14.6,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 12.4,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 9.7,
+    "Actividades inmobiliarias": 6.6
+   },
+   "educacion_pct": {
+    "ninguna": 3.8,
+    "primaria": 33.6,
+    "secundaria": 39.9,
+    "superior": 21.2
+   },
+   "poblacion": 2552448,
+   "sexo": {
+    "hombre": 1255159,
+    "mujer": 1297289
+   },
+   "edad": {
+    "0-4": 108548,
+    "5-9": 116295,
+    "10-14": 124515,
+    "15-19": 132481,
+    "20-24": 141015,
+    "25-29": 150029,
+    "30-34": 165100,
+    "35-39": 166417,
+    "40-44": 166995,
+    "45-49": 174231,
+    "50-54": 188484,
+    "55-59": 184494,
+    "60-64": 168151,
+    "65-69": 153681,
+    "70-74": 131151,
+    "75-79": 108440,
+    "80-84": 86874,
+    "85+": 85547
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 55687,
+     "5-9": 59689,
+     "10-14": 63901,
+     "15-19": 67835,
+     "20-24": 72109,
+     "25-29": 76680,
+     "30-34": 84218,
+     "35-39": 84421,
+     "40-44": 84648,
+     "45-49": 88133,
+     "50-54": 94407,
+     "55-59": 91366,
+     "60-64": 82036,
+     "65-69": 73660,
+     "70-74": 60918,
+     "75-79": 48073,
+     "80-84": 36284,
+     "85+": 31094
+    },
+    "mujer": {
+     "0-4": 52861,
+     "5-9": 56606,
+     "10-14": 60614,
+     "15-19": 64646,
+     "20-24": 68906,
+     "25-29": 73349,
+     "30-34": 80882,
+     "35-39": 81996,
+     "40-44": 82347,
+     "45-49": 86098,
+     "50-54": 94077,
+     "55-59": 93128,
+     "60-64": 86115,
+     "65-69": 80021,
+     "70-74": 70233,
+     "75-79": 60367,
+     "80-84": 50590,
+     "85+": 54453
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "70": {
+   "nombre": "Sucre",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 31.9,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.7,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 11.3,
+    "Construcción": 7.1,
+    "Industrias manufactureras": 6.5,
+    "Impuestos": 6.1
+   },
+   "educacion_pct": {
+    "ninguna": 9.5,
+    "primaria": 34.4,
+    "secundaria": 40.8,
+    "superior": 14.0
+   },
+   "poblacion": 1174282,
+   "sexo": {
+    "hombre": 586874,
+    "mujer": 587408
+   },
+   "edad": {
+    "0-4": 60308,
+    "5-9": 63523,
+    "10-14": 67402,
+    "15-19": 70736,
+    "20-24": 72789,
+    "25-29": 74648,
+    "30-34": 80272,
+    "35-39": 82089,
+    "40-44": 81674,
+    "45-49": 82757,
+    "50-54": 81599,
+    "55-59": 76472,
+    "60-64": 67835,
+    "65-69": 59551,
+    "70-74": 49969,
+    "75-79": 40957,
+    "80-84": 31694,
+    "85+": 30007
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 30876,
+     "5-9": 32501,
+     "10-14": 34464,
+     "15-19": 36197,
+     "20-24": 37187,
+     "25-29": 37716,
+     "30-34": 40222,
+     "35-39": 41133,
+     "40-44": 41107,
+     "45-49": 41764,
+     "50-54": 40991,
+     "55-59": 38246,
+     "60-64": 33787,
+     "65-69": 29441,
+     "70-74": 24348,
+     "75-79": 19544,
+     "80-84": 14750,
+     "85+": 12600
+    },
+    "mujer": {
+     "0-4": 29432,
+     "5-9": 31022,
+     "10-14": 32938,
+     "15-19": 34539,
+     "20-24": 35602,
+     "25-29": 36932,
+     "30-34": 40050,
+     "35-39": 40956,
+     "40-44": 40567,
+     "45-49": 40993,
+     "50-54": 40608,
+     "55-59": 38226,
+     "60-64": 34048,
+     "65-69": 30110,
+     "70-74": 25621,
+     "75-79": 21413,
+     "80-84": 16944,
+     "85+": 17407
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "73": {
+   "nombre": "Tolima",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Agricultura, ganadería, caza, silvicultura y pesca": 21.4,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.1,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 16.6,
+    "Industrias manufactureras": 8.7,
+    "Impuestos": 7.5,
+    "Construcción": 5.0
+   },
+   "educacion_pct": {
+    "ninguna": 5.1,
+    "primaria": 36.4,
+    "secundaria": 40.6,
+    "superior": 16.4
+   },
+   "poblacion": 1433661,
+   "sexo": {
+    "hombre": 710966,
+    "mujer": 722695
+   },
+   "edad": {
+    "0-4": 61055,
+    "5-9": 65131,
+    "10-14": 70314,
+    "15-19": 74885,
+    "20-24": 76346,
+    "25-29": 78084,
+    "30-34": 87348,
+    "35-39": 91048,
+    "40-44": 93172,
+    "45-49": 98805,
+    "50-54": 105306,
+    "55-59": 104283,
+    "60-64": 95150,
+    "65-69": 87771,
+    "70-74": 76264,
+    "75-79": 63726,
+    "80-84": 52118,
+    "85+": 52855
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 31416,
+     "5-9": 33514,
+     "10-14": 36097,
+     "15-19": 38538,
+     "20-24": 39581,
+     "25-29": 40147,
+     "30-34": 44319,
+     "35-39": 46005,
+     "40-44": 47238,
+     "45-49": 49950,
+     "50-54": 52585,
+     "55-59": 51940,
+     "60-64": 47331,
+     "65-69": 43277,
+     "70-74": 36739,
+     "75-79": 29558,
+     "80-84": 22923,
+     "85+": 19808
+    },
+    "mujer": {
+     "0-4": 29639,
+     "5-9": 31617,
+     "10-14": 34217,
+     "15-19": 36347,
+     "20-24": 36765,
+     "25-29": 37937,
+     "30-34": 43029,
+     "35-39": 45043,
+     "40-44": 45934,
+     "45-49": 48855,
+     "50-54": 52721,
+     "55-59": 52343,
+     "60-64": 47819,
+     "65-69": 44494,
+     "70-74": 39525,
+     "75-79": 34168,
+     "80-84": 29195,
+     "85+": 33047
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "76": {
+   "nombre": "Valle del Cauca",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "salud": "MinSalud cobertura 2023 (datos.gov.co 23gb-dhmd)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.7,
+    "Industrias manufactureras": 15.0,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 12.4,
+    "Impuestos": 10.5,
+    "Actividades inmobiliarias": 10.1,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 8.8
+   },
+   "salud_pct": {
+    "contributivo": 53.7,
+    "subsidiado": 44.8
+   },
+   "educacion_pct": {
+    "ninguna": 3.1,
+    "primaria": 28.3,
+    "secundaria": 45.2,
+    "superior": 21.9
+   },
+   "poblacion": 4368211,
+   "sexo": {
+    "hombre": 2083249,
+    "mujer": 2284962
+   },
+   "edad": {
+    "0-4": 190396,
+    "5-9": 205928,
+    "10-14": 222564,
+    "15-19": 238458,
+    "20-24": 253705,
+    "25-29": 269161,
+    "30-34": 295248,
+    "35-39": 293668,
+    "40-44": 292185,
+    "45-49": 298832,
+    "50-54": 305857,
+    "55-59": 294531,
+    "60-64": 265125,
+    "65-69": 245470,
+    "70-74": 213107,
+    "75-79": 179133,
+    "80-84": 150260,
+    "85+": 154583
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 97593,
+     "5-9": 105770,
+     "10-14": 114432,
+     "15-19": 122371,
+     "20-24": 129628,
+     "25-29": 137054,
+     "30-34": 149059,
+     "35-39": 146306,
+     "40-44": 143494,
+     "45-49": 144681,
+     "50-54": 146178,
+     "55-59": 138765,
+     "60-64": 122449,
+     "65-69": 110486,
+     "70-74": 92533,
+     "75-79": 74049,
+     "80-84": 58089,
+     "85+": 50312
+    },
+    "mujer": {
+     "0-4": 92803,
+     "5-9": 100158,
+     "10-14": 108132,
+     "15-19": 116087,
+     "20-24": 124077,
+     "25-29": 132107,
+     "30-34": 146189,
+     "35-39": 147362,
+     "40-44": 148691,
+     "45-49": 154151,
+     "50-54": 159679,
+     "55-59": 155766,
+     "60-64": 142676,
+     "65-69": 134984,
+     "70-74": 120574,
+     "75-79": 105084,
+     "80-84": 92171,
+     "85+": 104271
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "81": {
+   "nombre": "Arauca",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Explotación de minas y canteras": 37.5,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 24.8,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 14.4,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 9.9,
+    "Construcción": 2.8,
+    "Actividades inmobiliarias": 2.7
+   },
+   "educacion_pct": {
+    "ninguna": 6.0,
+    "primaria": 39.8,
+    "secundaria": 39.4,
+    "superior": 12.9
+   },
+   "poblacion": 352194,
+   "sexo": {
+    "hombre": 168873,
+    "mujer": 183321
+   },
+   "edad": {
+    "0-4": 19512,
+    "5-9": 20385,
+    "10-14": 21466,
+    "15-19": 22474,
+    "20-24": 23169,
+    "25-29": 24279,
+    "30-34": 25111,
+    "35-39": 24084,
+    "40-44": 22190,
+    "45-49": 22298,
+    "50-54": 24445,
+    "55-59": 23749,
+    "60-64": 20561,
+    "65-69": 17636,
+    "70-74": 14317,
+    "75-79": 11092,
+    "80-84": 8073,
+    "85+": 7353
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 9960,
+     "5-9": 10362,
+     "10-14": 10885,
+     "15-19": 11375,
+     "20-24": 11680,
+     "25-29": 12011,
+     "30-34": 12165,
+     "35-39": 11520,
+     "40-44": 10461,
+     "45-49": 10309,
+     "50-54": 11297,
+     "55-59": 11110,
+     "60-64": 9698,
+     "65-69": 8322,
+     "70-74": 6640,
+     "75-79": 4949,
+     "80-84": 3404,
+     "85+": 2725
+    },
+    "mujer": {
+     "0-4": 9552,
+     "5-9": 10023,
+     "10-14": 10581,
+     "15-19": 11099,
+     "20-24": 11489,
+     "25-29": 12268,
+     "30-34": 12946,
+     "35-39": 12564,
+     "40-44": 11729,
+     "45-49": 11989,
+     "50-54": 13148,
+     "55-59": 12639,
+     "60-64": 10863,
+     "65-69": 9314,
+     "70-74": 7677,
+     "75-79": 6143,
+     "80-84": 4669,
+     "85+": 4628
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "85": {
+   "nombre": "Casanare",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Explotación de minas y canteras": 41.0,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 17.7,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 15.5,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 8.1,
+    "Impuestos": 3.9,
+    "Industrias manufactureras": 3.2
+   },
+   "educacion_pct": {
+    "ninguna": 4.2,
+    "primaria": 37.0,
+    "secundaria": 42.0,
+    "superior": 15.2
+   },
+   "poblacion": 583735,
+   "sexo": {
+    "hombre": 287056,
+    "mujer": 296679
+   },
+   "edad": {
+    "0-4": 29171,
+    "5-9": 30795,
+    "10-14": 32518,
+    "15-19": 34060,
+    "20-24": 35640,
+    "25-29": 37965,
+    "30-34": 41881,
+    "35-39": 41874,
+    "40-44": 41147,
+    "45-49": 41917,
+    "50-54": 43054,
+    "55-59": 40198,
+    "60-64": 34878,
+    "65-69": 29844,
+    "70-74": 24490,
+    "75-79": 19078,
+    "80-84": 13675,
+    "85+": 11550
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 14940,
+     "5-9": 15755,
+     "10-14": 16578,
+     "15-19": 17229,
+     "20-24": 18028,
+     "25-29": 19140,
+     "30-34": 20964,
+     "35-39": 20839,
+     "40-44": 20437,
+     "45-49": 20778,
+     "50-54": 21128,
+     "55-59": 19398,
+     "60-64": 16600,
+     "65-69": 14065,
+     "70-74": 11411,
+     "75-79": 8764,
+     "80-84": 6153,
+     "85+": 4849
+    },
+    "mujer": {
+     "0-4": 14231,
+     "5-9": 15040,
+     "10-14": 15940,
+     "15-19": 16831,
+     "20-24": 17612,
+     "25-29": 18825,
+     "30-34": 20917,
+     "35-39": 21035,
+     "40-44": 20710,
+     "45-49": 21139,
+     "50-54": 21926,
+     "55-59": 20800,
+     "60-64": 18278,
+     "65-69": 15779,
+     "70-74": 13079,
+     "75-79": 10314,
+     "80-84": 7522,
+     "85+": 6701
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "86": {
+   "nombre": "Putumayo",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Explotación de minas y canteras": 29.3,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 26.2,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 16.6,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 7.7,
+    "Construcción": 5.2,
+    "Actividades inmobiliarias": 3.8
+   },
+   "educacion_pct": {
+    "ninguna": 4.2,
+    "primaria": 40.1,
+    "secundaria": 41.2,
+    "superior": 12.3
+   },
+   "poblacion": 477616,
+   "sexo": {
+    "hombre": 231847,
+    "mujer": 245769
+   },
+   "edad": {
+    "0-4": 26215,
+    "5-9": 27342,
+    "10-14": 28621,
+    "15-19": 29639,
+    "20-24": 30462,
+    "25-29": 31649,
+    "30-34": 34140,
+    "35-39": 34199,
+    "40-44": 33768,
+    "45-49": 34389,
+    "50-54": 34644,
+    "55-59": 31119,
+    "60-64": 26359,
+    "65-69": 22650,
+    "70-74": 18313,
+    "75-79": 14279,
+    "80-84": 10305,
+    "85+": 9523
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 13379,
+     "5-9": 13892,
+     "10-14": 14520,
+     "15-19": 15008,
+     "20-24": 15359,
+     "25-29": 15823,
+     "30-34": 16940,
+     "35-39": 16821,
+     "40-44": 16428,
+     "45-49": 16630,
+     "50-54": 16686,
+     "55-59": 14785,
+     "60-64": 12249,
+     "65-69": 10407,
+     "70-74": 8277,
+     "75-79": 6306,
+     "80-84": 4450,
+     "85+": 3887
+    },
+    "mujer": {
+     "0-4": 12836,
+     "5-9": 13450,
+     "10-14": 14101,
+     "15-19": 14631,
+     "20-24": 15103,
+     "25-29": 15826,
+     "30-34": 17200,
+     "35-39": 17378,
+     "40-44": 17340,
+     "45-49": 17759,
+     "50-54": 17958,
+     "55-59": 16334,
+     "60-64": 14110,
+     "65-69": 12243,
+     "70-74": 10036,
+     "75-79": 7973,
+     "80-84": 5855,
+     "85+": 5636
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "88": {
+   "nombre": "San Andrés y Providencia",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 57.4,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 15.1,
+    "Impuestos": 8.4,
+    "Actividades inmobiliarias": 3.7,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 3.4,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 2.6
+   },
+   "educacion_pct": {
+    "ninguna": 1.1,
+    "primaria": 19.8,
+    "secundaria": 51.2,
+    "superior": 26.1
+   },
+   "poblacion": 54483,
+   "sexo": {
+    "hombre": 24547,
+    "mujer": 29936
+   },
+   "edad": {
+    "0-4": 2351,
+    "5-9": 2515,
+    "10-14": 2662,
+    "15-19": 2755,
+    "20-24": 2815,
+    "25-29": 3083,
+    "30-34": 3520,
+    "35-39": 3441,
+    "40-44": 3307,
+    "45-49": 3433,
+    "50-54": 3702,
+    "55-59": 4004,
+    "60-64": 3811,
+    "65-69": 3389,
+    "70-74": 2858,
+    "75-79": 2448,
+    "80-84": 2205,
+    "85+": 2184
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 1208,
+     "5-9": 1297,
+     "10-14": 1375,
+     "15-19": 1399,
+     "20-24": 1425,
+     "25-29": 1530,
+     "30-34": 1684,
+     "35-39": 1587,
+     "40-44": 1498,
+     "45-49": 1557,
+     "50-54": 1678,
+     "55-59": 1728,
+     "60-64": 1607,
+     "65-69": 1398,
+     "70-74": 1146,
+     "75-79": 934,
+     "80-84": 792,
+     "85+": 704
+    },
+    "mujer": {
+     "0-4": 1143,
+     "5-9": 1218,
+     "10-14": 1287,
+     "15-19": 1356,
+     "20-24": 1390,
+     "25-29": 1553,
+     "30-34": 1836,
+     "35-39": 1854,
+     "40-44": 1809,
+     "45-49": 1876,
+     "50-54": 2024,
+     "55-59": 2276,
+     "60-64": 2204,
+     "65-69": 1991,
+     "70-74": 1712,
+     "75-79": 1514,
+     "80-84": 1413,
+     "85+": 1480
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "91": {
+   "nombre": "Amazonas",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 30.7,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 26.9,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 22.3,
+    "Impuestos": 4.8,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 3.7,
+    "Actividades inmobiliarias": 2.8
+   },
+   "educacion_pct": {
+    "ninguna": 3.5,
+    "primaria": 35.4,
+    "secundaria": 45.9,
+    "superior": 9.9
+   },
+   "poblacion": 105037,
+   "sexo": {
+    "hombre": 51326,
+    "mujer": 53711
+   },
+   "edad": {
+    "0-4": 7753,
+    "5-9": 7902,
+    "10-14": 8124,
+    "15-19": 8304,
+    "20-24": 8270,
+    "25-29": 8177,
+    "30-34": 8124,
+    "35-39": 8026,
+    "40-44": 7447,
+    "45-49": 6738,
+    "50-54": 6038,
+    "55-59": 5268,
+    "60-64": 4413,
+    "65-69": 3562,
+    "70-74": 2661,
+    "75-79": 1904,
+    "80-84": 1308,
+    "85+": 1018
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 3967,
+     "5-9": 4020,
+     "10-14": 4119,
+     "15-19": 4200,
+     "20-24": 4163,
+     "25-29": 4053,
+     "30-34": 3958,
+     "35-39": 3844,
+     "40-44": 3564,
+     "45-49": 3264,
+     "50-54": 2972,
+     "55-59": 2574,
+     "60-64": 2085,
+     "65-69": 1635,
+     "70-74": 1199,
+     "75-79": 817,
+     "80-84": 522,
+     "85+": 370
+    },
+    "mujer": {
+     "0-4": 3786,
+     "5-9": 3882,
+     "10-14": 4005,
+     "15-19": 4104,
+     "20-24": 4107,
+     "25-29": 4124,
+     "30-34": 4166,
+     "35-39": 4182,
+     "40-44": 3883,
+     "45-49": 3474,
+     "50-54": 3066,
+     "55-59": 2694,
+     "60-64": 2328,
+     "65-69": 1927,
+     "70-74": 1462,
+     "75-79": 1087,
+     "80-84": 786,
+     "85+": 648
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "94": {
+   "nombre": "Guainía",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 43.4,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 16.3,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 10.6,
+    "Construcción": 9.5,
+    "Explotación de minas y canteras": 7.4,
+    "Impuestos": 3.5
+   },
+   "educacion_pct": {
+    "ninguna": 6.3,
+    "primaria": 50.0,
+    "secundaria": 30.8,
+    "superior": 8.2
+   },
+   "poblacion": 87114,
+   "sexo": {
+    "hombre": 44168,
+    "mujer": 42946
+   },
+   "edad": {
+    "0-4": 7540,
+    "5-9": 7532,
+    "10-14": 7632,
+    "15-19": 7626,
+    "20-24": 7360,
+    "25-29": 6984,
+    "30-34": 6703,
+    "35-39": 6472,
+    "40-44": 5986,
+    "45-49": 5465,
+    "50-54": 4762,
+    "55-59": 3741,
+    "60-64": 2849,
+    "65-69": 2260,
+    "70-74": 1701,
+    "75-79": 1179,
+    "80-84": 774,
+    "85+": 548
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 3865,
+     "5-9": 3863,
+     "10-14": 3905,
+     "15-19": 3896,
+     "20-24": 3780,
+     "25-29": 3580,
+     "30-34": 3395,
+     "35-39": 3265,
+     "40-44": 3029,
+     "45-49": 2797,
+     "50-54": 2444,
+     "55-59": 1881,
+     "60-64": 1404,
+     "65-69": 1094,
+     "70-74": 803,
+     "75-79": 556,
+     "80-84": 353,
+     "85+": 258
+    },
+    "mujer": {
+     "0-4": 3675,
+     "5-9": 3669,
+     "10-14": 3727,
+     "15-19": 3730,
+     "20-24": 3580,
+     "25-29": 3404,
+     "30-34": 3308,
+     "35-39": 3207,
+     "40-44": 2957,
+     "45-49": 2668,
+     "50-54": 2318,
+     "55-59": 1860,
+     "60-64": 1445,
+     "65-69": 1166,
+     "70-74": 898,
+     "75-79": 623,
+     "80-84": 421,
+     "85+": 290
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "95": {
+   "nombre": "Guaviare",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 36.8,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 25.2,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 17.6,
+    "Construcción": 5.3,
+    "Actividades inmobiliarias": 4.0,
+    "Impuestos": 3.7
+   },
+   "educacion_pct": {
+    "ninguna": 5.1,
+    "primaria": 41.6,
+    "secundaria": 36.3,
+    "superior": 11.9
+   },
+   "poblacion": 155021,
+   "sexo": {
+    "hombre": 77075,
+    "mujer": 77946
+   },
+   "edad": {
+    "0-4": 10600,
+    "5-9": 10619,
+    "10-14": 10818,
+    "15-19": 11076,
+    "20-24": 11278,
+    "25-29": 11271,
+    "30-34": 11490,
+    "35-39": 11219,
+    "40-44": 10788,
+    "45-49": 10627,
+    "50-54": 10318,
+    "55-59": 8987,
+    "60-64": 7257,
+    "65-69": 5908,
+    "70-74": 4653,
+    "75-79": 3542,
+    "80-84": 2529,
+    "85+": 2041
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 5405,
+     "5-9": 5376,
+     "10-14": 5478,
+     "15-19": 5653,
+     "20-24": 5803,
+     "25-29": 5726,
+     "30-34": 5793,
+     "35-39": 5656,
+     "40-44": 5418,
+     "45-49": 5259,
+     "50-54": 5029,
+     "55-59": 4401,
+     "60-64": 3544,
+     "65-69": 2832,
+     "70-74": 2129,
+     "75-79": 1574,
+     "80-84": 1104,
+     "85+": 895
+    },
+    "mujer": {
+     "0-4": 5195,
+     "5-9": 5243,
+     "10-14": 5340,
+     "15-19": 5423,
+     "20-24": 5475,
+     "25-29": 5545,
+     "30-34": 5697,
+     "35-39": 5563,
+     "40-44": 5370,
+     "45-49": 5368,
+     "50-54": 5289,
+     "55-59": 4586,
+     "60-64": 3713,
+     "65-69": 3076,
+     "70-74": 2524,
+     "75-79": 1968,
+     "80-84": 1425,
+     "85+": 1146
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "97": {
+   "nombre": "Vaupés",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 50.9,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 23.4,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 7.7,
+    "Construcción": 7.5,
+    "Actividades inmobiliarias": 3.4,
+    "Impuestos": 3.2
+   },
+   "educacion_pct": {
+    "ninguna": 5.4,
+    "primaria": 48.4,
+    "secundaria": 35.2,
+    "superior": 6.2
+   },
+   "poblacion": 77256,
+   "sexo": {
+    "hombre": 39899,
+    "mujer": 37357
+   },
+   "edad": {
+    "0-4": 8252,
+    "5-9": 7986,
+    "10-14": 7955,
+    "15-19": 7751,
+    "20-24": 7126,
+    "25-29": 6101,
+    "30-34": 5383,
+    "35-39": 5281,
+    "40-44": 4908,
+    "45-49": 4274,
+    "50-54": 3241,
+    "55-59": 2392,
+    "60-64": 1871,
+    "65-69": 1487,
+    "70-74": 1129,
+    "75-79": 875,
+    "80-84": 639,
+    "85+": 605
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 4230,
+     "5-9": 4100,
+     "10-14": 4076,
+     "15-19": 3977,
+     "20-24": 3721,
+     "25-29": 3242,
+     "30-34": 2848,
+     "35-39": 2706,
+     "40-44": 2501,
+     "45-49": 2222,
+     "50-54": 1710,
+     "55-59": 1229,
+     "60-64": 984,
+     "65-69": 789,
+     "70-74": 600,
+     "75-79": 458,
+     "80-84": 313,
+     "85+": 193
+    },
+    "mujer": {
+     "0-4": 4022,
+     "5-9": 3886,
+     "10-14": 3879,
+     "15-19": 3774,
+     "20-24": 3405,
+     "25-29": 2859,
+     "30-34": 2535,
+     "35-39": 2575,
+     "40-44": 2407,
+     "45-49": 2052,
+     "50-54": 1531,
+     "55-59": 1163,
+     "60-64": 887,
+     "65-69": 698,
+     "70-74": 529,
+     "75-79": 417,
+     "80-84": 326,
+     "85+": 412
+    }
+   },
+   "urbano_pct": 0.0
+  },
+  "99": {
+   "nombre": "Vichada",
+   "fuentes": {
+    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
+    "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2050, edades simples"
+   },
+   "pib_sectores_pct": {
+    "Agricultura, ganadería, caza, silvicultura y pesca": 38.7,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 33.5,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 9.6,
+    "Construcción": 7.1,
+    "Actividades inmobiliarias": 3.4,
+    "Impuestos": 2.6
+   },
+   "educacion_pct": {
+    "ninguna": 10.2,
+    "primaria": 46.9,
+    "secundaria": 30.5,
+    "superior": 6.9
+   },
+   "poblacion": 157691,
+   "sexo": {
+    "hombre": 77336,
+    "mujer": 80355
+   },
+   "edad": {
+    "0-4": 12785,
+    "5-9": 12782,
+    "10-14": 12945,
+    "15-19": 12863,
+    "20-24": 12599,
+    "25-29": 12176,
+    "30-34": 11950,
+    "35-39": 11563,
+    "40-44": 10606,
+    "45-49": 9714,
+    "50-54": 8903,
+    "55-59": 7492,
+    "60-64": 6017,
+    "65-69": 4958,
+    "70-74": 3960,
+    "75-79": 2808,
+    "80-84": 1895,
+    "85+": 1675
+   },
+   "edad_sexo": {
+    "hombre": {
+     "0-4": 6528,
+     "5-9": 6487,
+     "10-14": 6546,
+     "15-19": 6495,
+     "20-24": 6319,
+     "25-29": 6005,
+     "30-34": 5824,
+     "35-39": 5588,
+     "40-44": 5052,
+     "45-49": 4578,
+     "50-54": 4235,
+     "55-59": 3602,
+     "60-64": 2875,
+     "65-69": 2361,
+     "70-74": 1858,
+     "75-79": 1306,
+     "80-84": 868,
+     "85+": 809
+    },
+    "mujer": {
+     "0-4": 6257,
+     "5-9": 6295,
+     "10-14": 6399,
+     "15-19": 6368,
+     "20-24": 6280,
+     "25-29": 6171,
+     "30-34": 6126,
+     "35-39": 5975,
+     "40-44": 5554,
+     "45-49": 5136,
+     "50-54": 4668,
+     "55-59": 3890,
+     "60-64": 3142,
+     "65-69": 2597,
+     "70-74": 2102,
+     "75-79": 1502,
+     "80-84": 1027,
+     "85+": 866
+    }
+   },
+   "urbano_pct": 0.0
+  }
+ }
+}

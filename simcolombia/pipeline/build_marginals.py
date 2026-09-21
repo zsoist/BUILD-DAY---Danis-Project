@@ -15,7 +15,9 @@ from collections import defaultdict
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
-RAW, OUT = BASE / "data" / "raw", BASE / "data" / "marginals.json"
+RAW = BASE / "data" / "raw"
+SUFIJO = __import__("os").environ.get("SIM_SUFIJO", "")
+OUT = BASE / "data" / f"marginals{SUFIJO}.json"
 
 DPTOS = {  # DIVIPOLA — 32 departamentos + Bogotá D.C.
  "05":"Antioquia","08":"Atlántico","11":"Bogotá D.C.","13":"Bolívar","15":"Boyacá",
@@ -91,7 +93,7 @@ if edu_f.exists():
             M[d]["fuentes"]["educacion"] = "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)"
 
 # ── Proyecciones DANE dpto×sexo×edad simple (xlsx oficial, hoja PPODeptos) ──
-AÑO_SIM = 2026
+AÑO_SIM = int(__import__("os").environ.get("AÑO_SIM", "2026"))
 proy = RAW / "proyecciones_dane.xlsx"
 if proy.exists():
     from openpyxl import load_workbook
