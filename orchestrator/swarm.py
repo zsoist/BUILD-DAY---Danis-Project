@@ -1,0 +1,372 @@
+#!/usr/bin/env python3
+"""Swarm v2 — pipeline autónomo ship-first (Build Day Bogotá).
+
+Frontier harness: DAG de tareas + worker pool. Nada de rondas lockstep:
+cada tarea se despacha apenas sus dependencias resuelven, cada output se
+shippea a disco al instante, y solo lo que falla el gate pasa (una vez)
+por un fixer. Sin re-verificación global.
+
+Roles:
+  PLANNER    deepseek-v4-pro (o Fable si FABLE_ENABLED=1) — descompone en DAG
+             y asigna thinking por tarea (none/low/medium/high)
+  WORKER     deepseek-flash x8 — thinking optimizado por tarea, ejecuta y shippea
+  GATE       Jev (typesafe/jev-1.13, OpenRouter /decisions) — juez tipado
+             calibrado ~$0.00002/llamada; fallback heurístico sin LLM
+  FIXER      deepseek-flash — un intento de arreglo solo si el gate falla
+  ASSEMBLER  deepseek-v4-pro (o Fable) — ensambla el entregable final
+
+Uso:
+    uv run --project orchestrator python orchestrator/swarm.py "tu reto"
+    uv run --project orchestrator python orchestrator/swarm.py --demo
+"""
+
+import asyncio
+import json
+import os
+import re
+import sys
+import time
+from datetime import datetime
+from pathlib import Path
+
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
+
+ROOT = Path(__file__).resolve().parent.parent
+load_dotenv(ROOT / ".env")
+
+MAX_AGENTS = int(os.environ.get("MAX_DEEPSEEK_AGENTS", "8"))
+FABLE_ENABLED = os.environ.get("FABLE_ENABLED", "0") == "1"
+FABLE_MODEL = os.environ.get("FABLE_MODEL", "claude-fable-5-1")
+
+deepseek = AsyncOpenAI(
+    api_key=os.environ["DEEPSEEK_API_KEY"],
+    base_url=os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+)
+openrouter = AsyncOpenAI(
+    api_key=os.environ["OPENROUTER_API_KEY"],
+    base_url=os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+)
+
+
+# Mapeo a OpenRouter (IDs verificados contra su catálogo el 2026-09-21;
+# ojo: "deepseek/deepseek-chat" allá es un alias viejo de la era V3).
+OPENROUTER_EQUIV = {
+    "deepseek-flash": "deepseek/deepseek-v4.1-flash",
+    "deepseek-v4-pro": "deepseek/deepseek-v4-pro",
+}
+
+
+class Budget:
+    """Techos de gasto de hoy (fijados por Daniel). Precios aproximados USD/1M tokens
+    (referencia: catálogo OpenRouter 2026-09-21, v4.1-flash / v4-pro)."""
+
+    PRICES = {"deepseek-flash": (0.15, 0.60), "deepseek-v4-pro": (0.57, 1.70)}
+    CEILING = {
+        "deepseek": float(os.environ.get("DEEPSEEK_BUDGET_USD", "10")),
+        "openrouter": float(os.environ.get("OPENROUTER_BUDGET_USD", "10")),
+    }
+
+    def __init__(self):
+        self.spent = {"deepseek": 0.0, "openrouter": 0.0}
+        # Anthropic se mide en tokens (el precio de Fable lo controla el evento);
+        # techo duro de los $100 solo si se define ANTHROPIC_PRICE_IN/OUT en .env.
+        self.anthropic_in = 0
+        self.anthropic_out = 0
+
+    def add(self, provider: str, model: str, usage) -> None:
+        if usage is None:
+            return
+        cost = getattr(usage, "cost", None)  # OpenRouter lo da directo
+        if cost is None:
+            pi, po = self.PRICES.get(model, (0.55, 2.19))
+            cost = (usage.prompt_tokens * pi + usage.completion_tokens * po) / 1e6
+        self.spent[provider] += float(cost)
+        if self.spent[provider] >= self.CEILING[provider]:
+            raise RuntimeError(
+                f"💸 Techo de {provider} alcanzado "
+                f"(${self.spent[provider]:.2f}/${self.CEILING[provider]})"
+            )
+
+    def line(self) -> str:
+        return " · ".join(f"{p} ${v:.4f}" for p, v in self.spent.items())
+
+
+budget = Budget()
+
+
+async def llm(
+    prompt: str,
+    model: str = "deepseek-flash",
+    system: str | None = None,
+    thinking: str = "none",
+) -> str:
+    """Una llamada worker. DeepSeek nativo primero, OpenRouter fallback.
+
+    `thinking` (por tarea, lo asigna el planner): "none" apaga el razonamiento
+    (flash lo trae ON por defecto — si no se apaga, cada worker paga tokens de
+    reasoning a precio de output); "low"/"medium"/"high" usan reasoning_effort.
+    """
+    messages = ([{"role": "system", "content": system}] if system else []) + [
+        {"role": "user", "content": prompt}
+    ]
+    if thinking == "none":
+        extra = {"thinking": {"type": "disabled"}}
+        temperature = 0.3
+    else:
+        extra = {"reasoning_effort": thinking}
+        temperature = 0.6  # recomendación paper R1 para modo razonamiento
+    try:
+        r = await deepseek.chat.completions.create(
+            model=model, messages=messages, timeout=600,
+            temperature=temperature, extra_body=extra,
+        )
+        budget.add("deepseek", model, r.usage)
+    except RuntimeError:
+        raise  # techo de presupuesto: no hacer fallback, parar
+    except Exception:
+        r = await openrouter.chat.completions.create(
+            model=OPENROUTER_EQUIV.get(model, f"deepseek/{model}"),
+            messages=messages, timeout=600, temperature=temperature,
+            extra_body={"usage": {"include": True}, **extra},
+        )
+        budget.add("openrouter", model, r.usage)
+    return r.choices[0].message.content or ""
+
+
+# Jerarquía Anthropic para exprimir los $100 del evento:
+#   general  → Fable 5.1: SOLO plan inicial y decisiones de máxima palanca
+#   officer  → Opus 5: ensamblaje y decisiones intermedias (más barato)
+# Con FABLE_ENABLED=0, ambos rangos caen a deepseek-v4-pro (hoy).
+RANK_MODELS = {
+    "general": os.environ.get("FABLE_GENERAL_MODEL", FABLE_MODEL),
+    "officer": os.environ.get("FABLE_OFFICER_MODEL", "claude-opus-5"),
+}
+
+
+async def brain(prompt: str, rank: str = "general") -> str:
+    """Planner/assembler: jerarquía Fable/Opus si autorizado, si no deepseek-v4-pro."""
+    if FABLE_ENABLED:
+        from anthropic import AsyncAnthropic
+
+        ws = os.environ.get("ANTHROPIC_WORKSPACE_ID", "").strip()
+        client = AsyncAnthropic(
+            default_headers={"anthropic-workspace-id": ws} if ws else None
+        )
+        r = await client.messages.create(
+            model=RANK_MODELS[rank], max_tokens=8000,
+            # system cacheado: el prefijo se paga una vez por modelo
+            system=[{
+                "type": "text",
+                "text": "Eres el cerebro de un enjambre de agentes deepseek-flash "
+                        "en el Build Day de Bogotá. Máxima densidad: cero relleno. "
+                        "Cuando se pida JSON, responde SOLO JSON.",
+                "cache_control": {"type": "ephemeral"},
+            }],
+            messages=[{"role": "user", "content": prompt}],
+        )
+        u = r.usage
+        budget.anthropic_in += u.input_tokens
+        budget.anthropic_out += u.output_tokens
+        return r.content[0].text
+    return await llm(prompt, model="deepseek-v4-pro")
+
+
+def extract_json(text: str) -> dict:
+    text = re.sub(r"^```(?:json)?|```$", "", text.strip(), flags=re.MULTILINE)
+    m = re.search(r"\{.*\}", text, re.DOTALL)
+    if not m:
+        raise ValueError(f"Sin JSON en:\n{text[:400]}")
+    return json.loads(m.group())
+
+
+PLAN_PROMPT = """Descompón este reto en un DAG de subtareas para un enjambre de \
+{n} agentes deepseek-flash. Maximiza el paralelismo: solo declara una dependencia \
+si el output de otra tarea es INSUMO REAL. Cada prompt debe ser autocontenido y \
+pedir un entregable concreto (código, texto, análisis), no un plan.
+Asigna "thinking" por tarea — optimiza el costo: "none" para tareas mecánicas \
+(redactar, transformar, extraer, formatear), "low"/"medium" para diseño o análisis, \
+"high" SOLO para razonamiento pesado (matemáticas, pruebas, algoritmos, debugging \
+sutil). Responde SOLO JSON:
+{{"tasks": [{{"id": "t1", "prompt": "...", "deps": [], "thinking": "none", \
+"filename": "opcional.ext"}}]}}
+Máximo {max_tasks} tareas.
+
+RETO: {task}"""
+
+# Constitución compartida: system prompt IDÉNTICO para todos los workers.
+# DeepSeek cachea el prefijo automáticamente — el hit cuesta ~2% del miss,
+# así que con 8 workers el contexto común se paga una sola vez.
+WORKER_CONSTITUTION = (
+    "Eres un agente worker de un enjambre DeepSeek orquestado para el Build Day. "
+    "Reglas: (1) entrega el RESULTADO terminado, nunca un plan ni preámbulos; "
+    "(2) si la tarea pide código, entrégalo completo y ejecutable; "
+    "(3) sé denso: cero relleno, cero disculpas, cero repetir el enunciado; "
+    "(4) si un insumo [insumo de tX] contradice la tarea, la tarea manda; "
+    "(5) responde en el idioma de la tarea."
+)
+
+GATE_BAD = ("i cannot", "i can't", "no puedo", "lo siento, no", "as an ai")
+
+
+def gate(output: str) -> bool:
+    """Gate heurístico de respaldo. Sin LLM: shippear rápido > verificar de más."""
+    o = output.strip()
+    return len(o) > 80 and not any(b in o[:200].lower() for b in GATE_BAD)
+
+
+JEV_MODEL = "typesafe/jev-1.13"
+
+
+async def jev_gate(task_prompt: str, output: str):
+    """Gate principal: Jev (modelo de decisiones de TypeSafe vía OpenRouter).
+
+    Devuelve (pasa, prob) o None si Jev no responde (→ usar gate heurístico).
+    Output tipado y calibrado, sin parsing; cuesta ~$0.00002 por llamada.
+    """
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=30) as c:
+            r = await c.post(
+                "https://openrouter.ai/api/alpha/decisions",
+                headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
+                json={
+                    "model": JEV_MODEL,
+                    "state": f"Tarea encargada:\n{task_prompt[:4000]}\n\n"
+                             f"Output entregado:\n{output[:8000]}",
+                    "questions": {"cumple": {
+                        "type": "noul",
+                        "instructions": "El output entregado cumple la tarea encargada",
+                    }},
+                },
+            )
+            d = r.json()
+            budget.spent["openrouter"] += float(d.get("usage", {}).get("cost") or 0)
+            p = float(d["answers"]["cumple"]["noul"])
+            return p >= 0.5, p
+    except Exception:
+        return None
+
+
+class Swarm:
+    def __init__(self, task: str, resume_dir: Path | None = None):
+        if len(task.split()) < 4 and not resume_dir:
+            sys.exit(f"⛔ Reto demasiado vago ({task!r}) — no quemo tokens en eso.")
+        self.task = task
+        self.run_dir = resume_dir or ROOT / "runs" / f"{datetime.now():%Y%m%d-%H%M%S}-swarm"
+        self.ship_dir = self.run_dir / "artifacts"
+        self.ship_dir.mkdir(parents=True, exist_ok=True)
+        self.results: dict[str, str] = {}
+        self.sem = asyncio.Semaphore(MAX_AGENTS)
+        self.done_events: dict[str, asyncio.Event] = {}
+        self.t0 = time.monotonic()
+        # Checkpoint/resume: replan solo si no hay plan previo en el jsonl.
+        self.cached_plan: list | None = None
+        jl = self.run_dir / "swarm.jsonl"
+        if resume_dir and jl.exists():
+            for line in jl.read_text().splitlines():
+                ev = json.loads(line)
+                if ev.get("event") == "plan":
+                    self.cached_plan = ev["tasks"]
+                    self.task = ev.get("task", task)
+        if resume_dir and self.cached_plan is None:
+            sys.exit(f"⛔ {jl} no tiene plan checkpointeado — nada que resumir.")
+
+    def log(self, obj):
+        with (self.run_dir / "swarm.jsonl").open("a") as f:
+            f.write(json.dumps(obj, ensure_ascii=False) + "\n")
+
+    def ship(self, tid: str, filename: str | None, content: str):
+        """Shippear YA: el artefacto toca disco en cuanto existe."""
+        path = self.ship_dir / (filename or f"{tid}.md")
+        path.write_text(content)
+        print(f"  📦 [{time.monotonic()-self.t0:5.1f}s] {tid} shippeado → {path.name}")
+
+    async def run_task(self, t: dict):
+        # Rama ya shippeada en una corrida anterior: reusar, no re-correr.
+        prior = self.ship_dir / (t.get("filename") or f"{t['id']}.md")
+        if prior.exists():
+            self.results[t["id"]] = prior.read_text()
+            print(f"  ♻️  {t['id']} recuperado del checkpoint ({prior.name})")
+            self.done_events[t["id"]].set()
+            return
+        for dep in t.get("deps", []):
+            await self.done_events[dep].wait()
+        context = "\n\n".join(
+            f"[insumo de {d}]\n{self.results[d][:2000]}" for d in t.get("deps", [])
+        )
+        prompt = (context + "\n\n" if context else "") + t["prompt"]
+        think = t.get("thinking", "none")
+        async with self.sem:
+            out = await llm(prompt, system=WORKER_CONSTITUTION, thinking=think)
+            # Gate: Jev decide en ~100ms tipado y calibrado; heurístico si no está.
+            jv = await jev_gate(t["prompt"], out)
+            passed = jv[0] if jv is not None else gate(out)
+            if jv is not None:
+                self.log({"event": "jev", "id": t["id"], "p": jv[1]})
+            if not passed:  # un solo intento de fix, sin loops de verificación
+                print(f"  🔧 {t['id']} no pasó el gate"
+                      + (f" (Jev p={jv[1]:.2f})" if jv else "") + " — un intento de fix")
+                out = await llm(
+                    f"Este output falló ({out[:300]!r}). Entrega el resultado "
+                    f"completo y correcto para: {t['prompt']}",
+                    system=WORKER_CONSTITUTION, thinking=think,
+                )
+        self.results[t["id"]] = out
+        self.ship(t["id"], t.get("filename"), out)
+        self.log({"event": "shipped", "id": t["id"], "chars": len(out)})
+        self.done_events[t["id"]].set()
+
+    async def run(self):
+        if self.cached_plan is not None:
+            tasks = self.cached_plan
+            print(f"♻️  Plan recuperado del checkpoint ({len(tasks)} tareas)")
+        else:
+            print(f"🧠 Planner ({'Fable' if FABLE_ENABLED else 'deepseek-v4-pro'})…")
+            plan = extract_json(await brain(PLAN_PROMPT.format(
+                n=MAX_AGENTS, max_tasks=MAX_AGENTS * 2, task=self.task
+            )))
+            tasks = plan["tasks"]
+        ids = {t["id"] for t in tasks}
+        for t in tasks:  # sanear deps que no existen para no colgar el DAG
+            t["deps"] = [d for d in t.get("deps", []) if d in ids]
+        self.done_events = {t["id"]: asyncio.Event() for t in tasks}
+        if self.cached_plan is None:
+            self.log({"event": "plan", "task": self.task, "tasks": tasks})
+        print(f"🚀 DAG con {len(tasks)} tareas — despacho continuo, sin barreras")
+
+        await asyncio.gather(*(self.run_task(t) for t in tasks))
+
+        if (self.run_dir / "FINAL.md").exists() and all(
+            (self.ship_dir / (t.get("filename") or f"{t['id']}.md")).exists()
+            for t in tasks
+        ):
+            print("♻️  FINAL.md ya existe y todas las ramas están shippeadas — nada que hacer.")
+            return
+        print("🧠 Assembler…")
+        final = await brain(rank="officer", prompt=
+            f"Ensambla el entregable final para: {self.task}\n\nPiezas:\n"
+            + "\n\n".join(f"## {k}\n{v[:3000]}" for k, v in self.results.items())
+        )
+        (self.run_dir / "FINAL.md").write_text(final)
+        print(f"\n✅ Listo en {time.monotonic()-self.t0:.0f}s · gasto: {budget.line()}")
+        print(f"📁 {self.run_dir}/FINAL.md + {len(self.results)} artefactos")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        sys.exit('Uso: swarm.py "reto"  |  --demo  |  --resume runs/<dir>')
+    if sys.argv[1] == "--resume":
+        rd = Path(sys.argv[2])
+        rd = rd if rd.is_absolute() else ROOT / rd
+        asyncio.run(Swarm("(resume)", resume_dir=rd).run())
+        sys.exit(0)
+    task = (
+        "Crea el kit de demo del Build Day: (1) un one-pager en markdown que "
+        "explique la arquitectura Fable-orquesta-8-DeepSeek, (2) un guion de "
+        "demo de 2 minutos, (3) tres preguntas difíciles que el público podría "
+        "hacer, con respuestas."
+        if sys.argv[1] == "--demo"
+        else " ".join(sys.argv[1:])
+    )
+    asyncio.run(Swarm(task).run())
