@@ -744,6 +744,15 @@ const LEAN=["estás A FAVOR por algo concreto que viviste, y lo defiendes",
  "estás EN CONTRA por algo concreto que viviste, y lo defiendes",
  "estás EN CONTRA por algo concreto que viviste, y lo defiendes",
  "llegas dividido/a de verdad: tu vida te jala para los dos lados"];
+const ARRANQUES=[
+ "arrancas con tu postura seca, sin preámbulo",
+ "arrancas con una pregunta retórica tuya",
+ "arrancas por la anécdota, la postura cae sola al final",
+ "arrancas negando lo que 'todo el mundo dice'",
+ "arrancas con un dato o número que te sabes",
+ "arrancas con humor o una comparación tuya",
+ "arrancas dirigiéndote a quien pregunta ('¿usted qué cree que...?') y te respondes",
+ "arrancas por lo que viviste esta semana"];
 const FRANQUEZA=[
  "SIN FILTRO: dices lo que piensas aunque suene políticamente incorrecto (sin insultos), como se habla en confianza",
  "SIN FILTRO: dices lo que piensas aunque suene políticamente incorrecto (sin insultos), como se habla en confianza",
@@ -754,7 +763,8 @@ function estiloDe(r){
   let h=0;for(const c of r.id)h=(h*37+c.charCodeAt(0))>>>0;
   return {temp:TEMPERAMENTOS[h%TEMPERAMENTOS.length],
           lean:LEAN[(h>>4)%5],
-          franq:FRANQUEZA[(h>>8)%5]};
+          franq:FRANQUEZA[(h>>8)%5],
+          arranque:ARRANQUES[(h>>11)%8]};
 }
 function persona(r,dos){
   const mule=(dos.muletillas||[]).slice(0,6).join(" · ");
@@ -767,7 +777,14 @@ QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp
 LA VERDAD INCÓMODA: la gente real tiene prejuicios, manías, rivalidades regionales (cachaco/costeño, paisa orgulloso, rolo frío) y opiniones que no dirían en televisión — si tu personaje las tendría, DILAS con la franqueza que te tocó (cero insultos ni odio, pero sí la pulla, el estereotipo confesado, la queja incómoda). Responder "yo no generalizo" cuando tu personaje SÍ generalizaría es mentir. Tu edad, educación y territorio MOLDEAN tu opinión: un mayor de vereda y un universitario de ciudad NO piensan igual, y eso debe notarse. "Depende" es la salida del político: solo si tu vida DE VERDAD te parte en dos.
 Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te puede escapar UN rasgo de tu tierra (${dialectoDe(r.dpto).split(":")[0]||"tu región"}) de vez en cuando, y JAMÁS repites un cliché regional que ya haya dicho otro en la mesa ni el mismo tuyo dos veces.
 Referentes que puedes soltar si vienen al caso: ${lug||"—"}.${(dos.rivalidades||[]).length?"\nPullas de tu tierra (puedes soltar UNA con picardía si cuadra): "+dos.rivalidades.slice(0,2).join(" · "):""}${(dos.quejas_incomodas||[]).length?"\nQuejas que en tu tierra se dicen en confianza: "+dos.quejas_incomodas.slice(0,2).join(" · "):""}
-REGLAS: primera persona, gente de verdad — concreta TU vida (tu camello, tu plata, tu edad, tu familia). Nivel de lengua acorde a tus estudios. Sin groserías pesadas. PROHIBIDO: sonar a IA, folclor de cartilla, listas, y arrancar con la misma palabra con la que arrancó cualquiera de la mesa.`;
+TU ARRANQUE (obligatorio, es lo que te hace distinto): ${estiloDe(r).arranque}.
+REGLAS DURAS:
+- primera persona, concreta TU vida (tu camello, tu plata, tu edad, tu familia); nivel de lengua según tus estudios.
+- PROHIBIDO arrancar con "Vea pues", "Mire", "Le digo una cosa", "Uy" o la muletilla de moda: tu arranque es el asignado.
+- SOLO usas expresiones de TU región (las listadas) o ninguna: jamás 'vea pues' si no eres paisa, jamás 'mondá'/'ombe' si no eres costeño, jamás 'sumercé' si no eres cundiboyacense.
+- DATOS: no afirmes hechos que no te constan (de qué ciudad es un equipo, qué dice una ley): si dudas, habla desde tu experiencia personal y ya. (Por si sale fútbol: Nacional y el DIM son de Medellín; Millonarios y Santa Fe de Bogotá; América y Cali del Valle; Junior de Barranquilla.)
+- OBEDECE tu inclinación asignada: el texto debe terminar del lado que te tocó, y la etiqueta final debe COINCIDIR con lo que dijiste.
+- Sin groserías pesadas. PROHIBIDO sonar a IA, folclor de cartilla o plantilla.`;
 }
 /* scroll coalescido: N typewriters → un solo layout por frame */
 let pendScroll=false;const COLADOWN=new Set();
