@@ -297,10 +297,11 @@ async function mesa(cod){
       const raw=await flash([{role:"system",content:persona(r,dos)+ctxPara(ctx)+`
 Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU territorio. Reacciona a lo dicho (cita por nombre, contradice o apoya), aterriza con tu vida y tu región. 1-2 frases. Cierra con [POSTURA: a_favor|en_contra|depende].`},
         {role:"user",content:`Tema: ${q}\n${charla}\nHabla, ${r.nombre.split(" ")[0]}.`}],160);
-      const [pos,txt]=postura(raw);
+      let [pos,txt]=postura(raw);
+      if(!pos)pos=await clasificarPostura(q,txt);
       typewriter(say,txt);
-      card.style.setProperty("--pc",COLORES[pos||"depende"]);
-      transcript.push({n:r.nombre.split(" ")[0],t:txt,p:pos||"depende"});
+      card.style.setProperty("--pc",COLORES[pos]);
+      transcript.push({n:r.nombre.split(" ")[0],t:txt,p:pos});
     }catch(e){say.classList.remove("thinking");say.textContent="(se quedó callado)";}
   }
   /* la mesa CONCLUYE — nada de conversación eterna */
@@ -314,6 +315,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   if(PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");return;}
   el.insertAdjacentHTML("beforeend",
     `<div class="conclu" style="--pc:${COLORES[pos]}"><b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(concl)}</div>`);
+  selloHumano(q,transcript,el);
   el.scrollTop=1e9;
   path?.classList.remove("hot");
   path?.classList.add({a_favor:"fav",en_contra:"con",depende:"dep"}[pos]);
@@ -834,9 +836,10 @@ async function conversar(q){
         const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+
           "\nResponde la encuesta en 1-2 frases con POSTURA CLARA (a favor o en contra; depende solo si es irrenunciable) y cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende]."},
           {role:"user",content:q}]);
-        const [pos,txt]=postura(raw);
-        p[pos||"depende"]++;typewriter(say,txt);
-        card.style.setProperty("--pc",COLORES[pos||"depende"]);tally(p);
+        let [pos,txt]=postura(raw);
+        if(!pos)pos=await clasificarPostura(q,txt);
+        p[pos]++;typewriter(say,txt);
+        card.style.setProperty("--pc",COLORES[pos]);tally(p);
       }catch(e){say.classList.remove("thinking");say.textContent="(no contestó)";}
     }));
   }else{
@@ -867,8 +870,9 @@ async function conversar(q){
           const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+`
 Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. Cierra con [POSTURA: a_favor|en_contra|depende].`},
             {role:"user",content:`Tema: ${q}\n${charla}\nTe toca, ${r.nombre.split(" ")[0]}.`}],85);
-          const [pos,txt]=postura(raw);
-          postDe[r.id]=pos||"depende";
+          let [pos,txt]=postura(raw);
+          if(!pos)pos=await clasificarPostura(q,txt);
+          postDe[r.id]=pos;
           typewriter(say,txt);
           card.style.setProperty("--pc",COLORES[pos||"depende"]);
           transcript.push({id:r.id,n:r.nombre.split(" ")[0],d:r.dpto_nombre,t:txt});
@@ -904,6 +908,7 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
       $("#resps").scrollTop=1e9;
       guardar("tertulia",cur,q,{posturas:p,resumen,acordo,rondas:ronda,
         segundos:Math.round((Date.now()-CONV.start)/1000),participantes:sample.map(r=>r.id)});
+      selloHumano(q,transcript);
     }catch(e){}
   }
   if(MODO==="sondeo")guardar("sondeo",cur,q,{posturas:p,participantes:sample.map(r=>r.id)});
