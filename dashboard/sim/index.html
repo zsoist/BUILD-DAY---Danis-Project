@@ -164,7 +164,7 @@ grid-template-areas:"top" "encuesta" "censo" "ficha" "banner"}#kpis{display:none
     <div id="tally"></div>
     <div id="sugg"></div>
     <form id="qbar">
-      <input id="qin" placeholder="¿qué opinan de… ?" autocomplete="off">
+      <input id="qin" placeholder="pregúntale al país lo que quieras… (toca una sugerencia y edítala)" autocomplete="off" style="font-size:13.5px;padding:8px 11px">
       <select id="nsel" aria-label="Tamaño del panel" style="flex:0 0 auto">
         <option value="8">8 voces</option><option value="12">12 voces</option>
         <option value="20">20 voces</option>
@@ -243,7 +243,7 @@ async function mesa(cod){
 Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU territorio. Reacciona a lo dicho (cita por nombre, contradice o apoya), aterriza con tu vida y tu región. 1-2 frases. Cierra con [POSTURA: a_favor|en_contra|depende].`},
         {role:"user",content:`Tema: ${PAIS.q}\n${charla}\nHabla, ${r.nombre.split(" ")[0]}.`}],160);
       const [pos,txt]=postura(raw);
-      say.classList.remove("thinking");say.textContent=txt;
+      typewriter(say,txt);
       card.style.setProperty("--pc",COLORES[pos||"depende"]);
       transcript.push({n:r.nombre.split(" ")[0],t:txt,p:pos||"depende"});
     }catch(e){say.classList.remove("thinking");say.textContent="(se quedó callado)";}
@@ -453,8 +453,11 @@ function renderSugg(){
     temas=(voz.temas_calientes&&voz.temas_calientes.length?voz.temas_calientes:SUGG_BASE).slice(0,5);
   }
   $("#sugg").innerHTML=temas.map(s=>`<button type="button">${esc(s)}</button>`).join("");
-  $("#sugg").querySelectorAll("button").forEach(b=>b.onclick=()=>
-    conversar(/[¿?]/.test(b.textContent)?b.textContent:"¿Qué opina de "+b.textContent+"?"));
+  $("#sugg").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    const q=/[¿?]/.test(b.textContent)?b.textContent:"¿Qué opinan de "+b.textContent+"?";
+    const inp=$("#qin");inp.value=q;inp.focus();
+    inp.setSelectionRange(q.length,q.length);
+  });
 }
 $("#qbar").onsubmit=e=>{e.preventDefault();const v=$("#qin").value.trim();
   if(v){$("#qin").value="";conversar(v)}};
@@ -478,6 +481,15 @@ Expresiones tuyas de calle (usa 1-2 por intervención, las que cuadren): ${mule|
 Tu humor: ${humor||"picardía criolla sin pesadez"}. Referentes que sueltas si vienen al caso: ${lug||"—"}.
 REGLAS: hablas EN PRIMERA PERSONA como gente de verdad — confianzudo, con humor y mamando gallo cuando cuadre, frases a veces cortadas, concreta tu vida (tu camello, tu plata, tu edad). Nivel de lengua acorde a tus estudios. Sin groserías pesadas. Cero tono de IA, cero folclor de cartilla, cero listas.`;
 }
+function typewriter(el,txt){
+  el.classList.remove("thinking");el.textContent="";
+  let i=0;const paso=Math.max(1,Math.round(txt.length/60));
+  const iv=setInterval(()=>{
+    i+=paso;el.textContent=txt.slice(0,i);
+    el.closest("#resps,#mesa")?.scrollTo(0,1e9);
+    if(i>=txt.length)clearInterval(iv);
+  },28);
+}
 function bubble(r,alt,parent){
   const host=parent||$("#resps");
   const card=document.createElement("div");card.className="resp"+(alt?" alt":"");
@@ -485,7 +497,7 @@ function bubble(r,alt,parent){
   card.append(cv);
   card.insertAdjacentHTML("beforeend",`<div><div class="who">${esc(r.nombre)} · ${r.edad} ·
     ${esc(r.ocupacion)}${cur==="CO"?" · <span style='color:var(--accent)'>"+esc(r.dpto_nombre)+"</span>":""}</div>
-    <div class="say thinking"></div></div>`);
+    <div class="say thinking">está escribiendo</div></div>`);
   host.append(card);host.scrollTop=1e9;
   return card;
 }
@@ -559,7 +571,7 @@ async function conversar(q){
           "\nResponde la encuesta en 1-2 frases y cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende]."},
           {role:"user",content:q}]);
         const [pos,txt]=postura(raw);
-        p[pos||"depende"]++;say.classList.remove("thinking");say.textContent=txt;
+        p[pos||"depende"]++;typewriter(say,txt);
         card.style.setProperty("--pc",COLORES[pos||"depende"]);tally(p);
       }catch(e){say.classList.remove("thinking");say.textContent="(no contestó)";}
     }));
@@ -580,7 +592,7 @@ Estás en una tertulia con vecinos de ${r.dpto_nombre}. Habla como en la vida re
             {role:"user",content:`Tema de la mesa: ${q}\n${charla}\nTe toca hablar, ${r.nombre.split(" ")[0]}.`}],190);
           const [pos,txt]=postura(raw);
           if(ronda===rondas-1)p[pos||"depende"]++;
-          say.classList.remove("thinking");say.textContent=txt;
+          typewriter(say,txt);
           card.style.setProperty("--pc",COLORES[pos||"depende"]);
           transcript.push({id:r.id,n:r.nombre.split(" ")[0],d:r.dpto_nombre,t:txt});
           if(ronda===rondas-1)tally(p);
