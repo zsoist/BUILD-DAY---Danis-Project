@@ -82,7 +82,14 @@ export default async function handler(req, res) {
 
   const body = req.body || {};
   const messages = body.messages;
-  if (!Array.isArray(messages) || messages.length > 40 ||
+  // la rama decide (Jev) viaja con state+questions, SIN messages: el guard de
+  // messages solo aplica a las ramas de chat — antes cortaba a Jev con 400 y
+  // toda la verificación de contexto/posturas moría en silencio
+  if (body.decide === true) {
+    if (typeof body.state !== "string" || !body.questions ||
+        JSON.stringify(body.questions).length > 4000)
+      return res.status(400).json({ error: "decide" });
+  } else if (!Array.isArray(messages) || messages.length > 40 ||
       JSON.stringify(messages).length > 30000)
     return res.status(400).json({ error: "messages" });
   // el cliente no manda la factura: clamps del servidor
