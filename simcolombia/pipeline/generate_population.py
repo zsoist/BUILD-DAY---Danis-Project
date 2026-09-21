@@ -98,11 +98,14 @@ for cod, d in sorted(M.items()):
         regimen = (sample_w([("contributivo", sal.get("contributivo", 50)),
                              ("subsidiado", sal.get("subsidiado", 50))])
                    if sal else "sin dato")
+        edu = d.get("educacion_pct")
+        educacion = (sample_w(list(edu.items())) if edu and edad >= 18 else
+                     "en el colegio" if 6 <= edad < 18 else "primera infancia")
         residents.append({
             "id": f"{cod}-{i:03d}", "dpto": cod, "dpto_nombre": d["nombre"],
             "nombre": f"{rng.choice(nombres)} {rng.choice(apellidos)}",
             "sexo": sexo, "edad": edad, "grupo_edad": grupo,
-            "regimen_salud": regimen,
+            "regimen_salud": regimen, "educacion": educacion,
             "ocupacion": (rng.choice(ocs) if edad >= 18 else
                           "estudiante" if edad >= 6 else "niño(a) de casa"),
         })

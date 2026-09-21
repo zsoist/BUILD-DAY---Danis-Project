@@ -72,13 +72,43 @@ h3:first-child{margin-top:0}
 .fuente{font-size:9.5px;color:var(--faint);margin-top:2px}
 
 #encuesta{grid-area:encuesta;display:flex;flex-direction:column;min-height:74vh}
+#modo{display:flex;gap:4px}
+#modo button{font-family:"Silkscreen";font-size:8px;padding:3px 8px;color:var(--faint)}
+#modo button[aria-pressed="true"]{color:var(--work);border-color:var(--work)}
 #resps{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
 .resp{display:grid;grid-template-columns:34px 1fr;gap:8px;background:var(--panel2);
-border:2px solid var(--grid);padding:8px;border-left:4px solid var(--pc,var(--grid))}
+border:2px solid var(--grid);padding:8px;border-left:4px solid var(--pc,var(--grid));
+max-width:92%;animation:entra .22s steps(3)}
+.resp.alt{margin-left:auto;grid-template-columns:1fr 34px;border-left:2px solid var(--grid);
+border-right:4px solid var(--pc,var(--grid))}
+.resp.alt .px{order:2}.resp.alt>div{order:1;text-align:right}
+@keyframes entra{from{transform:translateY(8px);opacity:0}}
 .resp .who{font-family:"Silkscreen";font-size:8px;color:var(--dim);margin-bottom:3px}
 .resp .say{font-size:12.5px;line-height:1.45}
-.resp .say.thinking{color:var(--faint);animation:blink 1s steps(2) infinite}
+.resp .say.thinking{color:var(--faint)}
+.resp .say.thinking::after{content:"···";animation:blink .8s steps(2) infinite;
+font-family:"Silkscreen";letter-spacing:2px}
 .resp .px{width:28px;height:28px;image-rendering:pixelated}
+.mod{border:2px solid var(--accent);background:var(--panel2);padding:9px 12px;
+font-size:12.5px;line-height:1.5;color:var(--dim)}
+.mod b{font-family:"Silkscreen";font-size:8px;color:var(--accent);display:block;margin-bottom:4px}
+/* mapa del país */
+#mapa{display:grid;grid-template-columns:minmax(240px,340px) 1fr;gap:10px;min-height:0}
+#mapa svg{width:100%;height:auto;max-height:66vh}
+#mapa path{fill:var(--panel2);stroke:var(--grid);stroke-width:1;cursor:pointer;
+transition:fill .25s}
+#mapa path:hover{stroke:var(--work);stroke-width:1.5}
+#mapa path.hot{stroke:var(--work);stroke-width:2;animation:blink 1s steps(2) infinite}
+#mapa path.fav{fill:color-mix(in srgb,var(--ok) 45%,var(--panel2))}
+#mapa path.con{fill:color-mix(in srgb,var(--fail) 45%,var(--panel2))}
+#mapa path.dep{fill:color-mix(in srgb,var(--work) 40%,var(--panel2))}
+#mesa{display:flex;flex-direction:column;gap:8px;overflow-y:auto;max-height:66vh;min-width:0}
+#mesa .hint{color:var(--faint);padding:14px;text-align:center}
+.conclu{border:2px solid var(--pc,var(--accent));background:var(--panel2);padding:9px 12px;
+font-size:12.5px;line-height:1.5}
+.conclu b{font-family:"Silkscreen";font-size:8px;display:block;margin-bottom:4px;color:var(--pc,var(--accent))}
+.ronda{font-family:"Silkscreen";font-size:8px;color:var(--faint);text-align:center;
+padding:4px 0;letter-spacing:.2em}
 @keyframes blink{50%{opacity:.3}}
 #tally{display:flex;gap:8px;padding:8px 10px;border-top:var(--px) solid var(--grid);flex-wrap:wrap}
 .tal{flex:1;min-width:110px;border:2px solid var(--grid);padding:6px 9px;text-align:center}
@@ -124,14 +154,20 @@ grid-template-areas:"top" "encuesta" "censo" "ficha" "banner"}#kpis{display:none
   </section>
 
   <section id="encuesta" class="panel">
-    <h2>la encuesta <b id="estado"></b></h2>
+    <h2><span>la conversación <b id="estado"></b></span>
+      <span id="modo"><button data-m="pais" aria-pressed="false">PAÍS</button><button data-m="tertulia" aria-pressed="true">TERTULIA</button><button data-m="sondeo" aria-pressed="false">SONDEO</button></span></h2>
     <div id="resps"><div style="color:var(--faint);padding:20px;text-align:center">
-      elige un departamento y pregúntales lo que quieras —
-      <b style="color:var(--dim)">8 residentes sintéticos</b> contestan en personaje</div></div>
+      elige un departamento y suelta un tema —<br>
+      <b style="color:var(--dim)">tertulia</b>: 6 residentes conversan entre ellos, se citan y se contradicen ·
+      <b style="color:var(--dim)">sondeo</b>: 8 contestan a la vez</div></div>
     <div id="tally"></div>
     <div id="sugg"></div>
     <form id="qbar">
       <input id="qin" placeholder="¿qué opinan de… ?" autocomplete="off">
+      <select id="nsel" aria-label="Tamaño del panel" style="flex:0 0 auto">
+        <option value="8">8 voces</option><option value="12">12 voces</option>
+        <option value="20">20 voces</option>
+      </select>
       <button class="pxbtn" type="submit">PREGUNTAR</button>
     </form>
   </section>
@@ -165,6 +201,77 @@ $("#gear").onclick=e=>{e.stopPropagation();const c=$("#cfg");c.style.display=c.s
 document.addEventListener("click",e=>{if(!$("#cfg").contains(e.target)&&e.target.id!=="gear")$("#cfg").style.display="none"});
 $("#c-orkey").onchange=e=>{cfg.orkey=e.target.value.trim();try{localStorage.setItem("sim-cfg",JSON.stringify(cfg))}catch(_){}};
 
+/* ═══ MODO PAÍS: una pregunta, 33 mesas — el mapa se pinta con las conclusiones ═══ */
+let GEO=null,PAIS={q:null,cache:{},tally:{a_favor:0,en_contra:0,depende:0}};
+async function pais(q){
+  if(!GEO){try{GEO=await fetch("colombia.json").then(r=>r.json())}catch(e){
+    $("#resps").innerHTML="<div class='hint'>no cargó el mapa</div>";return;}}
+  PAIS={q,cache:{},tally:{a_favor:0,en_contra:0,depende:0}};
+  $("#tally").innerHTML="";
+  $("#resps").innerHTML=`
+    <div style="color:var(--dim);padding:2px 2px 8px">
+      <b class="pxf" style="font-size:10px;color:var(--work)">EL PAÍS RESPONDE</b> ${esc(q)}
+      — toca un departamento y escucha su mesa llegar a una conclusión</div>
+    <div id="mapa">
+      <svg viewBox="${GEO.viewBox}" role="img" aria-label="Mapa de Colombia">${
+        Object.entries(GEO.paths).map(([c,p])=>
+          `<path d="${p}" data-cod="${c}"><title>${esc(MARG[c]?.nombre||c)}</title></path>`).join("")
+      }</svg>
+      <div id="mesa"><div class="hint">☝ el mapa espera tu dedo<br><br>
+        cada departamento arma una mesa de 4 residentes reales-sintéticos,
+        conversa y CONCLUYE — y el mapa se pinta con lo que decidan</div></div>
+    </div>`;
+  $("#resps").querySelector("svg").addEventListener("click",e=>{
+    const cod=e.target.dataset?.cod; if(cod)mesa(cod);
+  });
+}
+async function mesa(cod){
+  const el=$("#mesa"),d=MARG[cod],dos=DOS[cod]||{};
+  const path=$("#resps").querySelector(`path[data-cod="${cod}"]`);
+  if(PAIS.cache[cod]){el.innerHTML=PAIS.cache[cod];return;}
+  el.innerHTML=`<div class="ronda">— MESA DE ${esc(d.nombre).toUpperCase()} —</div>`;
+  path?.classList.add("hot");
+  const sample=RES.filter(r=>r.dpto===cod&&r.edad>=16).sort(()=>Math.random()-.5).slice(0,4);
+  const transcript=[];
+  for(let i=0;i<sample.length;i++){
+    const r=sample[i],card=bubble(r,i%2===1,el),say=card.querySelector(".say");
+    try{
+      const charla=transcript.length?
+        "La mesa va así:\n"+transcript.map(t=>`${t.n}: ${t.t}`).join("\n"):"abres tú la mesa";
+      const raw=await flash([{role:"system",content:persona(r,dos)+`
+Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU territorio. Reacciona a lo dicho (cita por nombre, contradice o apoya), aterriza con tu vida y tu región. 1-2 frases. Cierra con [POSTURA: a_favor|en_contra|depende].`},
+        {role:"user",content:`Tema: ${PAIS.q}\n${charla}\nHabla, ${r.nombre.split(" ")[0]}.`}],160);
+      const [pos,txt]=postura(raw);
+      say.classList.remove("thinking");say.textContent=txt;
+      card.style.setProperty("--pc",COLORES[pos||"depende"]);
+      transcript.push({n:r.nombre.split(" ")[0],t:txt,p:pos||"depende"});
+    }catch(e){say.classList.remove("thinking");say.textContent="(se quedó callado)";}
+  }
+  /* la mesa CONCLUYE — nada de conversación eterna */
+  let concl="",pos="depende";
+  try{
+    const raw=await flash([{role:"system",content:
+      `Cierras mesas de conversación. Resume EN QUÉ QUEDÓ esta mesa de ${d.nombre} en 2 frases máximo, con nombres, y da el veredicto del grupo. Cierra con [POSTURA: a_favor|en_contra|depende] (la mayoritaria).`},
+      {role:"user",content:`Tema: ${PAIS.q}\n`+transcript.map(t=>`${t.n} (${t.p}): ${t.t}`).join("\n")}],130,0.5);
+    [pos,concl]=[postura(raw)[0]||mayoria(transcript),postura(raw)[1]];
+  }catch(e){pos=mayoria(transcript);concl="La mesa quedó dividida.";}
+  el.insertAdjacentHTML("beforeend",
+    `<div class="conclu" style="--pc:${COLORES[pos]}"><b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(concl)}</div>`);
+  el.scrollTop=1e9;
+  path?.classList.remove("hot");
+  path?.classList.add({a_favor:"fav",en_contra:"con",depende:"dep"}[pos]);
+  PAIS.tally[pos]++;
+  $("#tally").innerHTML=
+    `<div class="tal fav"><b>${PAIS.tally.a_favor}</b><span>dptos a favor</span></div>
+     <div class="tal con"><b>${PAIS.tally.en_contra}</b><span>dptos en contra</span></div>
+     <div class="tal dep"><b>${PAIS.tally.depende}</b><span>dptos divididos</span></div>`;
+  PAIS.cache[cod]=el.innerHTML;
+}
+function mayoria(ts){
+  const c={a_favor:0,en_contra:0,depende:0};ts.forEach(t=>c[t.p]++);
+  return Object.entries(c).sort((a,b)=>b[1]-a[1])[0][0];
+}
+
 let RES=[],MARG={},DOS={},VAL={},cur="11";
 const AGEG=["0-4","5-9","10-14","15-19","20-24","25-29","30-34","35-39","40-44",
 "45-49","50-54","55-59","60-64","65-69","70-74","75-79","80-84","85+"];
@@ -194,7 +301,8 @@ async function boot(){
     DOS=await fetch("dossiers.json").then(r=>r.json()).catch(()=>({}));
   }catch(e){$("#censobody").textContent="corre el pipeline: generate_population.py";return;}
   const sel=$("#dptosel");
-  sel.innerHTML=Object.entries(MARG).sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre))
+  sel.innerHTML=`<option value="CO">★ Toda Colombia (panel nacional)</option>`+
+    Object.entries(MARG).sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre))
     .map(([c,d])=>`<option value="${c}" ${c===cur?"selected":""}>${esc(d.nombre)}</option>`).join("");
   sel.onchange=e=>{cur=e.target.value;render()};
   $("#kpis").innerHTML=`<div><b>${RES.length.toLocaleString()}</b><span>residentes</span></div>
@@ -203,8 +311,21 @@ async function boot(){
   render();
 }
 
+function natMarg(){
+  const agg={nombre:"Colombia",edad:{},sexo:{hombre:0,mujer:0},poblacion:0,
+    pib_sectores_pct:null,salud_pct:null,fuentes:{poblacion:"DANE proyecciones 2026, agregado nacional"}};
+  for(const d of Object.values(MARG)){
+    agg.poblacion+=d.poblacion||0;
+    if(d.sexo){agg.sexo.hombre+=d.sexo.hombre;agg.sexo.mujer+=d.sexo.mujer;}
+    if(d.edad)for(const[g,n]of Object.entries(d.edad))agg.edad[g]=(agg.edad[g]||0)+n;
+  }
+  return agg;
+}
 function render(){
-  const d=MARG[cur],mine=RES.filter(r=>r.dpto===cur),dos=DOS[cur]||{};
+  const nac=cur==="CO";
+  const d=nac?natMarg():MARG[cur];
+  const mine=nac?RES:RES.filter(r=>r.dpto===cur);
+  const dos=nac?{}:(DOS[cur]||{});
   /* censo */
   let h="";
   if(d.edad&&d.sexo){
@@ -246,6 +367,15 @@ function render(){
   }
   $("#censobody").innerHTML=h;
   /* ficha */
+  if(nac){
+    $("#dossier").innerHTML=`<b>Colombia entera en la mesa.</b><br><br>
+      ${(d.poblacion/1e6).toFixed(1)} millones de personas proyectadas por el DANE
+      para 2026, 33 territorios, 6.600 residentes sintéticos. En el panel nacional
+      cada departamento entra a la muestra según su población REAL: pesa más un
+      bogotano que un vaupense, como en el país de verdad.<br><br>
+      <span class="tag" style="border-color:var(--ok)">muestreo proporcional DANE</span>
+      <span class="tag" style="border-color:var(--ok)">33 voces regionales</span>`;
+  } else
   $("#dossier").innerHTML= dos.vida_cotidiana?
     `<b>${esc(dos.apodo_gentilicio||d.nombre)}</b> · ${esc(dos.como_hablan||"")}<br><br>
      ${esc(dos.vida_cotidiana)}<br><br><i style="color:var(--faint)">${esc(dos.economia_vivida||"")}</i><br><br>
@@ -263,59 +393,153 @@ function render(){
   renderSugg();
 }
 
-/* ── LA ENCUESTA ── */
-const SUGG=["el nuevo metro / transporte público","que la IA haga su trabajo",
-"el precio del café","irse a vivir a otra ciudad","el reggaetón",
-"que sus hijos estudien virtual"];
+/* ── LA CONVERSACIÓN: sondeo (paralelo) y tertulia (conversan entre ellos) ── */
+let MODO="tertulia";
+$("#modo").onclick=e=>{const m=e.target.dataset.m;if(!m)return;MODO=m;
+  $("#modo").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===m)));};
+const COLORES={a_favor:"var(--ok)",en_contra:"var(--fail)",depende:"var(--work)"};
+const SUGG_BASE=["el nuevo metro / transporte público","que la IA haga su trabajo",
+"el precio del café","irse a vivir a otra ciudad","que sus hijos estudien virtual"];
 function renderSugg(){
-  $("#sugg").innerHTML=SUGG.map(s=>`<button type="button">${esc(s)}</button>`).join("");
-  $("#sugg").querySelectorAll("button").forEach(b=>b.onclick=()=>encuesta("¿Qué opina de "+b.textContent+"?"));
+  let temas;
+  if(cur==="CO"){
+    // panel nacional: mezcla de temas calientes de varios rincones + nacionales
+    const all=Object.values(DOS).flatMap(d=>d.temas_calientes||[]);
+    temas=[...all.sort(()=>Math.random()-.5).slice(0,3),
+           "¿La IA les va a quitar el trabajo?","¿El país va por buen camino?"];
+  } else {
+    const voz=DOS[cur]||{};
+    temas=(voz.temas_calientes&&voz.temas_calientes.length?voz.temas_calientes:SUGG_BASE).slice(0,5);
+  }
+  $("#sugg").innerHTML=temas.map(s=>`<button type="button">${esc(s)}</button>`).join("");
+  $("#sugg").querySelectorAll("button").forEach(b=>b.onclick=()=>
+    conversar(/[¿?]/.test(b.textContent)?b.textContent:"¿Qué opina de "+b.textContent+"?"));
 }
 $("#qbar").onsubmit=e=>{e.preventDefault();const v=$("#qin").value.trim();
-  if(v){$("#qin").value="";encuesta(v)}};
+  if(v){$("#qin").value="";conversar(v)}};
 
-async function encuesta(q){
+function vida(r){
+  // detalles derivados deterministas: familia y antigüedad, para que hablen de SU vida
+  let h=0;for(const c of r.id)h=(h*33+c.charCodeAt(0))>>>0;
+  const hijos=r.edad>=25?["sin hijos","con un hijo","con dos hijos","con tres hijos"][h%4]:"";
+  const barrio=r.edad>=30&&(h>>3)%3===0?"de toda la vida en el barrio":"";
+  return [hijos,barrio].filter(Boolean).join(", ");
+}
+function persona(r,dos){
+  const mule=(dos.muletillas||[]).slice(0,4).join(" · ");
+  const lug=(dos.lugares||[]).slice(0,4).join(", ");
+  return `Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}${vida(r)?", "+vida(r):""}, régimen ${r.regimen_salud}, de ${r.dpto_nombre}, Colombia.
+Tu tierra: ${dos.vida_cotidiana||""} ${dos.economia_vivida||""}
+Cómo hablas: ${dos.como_hablan||"español colombiano natural"}. Muletillas tuyas (úsalas con moderación, no todas): ${mule||"—"}. Referentes que mencionas si vienen al caso: ${lug||"—"}.
+REGLAS: hablas EN PRIMERA PERSONA como una persona real — frases naturales, a veces cortas, concreta tu vida (tu trabajo, tu edad, tu plata). Cero tono de IA, cero folclorismo de cartilla, cero listas.`;
+}
+function bubble(r,alt,parent){
+  const host=parent||$("#resps");
+  const card=document.createElement("div");card.className="resp"+(alt?" alt":"");
+  const cv=document.createElement("canvas");cv.className="px";retrato(cv,r.id,r.sexo);
+  card.append(cv);
+  card.insertAdjacentHTML("beforeend",`<div><div class="who">${esc(r.nombre)} · ${r.edad} ·
+    ${esc(r.ocupacion)}${cur==="CO"?" · <span style='color:var(--accent)'>"+esc(r.dpto_nombre)+"</span>":""}</div>
+    <div class="say thinking"></div></div>`);
+  host.append(card);host.scrollTop=1e9;
+  return card;
+}
+function postura(txt){
+  const m=txt.match(/\[POSTURA:\s*(a_favor|en_contra|depende)\s*\]/i);
+  return [m?m[1].toLowerCase():null,txt.replace(/\[POSTURA:[^\]]*\]/i,"").trim()];
+}
+async function flash(messages,max=170,temp=0.95){
+  const r=await fetch("https://openrouter.ai/api/v1/chat/completions",{
+    method:"POST",headers:{Authorization:"Bearer "+cfg.orkey,"Content-Type":"application/json"},
+    body:JSON.stringify({model:"deepseek/deepseek-v4.1-flash",max_tokens:max,
+      temperature:temp,reasoning:{enabled:false},messages})});
+  const j=await r.json();
+  if(j.error)throw new Error(j.error.message||"api");
+  return j.choices?.[0]?.message?.content||"";
+}
+function tally(p){
+  $("#tally").innerHTML=
+   `<div class="tal fav"><b>${p.a_favor}</b><span>a favor</span></div>
+    <div class="tal con"><b>${p.en_contra}</b><span>en contra</span></div>
+    <div class="tal dep"><b>${p.depende}</b><span>depende</span></div>`;
+}
+function muestraNacional(n){
+  // proporcional a población REAL de cada dpto (así pesa el país de verdad)
+  const pesos=Object.entries(MARG).map(([c,d])=>[c,d.poblacion||1]);
+  const tot=pesos.reduce((a,[,w])=>a+w,0);
+  const out=[],usados=new Set();
+  while(out.length<n){
+    let x=Math.random()*tot,cod=pesos[0][0];
+    for(const [c,w] of pesos){x-=w;if(x<=0){cod=c;break}}
+    const pool=RES.filter(r=>r.dpto===cod&&r.edad>=16&&!usados.has(r.id));
+    if(pool.length){const r=pool[Math.floor(Math.random()*pool.length)];
+      usados.add(r.id);out.push(r);}
+  }
+  return out;
+}
+async function conversar(q){
   if(!cfg.orkey){$("#resps").innerHTML=`<div style="color:var(--work);padding:16px">
-    pega tu key de openrouter en AJUSTES para encuestar</div>`;return;}
-  const d=MARG[cur],dos=DOS[cur]||{};
-  const pool=RES.filter(r=>r.dpto===cur&&r.edad>=14);
-  const sample=[...pool].sort(()=>Math.random()-.5).slice(0,8);
+    pega tu key de openrouter en AJUSTES para conversar</div>`;return;}
+  if(MODO==="pais")return pais(q);
+  const nac=cur==="CO";
+  const d=nac?natMarg():MARG[cur];
+  const n=Math.max(4,+($("#nsel")?.value||8));
+  const sample=nac?muestraNacional(n):
+    RES.filter(r=>r.dpto===cur&&r.edad>=16).sort(()=>Math.random()-.5).slice(0,n);
   $("#resps").innerHTML=`<div style="color:var(--dim);padding:4px 2px 8px">
-    <b class="pxf" style="font-size:10px;color:var(--work)">PREGUNTA</b> ${esc(q)}
-    — respondiendo ${sample.length} residentes de ${esc(d.nombre)}…</div>`;
-  $("#tally").innerHTML="";$("#estado").textContent="encuestando…";
-  const posturas={a_favor:0,en_contra:0,depende:0};
-  const colores={a_favor:"var(--ok)",en_contra:"var(--fail)",depende:"var(--work)"};
-  await Promise.all(sample.map(async r=>{
-    const card=document.createElement("div");card.className="resp";
-    const cv=document.createElement("canvas");cv.className="px";retrato(cv,r.id,r.sexo);
-    card.append(cv);
-    card.insertAdjacentHTML("beforeend",`<div><div class="who">${esc(r.nombre)} · ${r.edad} ·
-      ${esc(r.ocupacion)} · ${esc(r.dpto_nombre)}</div>
-      <div class="say thinking">pensando…</div></div>`);
-    $("#resps").append(card);
-    const say=card.querySelector(".say");
+    <b class="pxf" style="font-size:10px;color:var(--work)">${MODO==="tertulia"?"TEMA EN LA MESA":"PREGUNTA"}</b>
+    ${esc(q)} — ${n} residentes de ${esc(d.nombre)}</div>`;
+  $("#tally").innerHTML="";
+  const p={a_favor:0,en_contra:0,depende:0};
+  const dosOf=r=>DOS[r.dpto]||{};
+
+  if(MODO==="sondeo"){
+    $("#estado").textContent="sondeando…";
+    await Promise.all(sample.map(async r=>{
+      const card=bubble(r,false),say=card.querySelector(".say");
+      try{
+        const raw=await flash([{role:"system",content:persona(r,dosOf(r))+
+          "\nResponde la encuesta en 1-2 frases y cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende]."},
+          {role:"user",content:q}]);
+        const [pos,txt]=postura(raw);
+        p[pos||"depende"]++;say.classList.remove("thinking");say.textContent=txt;
+        card.style.setProperty("--pc",COLORES[pos||"depende"]);tally(p);
+      }catch(e){say.classList.remove("thinking");say.textContent="(no contestó)";}
+    }));
+  }else{
+    $("#estado").textContent="conversando…";
+    const transcript=[];
+    const rondas=n>=12?1:2;  // panel grande: una vuelta, que no se haga eterno
+    for(let ronda=0;ronda<rondas;ronda++){
+      $("#resps").insertAdjacentHTML("beforeend",
+        `<div class="ronda">— ${ronda?"SEGUNDA VUELTA":"ARRANCA LA TERTULIA"} —</div>`);
+      for(let i=0;i<sample.length;i++){
+        const r=sample[i],card=bubble(r,i%2===1),say=card.querySelector(".say");
+        try{
+          const charla=transcript.length?
+            "Lo que se ha dicho en la mesa:\n"+transcript.map(t=>`${t.n} (${t.d}): ${t.t}`).join("\n"):"nadie ha hablado aún, abres tú";
+          const raw=await flash([{role:"system",content:persona(r,dosOf(r))+`
+Estás en una tertulia con vecinos de ${r.dpto_nombre}. Habla como en la vida real: puedes REACCIONAR a lo que dijeron otros (cítalos por su nombre de pila, dales la razón o contradícelos con respeto o con picardía), meter tu experiencia propia, hasta cambiar de opinión${ronda?" si te convencieron":""}. 1-3 frases, tono de conversación, no de discurso. Cierra con [POSTURA: a_favor|en_contra|depende].`},
+            {role:"user",content:`Tema de la mesa: ${q}\n${charla}\nTe toca hablar, ${r.nombre.split(" ")[0]}.`}],190);
+          const [pos,txt]=postura(raw);
+          if(ronda===rondas-1)p[pos||"depende"]++;
+          say.classList.remove("thinking");say.textContent=txt;
+          card.style.setProperty("--pc",COLORES[pos||"depende"]);
+          transcript.push({id:r.id,n:r.nombre.split(" ")[0],d:r.dpto_nombre,t:txt});
+          if(ronda===rondas-1)tally(p);
+        }catch(e){say.classList.remove("thinking");say.textContent="(se quedó callado)";}
+      }
+    }
+    /* el moderador cierra */
     try{
-      const resp=await fetch("https://openrouter.ai/api/v1/chat/completions",{
-        method:"POST",headers:{Authorization:"Bearer "+cfg.orkey,"Content-Type":"application/json"},
-        body:JSON.stringify({model:"deepseek/deepseek-v4.1-flash",max_tokens:150,temperature:0.9,
-          reasoning:{enabled:false},
-          messages:[{role:"system",content:
-`Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}, régimen de salud ${r.regimen_salud}, vives en ${r.dpto_nombre}, Colombia. Tu tierra: ${dos.vida_cotidiana||""} ${dos.como_hablan||""} Responde encuestas EN PRIMERA PERSONA como esta persona: 1-2 frases naturales, concretas, sin sonar a IA ni a caricatura regional. Cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende].`},
-          {role:"user",content:q}]})});
-      const j=await resp.json();
-      let txt=j.choices?.[0]?.message?.content||"(sin respuesta)";
-      const m=txt.match(/\[POSTURA:\s*(a_favor|en_contra|depende)\s*\]/i);
-      const pos=m?m[1].toLowerCase():"depende";
-      posturas[pos]++;txt=txt.replace(/\[POSTURA:[^\]]*\]/i,"").trim();
-      say.classList.remove("thinking");say.textContent=txt;
-      card.style.setProperty("--pc",colores[pos]);
-      $("#tally").innerHTML=
-        `<div class="tal fav"><b>${posturas.a_favor}</b><span>a favor</span></div>
-         <div class="tal con"><b>${posturas.en_contra}</b><span>en contra</span></div>
-         <div class="tal dep"><b>${posturas.depende}</b><span>depende</span></div>`;
-    }catch(e){say.classList.remove("thinking");say.textContent="(no contestó: "+e.message+")";}
-  }));
+      const resumen=await flash([{role:"system",content:
+        "Eres el moderador de una tertulia. Resume en 2 frases qué se dijo y dónde quedó el desacuerdo, con los nombres. Neutral, vivo, español colombiano."},
+        {role:"user",content:`Tema: ${q}\n`+transcript.map(t=>`${t.n}: ${t.t}`).join("\n")}],140,0.6);
+      $("#resps").insertAdjacentHTML("beforeend",
+        `<div class="mod"><b>EL MODERADOR CIERRA</b>${esc(resumen)}</div>`);
+      $("#resps").scrollTop=1e9;
+    }catch(e){}
+  }
   $("#estado").textContent="";
 }
 boot();

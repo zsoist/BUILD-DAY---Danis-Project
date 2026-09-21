@@ -5,6 +5,7 @@
    "nombre": "Antioquia",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -14,6 +15,12 @@
     "Impuestos": 9.4,
     "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 8.7,
     "Agricultura, ganadería, caza, silvicultura y pesca": 7.7
+   },
+   "educacion_pct": {
+    "ninguna": 4.0,
+    "primaria": 30.7,
+    "secundaria": 42.7,
+    "superior": 21.3
    },
    "poblacion": 6994317,
    "sexo": {
@@ -88,6 +95,7 @@
    "nombre": "Atlántico",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -97,6 +105,12 @@
     "Impuestos": 10.3,
     "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 9.6,
     "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 6.8
+   },
+   "educacion_pct": {
+    "ninguna": 3.2,
+    "primaria": 26.0,
+    "secundaria": 45.6,
+    "superior": 23.9
    },
    "poblacion": 2859139,
    "sexo": {
@@ -171,6 +185,7 @@
    "nombre": "Bogotá D.C.",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -180,6 +195,12 @@
     "Actividades inmobiliarias": 11.1,
     "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 8.6,
     "Actividades financieras y de seguros": 7.9
+   },
+   "educacion_pct": {
+    "ninguna": 1.6,
+    "primaria": 21.3,
+    "secundaria": 39.6,
+    "superior": 35.0
    },
    "poblacion": 7935754,
    "sexo": {
@@ -254,6 +275,7 @@
    "nombre": "Bolívar",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -263,6 +285,12 @@
     "Impuestos": 11.3,
     "Construcción": 7.1,
     "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 6.6
+   },
+   "educacion_pct": {
+    "ninguna": 6.2,
+    "primaria": 31.9,
+    "secundaria": 43.8,
+    "superior": 17.1
    },
    "poblacion": 2290738,
    "sexo": {
@@ -337,6 +365,7 @@
    "nombre": "Boyacá",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -346,6 +375,12 @@
     "Industrias manufactureras": 10.3,
     "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 8.5,
     "Impuestos": 7.7
+   },
+   "educacion_pct": {
+    "ninguna": 4.7,
+    "primaria": 37.9,
+    "secundaria": 37.6,
+    "superior": 18.3
    },
    "poblacion": 1335410,
    "sexo": {
@@ -420,6 +455,7 @@
    "nombre": "Caldas",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -429,6 +465,12 @@
     "Industrias manufactureras": 10.5,
     "Impuestos": 8.1,
     "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 6.9
+   },
+   "educacion_pct": {
+    "ninguna": 4.1,
+    "primaria": 34.9,
+    "secundaria": 41.0,
+    "superior": 18.9
    },
    "poblacion": 1055925,
    "sexo": {
@@ -503,6 +545,7 @@
    "nombre": "Caquetá",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -512,6 +555,12 @@
     "Actividades inmobiliarias": 6.0,
     "Impuestos": 6.0,
     "Construcción": 5.2
+   },
+   "educacion_pct": {
+    "ninguna": 5.4,
+    "primaria": 42.2,
+    "secundaria": 38.3,
+    "superior": 11.1
    },
    "poblacion": 433247,
    "sexo": {
@@ -586,6 +635,7 @@
    "nombre": "Cauca",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -595,6 +645,12 @@
     "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 12.5,
     "Impuestos": 9.8,
     "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 6.7
+   },
+   "educacion_pct": {
+    "ninguna": 4.9,
+    "primaria": 41.8,
+    "secundaria": 39.1,
+    "superior": 12.7
    },
    "poblacion": 1605145,
    "sexo": {
@@ -669,6 +725,7 @@
    "nombre": "Cesar",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -678,6 +735,12 @@
     "Agricultura, ganadería, caza, silvicultura y pesca": 10.2,
     "Construcción": 3.8,
     "Actividades inmobiliarias": 3.6
+   },
+   "educacion_pct": {
+    "ninguna": 7.3,
+    "primaria": 33.7,
+    "secundaria": 41.0,
+    "superior": 16.6
    },
    "poblacion": 1432338,
    "sexo": {
@@ -752,6 +815,7 @@
    "nombre": "Córdoba",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -761,6 +825,12 @@
     "Industrias manufactureras": 10.6,
     "Impuestos": 6.6,
     "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 6.2
+   },
+   "educacion_pct": {
+    "ninguna": 9.0,
+    "primaria": 34.5,
+    "secundaria": 41.0,
+    "superior": 14.6
    },
    "poblacion": 1942796,
    "sexo": {
@@ -835,6 +905,7 @@
    "nombre": "Cundinamarca",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -844,6 +915,12 @@
     "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 10.8,
     "Impuestos": 10.8,
     "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 7.9
+   },
+   "educacion_pct": {
+    "ninguna": 2.9,
+    "primaria": 32.4,
+    "secundaria": 42.5,
+    "superior": 20.7
    },
    "poblacion": 3758429,
    "sexo": {
@@ -918,6 +995,7 @@
    "nombre": "Chocó",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -927,6 +1005,12 @@
     "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 12.7,
     "Impuestos": 3.5,
     "Construcción": 3.3
+   },
+   "educacion_pct": {
+    "ninguna": 8.7,
+    "primaria": 36.4,
+    "secundaria": 35.1,
+    "superior": 11.9
    },
    "poblacion": 624040,
    "sexo": {
@@ -1001,6 +1085,7 @@
    "nombre": "Huila",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -1010,6 +1095,12 @@
     "Construcción": 6.1,
     "Impuestos": 6.1,
     "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 5.6
+   },
+   "educacion_pct": {
+    "ninguna": 4.3,
+    "primaria": 40.5,
+    "secundaria": 39.7,
+    "superior": 14.0
    },
    "poblacion": 1217671,
    "sexo": {
@@ -1084,6 +1175,7 @@
    "nombre": "La Guajira",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -1093,6 +1185,12 @@
     "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 5.8,
     "Agricultura, ganadería, caza, silvicultura y pesca": 4.6,
     "Construcción": 4.2
+   },
+   "educacion_pct": {
+    "ninguna": 13.9,
+    "primaria": 36.5,
+    "secundaria": 35.5,
+    "superior": 12.4
    },
    "poblacion": 1088803,
    "sexo": {
@@ -1167,6 +1265,7 @@
    "nombre": "Magdalena",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -1176,6 +1275,12 @@
     "Impuestos": 5.4,
     "Construcción": 5.2,
     "Actividades inmobiliarias": 4.8
+   },
+   "educacion_pct": {
+    "ninguna": 7.2,
+    "primaria": 33.3,
+    "secundaria": 43.4,
+    "superior": 14.9
    },
    "poblacion": 1542537,
    "sexo": {
@@ -1250,6 +1355,7 @@
    "nombre": "Meta",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -1259,6 +1365,12 @@
     "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 8.2,
     "Impuestos": 4.0,
     "Industrias manufactureras": 2.6
+   },
+   "educacion_pct": {
+    "ninguna": 4.0,
+    "primaria": 34.0,
+    "secundaria": 41.6,
+    "superior": 17.9
    },
    "poblacion": 1174004,
    "sexo": {
@@ -1333,6 +1445,7 @@
    "nombre": "Nariño",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -1342,6 +1455,12 @@
     "Actividades inmobiliarias": 6.6,
     "Impuestos": 5.9,
     "Construcción": 4.8
+   },
+   "educacion_pct": {
+    "ninguna": 5.8,
+    "primaria": 43.2,
+    "secundaria": 35.6,
+    "superior": 13.1
    },
    "poblacion": 1727849,
    "sexo": {
@@ -1416,6 +1535,7 @@
    "nombre": "Norte de Santander",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -1425,6 +1545,12 @@
     "Actividades inmobiliarias": 7.0,
     "Construcción": 6.2,
     "Impuestos": 5.8
+   },
+   "educacion_pct": {
+    "ninguna": 5.7,
+    "primaria": 36.9,
+    "secundaria": 40.3,
+    "superior": 15.8
    },
    "poblacion": 1723298,
    "sexo": {
@@ -1499,6 +1625,7 @@
    "nombre": "Quindío",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -1508,6 +1635,12 @@
     "Actividades inmobiliarias": 8.4,
     "Impuestos": 6.0,
     "Construcción": 5.2
+   },
+   "educacion_pct": {
+    "ninguna": 4.0,
+    "primaria": 29.8,
+    "secundaria": 44.5,
+    "superior": 20.4
    },
    "poblacion": 570728,
    "sexo": {
@@ -1582,6 +1715,7 @@
    "nombre": "Risaralda",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -1591,6 +1725,12 @@
     "Impuestos": 9.3,
     "Agricultura, ganadería, caza, silvicultura y pesca": 9.1,
     "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 7.5
+   },
+   "educacion_pct": {
+    "ninguna": 3.9,
+    "primaria": 32.7,
+    "secundaria": 42.3,
+    "superior": 20.0
    },
    "poblacion": 974793,
    "sexo": {
@@ -1665,6 +1805,7 @@
    "nombre": "Santander",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -1674,6 +1815,12 @@
     "Agricultura, ganadería, caza, silvicultura y pesca": 12.4,
     "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 9.7,
     "Actividades inmobiliarias": 6.6
+   },
+   "educacion_pct": {
+    "ninguna": 3.8,
+    "primaria": 33.6,
+    "secundaria": 39.9,
+    "superior": 21.2
    },
    "poblacion": 2407319,
    "sexo": {
@@ -1748,6 +1895,7 @@
    "nombre": "Sucre",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -1757,6 +1905,12 @@
     "Construcción": 7.1,
     "Industrias manufactureras": 6.5,
     "Impuestos": 6.1
+   },
+   "educacion_pct": {
+    "ninguna": 9.5,
+    "primaria": 34.4,
+    "secundaria": 40.8,
+    "superior": 14.0
    },
    "poblacion": 1026669,
    "sexo": {
@@ -1831,6 +1985,7 @@
    "nombre": "Tolima",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -1840,6 +1995,12 @@
     "Industrias manufactureras": 8.7,
     "Impuestos": 7.5,
     "Construcción": 5.0
+   },
+   "educacion_pct": {
+    "ninguna": 5.1,
+    "primaria": 36.4,
+    "secundaria": 40.6,
+    "superior": 16.4
    },
    "poblacion": 1392119,
    "sexo": {
@@ -1915,6 +2076,7 @@
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
     "salud": "MinSalud cobertura 2023 (datos.gov.co 23gb-dhmd)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -1928,6 +2090,12 @@
    "salud_pct": {
     "contributivo": 53.7,
     "subsidiado": 44.8
+   },
+   "educacion_pct": {
+    "ninguna": 3.1,
+    "primaria": 28.3,
+    "secundaria": 45.2,
+    "superior": 21.9
    },
    "poblacion": 4654435,
    "sexo": {
@@ -2002,6 +2170,7 @@
    "nombre": "Arauca",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -2011,6 +2180,12 @@
     "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 9.9,
     "Construcción": 2.8,
     "Actividades inmobiliarias": 2.7
+   },
+   "educacion_pct": {
+    "ninguna": 6.0,
+    "primaria": 39.8,
+    "secundaria": 39.4,
+    "superior": 12.9
    },
    "poblacion": 323346,
    "sexo": {
@@ -2085,6 +2260,7 @@
    "nombre": "Casanare",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -2094,6 +2270,12 @@
     "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 8.1,
     "Impuestos": 3.9,
     "Industrias manufactureras": 3.2
+   },
+   "educacion_pct": {
+    "ninguna": 4.2,
+    "primaria": 37.0,
+    "secundaria": 42.0,
+    "superior": 15.2
    },
    "poblacion": 488258,
    "sexo": {
@@ -2168,6 +2350,7 @@
    "nombre": "Putumayo",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -2177,6 +2360,12 @@
     "Agricultura, ganadería, caza, silvicultura y pesca": 7.7,
     "Construcción": 5.2,
     "Actividades inmobiliarias": 3.8
+   },
+   "educacion_pct": {
+    "ninguna": 4.2,
+    "primaria": 40.1,
+    "secundaria": 41.2,
+    "superior": 12.3
    },
    "poblacion": 398933,
    "sexo": {
@@ -2251,6 +2440,7 @@
    "nombre": "San Andrés y Providencia",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -2260,6 +2450,12 @@
     "Actividades inmobiliarias": 3.7,
     "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 3.4,
     "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 2.6
+   },
+   "educacion_pct": {
+    "ninguna": 1.1,
+    "primaria": 19.8,
+    "secundaria": 51.2,
+    "superior": 26.1
    },
    "poblacion": 62068,
    "sexo": {
@@ -2334,6 +2530,7 @@
    "nombre": "Amazonas",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -2343,6 +2540,12 @@
     "Impuestos": 4.8,
     "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 3.7,
     "Actividades inmobiliarias": 2.8
+   },
+   "educacion_pct": {
+    "ninguna": 3.5,
+    "primaria": 35.4,
+    "secundaria": 45.9,
+    "superior": 9.9
    },
    "poblacion": 88555,
    "sexo": {
@@ -2417,6 +2620,7 @@
    "nombre": "Guainía",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -2426,6 +2630,12 @@
     "Construcción": 9.5,
     "Explotación de minas y canteras": 7.4,
     "Impuestos": 3.5
+   },
+   "educacion_pct": {
+    "ninguna": 6.3,
+    "primaria": 50.0,
+    "secundaria": 30.8,
+    "superior": 8.2
    },
    "poblacion": 60493,
    "sexo": {
@@ -2500,6 +2710,7 @@
    "nombre": "Guaviare",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -2509,6 +2720,12 @@
     "Construcción": 5.3,
     "Actividades inmobiliarias": 4.0,
     "Impuestos": 3.7
+   },
+   "educacion_pct": {
+    "ninguna": 5.1,
+    "primaria": 41.6,
+    "secundaria": 36.3,
+    "superior": 11.9
    },
    "poblacion": 105855,
    "sexo": {
@@ -2583,6 +2800,7 @@
    "nombre": "Vaupés",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -2592,6 +2810,12 @@
     "Construcción": 7.5,
     "Actividades inmobiliarias": 3.4,
     "Impuestos": 3.2
+   },
+   "educacion_pct": {
+    "ninguna": 5.4,
+    "primaria": 48.4,
+    "secundaria": 35.2,
+    "superior": 6.2
    },
    "poblacion": 50322,
    "sexo": {
@@ -2666,6 +2890,7 @@
    "nombre": "Vichada",
    "fuentes": {
     "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
@@ -2675,6 +2900,12 @@
     "Construcción": 7.1,
     "Actividades inmobiliarias": 3.4,
     "Impuestos": 2.6
+   },
+   "educacion_pct": {
+    "ninguna": 10.2,
+    "primaria": 46.9,
+    "secundaria": 30.5,
+    "superior": 6.9
    },
    "poblacion": 129304,
    "sexo": {

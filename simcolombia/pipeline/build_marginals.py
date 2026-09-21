@@ -82,6 +82,14 @@ for d, v in agg.items():
                              "subsidiado": round(v["subsidiado"]/v["total"]*100,1)}
         M[d]["fuentes"]["salud"] = f"MinSalud cobertura {last_s} (datos.gov.co 23gb-dhmd)"
 
+# ── Educación (CNPV 2018 cuadro 17PD, pre-extraído a JSON) ──
+edu_f = RAW / "educacion_dpto.json"
+if edu_f.exists():
+    for d, pct in json.loads(edu_f.read_text()).items():
+        if d in M:
+            M[d]["educacion_pct"] = pct
+            M[d]["fuentes"]["educacion"] = "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)"
+
 # ── Proyecciones DANE dpto×sexo×edad simple (xlsx oficial, hoja PPODeptos) ──
 AÑO_SIM = 2026
 proy = RAW / "proyecciones_dane.xlsx"
