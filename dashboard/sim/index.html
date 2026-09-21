@@ -182,7 +182,7 @@ padding:4px 0;letter-spacing:.2em}
 .tal.fav{border-color:var(--ok)} .tal.fav b{color:var(--ok)}
 .tal.con{border-color:var(--fail)} .tal.con b{color:var(--fail)}
 .tal.dep{border-color:var(--work)} .tal.dep b{color:var(--work)}
-#qbar{display:flex;flex-wrap:wrap;gap:6px;padding:10px;border-top:var(--px) solid var(--grid)}
+#qbar{display:flex;flex-wrap:wrap;gap:6px;padding:10px;border-bottom:2px solid var(--grid)}
 #qin{flex:1 1 100%;min-width:0}
 #qbar select,#qbar button{flex:0 0 auto}
 #modohelp{font-size:11px;color:var(--work);padding:7px 10px 0;letter-spacing:.02em}
@@ -238,12 +238,6 @@ grid-template-areas:"top" "encuesta" "censo" "ficha" "banner"}#kpis{display:none
       <span id="modo"><button data-m="pais" aria-pressed="false">PAÍS</button><button data-m="tertulia" aria-pressed="true">TERTULIA</button><button data-m="sondeo" aria-pressed="false">SONDEO</button></span></h2>
     <div id="modohelp"></div>
     <div id="selinfo"></div>
-    <div id="tally"></div>
-    <div id="resps"><div style="color:var(--faint);padding:16px;text-align:center;line-height:2">
-      <b style="color:var(--work)">1.</b> toca territorios en el mapa (uno, varios, o ninguno = todo el país)<br>
-      <b style="color:var(--work)">2.</b> elige el tipo de conversación arriba a la derecha<br>
-      <b style="color:var(--work)">3.</b> suelta tu pregunta abajo — y míralos hablar</div></div>
-    <div id="sugg"></div>
     <form id="qbar">
       <input id="qin" placeholder="pregúntale al país lo que quieras… (toca una sugerencia y edítala)" autocomplete="off" style="font-size:13.5px;padding:8px 11px">
       <select id="nsel" aria-label="Tamaño del panel" style="flex:0 0 auto">
@@ -252,6 +246,13 @@ grid-template-areas:"top" "encuesta" "censo" "ficha" "banner"}#kpis{display:none
       </select>
       <button class="pxbtn" type="submit">PREGUNTAR</button>
     </form>
+    <div id="sugg"></div>
+    <div id="tally"></div>
+    <div id="resps"><div style="color:var(--faint);padding:16px;text-align:center;line-height:2">
+      <b style="color:var(--work)">1.</b> toca territorios en el mapa (uno, varios, o ninguno = todo el país)<br>
+      <b style="color:var(--work)">2.</b> elige el tipo de conversación arriba a la derecha<br>
+      <b style="color:var(--work)">3.</b> suelta tu pregunta abajo — y míralos hablar</div></div>
+
   </section>
 
   <aside id="ficha">
@@ -727,10 +728,17 @@ const LEAN=["estás A FAVOR por algo concreto que viviste, y lo defiendes",
  "estás EN CONTRA por algo concreto que viviste, y lo defiendes",
  "estás EN CONTRA por algo concreto que viviste, y lo defiendes",
  "llegas dividido/a de verdad: tu vida te jala para los dos lados"];
+const FRANQUEZA=[
+ "SIN FILTRO: dices lo que piensas aunque suene políticamente incorrecto (sin insultos), como se habla en confianza",
+ "SIN FILTRO: dices lo que piensas aunque suene políticamente incorrecto (sin insultos), como se habla en confianza",
+ "FRANCO/A con humor: sueltas la opinión espinosa envuelta en chiste",
+ "DIPLOMÁTICO/A: mides las palabras, pero tu postura se nota",
+ "DE PULLA: te encanta picar al de la otra región/orilla, con cariño pero picas"];
 function estiloDe(r){
   let h=0;for(const c of r.id)h=(h*37+c.charCodeAt(0))>>>0;
   return {temp:TEMPERAMENTOS[h%TEMPERAMENTOS.length],
-          lean:LEAN[(h>>4)%5]};
+          lean:LEAN[(h>>4)%5],
+          franq:FRANQUEZA[(h>>8)%5]};
 }
 function persona(r,dos){
   const mule=(dos.muletillas||[]).slice(0,6).join(" · ");
@@ -739,9 +747,10 @@ function persona(r,dos){
   const edu=r.educacion&&!/colegio|infancia/.test(r.educacion)?`, estudios: ${r.educacion}`:"";
   return `Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}${vida(r)?", "+vida(r):""}${edu}, régimen ${r.regimen_salud}, de ${r.dpto_nombre}, Colombia.
 Tu tierra: ${dos.vida_cotidiana||""} ${dos.economia_vivida||""}
-QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre el tema de hoy, ${estiloDe(r).lean}. Tu postura asignada ES la tuya: tu historia la justifica, y NO la cambias porque el contexto o los demás digan otra cosa. En Colombia hay gente sincera en AMBOS extremos de cualquier tema — representa el tuyo con convicción y respeto, sin caricatura. "Depende" es la salida del político: solo si tu vida DE VERDAD te parte en dos.
+QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre el tema de hoy, ${estiloDe(r).lean}. Tu postura asignada ES la tuya: tu historia la justifica y NO la cambias porque el contexto o los demás digan otra cosa. Franqueza: eres ${estiloDe(r).franq}.
+LA VERDAD INCÓMODA: la gente real tiene prejuicios, manías, rivalidades regionales (cachaco/costeño, paisa orgulloso, rolo frío) y opiniones que no dirían en televisión — si tu personaje las tendría, DILAS con la franqueza que te tocó (cero insultos ni odio, pero sí la pulla, el estereotipo confesado, la queja incómoda). Responder "yo no generalizo" cuando tu personaje SÍ generalizaría es mentir. Tu edad, educación y territorio MOLDEAN tu opinión: un mayor de vereda y un universitario de ciudad NO piensan igual, y eso debe notarse. "Depende" es la salida del político: solo si tu vida DE VERDAD te parte en dos.
 Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te puede escapar UN rasgo de tu tierra (${dialectoDe(r.dpto).split(":")[0]||"tu región"}) de vez en cuando, y JAMÁS repites un cliché regional que ya haya dicho otro en la mesa ni el mismo tuyo dos veces.
-Referentes que puedes soltar si vienen al caso: ${lug||"—"}.
+Referentes que puedes soltar si vienen al caso: ${lug||"—"}.${(dos.rivalidades||[]).length?"\nPullas de tu tierra (puedes soltar UNA con picardía si cuadra): "+dos.rivalidades.slice(0,2).join(" · "):""}${(dos.quejas_incomodas||[]).length?"\nQuejas que en tu tierra se dicen en confianza: "+dos.quejas_incomodas.slice(0,2).join(" · "):""}
 REGLAS: primera persona, gente de verdad — concreta TU vida (tu camello, tu plata, tu edad, tu familia). Nivel de lengua acorde a tus estudios. Sin groserías pesadas. PROHIBIDO: sonar a IA, folclor de cartilla, listas, y arrancar con la misma palabra con la que arrancó cualquiera de la mesa.`;
 }
 /* scroll coalescido: N typewriters → un solo layout por frame */
