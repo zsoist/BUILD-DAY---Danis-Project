@@ -690,6 +690,35 @@ function postura(txt){
   const m=txt.match(/\[POSTURA:\s*(a_favor|en_contra|depende)\s*\]/i);
   return [m?m[1].toLowerCase():null,txt.replace(/\[POSTURA:[^\]]*\]/i,"").trim()];
 }
+/* Jev vía backend: decisiones tipadas para el sim (null si no hay backend) */
+async function jevDecide(state,questions){
+  try{
+    const r=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({decide:true,state,questions})});
+    if(r.ok)return (await r.json()).answers||null;
+  }catch(e){}
+  return null;
+}
+/* postura robusta: si el residente no cerró la etiqueta, Jev clasifica el texto */
+async function clasificarPostura(q,txt){
+  const a=await jevDecide(`Pregunta: ${q}\nRespuesta: ${txt}`,
+    {postura:{type:"choice",instructions:"La postura que expresa esta respuesta",
+      criteria:{a_favor:"apoya o se inclina a favor",en_contra:"rechaza o se inclina en contra",
+                depende:"genuinamente dividida o condicionada"}}});
+  return a?.postura?.choice||"depende";
+}
+/* sello de humanidad: Jev califica si la mesa sonó a gente de verdad */
+async function selloHumano(q,transcript,host){
+  const a=await jevDecide(`Tema: ${q}\nConversación:\n`+
+    transcript.map(t=>`${t.n}: ${t.t}`).join("\n"),
+    {humana:{type:"noul",instructions:"La conversación suena a personas reales distintas (no a un mismo bot repetido): estilos variados, vidas concretas, nada de frases de IA"},
+     sustancia:{type:"score",instructions:"Sustancia de los argumentos",
+       criteria:["vacía","floja","aceptable","buena","excelente"]}});
+  if(!a)return;
+  const h=Math.round((a.humana?.noul||0)*100),s=a.sustancia?.score;
+  (host||$("#resps")).insertAdjacentHTML("beforeend",
+    `<div class="ronda" style="letter-spacing:.08em">SELLO JEV · humanidad ${h}% · sustancia ${s?.toFixed(1)??"—"}/4</div>`);
+}
 /* ── CONTEXTO REAL: una búsqueda web por pregunta; las voces reaccionan a hechos ── */
 let CTX={q:null,txt:null,ok:null};
 async function contexto(q){
