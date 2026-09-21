@@ -92,6 +92,19 @@ animation:blink 1.2s steps(2) infinite}
 @keyframes fableScan{from{transform:translateX(-100%)}to{transform:translateX(560%)}}
 #fablebar i{width:10px;height:10px;box-shadow:2px 2px 0 #000a;animation:blink .5s steps(2) infinite}
 #fbacto::after{content:"▌";margin-left:3px;color:var(--fable);animation:blink .45s steps(2) infinite}
+/* entrada del modal: pop de arcade con barrido de escaneo */
+#mask{opacity:0}
+#mask.open{opacity:1;animation:maskIn .16s steps(2)}
+@keyframes maskIn{from{opacity:0}}
+#modal{position:relative;transform-origin:50% 42%;will-change:transform}
+#mask.open #modal{animation:modalIn .28s steps(6)}
+@keyframes modalIn{0%{transform:scale(.74) translateY(20px);opacity:0}
+  38%{transform:scale(1.05) translateY(-5px);opacity:1}
+  68%{transform:scale(.985) translateY(0)}100%{transform:scale(1);opacity:1}}
+#modal::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,#ffffff12 0 2px,transparent 2px 4px);opacity:0}
+#mask.open #modal::after{animation:modalScan .34s steps(4)}
+@keyframes modalScan{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
 #feedin .ev.fable{color:var(--fable);font-family:"Silkscreen";font-size:10px}
 .staffc.fable{border-color:var(--fable);box-shadow:0 0 10px #ff8a6533}
 .staffc.fable .nm{color:var(--fable)}
@@ -119,11 +132,6 @@ animation:blink 1.2s steps(2) infinite}
 
 /* ── tablero ── */
 #board{grid-area:board; overflow:hidden; position:relative}
-#board::after{content:"";position:absolute;left:0;right:0;top:29px;height:3px;
-  background:repeating-linear-gradient(90deg,var(--accent) 0 8px,transparent 8px 16px);
-  opacity:.15;pointer-events:none;will-change:transform;z-index:1;
-  animation:bsweep 3.6s steps(36) infinite}
-@keyframes bsweep{from{transform:translateY(0)}to{transform:translateY(var(--bh,420px))}}
 .ag canvas,.staffc canvas{filter:drop-shadow(2px 3px 0 #00000088);will-change:transform;
   animation:pxbob 1.6s steps(2) infinite}
 @keyframes pxbob{50%{transform:translateY(-2px)}}
@@ -410,7 +418,7 @@ function ingest(list){
     if(r.run_id==null) continue;
     const run=runs[r.run_id]??={id:r.run_id,events:[],tasks:{},order:[],task:"",
       spent:null,done:false,t0:null,tEnd:null,jev:{},seconds:null,planMs:null};
-    const p=r.payload||{}, _t=+new Date(r.ts), ts=Number.isFinite(_t)?_t:null;
+    const p=r.payload||{}, _t=r.ts?+new Date(r.ts):NaN, ts=Number.isFinite(_t)?_t:null;
     run.events.push({...r,ms:ts});
     if(ts!=null){run.t0=run.t0==null?ts:Math.min(run.t0,ts);
       run.tEnd=run.tEnd==null?ts:Math.max(run.tEnd,ts);}
@@ -434,7 +442,10 @@ function ingest(list){
     else run.events.forEach((e,i)=>{if(e.ms==null)e.ms=run.events[i-1]?.ms??run.t0;});  /* mezcla ts/sin-ts: hereda el anterior, jamás NaN */
   }
 }
+let _fetching=false;
 async function fetchRows(){
+  if(_fetching)return;  /* sin apilar: una petición en vuelo a la vez */
+  _fetching=true;
   try{
     let list;
     if(cfg.src==="local") list=await (await fetch("feed.json?x="+Date.now())).json();
@@ -447,6 +458,7 @@ async function fetchRows(){
     list.sort((a,b)=>a._k-b._k||((+a.id||0)-(+b.id||0)));
     ingest(list); render(); lamp(true);
   }catch(e){lamp(false);}
+  finally{_fetching=false;}
 }
 function lamp(on){$("#lamp").classList.toggle("on",on);
   $("#lamptxt").textContent=on?(UI.live||"LIVE"):(UI.offline||"OFFLINE");}
@@ -651,11 +663,6 @@ $("#c-poll").onchange=e=>{cfg.poll=Math.max(1,+e.target.value||3);save();applyCf
 $("#c-scale").onclick=e=>{const v=+e.target.dataset.v;if(v){cfg.scale=v;save();applyCfg();render();}};
 setInterval(()=>$("#clock").textContent=new Date().toLocaleTimeString("es-CO",{hour12:false}),1000);
 window.addEventListener("resize",()=>runs[curRun]&&drawBoard(runs[curRun]));
-/* sincroniza la altura del barrido del tablero con el svg real */
-(()=>{const sv=$("#ops"),bd=$("#board");if(!sv||!bd)return;
-const sync=()=>bd.style.setProperty("--bh",(sv.clientHeight||420)+"px");
-sync();if(window.ResizeObserver)new ResizeObserver(sync).observe(sv);
-window.addEventListener("resize",sync);})();
 
 /* ═══ modal de detalle: qué hace cada tarea/agente ═══ */
 const ACTNAMES={aprobar:"aprobar",fix_con_feedback:"fix con feedback",

@@ -246,10 +246,31 @@ grid-template-areas:"top" "censo" "encuesta" "ficha" "banner"}#kpis{display:none
 @keyframes stamp{0%{transform:translateY(-7px) scale(1.05);opacity:0}100%{transform:none;opacity:1}}
 .pxpart{position:absolute;left:50%;top:2px;width:7px;height:7px;pointer-events:none;z-index:2;will-change:transform,opacity;animation:pxburst .9s steps(5) both}
 @keyframes pxburst{0%{transform:translate(0,0) scale(1);opacity:1}55%{transform:translate(calc(var(--dx)*.6),var(--dy)) scale(1);opacity:1}100%{transform:translate(var(--dx),16px) scale(.35);opacity:0}}
-#crt{position:fixed;inset:0;z-index:90;pointer-events:none;background:repeating-linear-gradient(180deg,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.16) 2px 4px);box-shadow:inset 0 0 0 2px rgba(0,0,0,.55),inset 0 0 0 3px rgba(255,255,255,.05);animation:crtflick 5s steps(2) infinite}
-@keyframes crtflick{50%{opacity:.94}}
-#crt::after{content:'';position:absolute;left:0;right:0;top:0;height:64px;background:rgba(255,255,255,.035);will-change:transform;animation:crtroll 9s steps(90) infinite}
-@keyframes crtroll{from{transform:translateY(-64px)}to{transform:translateY(calc(100vh + 64px))}}
+/* muñequitos que reaccionan al oprimir: brinco pixel con giro duro */
+.seat canvas,.resp canvas.px,.res canvas{will-change:transform}
+.brinco{animation:brinco .45s steps(1)}
+@keyframes brinco{0%{transform:none}20%{transform:translateY(-7px) rotate(-8deg)}45%{transform:translateY(-2px) rotate(7deg)}70%{transform:translateY(-4px)}100%{transform:none}}
+/* tally con latido cuando cambia el conteo */
+.tal{position:relative}
+.tal.fav{--tc:var(--ok)}.tal.con{--tc:var(--fail)}.tal.dep{--tc:var(--work)}
+.tal::after{content:'';position:absolute;inset:-2px;border:2px solid var(--tc,var(--grid));opacity:0;pointer-events:none}
+.tal.latido{animation:latido .74s steps(1) both}
+.tal.latido::after{animation:anillo .74s steps(2) both}
+@keyframes latido{12%{transform:translate(-2px,-2px) scale(1.05)}36%{transform:translate(-2px,-2px) scale(1.04)}}
+@keyframes anillo{0%{opacity:.9;transform:scale(1)}50%{opacity:.4;transform:scale(1.05)}100%{opacity:0;transform:scale(1.1)}}
+/* paneles que entran escalonados al cambiar territorio */
+#censobody>*{animation:entraCenso .28s steps(4) both}
+#muestra>*{animation:entraMuestra .3s steps(4) both}
+@keyframes entraCenso{from{opacity:0;transform:translateX(-12px)}}
+@keyframes entraMuestra{from{opacity:0;transform:translateX(12px)}}
+/* sugerencias premium: relleno que barre + subrayado pixel + hundido */
+#sugg button{position:relative;isolation:isolate;overflow:hidden;transition:transform .12s steps(2)}
+#sugg button::before{content:'';position:absolute;inset:0;z-index:-1;background:#ffd23f24;transform:scaleX(0);transform-origin:left center;transition:transform .18s steps(5)}
+#sugg button::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:3px;background:var(--work);transform:scaleX(0);transform-origin:left center;transition:transform .2s steps(4) .04s}
+#sugg button:hover,#sugg button:focus-visible{transform:translate(-1px,-1px)}
+#sugg button:hover::before,#sugg button:focus-visible::before,
+#sugg button:hover::after,#sugg button:focus-visible::after{transform:scaleX(1)}
+#sugg button:active{transform:translate(1px,1px)}
 #mapbar{display:flex;align-items:center;gap:8px;padding:0 8px 8px}
 #mapbar .lb{font-family:Silkscreen,monospace;font-size:8px;color:var(--faint);letter-spacing:.1em}
 #mapbar .g{flex:1;min-width:0;height:10px;border:2px solid var(--grid);background:var(--panel2);padding:1px}
@@ -696,7 +717,7 @@ async function boot(){
       const hit=await caches.open(CACHE).then(c=>c.match(url));
       // el await VA dentro del try: un body cacheado corrupto cae a la red, no al boot
       if(hit){pide().catch(()=>{});return await hit.json();}
-    }catch(e){}
+    }catch(e){try{caches.open(CACHE).then(c=>c.delete(url)).catch(()=>{});}catch(_){}}
     return pide();
   };
   try{
@@ -1434,7 +1455,25 @@ p.style.setProperty('--dy',(-22-Math.random()*66).toFixed(0)+'px');
 p.style.animationDelay=(Math.random()*.16).toFixed(2)+'s';
 p.style.background=col[i%3];c.append(p);}
 setTimeout(()=>c.querySelectorAll('.pxpart').forEach(p=>p.remove()),1300);};
-(()=>{const d=document.createElement('div');d.id='crt';d.setAttribute('aria-hidden','true');document.body.append(d);})();
+/* brinco del muñequito al oprimirlo (mesa, burbujas, muestra) */
+document.addEventListener("pointerdown",e=>{
+  const card=e.target.closest?.(".seat,.resp,.res");if(!card)return;
+  const cv=card.querySelector("canvas");if(!cv)return;
+  cv.classList.remove("brinco");void cv.offsetWidth;cv.classList.add("brinco");
+  setTimeout(()=>cv.classList.remove("brinco"),500);
+});
+/* tally: late cuando cambia el conteo */
+(()=>{const t=document.getElementById("tally");if(!t)return;const prev={};
+new MutationObserver(()=>{t.querySelectorAll(".tal").forEach(c=>{
+  const k=c.querySelector("span")?.textContent||"",v=c.querySelector("b")?.textContent||"";
+  if(prev[k]!==undefined&&prev[k]!==v){c.classList.add("latido");
+    setTimeout(()=>c.classList.remove("latido"),950);}
+  prev[k]=v;});}).observe(t,{childList:true,subtree:true});})();
+/* entrada escalonada de censo y muestra */
+(()=>{const marca=(sel,paso)=>{const e=document.querySelector(sel);if(!e)return;
+  const pinta=()=>{[...e.children].forEach((k,i)=>k.style.animationDelay=Math.min(i*paso,.42)+"s");};
+  pinta();new MutationObserver(pinta).observe(e,{childList:true});};
+marca("#censobody",.045);marca("#muestra",.05);})();
 window.progresoPais=()=>{
 const nav=document.getElementById('navmap');if(!nav)return;
 let bar=document.getElementById('mapbar');
