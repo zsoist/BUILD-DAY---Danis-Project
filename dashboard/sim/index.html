@@ -651,26 +651,39 @@ function postura(txt){
   return [m?m[1].toLowerCase():null,txt.replace(/\[POSTURA:[^\]]*\]/i,"").trim()];
 }
 /* ── CONTEXTO REAL: una búsqueda web por pregunta; las voces reaccionan a hechos ── */
-let CTX={q:null,txt:null};
+let CTX={q:null,txt:null,ok:null};
 async function contexto(q){
   if(CTX.q===q)return CTX.txt;
-  CTX={q,txt:null};
+  CTX={q,txt:null,ok:null};
   try{
     const r=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({online:true,max_tokens:330,messages:[
-        {role:"system",content:"Busca noticias recientes de Colombia sobre el TEMA dado y devuelve SOLO viñetas (máximo 5) con hechos concretos: nombres completos, cifras, fechas, estado actual. Empieza directo con la primera viñeta '- '. PROHIBIDO: opinar, responder la pregunta, presentarte, explicar qué eres o qué puedes hacer. Si no hay nada noticioso, responde exactamente: SIN_NOVEDADES."},
+        {role:"system",content:"HOY es 21 de septiembre de 2026. Busca noticias recientes de Colombia sobre el TEMA y devuelve SOLO viñetas (máximo 5) con hechos que APAREZCAN EXPLÍCITAMENTE en las fuentes encontradas, cada viñeta con su URL entre paréntesis. REGLAS DURAS: nada que no esté en una fuente; si un dato no cuadra con la fecha de hoy (cargos vencidos, fechas imposibles), NO lo incluyas; si las fuentes se contradicen, di 'las fuentes difieren'. Empieza directo con '- '. PROHIBIDO opinar, presentarte o responder la pregunta. Sin nada noticioso: responde exactamente SIN_NOVEDADES."},
         {role:"user",content:"TEMA: "+q+" (Colombia, septiembre 2026)"}]})});
     if(r.ok){const c=(await r.json()).content||"";
       CTX.txt=/SIN_NOVEDADES/.test(c)?null:c.trim();}
+    /* Jev verifica el contexto antes de mostrarlo (fechas/consistencia) */
+    if(CTX.txt){
+      try{
+        const v=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({decide:true,
+            state:"HOY: 21 septiembre 2026. Resumen noticioso a verificar:\n"+CTX.txt,
+            questions:{fiable:{type:"noul",instructions:
+              "Las viñetas son internamente consistentes, coherentes con la fecha de hoy (sin cargos o mandatos vencidos presentados como vigentes, sin fechas imposibles) y suenan a hechos citados, no a invención"}}})});
+        if(v.ok)CTX.ok=(await v.json()).answers?.fiable?.noul>=0.5;
+      }catch(e){}
+    }
   }catch(e){}
   return CTX.txt;
 }
 function ctxBox(txt,host){
+  const dudas=CTX.ok===false;
   (host||$("#resps")).insertAdjacentHTML("beforeend",
-    txt?`<div class="ctx"><b>📰 CONTEXTO REAL (búsqueda de hoy)</b>${esc(txt)}</div>`
+    txt?`<div class="ctx${dudas?" off":""}" style="${dudas?"border-color:var(--fail)":""}">
+      <b style="${dudas?"color:var(--fail)":""}">${dudas?"⚠ CONTEXTO CON DUDAS (Jev no lo aprobó — tómenlo con pinzas)":"📰 CONTEXTO REAL (búsqueda verificada por Jev)"}</b>${esc(txt)}</div>`
        :`<div class="ctx off"><b>📰 SIN NOTICIAS FRESCAS</b>opinan desde su experiencia, no desde la prensa</div>`);
 }
-const ctxPara=txt=>txt?`\nLO QUE DICEN LAS NOTICIAS HOY (hechos reales, reacciona a ESTO desde tu vida, puedes dudar de lo que leas):\n${txt}\n`:"";
+const ctxPara=txt=>(txt&&CTX.ok!==false)?`\nLO QUE DICEN LAS NOTICIAS HOY (hechos reales, reacciona a ESTO desde tu vida, puedes dudar de lo que leas):\n${txt}\n`:"";
 
 let API_OK=null;  // ¿existe /api/opina? (en Vercel sí; en local http.server no)
 async function flash(messages,max=170,temp=0.95){

@@ -28,6 +28,25 @@ export default async function handler(req, res) {
   const dsKey = env.DEEPSEEK_API_KEY || env.DEEPSEEK_KEY || env.DEEPSEEK;
   const orKey = env.OPENROUTER_API_KEY || env.OPENROUTER_KEY || env.OPENROUTER;
 
+  // decide=true: pasa el estado por Jev (decisiones tipadas, ~$0.00003) — lo
+  // usamos para VERIFICAR el contexto noticioso antes de mostrarlo.
+  if (body.decide === true && orKey) {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 15000);
+      const r = await fetch("https://openrouter.ai/api/alpha/decisions", {
+        method: "POST", signal: ctrl.signal,
+        headers: { Authorization: `Bearer ${orKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "typesafe/jev-1.13",
+          state: String(body.state || "").slice(0, 8000),
+          questions: body.questions }),
+      }).finally(() => clearTimeout(timer));
+      const j = await r.json();
+      if (j.answers) return res.status(200).json({ answers: j.answers });
+      return res.status(502).json({ error: "jev", detalle: JSON.stringify(j).slice(0, 150) });
+    } catch (e) { return res.status(502).json({ error: String(e).slice(0, 150) }); }
+  }
+
   // online=true: UNA llamada con web search real (OpenRouter :online) para
   // traer contexto de noticias; las voces luego reaccionan a hechos, no al vacío.
   if (body.online === true && orKey) {
