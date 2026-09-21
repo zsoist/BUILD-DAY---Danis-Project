@@ -48,6 +48,67 @@ EDADES = [("0-4",2),("5-9",7),("10-14",12),("15-19",17),("20-24",22),("25-29",27
           ("55-59",57),("60-64",62),("65-69",67),("70-74",72),("75-79",77),
           ("80-84",82),("85+",88)]
 
+# ── Banco nacional de nombres POR GENERACIÓN (realismo de pila colombiana) ──
+NOMBRES = {
+ "mujer": {
+  "mayor": ["Carmen","Blanca","Rosa","Ana","Gloria","Cecilia","Myriam","Teresa",
+    "Lucía","Inés","Fanny","Stella","Ligia","Alba","Nubia","Elvia","Graciela",
+    "Aura","Mercedes","Josefina","Bertha","Amparo","Leonor","Edilma","Omaira"],
+  "adulta": ["Sandra","Patricia","Claudia","Martha","Luz","Diana","Adriana",
+    "Mónica","Yolanda","Esperanza","Marcela","Paola","Carolina","Liliana",
+    "Johanna","Yaneth","Milena","Amanda","Nancy","Doris","Consuelo","Pilar",
+    "Yadira","Rocío","Maritza","Zoraida","Yesenia","Katherine","Viviana","Erika"],
+  "joven": ["Camila","Valentina","Daniela","Laura","Alejandra","Natalia","Karen",
+    "Angie","Paula","Juliana","Gabriela","Isabella","Mariana","Sara","Luisa",
+    "Manuela","Salomé","Danna","Valeria","Sofía","Nicoll","Dayana","Michelle"],
+  "nina": ["Emma","Luciana","Antonella","Emily","Samantha","Guadalupe","Celeste",
+    "Amelia","Julieta","Violeta","Maité","Alaia"]},
+ "hombre": {
+  "mayor": ["José","Luis","Jorge","Pedro","Rafael","Gustavo","Hernando","Álvaro",
+    "Jaime","Humberto","Gilberto","Marco","Alfonso","Ramiro","Guillermo","Ernesto",
+    "Aníbal","Efraín","Gonzalo","Reinaldo","Campo Elías","Misael","Belisario"],
+  "adulto": ["Carlos","Juan","Andrés","Fernando","Óscar","Mauricio","Javier",
+    "Wilson","Fredy","Édgar","Fabián","Henry","Nelson","Jhon","Alexander",
+    "Leonardo","Ricardo","Diego","Iván","Milton","Norbey","Arley","Wilmer",
+    "Yeison","Duván","Éder","Robinson","Hugo","Elkin","Julián"],
+  "joven": ["Santiago","Sebastián","Nicolás","Samuel","Mateo","Daniel","David",
+    "Felipe","Miguel","Cristian","Brayan","Kevin","Esteban","Tomás","Emmanuel",
+    "Juan José","Alejandro","Simón","Jerónimo","Dilan","Stiven","Camilo"],
+  "nino": ["Matías","Thiago","Liam","Emiliano","Maximiliano","Salvador","Gael",
+    "Benjamín","Josué","Ian","Dylan","Martín"]},
+}
+COMPUESTOS = {"mujer": ["María","Ana","Luz","Leidy","Ingrid","Lina"],
+              "hombre": ["Juan","Luis","Carlos","José","Jhon","Miguel"]}
+APELLIDOS = ["Rodríguez","Martínez","García","López","González","Hernández",
+ "Sánchez","Ramírez","Pérez","Díaz","Muñoz","Rojas","Moreno","Jiménez","Gutiérrez",
+ "Torres","Vargas","Castro","Ruiz","Álvarez","Romero","Suárez","Gómez","Ortiz",
+ "Cárdenas","Guerrero","Rincón","Castillo","Mejía","Restrepo","Valencia","Ospina",
+ "Cardona","Zapata","Montoya","Arias","Betancur","Agudelo","Giraldo","Salazar",
+ "Palacios","Mosquera","Córdoba","Machado","Julio","De la Hoz","Barrios","Pacheco",
+ "Fontalvo","Cantillo","Navarro","Meza","Acosta","Padilla","Bolaños","Chamorro",
+ "Delgado","Ceballos","Paz","Riascos","Quintero","Henao","Uribe","Vélez","Parra",
+ "Prieto","Bonilla","Cortés","Reyes","Molina","Camacho","Contreras","Silva"]
+
+def cohorte(edad, sexo):
+    key = ("mayor" if edad >= 60 else "adulta" if edad >= 30 else
+           "joven" if edad >= 13 else "nina")
+    if sexo == "hombre":
+        key = {"adulta": "adulto", "nina": "nino"}.get(key, key)
+    return NOMBRES[sexo][key]
+
+def nombre_pila(edad, sexo, regionales):
+    # 15% toque regional del dossier (si es un nombre normal), 85% banco nacional
+    if regionales and rng.random() < 0.15:
+        cand = rng.choice(regionales)
+        if cand.isalpha() and len(cand) <= 11:
+            return cand
+    base = rng.choice(cohorte(edad, sexo))
+    if edad >= 13 and rng.random() < 0.33:  # compuestos: María Fernanda, Luis Alberto
+        pre = rng.choice(COMPUESTOS[sexo])
+        if pre != base and not base.count(" "):
+            return f"{pre} {base}"
+    return base
+
 
 def sample_w(pairs):
     total = sum(w for _, w in pairs)
@@ -93,8 +154,8 @@ for cod, d in sorted(M.items()):
                 zip(EDADES, [6,7,8,8,8,8,7,7,6,6,6,5,4,3,2,2,1,1])]), None
             centro = dict(EDADES)[grupo]
         edad = max(0, centro + rng.randint(-2, 2))
-        nombres = dos.get("nombres_frecuentes", {}).get(sexo) or ["Alex", "Sam"]
-        apellidos = dos.get("apellidos") or ["García", "Rodríguez"]
+        regionales = dos.get("nombres_frecuentes", {}).get(sexo) or []
+        apellidos = APELLIDOS + (dos.get("apellidos") or [])[:6]
         regimen = (sample_w([("contributivo", sal.get("contributivo", 50)),
                              ("subsidiado", sal.get("subsidiado", 50))])
                    if sal else "sin dato")
@@ -103,7 +164,7 @@ for cod, d in sorted(M.items()):
                      "en el colegio" if 6 <= edad < 18 else "primera infancia")
         residents.append({
             "id": f"{cod}-{i:03d}", "dpto": cod, "dpto_nombre": d["nombre"],
-            "nombre": f"{rng.choice(nombres)} {rng.choice(apellidos)}",
+            "nombre": f"{nombre_pila(edad, sexo, regionales)} {rng.choice(apellidos)} {rng.choice(apellidos)}",
             "sexo": sexo, "edad": edad, "grupo_edad": grupo,
             "regimen_salud": regimen, "educacion": educacion,
             "ocupacion": (rng.choice(ocs) if edad >= 18 else

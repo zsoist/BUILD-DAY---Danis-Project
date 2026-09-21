@@ -45,7 +45,7 @@ background:var(--panel);border:var(--px) solid var(--grid)}
 #title{font-family:"Silkscreen";font-weight:700;font-size:16px;color:var(--work);
 text-shadow:3px 3px 0 #0007}
 #title small{color:var(--accent);font-size:16px}
-#dptosel{min-width:230px}
+#dptosel{min-width:250px;font-size:13.5px;padding:7px 10px;border-color:var(--work)}
 #kpis{margin-left:auto;display:flex;gap:18px;text-align:right}
 #kpis div b{display:block;font-family:"Silkscreen";font-size:12px;color:var(--text);font-weight:400}
 #kpis div span{font-size:10px;color:var(--faint)}
@@ -58,7 +58,7 @@ h3{font-family:"Silkscreen";font-size:9px;color:var(--faint);margin:12px 0 6px;f
 h3:first-child{margin-top:0}
 .pyr{display:grid;grid-template-columns:1fr 34px 1fr;gap:2px 6px;font-size:10px}
 .pyr .lab{color:var(--faint);text-align:center;font-family:"Silkscreen";font-size:7px;padding-top:1px}
-.pyr .bar{position:relative;height:11px;background:var(--panel2)}
+.pyr .bar{position:relative;height:13px;background:var(--panel2);border:1px solid var(--grid)}
 .pyr .bar i{position:absolute;top:1px;bottom:1px;opacity:.9}
 .pyr .bar.l i{right:0;background:var(--hom)}
 .pyr .bar.r i{left:0;background:var(--muj)}
@@ -66,8 +66,9 @@ h3:first-child{margin-top:0}
 .leyenda{display:flex;gap:14px;font-size:10px;color:var(--faint);margin-top:6px}
 .leyenda i{display:inline-block;width:9px;height:9px;vertical-align:-1px;margin-right:4px}
 .hbar{margin:3px 0}
-.hbar .t{display:flex;justify-content:space-between;font-size:11px;color:var(--dim)}
-.hbar .g{height:9px;background:var(--panel2);border:1px solid var(--grid);position:relative}
+.hbar .t{display:flex;justify-content:space-between;font-size:11.5px;color:var(--dim)}
+.hbar .t b{font-family:"Silkscreen";font-size:10px;color:var(--text);font-weight:400}
+.hbar .g{height:12px;background:var(--panel2);border:1px solid var(--grid);position:relative}
 .hbar .g i{position:absolute;inset:1px auto 1px 1px;background:var(--accent)}
 .fuente{font-size:9.5px;color:var(--faint);margin-top:2px}
 
@@ -261,6 +262,8 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   path?.classList.remove("hot");
   path?.classList.add({a_favor:"fav",en_contra:"con",depende:"dep"}[pos]);
   PAIS.tally[pos]++;
+  guardar("pais",cod,PAIS.q,{postura:pos,conclusion:concl,
+    participantes:sample.map(r=>r.id),intervenciones:transcript.length});
   $("#tally").innerHTML=
     `<div class="tal fav"><b>${PAIS.tally.a_favor}</b><span>dptos a favor</span></div>
      <div class="tal con"><b>${PAIS.tally.en_contra}</b><span>dptos en contra</span></div>
@@ -271,24 +274,62 @@ function mayoria(ts){
   const c={a_favor:0,en_contra:0,depende:0};ts.forEach(t=>c[t.p]++);
   return Object.entries(c).sort((a,b)=>b[1]-a[1])[0][0];
 }
+/* cada encuesta queda en la base (Supabase) — la memoria del país sintético */
+function guardar(modo,dpto,pregunta,resultado){
+  try{fetch("https://pwcvskguqyhbhlwnsmmy.supabase.co/rest/v1/sim_encuestas",{
+    method:"POST",headers:{apikey:"sb_publishable_1S4AdKr4TJqGWt9LNL_XaQ_OWrCusLw",
+    "Content-Type":"application/json"},
+    body:JSON.stringify({modo,dpto,pregunta,resultado})}).catch(()=>{});}catch(e){}
+}
 
 let RES=[],MARG={},DOS={},VAL={},cur="11";
 const AGEG=["0-4","5-9","10-14","15-19","20-24","25-29","30-34","35-39","40-44",
 "45-49","50-54","55-59","60-64","65-69","70-74","75-79","80-84","85+"];
 
-/* mini retrato pixel procedural (determinista por id) */
-function retrato(cv,seed,sexo){
-  const ctx=cv.getContext("2d");cv.width=cv.height=12;
+/* retrato pixel v2 procedural: peinado, tono, accesorio por oficio (determinista) */
+function retrato(cv,seed,sexo,ocup){
+  const S=16,ctx=cv.getContext("2d");cv.width=cv.height=S;
   let h=0;for(const c of seed)h=(h*31+c.charCodeAt(0))>>>0;
-  const skin=["#e8b48c","#c98d5f","#8d5a3b","#f0c9a0"][h%4];
-  const pelo=["#1c1c1c","#3a2a1a","#6b4423","#555"][ (h>>2)%4];
-  const ropa=["#5aa7ff","#59d97e","#ff9d47","#c792ea","#ff6fa5","#4dd6c1"][(h>>4)%6];
-  ctx.clearRect(0,0,12,12);
-  ctx.fillStyle=skin;ctx.fillRect(3,2,6,5);
-  ctx.fillStyle=pelo;ctx.fillRect(3,1,6,2);
-  if(sexo==="mujer"&&(h&1))ctx.fillRect(2,2,1,4),ctx.fillRect(9,2,1,4);
-  ctx.fillStyle="#10141f";ctx.fillRect(4,4,1,1);ctx.fillRect(7,4,1,1);
-  ctx.fillStyle=ropa;ctx.fillRect(3,7,6,4);
+  const skin=["#f0c9a0","#e8b48c","#c98d5f","#a06b42","#8d5a3b","#6e4429"][h%6];
+  const skin2=["#d9af83","#d19c72","#b07a4c","#8a5a36","#7a4b30","#5d3820"][h%6];
+  const pelo=["#181818","#2e2013","#4a3018","#6b4423","#3d3d3d","#7a2e12"][(h>>3)%6];
+  const ropa=["#5aa7ff","#59d97e","#ff9d47","#c792ea","#ff6fa5","#4dd6c1","#ffd23e","#e35d5d"][(h>>6)%8];
+  const ropa2="#10141f";
+  const F=(c,x,y,w,ht)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,ht)};
+  ctx.clearRect(0,0,S,S);
+  /* cabeza + sombreado */
+  F(skin,5,3,6,6);F(skin2,10,4,1,5);
+  /* peinados: 0 corto 1 alto 2 melena 3 recogido 4 calvo 5 crespo */
+  const st=(h>>9)%6;
+  F(pelo,5,2,6,2);
+  if(st===1)F(pelo,5,1,6,2);
+  if(st===2){F(pelo,4,3,1,6);F(pelo,11,3,1,6);}
+  if(st===3){F(pelo,11,2,2,2);}
+  if(st===4){ctx.clearRect(5,2,6,1);F(skin,5,2,6,1);F(pelo,5,2,1,1);F(pelo,10,2,1,1);}
+  if(st===5){F(pelo,4,1,8,3);F(pelo,4,4,1,2);F(pelo,11,4,1,2);}
+  if(sexo==="mujer"&&st!==4&&(h&2)){F(pelo,4,3,1,5);F(pelo,11,3,1,5);}
+  /* cara */
+  F("#10141f",6,5,1,1);F("#10141f",9,5,1,1);
+  F(skin2,7,7,2,1);
+  if((h>>12)%5===0)F("#8a3b2e",6,8,4,1);else F("#6e4429",7,8,2,1);
+  /* cuerpo */
+  F(ropa,4,9,8,5);F(ropa2,7,9,2,1);F(color(ropa,-25),4,12,8,2);
+  F(skin,3,10,1,3);F(skin,12,10,1,3);
+  /* accesorio por oficio */
+  const o=(ocup||"").toLowerCase();
+  if(/agricult|ganader|jornaler|campo|pescador|cafeter/.test(o)){ // sombrero vueltiao-ish
+    F("#e8d9a0",4,2,8,1);F("#e8d9a0",3,3,2,1);F("#e8d9a0",11,3,2,1);F("#7a5c22",5,2,6,1);}
+  else if(/conductor|mototaxi|domicili/.test(o)){F("#2f5faa",5,1,6,2);F("#2f5faa",4,2,2,1);} // gorra
+  else if(/docente|profesor|universi|abogad|contador|médic|medic|enfermer/.test(o)){
+    F("#dfe6f0",5,5,2,1);F("#dfe6f0",9,5,2,1);F("#dfe6f0",7,5,2,1);} // gafas
+  else if(/comerciante|tender|vended/.test(o)){F("#c8483a",4,9,1,4);F("#c8483a",11,9,1,4);} // delantal
+  else if(/miner|obra|construc|operari/.test(o)){F("#ffd23e",5,1,6,2);} // casco
+  if(sexo==="mujer"&&(h>>15)%3===0){F("#ffd23e",4,7,1,1);F("#ffd23e",11,7,1,1);} // aretes
+}
+function color(hex,amt){
+  const n=parseInt(hex.slice(1),16);
+  const f=v=>Math.max(0,Math.min(255,v+amt));
+  return "#"+((f(n>>16)<<16)|(f((n>>8)&255)<<8)|f(n&255)).toString(16).padStart(6,"0");
 }
 
 async function boot(){
@@ -385,7 +426,7 @@ function render(){
   const mu=$("#muestra");mu.innerHTML="";
   mine.slice(0,10).forEach(r=>{
     const div=document.createElement("div");div.className="res";
-    const cv=document.createElement("canvas");retrato(cv,r.id,r.sexo);
+    const cv=document.createElement("canvas");retrato(cv,r.id,r.sexo,r.ocupacion);
     div.append(cv);div.insertAdjacentHTML("beforeend",
       `<span>${esc(r.nombre.split(" ")[0])}, ${r.edad} · ${esc(r.ocupacion)}</span>`);
     mu.append(div);
@@ -426,17 +467,21 @@ function vida(r){
   return [hijos,barrio].filter(Boolean).join(", ");
 }
 function persona(r,dos){
-  const mule=(dos.muletillas||[]).slice(0,4).join(" · ");
+  const mule=(dos.muletillas||[]).slice(0,6).join(" · ");
   const lug=(dos.lugares||[]).slice(0,4).join(", ");
-  return `Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}${vida(r)?", "+vida(r):""}, régimen ${r.regimen_salud}, de ${r.dpto_nombre}, Colombia.
+  const humor=(dos.humor||[]).slice(0,3).join(" · ");
+  const edu=r.educacion&&!/colegio|infancia/.test(r.educacion)?`, estudios: ${r.educacion}`:"";
+  return `Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}${vida(r)?", "+vida(r):""}${edu}, régimen ${r.regimen_salud}, de ${r.dpto_nombre}, Colombia.
 Tu tierra: ${dos.vida_cotidiana||""} ${dos.economia_vivida||""}
-Cómo hablas: ${dos.como_hablan||"español colombiano natural"}. Muletillas tuyas (úsalas con moderación, no todas): ${mule||"—"}. Referentes que mencionas si vienen al caso: ${lug||"—"}.
-REGLAS: hablas EN PRIMERA PERSONA como una persona real — frases naturales, a veces cortas, concreta tu vida (tu trabajo, tu edad, tu plata). Cero tono de IA, cero folclorismo de cartilla, cero listas.`;
+Cómo hablas: ${dos.como_hablan||"español colombiano natural"}${dos.picardia?" · "+dos.picardia:""}.
+Expresiones tuyas de calle (usa 1-2 por intervención, las que cuadren): ${mule||"—"}.
+Tu humor: ${humor||"picardía criolla sin pesadez"}. Referentes que sueltas si vienen al caso: ${lug||"—"}.
+REGLAS: hablas EN PRIMERA PERSONA como gente de verdad — confianzudo, con humor y mamando gallo cuando cuadre, frases a veces cortadas, concreta tu vida (tu camello, tu plata, tu edad). Nivel de lengua acorde a tus estudios. Sin groserías pesadas. Cero tono de IA, cero folclor de cartilla, cero listas.`;
 }
 function bubble(r,alt,parent){
   const host=parent||$("#resps");
   const card=document.createElement("div");card.className="resp"+(alt?" alt":"");
-  const cv=document.createElement("canvas");cv.className="px";retrato(cv,r.id,r.sexo);
+  const cv=document.createElement("canvas");cv.className="px";retrato(cv,r.id,r.sexo,r.ocupacion);
   card.append(cv);
   card.insertAdjacentHTML("beforeend",`<div><div class="who">${esc(r.nombre)} · ${r.edad} ·
     ${esc(r.ocupacion)}${cur==="CO"?" · <span style='color:var(--accent)'>"+esc(r.dpto_nombre)+"</span>":""}</div>
@@ -448,7 +493,19 @@ function postura(txt){
   const m=txt.match(/\[POSTURA:\s*(a_favor|en_contra|depende)\s*\]/i);
   return [m?m[1].toLowerCase():null,txt.replace(/\[POSTURA:[^\]]*\]/i,"").trim()];
 }
+let API_OK=null;  // ¿existe /api/opina? (en Vercel sí; en local http.server no)
 async function flash(messages,max=170,temp=0.95){
+  if(API_OK!==false){
+    try{
+      const r=await fetch("/api/opina",{method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({messages,max_tokens:max,temperature:temp})});
+      if(r.ok){API_OK=true;return (await r.json()).content||"";}
+      if(r.status===404||r.status===405)API_OK=false; else throw new Error("api "+r.status);
+    }catch(e){if(API_OK)throw e;API_OK=false;}
+  }
+  // respaldo local: key del navegador (ajustes o local_keys)
+  if(!cfg.orkey)throw new Error("sin backend ni key");
   const r=await fetch("https://openrouter.ai/api/v1/chat/completions",{
     method:"POST",headers:{Authorization:"Bearer "+cfg.orkey,"Content-Type":"application/json"},
     body:JSON.stringify({model:"deepseek/deepseek-v4.1-flash",max_tokens:max,
@@ -538,7 +595,10 @@ Estás en una tertulia con vecinos de ${r.dpto_nombre}. Habla como en la vida re
       $("#resps").insertAdjacentHTML("beforeend",
         `<div class="mod"><b>EL MODERADOR CIERRA</b>${esc(resumen)}</div>`);
       $("#resps").scrollTop=1e9;
+      guardar("tertulia",cur,q,{posturas:p,resumen,participantes:sample.map(r=>r.id)});
     }catch(e){}
+  }else{
+    guardar("sondeo",cur,q,{posturas:p,participantes:sample.map(r=>r.id)});
   }
   $("#estado").textContent="";
 }
