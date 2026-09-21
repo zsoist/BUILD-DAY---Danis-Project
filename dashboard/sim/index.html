@@ -142,6 +142,14 @@ padding:4px 0;letter-spacing:.2em}
 .tal.dep{border-color:var(--work)} .tal.dep b{color:var(--work)}
 #qbar{display:flex;gap:6px;padding:10px;border-top:var(--px) solid var(--grid)}
 #qin{flex:1}
+#modohelp{font-size:11px;color:var(--work);padding:7px 10px 0;letter-spacing:.02em}
+#selinfo{font-size:11.5px;color:var(--dim);padding:4px 10px 6px;border-bottom:2px solid var(--grid)}
+#selinfo b{font-family:"Silkscreen";font-size:8px;color:var(--faint)}
+#selinfo .chip{display:inline-block;border:1px solid var(--work);color:var(--work);
+padding:1px 4px 1px 8px;margin:1px 3px}
+#selinfo .chip i{cursor:pointer;font-style:normal;padding:0 4px;color:var(--dim)}
+#selinfo .chip i:hover{color:var(--fail)}
+#selinfo button{font-size:10px;padding:1px 7px;margin-left:6px;color:var(--dim)}
 #sugg{display:flex;flex-wrap:wrap;gap:4px;padding:0 10px 10px}
 #sugg button{font-size:10.5px;padding:2px 8px;color:var(--dim)}
 #sugg button:hover{color:var(--work);border-color:var(--work)}
@@ -185,10 +193,12 @@ grid-template-areas:"top" "encuesta" "censo" "ficha" "banner"}#kpis{display:none
     <h2><span>la conversación <b id="estado"></b> <span id="reloj"></span></span>
       <span id="ctrl"><button id="btnpausa" type="button">⏸ PAUSAR</button><button id="btnfin" type="button">■ CERRAR</button></span>
       <span id="modo"><button data-m="pais" aria-pressed="false">PAÍS</button><button data-m="tertulia" aria-pressed="true">TERTULIA</button><button data-m="sondeo" aria-pressed="false">SONDEO</button></span></h2>
-    <div id="resps"><div style="color:var(--faint);padding:20px;text-align:center">
-      elige un departamento y suelta un tema —<br>
-      <b style="color:var(--dim)">tertulia</b>: 6 residentes conversan entre ellos, se citan y se contradicen ·
-      <b style="color:var(--dim)">sondeo</b>: 8 contestan a la vez</div></div>
+    <div id="modohelp"></div>
+    <div id="selinfo"></div>
+    <div id="resps"><div style="color:var(--faint);padding:16px;text-align:center;line-height:2">
+      <b style="color:var(--work)">1.</b> toca territorios en el mapa (uno, varios, o ninguno = todo el país)<br>
+      <b style="color:var(--work)">2.</b> elige el tipo de conversación arriba a la derecha<br>
+      <b style="color:var(--work)">3.</b> suelta tu pregunta abajo — y míralos hablar</div></div>
     <div id="tally"></div>
     <div id="sugg"></div>
     <form id="qbar">
@@ -316,7 +326,27 @@ function guardar(modo,dpto,pregunta,resultado){
 }
 
 let RES=[],MARG={},DOS={},VAL={},cur="11";
+let SEL=new Set(["11"]);   // territorios elegidos para la muestra (vacío = todo el país)
 let DECIDIDO={};  // cod → postura concluida (pinta ambos mapas)
+
+const MODOTXT={
+  sondeo:"SONDEO · rápido: todos contestan A LA VEZ y el contador dice cuántos dirían sí, no o depende",
+  tertulia:"TERTULIA · conversan DE A UNO, se responden y se contradicen, hasta 3 min o hasta ponerse de acuerdo",
+  pais:"EL PAÍS · escribes UNA pregunta y tocas territorios en el mapa: cada uno arma su mesa, concluye y pinta el mapa"};
+function selInfo(){
+  const el=$("#selinfo"); if(!el)return;
+  if(!SEL.size){el.innerHTML=`<b>muestra:</b> toda Colombia (proporcional a población real) — toca el mapa para acotar`;return;}
+  el.innerHTML=`<b>muestra:</b> `+[...SEL].map(c=>
+    `<span class="chip">${esc(MARG[c]?.nombre||c)}<i data-c="${c}">×</i></span>`).join("")+
+    `<button id="cleartodo" type="button">todo el país</button>`;
+  el.querySelectorAll("i[data-c]").forEach(i=>i.onclick=()=>{SEL.delete(i.dataset.c);syncSel();});
+  const b=el.querySelector("#cleartodo"); if(b)b.onclick=()=>{SEL.clear();syncSel();};
+}
+function syncSel(){
+  if(SEL.size===1)cur=[...SEL][0];
+  $("#dptosel").value=SEL.size===1?cur:"CO";
+  paintNav();selInfo();render();
+}
 
 async function drawNav(){
   if(!GEO){try{GEO=await fetch("colombia.json").then(r=>r.json())}catch(e){return}}
@@ -325,8 +355,9 @@ async function drawNav(){
   const svg=$("#navmap svg");
   svg.addEventListener("click",e=>{
     const cod=e.target.dataset?.cod; if(!cod)return;
-    cur=cod; $("#dptosel").value=cod; render();
-    if(MODO==="pais"&&PAIS.q)mesa(cod);
+    if(MODO==="pais"&&PAIS.q){cur=cod;paintNav();render();mesa(cod);return;}
+    if(SEL.has(cod)&&SEL.size>0)SEL.delete(cod);else SEL.add(cod);
+    cur=cod; syncSel();
   });
   svg.addEventListener("mousemove",e=>{
     const cod=e.target.dataset?.cod;
@@ -339,10 +370,12 @@ async function drawNav(){
 function paintNav(){
   document.querySelectorAll("#navmap path").forEach(p=>{
     const c=p.dataset.cod;
-    p.classList.toggle("sel",c===cur);
+    p.classList.toggle("sel",SEL.has(c)||(MODO==="pais"&&c===cur));
     p.classList.remove("fav","con","dep");
     if(DECIDIDO[c])p.classList.add({a_favor:"fav",en_contra:"con",depende:"dep"}[DECIDIDO[c]]);
   });
+  $("#maptag").textContent=MODO==="pais"?"el país responde":
+    SEL.size?SEL.size+" elegido"+(SEL.size>1?"s":""):"toda colombia";
 }
 const AGEG=["0-4","5-9","10-14","15-19","20-24","25-29","30-34","35-39","40-44",
 "45-49","50-54","55-59","60-64","65-69","70-74","75-79","80-84","85+"];
@@ -406,9 +439,11 @@ async function boot(){
   sel.innerHTML=`<option value="CO">★ Toda Colombia (panel nacional)</option>`+
     Object.entries(MARG).sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre))
     .map(([c,d])=>`<option value="${c}" ${c===cur?"selected":""}>${esc(d.nombre)}</option>`).join("");
-  sel.onchange=e=>{cur=e.target.value;render();paintNav();
-    $("#maplabel").textContent=MARG[cur]?.nombre||"—";};
-  drawNav();
+  sel.onchange=e=>{const v=e.target.value;
+    if(v==="CO")SEL.clear();else{SEL=new Set([v]);cur=v;}
+    syncSel();$("#maplabel").textContent=MARG[cur]?.nombre||"—";};
+  drawNav();selInfo();
+  $("#modohelp").textContent=MODOTXT[MODO];
   $("#kpis").innerHTML=`<div><b>${RES.length.toLocaleString()}</b><span>residentes</span></div>
     <div><b>33</b><span>territorios</span></div>
     <div><b>${(VAL.bloques_provisionales||[]).length?"parcial":"completa"}</b><span>base DANE</span></div>`;
@@ -426,7 +461,7 @@ function natMarg(){
   return agg;
 }
 function render(){
-  const nac=cur==="CO";
+  const nac=SEL.size===0;
   const d=nac?natMarg():MARG[cur];
   const mine=nac?RES:RES.filter(r=>r.dpto===cur);
   const dos=nac?{}:(DOS[cur]||{});
@@ -500,13 +535,14 @@ function render(){
 /* ── LA CONVERSACIÓN: sondeo (paralelo) y tertulia (conversan entre ellos) ── */
 let MODO="tertulia";
 $("#modo").onclick=e=>{const m=e.target.dataset.m;if(!m)return;MODO=m;
-  $("#modo").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===m)));};
+  $("#modo").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===m)));
+  $("#modohelp").textContent=MODOTXT[m];paintNav();};
 const COLORES={a_favor:"var(--ok)",en_contra:"var(--fail)",depende:"var(--work)"};
 const SUGG_BASE=["el nuevo metro / transporte público","que la IA haga su trabajo",
 "el precio del café","irse a vivir a otra ciudad","que sus hijos estudien virtual"];
 function renderSugg(){
   let temas;
-  if(cur==="CO"){
+  if(SEL.size!==1){
     // panel nacional: mezcla de temas calientes de varios rincones + nacionales
     const all=Object.values(DOS).flatMap(d=>d.temas_calientes||[]);
     temas=[...all.sort(()=>Math.random()-.5).slice(0,3),
@@ -596,7 +632,7 @@ function bubble(r,alt,parent){
   const cv=document.createElement("canvas");cv.className="px";retrato(cv,r.id,r.sexo,r.ocupacion);
   card.append(cv);
   card.insertAdjacentHTML("beforeend",`<div><div class="who">${esc(r.nombre)} · ${r.edad} ·
-    ${esc(r.ocupacion)}${cur==="CO"?" · <span style='color:var(--accent)'>"+esc(r.dpto_nombre)+"</span>":""}</div>
+    ${esc(r.ocupacion)}${SEL.size!==1?" · <span style='color:var(--accent)'>"+esc(r.dpto_nombre)+"</span>":""}</div>
     <div class="say thinking">está escribiendo</div></div>`);
   host.append(card);host.scrollTop=1e9;
   return card;
@@ -632,9 +668,10 @@ function tally(p){
     <div class="tal con"><b>${p.en_contra}</b><span>en contra</span></div>
     <div class="tal dep"><b>${p.depende}</b><span>depende</span></div>`;
 }
-function muestraNacional(n){
-  // proporcional a población REAL de cada dpto (así pesa el país de verdad)
-  const pesos=Object.entries(MARG).map(([c,d])=>[c,d.poblacion||1]);
+function muestraDe(sel,n){
+  // muestra de los territorios elegidos (o todo el país), proporcional a población REAL
+  const codigos=sel.size?[...sel]:Object.keys(MARG);
+  const pesos=codigos.map(c=>[c,MARG[c]?.poblacion||1]);
   const tot=pesos.reduce((a,[,w])=>a+w,0);
   const out=[],usados=new Set();
   while(out.length<n){
@@ -650,11 +687,10 @@ async function conversar(q){
   if(!cfg.orkey){$("#resps").innerHTML=`<div style="color:var(--work);padding:16px">
     pega tu key de openrouter en AJUSTES para conversar</div>`;return;}
   if(MODO==="pais")return pais(q);
-  const nac=cur==="CO";
-  const d=nac?natMarg():MARG[cur];
+  const nac=SEL.size!==1;
+  const d=SEL.size===1?MARG[[...SEL][0]]:natMarg();
   const n=Math.max(4,+($("#nsel")?.value||8));
-  const sample=nac?muestraNacional(n):
-    RES.filter(r=>r.dpto===cur&&r.edad>=16).sort(()=>Math.random()-.5).slice(0,n);
+  const sample=muestraDe(SEL,n);
   $("#resps").innerHTML=`<div style="color:var(--dim);padding:4px 2px 8px">
     <b class="pxf" style="font-size:10px;color:var(--work)">${MODO==="tertulia"?"TEMA EN LA MESA":"PREGUNTA"}</b>
     ${esc(q)} — ${n} residentes de ${esc(d.nombre)}</div>`;
@@ -695,7 +731,7 @@ async function conversar(q){
             "La mesa va así:\n"+transcript.slice(-10).map(t=>`${t.n}: ${t.t}`).join("\n")+
             "\nPROHIBIDO arrancar tu frase como arrancó cualquiera de los anteriores; suena a TI.":"abres tú";
           const raw=await flash([{role:"system",content:persona(r,dosOf(r))+`
-Tertulia de vecinos${cur==="CO"?" de todo el país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. Cierra con [POSTURA: a_favor|en_contra|depende].`},
+Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. Cierra con [POSTURA: a_favor|en_contra|depende].`},
             {role:"user",content:`Tema: ${q}\n${charla}\nTe toca, ${r.nombre.split(" ")[0]}.`}],85);
           const [pos,txt]=postura(raw);
           postDe[r.id]=pos||"depende";
