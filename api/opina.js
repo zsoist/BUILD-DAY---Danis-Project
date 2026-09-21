@@ -1,4 +1,5 @@
 // /api/opina — el proxy del país sintético.
+export const maxDuration = 60;  // los timeouts internos (hasta 30s) necesitan margen
 // Corre en Vercel con las keys en variables de entorno: el navegador nunca ve
 // una key. FULL DeepSeek nativo primero; OpenRouter de respaldo.
 export default async function handler(req, res) {

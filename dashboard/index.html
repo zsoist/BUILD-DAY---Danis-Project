@@ -386,10 +386,10 @@ async function fetchRows(){
   try{
     let list;
     if(cfg.src==="local") list=await (await fetch("feed.json?x="+Date.now())).json();
-    else{list=await (await fetch(cfg.url+"/rest/v1/army_events?select=*&order=id.asc&limit=2000",
+    else{list=await (await fetch(cfg.url+"/rest/v1/army_events?select=*&order=id.desc&limit=2000",
       {headers:{apikey:cfg.key}})).json();
       if(!Array.isArray(list)) throw 0;}
-    ingest(list); render(); lamp(true);
+    list.reverse(); ingest(list); render(); lamp(true);
   }catch(e){lamp(false);}
 }
 function lamp(on){$("#lamp").classList.toggle("on",on);

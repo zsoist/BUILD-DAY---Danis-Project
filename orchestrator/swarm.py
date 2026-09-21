@@ -348,7 +348,7 @@ class Swarm:
 
     def ship(self, tid: str, filename: str | None, content: str):
         """Shippear YA: el artefacto toca disco en cuanto existe (escritura atómica)."""
-        path = self.ship_dir / (filename or f"{tid}.md")
+        path = self.ship_dir / Path(filename or f"{tid}.md").name  # sin rutas del planner
         tmp = path.with_suffix(path.suffix + ".tmp")
         tmp.write_text(content)
         os.replace(tmp, path)
@@ -358,6 +358,13 @@ class Swarm:
         # Un fallo en UNA tarea jamás tumba la misión (hallazgo del bug-hunt).
         try:
             await self._run_task(t)
+        except RuntimeError as e:
+            self.log({"event": "error", "id": t["id"], "msg": repr(e)[:400]})
+            print(f"  🛑 {e} — abortando misión")
+            for ev in self.done_events.values():
+                ev.set()
+            self.results.setdefault(t["id"], f"(abortado: {e})")
+            return
         except Exception as e:
             self.log({"event": "error", "id": t["id"], "msg": repr(e)[:400]})
             print(f"  💥 {t['id']} falló: {repr(e)[:120]}")
@@ -373,7 +380,10 @@ class Swarm:
             self.done_events[t["id"]].set()
             return
         for dep in t.get("deps", []):
-            await self.done_events[dep].wait()
+            try:
+                await asyncio.wait_for(self.done_events[dep].wait(), timeout=600)
+            except asyncio.TimeoutError:
+                raise RuntimeError(f"dep {dep} nunca terminó (¿ciclo en el plan?)")
         context = "\n\n".join(
             f"[insumo de {d}]\n{self.results[d][:2000]}" for d in t.get("deps", [])
         )
