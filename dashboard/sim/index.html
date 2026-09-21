@@ -117,6 +117,26 @@ border-right:4px solid var(--pc,var(--grid))}
 .resp .say.thinking::after{content:"···";animation:blink .8s steps(2) infinite;
 font-family:"Silkscreen";letter-spacing:2px}
 .resp .px{width:34px;height:34px;image-rendering:pixelated}
+/* ficha del residente: quién es según el DANE */
+#rmask{position:fixed;inset:0;background:#000a;z-index:30;display:none;
+align-items:center;justify-content:center}
+#rmask.open{display:flex}
+#rcard{width:min(420px,92vw);background:var(--panel);border:var(--px) solid var(--work);
+box-shadow:8px 8px 0 #000c;animation:entra .2s steps(3)}
+#rcard header{display:flex;gap:14px;padding:14px;border-bottom:var(--px) solid var(--grid);
+align-items:center;background:var(--panel2)}
+#rcard header canvas{width:80px;height:80px;image-rendering:pixelated;
+background:var(--bg);border:2px solid var(--grid);padding:4px}
+#rcard header .nm{font-family:"Silkscreen";font-size:12px;color:var(--work);line-height:1.6}
+#rcard header .sub{font-size:12px;color:var(--dim)}
+#rcard .rkv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;padding:12px 14px;font-size:12.5px}
+#rcard .rkv b{font-family:"Silkscreen";font-size:8px;color:var(--faint);padding-top:3px}
+#rcard .rkv .src{display:block;font-size:9.5px;color:var(--faint)}
+#rcard footer{padding:8px 14px 12px;font-size:10.5px;color:var(--faint);
+border-top:2px solid var(--grid)}
+#rcard .cerrar{margin-left:auto;font-family:"Silkscreen";font-size:10px}
+.resp,.seat,.res{cursor:pointer}
+
 /* la mesa se arma: los vecinos llegan mientras se busca el contexto */
 #seats{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 2px}
 .seat{display:flex;align-items:center;gap:6px;background:var(--panel2);
@@ -243,6 +263,14 @@ grid-template-areas:"top" "encuesta" "censo" "ficha" "banner"}#kpis{display:none
   (DANE / datos.gov.co). Las opiniones son de personajes verosímiles, no de personas.
   Reporte de fidelidad: <a href="validacion.json" style="color:var(--dim)">validacion.json</a></div>
 </div>
+
+<div id="rmask"><div id="rcard">
+  <header><canvas id="rpx" width="16" height="16"></canvas>
+    <div><div class="nm" id="rnom"></div><div class="sub" id="rsub"></div></div>
+    <button class="pxbtn cerrar" onclick="document.getElementById('rmask').classList.remove('open')">X</button></header>
+  <div class="rkv" id="rkv"></div>
+  <footer>Perfil muestreado de los marginales REALES de su territorio — cada dato con su fuente. Persona sintética: no existe, pero su demografía sí.</footer>
+</div></div>
 
 <div id="cfg" style="position:fixed;top:56px;right:8px;width:290px;z-index:9;display:none;
 background:var(--panel);border:var(--px) solid var(--grid);padding:14px;box-shadow:6px 6px 0 #000a">
@@ -620,6 +648,7 @@ function render(){
   const mu=$("#muestra");mu.innerHTML="";
   mine.slice(0,10).forEach(r=>{
     const div=document.createElement("div");div.className="res";
+    RESBY[r.id]=r;div.dataset.rid=r.id;div.title="ver ficha DANE";
     const cv=document.createElement("canvas");retrato(cv,r.id,r.sexo,r.ocupacion);
     div.append(cv);div.insertAdjacentHTML("beforeend",
       `<span>${esc(r.nombre.split(" ")[0])}, ${r.edad} · ${esc(r.ocupacion)}</span>`);
@@ -734,11 +763,37 @@ function typewriter(el,txt){
     if(i>=txt.length)clearInterval(iv);
   },28);
 }
+const RESBY={};
+function verResidente(r){
+  const d=MARG[r.dpto]||{},f=d.fuentes||{},e=estiloDe(r);
+  const cv=document.getElementById("rpx");retrato(cv,r.id,r.sexo,r.ocupacion);
+  $("#rnom").textContent=r.nombre;
+  $("#rsub").textContent=`${r.edad} años · ${r.sexo} · ${r.dpto_nombre}`;
+  const filas=[
+    ["edad y sexo",`${r.edad} años, ${r.sexo} (grupo ${r.grupo_edad})`,f.poblacion||"proyecciones DANE 2026"],
+    ["territorio",r.dpto_nombre,"DIVIPOLA "+r.dpto],
+    ["ocupación",r.ocupacion,"estructura PIB sectorial del dpto (DANE) + dossier regional"],
+    ["educación",r.educacion||"—","CNPV 2018 cuadro 17PD (nivel alcanzado)"],
+    ["salud",r.regimen_salud,"cobertura MinSalud del dpto (datos.gov.co)"],
+    ["temperamento",e.temp.split(":")[0],"motor de personas: asignación determinista"],
+    ["llega al tema",e.lean.replace(/ por algo.*| de verdad.*/,""),"inclinación 40/40/20 anti-sesgo 'depende'"],
+  ];
+  $("#rkv").innerHTML=filas.map(([k,v,s])=>
+    `<b>${esc(k)}</b><span>${esc(v)}<span class="src">${esc(s)}</span></span>`).join("");
+  $("#rmask").classList.add("open");
+}
+document.addEventListener("click",e=>{
+  if(e.target.id==="rmask"){$("#rmask").classList.remove("open");return;}
+  const card=e.target.closest?.(".resp[data-rid],.seat[data-rid],.res[data-rid]");
+  if(card&&RESBY[card.dataset.rid])verResidente(RESBY[card.dataset.rid]);
+});
 function bubble(r,alt,parent){
+  RESBY[r.id]=r;
   const host=parent||$("#resps");
   const card=document.createElement("div");card.className="resp"+(alt?" alt":"");
   const cv=document.createElement("canvas");cv.className="px";retrato(cv,r.id,r.sexo,r.ocupacion);
   card.append(cv);
+  card.dataset.rid=r.id;card.title="ver ficha DANE";
   card.insertAdjacentHTML("beforeend",`<div><div class="who">${esc(r.nombre)} · ${r.edad} ·
     ${esc(r.ocupacion)}${SEL.size!==1?" · <span style='color:var(--accent)'>"+esc(r.dpto_nombre)+"</span>":""}</div>
     <div class="say thinking">está escribiendo</div></div>`);
@@ -746,8 +801,15 @@ function bubble(r,alt,parent){
   return card;
 }
 function postura(txt){
-  const m=txt.match(/\[POSTURA:\s*(a_favor|en_contra|depende)\s*\]/i);
-  return [m?m[1].toLowerCase():null,txt.replace(/\[POSTURA:[^\]]*\]/i,"").trim()];
+  const m=txt.match(/\[POSTURA:?\s*(a_favor|en_contra|depende)/i);
+  let limpio=txt.replace(/\[POSTURA[^\]]*\]?/gi,"").trim();
+  // si el modelo quedó cortado a mitad de frase, recortar a la última completa
+  if(limpio.length>90&&!/[.!?…"»)]$/.test(limpio)){
+    const corte=Math.max(limpio.lastIndexOf(". "),limpio.lastIndexOf("! "),
+      limpio.lastIndexOf("? "),limpio.lastIndexOf(".\n"));
+    if(corte>limpio.length*0.5)limpio=limpio.slice(0,corte+1);
+  }
+  return [m?m[1].toLowerCase():null,limpio];
 }
 /* Jev vía backend: decisiones tipadas para el sim (null si no hay backend) */
 async function jevDecide(state,questions){
@@ -924,6 +986,7 @@ async function conversar(q){
   const seats=$("#seats");
   sample.forEach((r,i)=>{
     const s=document.createElement("div");s.className="seat";
+    RESBY[r.id]=r;s.dataset.rid=r.id;s.title="ver ficha DANE";
     s.style.animationDelay=(i*0.13)+"s";
     const cv=document.createElement("canvas");retrato(cv,r.id,r.sexo,r.ocupacion);
     s.append(cv);s.insertAdjacentHTML("beforeend",
@@ -982,7 +1045,7 @@ async function conversar(q){
             "\nPROHIBIDO arrancar tu frase como arrancó cualquiera de los anteriores; suena a TI.":"abres tú";
           const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+`
 Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. Cierra con [POSTURA: a_favor|en_contra|depende] — a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},
-            {role:"user",content:`Tema: ${q}\n${charla}\nTe toca, ${r.nombre.split(" ")[0]}.`}],85);
+            {role:"user",content:`Tema: ${q}\n${charla}\nTe toca, ${r.nombre.split(" ")[0]}.`}],115);
           let [pos,txt]=postura(raw);
           if(!pos)pos=await clasificarPostura(q,txt);
           if(pos){postDe[r.id]=pos;tallyVivo(postDe,sample.length);}
