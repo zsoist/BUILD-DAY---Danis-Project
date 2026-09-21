@@ -16,8 +16,8 @@ FORM: continuación del arcade-mission-control del visor, pinneado por Daniel.
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ColombIA</title>
-<link rel="icon" type="image/png" href="../assets/colombia_favicon.png">
+<title>ColombIA ¡Que Piensa!</title>
+<link rel="icon" type="image/png" href="../assets/quepiensa_48.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Saira:wdth,wght@75..100,300..700&display=swap" rel="stylesheet">
@@ -47,7 +47,10 @@ background:var(--panel);border:var(--px) solid var(--grid);flex-wrap:wrap}
 text-shadow:3px 3px 0 #0007}
 #title small{color:var(--fable,#ff8a65);font-size:16px}
 #logo{image-rendering:pixelated;border:2px solid var(--grid);margin-right:-6px;
-background:#0d1220;box-shadow:2px 2px 0 #000a}
+background:#fff;box-shadow:2px 2px 0 #000a}
+#lema{font-style:normal;display:block;font-size:8px;color:var(--faint);
+letter-spacing:.14em;margin-top:1px;animation:lemain .8s steps(6) both .3s}
+@keyframes lemain{from{opacity:0;transform:translateY(3px)}}
 #dptosel{min-width:250px;font-size:13.5px;padding:7px 10px;border-color:var(--work)}
 #kpis{margin-left:auto;display:flex;gap:18px;text-align:right}
 #kpis div b{display:block;font-family:"Silkscreen";font-size:12px;color:var(--text);font-weight:400}
@@ -261,8 +264,8 @@ grid-template-areas:"top" "censo" "encuesta" "ficha" "banner"}#kpis{display:none
 <body>
 <div id="app">
   <header id="top">
-    <img id="logo" src="../assets/colombia_logo_96.png" alt="" width="34" height="34">
-    <span id="title">Colomb<small>IA</small></span>
+    <img id="logo" src="../assets/quepiensa_96.png" alt="" width="38" height="38">
+    <span id="title">Colomb<small>IA</small><em id="lema">¡que piensa!</em></span>
     <select id="dptosel" aria-label="Departamento"></select>
     <a class="back" href="../">◂ visor del enjambre</a>
     <div id="kpis"></div>
@@ -681,7 +684,8 @@ function color(hex,amt){
 async function boot(){
   /* cache local de los JSON pesados (no dependemos de headers del server): el segundo
      visitante los lee de Cache Storage al instante y se revalidan en segundo plano */
-  const CACHE="sim-json-v1";
+  const CACHE="sim-json-v2";  // v2: el bump abandona cualquier caché envenenada de v1
+  try{if(typeof caches!=="undefined")caches.delete("sim-json-v1").catch(()=>{});}catch(e){}
   const jfetch=async url=>{
     if(typeof caches==="undefined")return fetch(url).then(r=>r.json());
     const pide=()=>fetch(url).then(r=>{if(!r.ok)throw new Error(url+" "+r.status);
@@ -690,7 +694,8 @@ async function boot(){
       return r.json();});
     try{
       const hit=await caches.open(CACHE).then(c=>c.match(url));
-      if(hit){pide().catch(()=>{});return hit.json();}
+      // el await VA dentro del try: un body cacheado corrupto cae a la red, no al boot
+      if(hit){pide().catch(()=>{});return await hit.json();}
     }catch(e){}
     return pide();
   };
@@ -702,7 +707,14 @@ async function boot(){
       jfetch("marginals.json").then(m=>m.departamentos),
       jfetch("validacion.json").catch(()=>({})),
     ]);
-  }catch(e){$("#censobody").textContent="corre el pipeline: generate_population.py";return;}
+  }catch(e){
+    // último recurso: red pura sin caché — el boot no puede morir por Cache Storage
+    try{
+      RES=await fetch("residents.json?nc="+Date.now()).then(r=>r.json());
+      MARG=await fetch("marginals.json?nc="+Date.now()).then(r=>r.json()).then(m=>m.departamentos);
+      VAL={};
+    }catch(e2){$("#censobody").textContent="corre el pipeline: generate_population.py";return;}
+  }
   // dossiers.json en diferido: NO retrasa el primer paint, repinta solo cuando llega
   const trasPaint=cb=>typeof requestAnimationFrame==="function"
     ? requestAnimationFrame(()=>requestAnimationFrame(cb)):setTimeout(cb,0);
