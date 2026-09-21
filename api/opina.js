@@ -59,7 +59,9 @@ export default async function handler(req, res) {
 
   // cupo diario de gasto (USD) por token de app: el rate-limit por IP se diluye
   // al escalar a N instancias; este cupo acota el coste agregado por día.
-  const cupoDiario = +(process.env.APP_DAILY_USD || 15);  // noche del evento
+  // Number("") es 0 y +("") también: una var vacía cerraría TODO con 429
+  const _cupo = Number(process.env.APP_DAILY_USD);
+  const cupoDiario = Number.isFinite(_cupo) && _cupo > 0 ? _cupo : 15;  // noche del evento
   // la clave del cupo NO puede salir del cliente: sin APP_TOKEN, rotar
   // x-app-token creaba una entrada nueva por request y el cupo era decorativo
   const cupoKey = process.env.APP_TOKEN ? "app" : "anon";
@@ -102,6 +104,10 @@ export default async function handler(req, res) {
 
   // decide=true: pasa el estado por Jev (decisiones tipadas, ~$0.00003) — lo
   // usamos para VERIFICAR el contexto noticioso antes de mostrarlo.
+  // sin key de OpenRouter, decide/online NO pueden caer en silencio a la rama
+  // normal (el cliente espera answers/bullets y recibiría {content} de chat)
+  if ((body.decide === true || body.online === true) && !orKey)
+    return res.status(502).json({ error: "sin openrouter en el servidor" });
   if (body.decide === true && orKey) {
     try {
       const ctrl = new AbortController();

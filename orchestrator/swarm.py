@@ -305,7 +305,10 @@ class Swarm:
         jl = self.run_dir / "swarm.jsonl"
         if resume_dir and jl.exists():
             for line in jl.read_text().splitlines():
-                ev = json.loads(line)
+                try:
+                    ev = json.loads(line)
+                except json.JSONDecodeError:
+                    continue  # línea truncada por un kill: se ignora, no se muere
                 if ev.get("event") == "plan":
                     self.cached_plan = ev["tasks"]
                     self.task = ev.get("task", task)
@@ -513,7 +516,9 @@ class Swarm:
                 f"Ensambla el entregable final para: {self.task}\n\nPiezas:\n"
                 + "\n\n".join(f"## {k}\n{v[:3000]}" for k, v in self.results.items())
             )
-            (self.run_dir / "FINAL.md").write_text(final)
+            tmp = self.run_dir / "FINAL.md.tmp"
+            tmp.write_text(final)
+            os.replace(tmp, self.run_dir / "FINAL.md")  # atómico: exists() es la señal de resume
         except Exception as e:
             # ship-first hasta el final: las piezas YA están en artifacts/; un
             # assembler caído no puede silenciar el 'done' ni perder telemetría.
@@ -522,9 +527,14 @@ class Swarm:
         self.log({"event": "done", "seconds": round(time.monotonic() - self.t0, 1),
                   "spent": budget.spent, "tasks": len(self.results)})
         # Parte final: "listo, aquí está lo que pediste"
-        jevs = {e["id"]: e for e in
-                (json.loads(l) for l in (self.run_dir / "swarm.jsonl").open())
-                if e.get("event") == "jev"}
+        jevs = {}
+        for l in (self.run_dir / "swarm.jsonl").open():
+            try:
+                e = json.loads(l)
+            except json.JSONDecodeError:
+                continue
+            if e.get("event") == "jev":
+                jevs[e["id"]] = e
         print(f"\n✅ LISTO — aquí está lo que pediste "
               f"({time.monotonic()-self.t0:.0f}s · {budget.line()}):")
         for tid in self.results:

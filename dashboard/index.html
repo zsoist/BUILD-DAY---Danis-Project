@@ -389,7 +389,7 @@ function ingest(list){
     if(ts!=null){run.t0=run.t0==null?ts:Math.min(run.t0,ts);
       run.tEnd=run.tEnd==null?ts:Math.max(run.tEnd,ts);}
     if(r.event==="start"&&p.task) run.task=p.task;
-    if(r.event==="plan"&&p.tasks){p.tasks.forEach(t=>{run.tasks[t.id]={...t,status:"pending"};run.order.push(t.id)});
+    if(r.event==="plan"&&Array.isArray(p.tasks)){p.tasks.forEach(t=>{if(!t||!t.id)return;run.tasks[t.id]={...t,status:"pending"};run.order.push(t.id)});
       run.task||=p.task||""; run.planMs=ts;}
     if(r.event==="shipped"&&r.task_id){const t=run.tasks[r.task_id]; if(t){t.status="ok";t.doneMs=ts;}}
     if(r.event==="jev"&&r.task_id){run.jev[r.task_id]=p.p;
@@ -405,6 +405,7 @@ function ingest(list){
   for(const id in runs){const run=runs[id];
     run.order.forEach((tid,i)=>{run.tasks[tid].agent=i%8;});
     if(run.t0==null){let i=0;run.t0=0;run.events.forEach(e=>e.ms??=i++*1000);run.tEnd=run.events.length*1000;}
+    else run.events.forEach((e,i)=>{if(e.ms==null)e.ms=run.events[i-1]?.ms??run.t0;});  /* mezcla ts/sin-ts: hereda el anterior, jamás NaN */
   }
 }
 async function fetchRows(){
@@ -414,9 +415,10 @@ async function fetchRows(){
     else{list=await (await fetch(cfg.url+"/rest/v1/army_events?select=*&order=id.desc&limit=2000",
       {headers:{apikey:cfg.key}})).json();
       if(!Array.isArray(list)) throw 0;}
-    /* UNA escala de orden: ts si todos parsean; si no, id; si no, orden de llegada */
-    if(list.every(r=>Number.isFinite(Date.parse(r.ts)))) list.sort((a,b)=>Date.parse(a.ts)-Date.parse(b.ts));
-    else if(list.every(r=>Number.isFinite(+r.id))) list.sort((a,b)=>a.id-b.id);
+    /* orden estable por fila: ts si parsea, si no id; desempate por id (dentro
+       del mismo segundo Supabase venía id.desc y 'done' salía antes que 'shipped') */
+    list.forEach((r,i)=>{const t=Date.parse(r.ts);r._k=Number.isFinite(t)?t:(Number.isFinite(+r.id)?+r.id:i);});
+    list.sort((a,b)=>a._k-b._k||((+a.id||0)-(+b.id||0)));
     ingest(list); render(); lamp(true);
   }catch(e){lamp(false);}
 }

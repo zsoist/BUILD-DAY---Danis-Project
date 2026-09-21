@@ -443,6 +443,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
       {role:"user",content:`Tema: ${q}\n`+transcript.map(t=>`${t.n} (${t.p}): ${t.t}`).join("\n")}],130,0.5);
     if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
     [pos,concl]=[postura(raw)[0]||mayoria(transcript),postura(raw)[1]];
+    if(!['a_favor','en_contra','depende'].includes(pos))pos=mayoria(transcript)||'depende';
   }catch(e){pos=mayoria(transcript);concl="La mesa quedó dividida.";}
   if(PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
   el.insertAdjacentHTML("beforeend",
@@ -540,6 +541,10 @@ async function drawNav(){
     return "click para sumarlo a la muestra";
   };
   function hoverMapa(cod,ev){
+    /* mismo dpto en movimiento: solo se reposiciona el tip, nada de rehacer innerHTML por píxel */
+    if(cod===hovCod&&cod&&ev){const tip=$("#maptip"),r=$("#navmap").getBoundingClientRect();
+      tip.style.left=Math.min(ev.clientX-r.x+14,r.width-205)+"px";
+      tip.style.top=(ev.clientY-r.y+10)+"px";return;}
     if(cod===hovCod&&!ev)return;
     svg.classList.toggle("spot",!!cod);
     svg.querySelectorAll("path.hov").forEach(x=>x.classList.remove("hov"));

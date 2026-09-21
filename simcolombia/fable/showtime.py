@@ -224,7 +224,9 @@ def grabar(slug, texto):
     Nombre con secuencia: varias preguntas de la sala NO se pisan entre sí."""
     try:
         CACHE_ACTOS.mkdir(parents=True, exist_ok=True)
-        n = len(list(CACHE_ACTOS.glob(f"{slug}-*.txt"))) + 1
+        previos = [int(p.stem.rsplit("-", 1)[1]) for p in CACHE_ACTOS.glob(f"{slug}-*.txt")
+                   if p.stem.rsplit("-", 1)[1].isdigit()]
+        n = max(previos, default=0) + 1
         (CACHE_ACTOS / f"{slug}-{n:02d}.txt").write_text(texto)
     except Exception:
         pass
@@ -235,7 +237,10 @@ def replay(patron=""):
     grabados = sorted(CACHE_ACTOS.glob("*.txt")) if CACHE_ACTOS.exists() else []
     if not grabados:
         sys.exit("📼 nada grabado aún — replay se llena solo cuando corren los actos.")
-    hit = next((g for g in grabados if patron and patron in g.stem), None)
+    # slug exacto primero (que 'pais' no agarre 'pais_2050'), el MÁS RECIENTE
+    exactos = [g for g in grabados if patron and g.stem.rsplit("-", 1)[0] == patron]
+    hit = (max(exactos, key=lambda g: g.stat().st_mtime) if exactos else
+           next((g for g in grabados if patron and patron in g.stem), None))
     if not hit:
         print("📼 grabados: " + ", ".join(g.stem for g in grabados))
         return
