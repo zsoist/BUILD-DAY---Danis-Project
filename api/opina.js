@@ -2,7 +2,12 @@
 export const maxDuration = 60;  // los timeouts internos (hasta 30s) necesitan margen
 // Corre en Vercel con las keys en variables de entorno: el navegador nunca ve
 // una key. FULL DeepSeek nativo primero; OpenRouter de respaldo.
+export const config = { maxDuration: 60 };
 export default async function handler(req, res) {
+  // deadline global: el abort SIEMPRE debe ganar a la plataforma (10s/15s por
+  // defecto): si el presupuesto se agota, salimos con 502 JSON, no con 504 opaco.
+  const t0 = Date.now();
+  const restante = () => Math.max(0, 55000 - (Date.now() - t0));
   // orígenes permitidos (lista coma-separada en ALLOWED_ORIGINS)
   const ALLOW = (process.env.ALLOWED_ORIGINS ||
     "https://build-day-danis-project.vercel.app,http://localhost:8377")
@@ -55,12 +60,22 @@ export default async function handler(req, res) {
   // cupo diario de gasto (USD) por token de app: el rate-limit por IP se diluye
   // al escalar a N instancias; este cupo acota el coste agregado por día.
   const cupoDiario = +(process.env.APP_DAILY_USD || 15);  // noche del evento
-  const token = req.headers["x-app-token"];
+  // la clave del cupo NO puede salir del cliente: sin APP_TOKEN, rotar
+  // x-app-token creaba una entrada nueva por request y el cupo era decorativo
+  const cupoKey = process.env.APP_TOKEN ? "app" : "anon";
   globalThis.__cupo ??= new Map();
   const hoy = new Date().toISOString().slice(0, 10);
-  if (globalThis.__cupo.get(token)?.dia !== hoy)
-    globalThis.__cupo.set(token, { dia: hoy, usd: 0 });
-  const cupo = globalThis.__cupo.get(token);
+  // misma poda que __rl: sin esto el Map crecía sin tope en instancias calientes
+  for (const [k, v] of globalThis.__cupo) if (v.dia !== hoy) globalThis.__cupo.delete(k);
+  if (globalThis.__cupo.size > 50) {
+    for (const k of globalThis.__cupo.keys()) {
+      if (globalThis.__cupo.size <= 50) break;
+      if (k !== cupoKey) globalThis.__cupo.delete(k);
+    }
+  }
+  if (globalThis.__cupo.get(cupoKey)?.dia !== hoy)
+    globalThis.__cupo.set(cupoKey, { dia: hoy, usd: 0 });
+  const cupo = globalThis.__cupo.get(cupoKey);
   if (cupo.usd >= cupoDiario) return res.status(429).json({ error: "cupo diario agotado" });
   // cargo estimado de la llamada (online ~$0.02, resto ~$0.002) ANTES de gastarla
   cupo.usd += (req.body && req.body.online === true) ? 0.02 : 0.002;
@@ -83,7 +98,7 @@ export default async function handler(req, res) {
   if (body.decide === true && orKey) {
     try {
       const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), 15000);
+      const timer = setTimeout(() => ctrl.abort(), Math.min(12000, restante()));
       const r = await fetch("https://openrouter.ai/api/alpha/decisions", {
         method: "POST", signal: ctrl.signal,
         headers: { Authorization: `Bearer ${orKey}`, "Content-Type": "application/json" },
@@ -101,8 +116,10 @@ export default async function handler(req, res) {
   // traer contexto de noticias; las voces luego reaccionan a hechos, no al vacío.
   if (body.online === true && orKey) {
     try {
+      if (restante() <= 0)
+        return res.status(502).json({ error: "online sin respuesta", detalle: "deadline" });
       const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), 30000);
+      const timer = setTimeout(() => ctrl.abort(), Math.min(15000, restante()));
       const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST", signal: ctrl.signal,
         headers: { Authorization: `Bearer ${orKey}`, "Content-Type": "application/json" },
@@ -149,8 +166,10 @@ export default async function handler(req, res) {
   let ultimo = "";
   for (const it of intentos) {
     try {
+      if (restante() <= 0)
+        return res.status(502).json({ error: "sin respuesta", detalle: ultimo || "deadline" });
       const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), 25000);
+      const timer = setTimeout(() => ctrl.abort(), Math.min(12000, restante()));
       const r = await fetch(it.url, {
         method: "POST", signal: ctrl.signal,
         headers: { Authorization: `Bearer ${it.key}`, "Content-Type": "application/json" },

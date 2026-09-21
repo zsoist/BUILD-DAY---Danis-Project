@@ -297,6 +297,34 @@ $("#gear").onclick=e=>{e.stopPropagation();const c=$("#cfg");c.style.display=c.s
 document.addEventListener("click",e=>{if(!$("#cfg").contains(e.target)&&e.target.id!=="gear")$("#cfg").style.display="none"});
 $("#c-orkey").onchange=e=>{cfg.orkey=e.target.value.trim();try{localStorage.setItem("sim-cfg",JSON.stringify(cfg))}catch(_){}};
 
+/* ── PACER de /api/opina: los 30 asistentes del evento salen por el MISMO IP ──
+   una tertulia de 8 voces dispara ~12 requests en ráfaga (contexto ×2 + Jev +
+   8 voces + conclusión) y el rate limit de 30/min devuelve 429 a todos: la demo
+   se cae completa. Reglas: UNA sola petición en vuelo por navegador, separación
+   mínima con JITTER (los 30 navegadores no salen sincronizados) y reintento con
+   backoff exponencial + Retry-After cuando el backend ya contestó 429. */
+let COLA=Promise.resolve(),T_OPINA=0,GAP=180;
+const dormir=ms=>new Promise(r=>setTimeout(r,ms));
+function encolar(fn){const p=COLA.then(fn);COLA=p.catch(()=>{});return p;}
+const _fetch=window.fetch.bind(window);
+window.fetch=function(u,o){
+  if(String(u).indexOf("/api/opina")<0)return _fetch(u,o);
+  return encolar(async()=>{
+    let r;
+    for(let intento=0;intento<5;intento++){
+      const espera=Math.max(0,T_OPINA+GAP+Math.random()*GAP-Date.now());
+      if(espera)await dormir(espera);
+      r=await _fetch(u,o);
+      T_OPINA=Date.now();
+      if(r.status!==429){GAP=Math.max(180,Math.round(GAP*0.85));return r;}
+      const ra=Number(r.headers.get("Retry-After"))*1000||0;
+      GAP=Math.min(8000,Math.max(GAP*3,ra));   // el IP está saturado: espaciar de más
+      await dormir(GAP+Math.random()*GAP);
+    }
+    return r;
+  });
+};
+
 /* controles de la deliberación */
 let CONV={paused:false,stop:false,start:0};
 let RUN=0;
@@ -350,6 +378,8 @@ async function mesa(cod){
     s.style.animationDelay=(i*0.13)+"s";
     const cv=document.createElement("canvas");retrato(cv,r.id,r.sexo,r.ocupacion,r.edad);
     s.append(cv);s.insertAdjacentHTML("beforeend",`<span>${esc(r.nombre.split(" ")[0])}, ${r.edad}</span>`);
+    s.dataset.rid=r.id;s.title="ver ficha DANE";RESBY[r.id]=r;
+    s.setAttribute("role","button");s.setAttribute("tabindex","0");
     _seats.append(s);});
   const ctx=await contexto(q);
   el.querySelector("#ticker")?.remove();
@@ -364,7 +394,8 @@ async function mesa(cod){
 Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU territorio. Reacciona a lo dicho (cita por nombre, contradice o apoya), aterriza con tu vida y tu región. 1-2 frases. Cierra con [POSTURA: a_favor|en_contra|depende] — a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},
         {role:"user",content:`Tema: ${q}\n${charla}\nHabla, ${r.nombre.split(" ")[0]}.`}],160);
       let [pos,txt]=postura(raw);
-      if(!pos)pos=await clasificarPostura(q,txt);
+      if(!pos)pos=(await clasificarPostura(q,txt))||'';
+      if(!['a_favor','en_contra','depende'].includes(pos))pos='depende';
       typewriter(say,txt);
       card.style.setProperty("--pc",COLORES[pos]);
       transcript.push({n:r.nombre.split(" ")[0],t:txt,p:pos});
@@ -413,8 +444,9 @@ function renderMesa(cod,dat,el){
   el.scrollTop=1e9;
 }
 function mayoria(ts){
-  const c={a_favor:0,en_contra:0,depende:0};ts.forEach(t=>c[t.p]++);
-  return Object.entries(c).sort((a,b)=>b[1]-a[1])[0][0];
+  const c={a_favor:0,en_contra:0,depende:0};ts.forEach(t=>{if(t.p in c)c[t.p]++});
+  const o=Object.entries(c).sort((a,b)=>b[1]-a[1]);
+  return o[0][1]===o[1][1]?"depende":o[0][0];
 }
 /* cada encuesta queda en la base (Supabase) — la memoria del país sintético */
 function guardar(modo,dpto,pregunta,resultado){
@@ -541,14 +573,34 @@ function color(hex,amt){
 }
 
 async function boot(){
+  /* cache local de los JSON pesados (no dependemos de headers del server): el segundo
+     visitante los lee de Cache Storage al instante y se revalidan en segundo plano */
+  const CACHE="sim-json-v1";
+  const jfetch=async url=>{
+    if(typeof caches==="undefined")return fetch(url).then(r=>r.json());
+    const pide=()=>fetch(url).then(r=>{if(!r.ok)throw new Error(url+" "+r.status);
+      const copia=r.clone();
+      caches.open(CACHE).then(c=>c.put(url,copia)).catch(()=>{});
+      return r.json();});
+    try{
+      const hit=await caches.open(CACHE).then(c=>c.match(url));
+      if(hit){pide().catch(()=>{});return hit.json();}
+    }catch(e){}
+    return pide();
+  };
   try{
-    [RES,MARG,VAL]=await Promise.all([
-      fetch("residents.json").then(r=>r.json()),
-      fetch("marginals.json").then(r=>r.json()).then(m=>m.departamentos),
-      fetch("validacion.json").then(r=>r.json()).catch(()=>({})),
+    // ORDEN: residents.json (el pesado, 1.3MB) primero y solo — es el que bloquea el
+    // render; marginals/validacion (livianos) van después, en paralelo entre sí
+    RES=await jfetch("residents.json");
+    [MARG,VAL]=await Promise.all([
+      jfetch("marginals.json").then(m=>m.departamentos),
+      jfetch("validacion.json").catch(()=>({})),
     ]);
-    DOS=await fetch("dossiers.json").then(r=>r.json()).catch(()=>({}));
   }catch(e){$("#censobody").textContent="corre el pipeline: generate_population.py";return;}
+  // dossiers.json en diferido: NO retrasa el primer paint, repinta solo cuando llega
+  const trasPaint=cb=>typeof requestAnimationFrame==="function"
+    ? requestAnimationFrame(()=>requestAnimationFrame(cb)):setTimeout(cb,0);
+  trasPaint(()=>jfetch("dossiers.json").catch(()=>({})).then(d=>{DOS=d||{};render();}));
   const sel=$("#dptosel");
   sel.innerHTML=`<option value="CO">★ Toda Colombia (panel nacional)</option>`+
     Object.entries(MARG).sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre))
@@ -693,7 +745,12 @@ function render(){
 
 /* ── LA CONVERSACIÓN: sondeo (paralelo) y tertulia (conversan entre ellos) ── */
 let MODO="tertulia";
-$("#modo").onclick=e=>{const m=e.target.dataset.m;if(!m)return;MODO=m;
+$("#modo").onclick=e=>{const m=e.target.dataset.m;if(!m||m===MODO)return;
+  // cambiar de modo a mitad de corrida mata la corrida vieja: su token RUN deja de valer
+  abortarCorrida();
+  if(MODO==="pais"){PAIS={q:null,cache:{},tally:{a_favor:0,en_contra:0,depende:0}};
+    DECIDIDO={};$("#tally").innerHTML="";}
+  MODO=m;
   $("#modo").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===m)));
   $("#modohelp").textContent=MODOTXT[m];paintNav();};
 const COLORES={a_favor:"var(--ok)",en_contra:"var(--fail)",depende:"var(--work)"};
@@ -792,7 +849,7 @@ function persona(r,dos){
 Tu tierra: ${dos.vida_cotidiana||""} ${dos.economia_vivida||""}
 QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre el tema de hoy, ${estiloDe(r).lean}. ${OPC?`LA PREGUNTA ES UNA ELECCIÓN: [POSTURA: a_favor] = eliges «${OPC.a}», [POSTURA: en_contra] = eliges «${OPC.b}», [depende] solo si no vas con ninguno.\n`:""}Tu postura asignada ES la tuya: tu historia la justifica y NO la cambias porque el contexto o los demás digan otra cosa. Franqueza: eres ${estiloDe(r).franq}.
 LA VERDAD INCÓMODA: la gente real tiene prejuicios, manías, rivalidades regionales (cachaco/costeño, paisa orgulloso, rolo frío) y opiniones que no dirían en televisión — si tu personaje las tendría, DILAS con la franqueza que te tocó (cero insultos ni odio, pero sí la pulla, el estereotipo confesado, la queja incómoda). Responder "yo no generalizo" cuando tu personaje SÍ generalizaría es mentir. Tu edad, educación y territorio MOLDEAN tu opinión: un mayor de vereda y un universitario de ciudad NO piensan igual, y eso debe notarse. "Depende" es la salida del político: solo si tu vida DE VERDAD te parte en dos.
-Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te puede escapar UN rasgo de tu tierra (${dialectoDe(r.dpto).split(":")[0]||"tu región"}) de vez en cuando, y JAMÁS repites un cliché regional que ya haya dicho otro en la mesa ni el mismo tuyo dos veces.
+Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te puede escapar UN rasgo de tu tierra (${dialectoDe(r.dpto)||"tu región"}) de vez en cuando, y JAMÁS repites un cliché regional que ya haya dicho otro en la mesa ni el mismo tuyo dos veces.
 Referentes que puedes soltar si vienen al caso: ${lug||"—"}.${(dos.rivalidades||[]).length?"\nPullas de tu tierra (puedes soltar UNA con picardía si cuadra): "+dos.rivalidades.slice(0,2).join(" · "):""}${(dos.quejas_incomodas||[]).length?"\nQuejas que en tu tierra se dicen en confianza: "+dos.quejas_incomodas.slice(0,2).join(" · "):""}
 TU ARRANQUE (obligatorio, es lo que te hace distinto): ${estiloDe(r).arranque}.
 REGLAS DURAS:
@@ -845,6 +902,12 @@ document.addEventListener("click",e=>{
   if(e.target.id==="rmask"){$("#rmask").classList.remove("open");return;}
   const card=e.target.closest?.(".resp[data-rid],.seat[data-rid],.res[data-rid]");
   if(card&&RESBY[card.dataset.rid])verResidente(RESBY[card.dataset.rid]);
+});
+/* teclado: la ficha también abre con Enter/Espacio (delegado, sobrevive al repintado desde caché) */
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  const card=e.target.closest?.(".resp[data-rid],.seat[data-rid],.res[data-rid]");
+  if(card&&RESBY[card.dataset.rid]){e.preventDefault();verResidente(RESBY[card.dataset.rid]);}
 });
 function bubble(r,alt,parent){
   RESBY[r.id]=r;
@@ -914,8 +977,49 @@ async function selloHumano(q,transcript,host){
 }
 /* ── CONTEXTO REAL: una búsqueda web por pregunta; las voces reaccionan a hechos ── */
 let CTX={q:null,txt:null,ok:false};  // fail-closed: sin verificación tipada de Jev, el contexto NUNCA se rotula como real
+/* CACHE COMPARTIDA (anti-gasto): 1) contexto.json pre-horneado con las sugerencias
+   (contexto() corrido sobre las 5 de cada dpto + "Toda Colombia" antes de las 6pm);
+   2) localStorage por pregunta: si alguien ya pagó la búsqueda, los demás la reusan.
+   Un hit devuelve texto SIN disparar ninguna de las 3 llamadas facturables. */
+const CTX_LS="sim-ctx-v1",CTX_TTL=6*3600*1000;
+let CTX_ESTATICO={},CTX_STATIC_P=null;
+function cargarCtxStatic(){
+  if(!CTX_STATIC_P)CTX_STATIC_P=fetch("contexto.json").then(r=>r.ok?r.json():{})
+    .catch(()=>({})).then(j=>{CTX_ESTATICO=j||{};return CTX_ESTATICO;});
+  return CTX_STATIC_P;
+}
+function ctxStatic(q){
+  const k=String(q||"").trim().slice(0,400);if(!k)return null;
+  const v=CTX_ESTATICO[k];if(v==null)return null;
+  return typeof v==="string"?{txt:v||null,ok:true}:{txt:v.txt||null,ok:v.ok!==false};
+}
+function ctxLS(q){
+  const k=String(q||"").trim().slice(0,400);if(!k)return null;
+  try{
+    const v=JSON.parse(localStorage.getItem(CTX_LS)||"{}")[k];
+    if(v&&Date.now()-(v.t||0)<CTX_TTL)return {txt:v.txt||null,ok:v.ok!==false};
+  }catch(e){}
+  return null;
+}
+function ctxGuardarLS(q,txt,ok){
+  const k=String(q||"").trim().slice(0,400);if(!k)return;
+  try{
+    const o=JSON.parse(localStorage.getItem(CTX_LS)||"{}");
+    o[k]={txt,ok,t:Date.now()};
+    const ks=Object.keys(o);
+    if(ks.length>80)ks.sort((a,b)=>(o[a].t||0)-(o[b].t||0)).slice(0,ks.length-60).forEach(x=>delete o[x]);
+    localStorage.setItem(CTX_LS,JSON.stringify(o));
+  }catch(e){}
+}
 async function contexto(q){
   if(CTX.q===q)return CTX.txt;
+  // CACHE COMPARTIDA antes de cualquier llamada facturable: contexto.json pre-horneado
+  // y localStorage por pregunta devuelven el mismo texto a coste cero
+  if(typeof q==="string"&&q.trim()&&q.length<=400){
+    await cargarCtxStatic();
+    const hit=ctxStatic(q)||ctxLS(q);
+    if(hit){CTX={q,txt:hit.txt,ok:hit.ok};return CTX.txt;}
+  }
   CTX={q,txt:null,ok:null};
   // la rama `online:true` es la reserva más cara (~$0.02): no se dispara sin pregunta
   // real ni con texto desmedido — el cupo se cobra al recibir, no al responder el 400
@@ -948,6 +1052,7 @@ async function contexto(q){
       }catch(e){}
     }
   }catch(e){}
+  ctxGuardarLS(q,CTX.txt,CTX.ok);
   return CTX.txt;
 }
 function limpiaCtx(s){
