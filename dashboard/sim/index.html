@@ -104,7 +104,7 @@ h3:first-child{margin-top:0}
 #modo button{font-family:"Silkscreen";font-size:8px;padding:3px 8px;color:var(--faint)}
 #modo button[aria-pressed="true"]{color:var(--work);border-color:var(--work)}
 #resps{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
-.resp{display:grid;grid-template-columns:34px 1fr;gap:8px;background:var(--panel2);
+.resp{display:grid;grid-template-columns:38px 1fr;gap:9px;background:var(--panel2);box-shadow:2px 2px 0 #0006;
 border:2px solid var(--grid);padding:8px;border-left:4px solid var(--pc,var(--grid));
 max-width:92%;animation:entra .22s steps(3)}
 .resp.alt{margin-left:auto;grid-template-columns:1fr 34px;border-left:2px solid var(--grid);
@@ -116,7 +116,7 @@ border-right:4px solid var(--pc,var(--grid))}
 .resp .say.thinking{color:var(--faint)}
 .resp .say.thinking::after{content:"···";animation:blink .8s steps(2) infinite;
 font-family:"Silkscreen";letter-spacing:2px}
-.resp .px{width:28px;height:28px;image-rendering:pixelated}
+.resp .px{width:34px;height:34px;image-rendering:pixelated}
 /* la mesa se arma: los vecinos llegan mientras se busca el contexto */
 #seats{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 2px}
 .seat{display:flex;align-items:center;gap:6px;background:var(--panel2);
@@ -129,8 +129,8 @@ opacity:0;animation:llega .3s steps(4) forwards}
 #ticker::before{content:"";width:8px;height:8px;background:var(--work);
 animation:tickblink .7s steps(2) infinite}
 @keyframes tickblink{50%{opacity:.2}}
-.ctx{border:2px solid var(--accent);border-left-width:5px;background:var(--panel2);
-padding:8px 12px;font-size:12px;line-height:1.55;color:var(--dim);white-space:pre-wrap}
+.ctx{border:2px solid var(--accent);border-left-width:5px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 7%,var(--panel2)),var(--panel2));
+padding:10px 14px;font-size:12.5px;line-height:1.65;color:var(--text);white-space:pre-wrap;box-shadow:3px 3px 0 #0008;overflow-wrap:anywhere}
 .ctx b{font-family:"Silkscreen";font-size:8px;color:var(--accent);display:block;margin-bottom:4px}
 .ctx.off{border-color:var(--grid);opacity:.85}
 .mod{border:2px solid var(--accent);background:var(--panel2);padding:9px 12px;
@@ -154,7 +154,8 @@ font-size:12.5px;line-height:1.5}
 .ronda{font-family:"Silkscreen";font-size:8px;color:var(--faint);text-align:center;
 padding:4px 0;letter-spacing:.2em}
 @keyframes blink{50%{opacity:.3}}
-#tally{display:flex;gap:8px;padding:8px 10px;border-top:var(--px) solid var(--grid);flex-wrap:wrap}
+#tally{display:flex;gap:8px;padding:8px 10px;flex-wrap:wrap}
+#tally:not(:empty){border-bottom:var(--px) solid var(--grid)}
 .tal{flex:1;min-width:110px;border:2px solid var(--grid);padding:6px 9px;text-align:center}
 .tal b{font-family:"Silkscreen";font-size:14px;display:block;font-weight:400}
 .tal span{font-size:10px;color:var(--faint)}
@@ -217,11 +218,11 @@ grid-template-areas:"top" "encuesta" "censo" "ficha" "banner"}#kpis{display:none
       <span id="modo"><button data-m="pais" aria-pressed="false">PAÍS</button><button data-m="tertulia" aria-pressed="true">TERTULIA</button><button data-m="sondeo" aria-pressed="false">SONDEO</button></span></h2>
     <div id="modohelp"></div>
     <div id="selinfo"></div>
+    <div id="tally"></div>
     <div id="resps"><div style="color:var(--faint);padding:16px;text-align:center;line-height:2">
       <b style="color:var(--work)">1.</b> toca territorios en el mapa (uno, varios, o ninguno = todo el país)<br>
       <b style="color:var(--work)">2.</b> elige el tipo de conversación arriba a la derecha<br>
       <b style="color:var(--work)">3.</b> suelta tu pregunta abajo — y míralos hablar</div></div>
-    <div id="tally"></div>
     <div id="sugg"></div>
     <form id="qbar">
       <input id="qin" placeholder="pregúntale al país lo que quieras… (toca una sugerencia y edítala)" autocomplete="off" style="font-size:13.5px;padding:8px 11px">
@@ -318,7 +319,7 @@ async function mesa(cod){
       const charla=transcript.length?
         "La mesa va así:\n"+transcript.map(t=>`${t.n}: ${t.t}`).join("\n"):"abres tú la mesa";
       const raw=await flash([{role:"system",content:persona(r,dos)+ctxPara(ctx)+`
-Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU territorio. Reacciona a lo dicho (cita por nombre, contradice o apoya), aterriza con tu vida y tu región. 1-2 frases. Cierra con [POSTURA: a_favor|en_contra|depende].`},
+Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU territorio. Reacciona a lo dicho (cita por nombre, contradice o apoya), aterriza con tu vida y tu región. 1-2 frases. Cierra con [POSTURA: a_favor|en_contra|depende] — a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},
         {role:"user",content:`Tema: ${q}\n${charla}\nHabla, ${r.nombre.split(" ")[0]}.`}],160);
       let [pos,txt]=postura(raw);
       if(!pos)pos=await clasificarPostura(q,txt);
@@ -676,7 +677,7 @@ function persona(r,dos){
   const edu=r.educacion&&!/colegio|infancia/.test(r.educacion)?`, estudios: ${r.educacion}`:"";
   return `Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}${vida(r)?", "+vida(r):""}${edu}, régimen ${r.regimen_salud}, de ${r.dpto_nombre}, Colombia.
 Tu tierra: ${dos.vida_cotidiana||""} ${dos.economia_vivida||""}
-QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre el tema de hoy, ${estiloDe(r).lean}. NO eres tibio/a: en Colombia la gente toma partido — "depende" es la salida del político y solo la usas si tu vida DE VERDAD te parte en dos, y aun así dices qué te haría decidirte.
+QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre el tema de hoy, ${estiloDe(r).lean}. Tu postura asignada ES la tuya: tu historia la justifica, y NO la cambias porque el contexto o los demás digan otra cosa. En Colombia hay gente sincera en AMBOS extremos de cualquier tema — representa el tuyo con convicción y respeto, sin caricatura. "Depende" es la salida del político: solo si tu vida DE VERDAD te parte en dos.
 Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te puede escapar UN rasgo de tu tierra (${dialectoDe(r.dpto).split(":")[0]||"tu región"}) de vez en cuando, y JAMÁS repites un cliché regional que ya haya dicho otro en la mesa ni el mismo tuyo dos veces.
 Referentes que puedes soltar si vienen al caso: ${lug||"—"}.
 REGLAS: primera persona, gente de verdad — concreta TU vida (tu camello, tu plata, tu edad, tu familia). Nivel de lengua acorde a tus estudios. Sin groserías pesadas. PROHIBIDO: sonar a IA, folclor de cartilla, listas, y arrancar con la misma palabra con la que arrancó cualquiera de la mesa.`;
@@ -752,7 +753,7 @@ async function contexto(q){
   try{
     const r=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({online:true,max_tokens:330,messages:[
-        {role:"system",content:"HOY es 21 de septiembre de 2026. Busca noticias recientes de Colombia sobre el TEMA y devuelve SOLO viñetas (máximo 5) con hechos que APAREZCAN EXPLÍCITAMENTE en las fuentes encontradas, cada viñeta con su URL entre paréntesis. REGLAS DURAS: nada que no esté en una fuente; si un dato no cuadra con la fecha de hoy (cargos vencidos, fechas imposibles), NO lo incluyas; si las fuentes se contradicen, di 'las fuentes difieren'. Empieza directo con '- '. PROHIBIDO opinar, presentarte o responder la pregunta. Sin nada noticioso: responde exactamente SIN_NOVEDADES."},
+        {role:"system",content:"HOY es 21 de septiembre de 2026. Busca noticias recientes de Colombia sobre el TEMA y devuelve SOLO 3-4 viñetas ULTRA CORTAS (máximo 18 palabras cada una) con hechos que aparezcan EXPLÍCITAMENTE en las fuentes: qué está pasando, qué ley/fallo/decisión rige, qué se propone. Cierra cada viñeta con el nombre del medio entre paréntesis, ej (El Tiempo) — JAMÁS pongas URLs ni enlaces markdown. Si un dato no cuadra con la fecha de hoy, NO lo incluyas. Empieza directo con '- '. PROHIBIDO opinar, presentarte o responder la pregunta. Sin nada noticioso: SIN_NOVEDADES."},
         {role:"user",content:"TEMA: "+q+" (Colombia, septiembre 2026)"}]})});
     if(r.ok){const c=(await r.json()).content||"";
       CTX.txt=/SIN_NOVEDADES/.test(c)?null:c.trim();}
@@ -770,7 +771,12 @@ async function contexto(q){
   }catch(e){}
   return CTX.txt;
 }
+function limpiaCtx(s){
+  return s.replace(/\[([^\]]*)\]\((https?:[^)]*)\)/g,"$1")   // [txt](url) → txt
+          .replace(/https?:\/\/\S+/g,"").replace(/\(\s*\)/g,"").trim();
+}
 function ctxBox(txt,host){
+  if(txt)txt=limpiaCtx(txt);
   const dudas=CTX.ok===false;
   (host||$("#resps")).insertAdjacentHTML("beforeend",
     txt?`<div class="ctx${dudas?" off":""}" style="${dudas?"border-color:var(--fail)":""}">
@@ -876,7 +882,7 @@ async function conversar(q){
       const card=bubble(r,false),say=card.querySelector(".say");
       try{
         const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+
-          "\nResponde la encuesta en 1-2 frases con POSTURA CLARA (a favor o en contra; depende solo si es irrenunciable) y cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende]."},
+          "\nResponde la encuesta en 1-2 frases con POSTURA CLARA (a favor o en contra; depende solo si es irrenunciable) y cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende] donde a_favor significa SÍ A LA PREGUNTA LITERAL que te hicieron (no al debate de las noticias)."},
           {role:"user",content:q}]);
         let [pos,txt]=postura(raw);
         if(!pos)pos=await clasificarPostura(q,txt);
@@ -910,7 +916,7 @@ async function conversar(q){
             "La mesa va así:\n"+transcript.slice(-10).map(t=>`${t.n}: ${t.t}`).join("\n")+
             "\nPROHIBIDO arrancar tu frase como arrancó cualquiera de los anteriores; suena a TI.":"abres tú";
           const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+`
-Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. Cierra con [POSTURA: a_favor|en_contra|depende].`},
+Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. Cierra con [POSTURA: a_favor|en_contra|depende] — a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},
             {role:"user",content:`Tema: ${q}\n${charla}\nTe toca, ${r.nombre.split(" ")[0]}.`}],85);
           let [pos,txt]=postura(raw);
           if(!pos)pos=await clasificarPostura(q,txt);
