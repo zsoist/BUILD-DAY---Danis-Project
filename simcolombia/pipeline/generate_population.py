@@ -130,6 +130,21 @@ def ocupaciones(d, dpto):
     return base or ["trabajador(a) independiente"]
 
 
+REQUIERE_EDAD = {  # oficios con título/carrera: edad mínima creíble
+    "docente": 23, "profesor": 23, "funcionario": 22, "contador": 23,
+    "abogad": 24, "médic": 25, "enfermer": 22, "universi": 23, "bancari": 20,
+}
+def elegir_oficio(edad, ocs, rng):
+    if edad < 6: return "niño(a) de casa"
+    if edad < 18: return "estudiante"
+    if edad >= 66:
+        return rng.choice(["pensionado(a)", "pensionado(a)", "del hogar", rng.choice(ocs)])
+    for _ in range(8):
+        o = rng.choice(ocs)
+        minimo = next((v for k, v in REQUIERE_EDAD.items() if k in o.lower()), 18)
+        if edad >= minimo: return o
+    return "trabajador(a) independiente"
+
 residents, provisional = [], set()
 for cod, d in sorted(M.items()):
     dos = DOSSIERS.get(cod, {})
@@ -170,11 +185,7 @@ for cod, d in sorted(M.items()):
             "nombre": f"{nombre_pila(edad, sexo, regionales)} {rng.choice(apellidos)} {rng.choice(apellidos)}",
             "sexo": sexo, "edad": edad, "grupo_edad": grupo,
             "regimen_salud": regimen, "educacion": educacion,
-            "ocupacion": (
-                rng.choice(["pensionado(a)", "pensionado(a)", "del hogar",
-                            rng.choice(ocs)]) if edad >= 66 else
-                rng.choice(ocs) if edad >= 18 else
-                "estudiante" if edad >= 6 else "niño(a) de casa"),
+            "ocupacion": elegir_oficio(edad, ocs, rng),
         })
 
 # ── validación determinista: sintético vs marginal real ──

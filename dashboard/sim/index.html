@@ -62,8 +62,20 @@ a.back:hover{color:var(--work)}
 transition:fill .6s ease,stroke .25s ease,stroke-width .25s ease;stroke-linejoin:round;stroke-linecap:round}
 #navmap svg{filter:drop-shadow(0 5px 0 #00000055)}
 #navmap path:hover{stroke:var(--work);stroke-width:2}
-#navmap path:focus-visible,#navmap path:focus{outline:2px solid var(--work);outline-offset:1px}
+#navmap path:focus{outline:none}
+#navmap path:focus-visible{outline:none;stroke:var(--work);stroke-width:2.5}
 #navmap path.sel{stroke:var(--work);stroke-width:2.5;filter:drop-shadow(0 0 4px #ffd23e66)}
+/* spotlight: al pasar por un territorio, el resto respira hacia atrás */
+#navmap svg.spot path{opacity:.42;transition:opacity .25s ease,fill .6s ease,stroke .25s ease}
+#navmap svg.spot path.hov,#navmap svg.spot path.sel,#navmap svg.spot path.hot{opacity:1}
+#navmap path.hov{stroke:var(--work);stroke-width:2;filter:brightness(1.25) drop-shadow(0 0 5px #ffd23e44)}
+#navmap path.press{filter:brightness(.7);transition:filter .06s}
+/* tooltip flotante pixel */
+#maptip{position:absolute;pointer-events:none;z-index:5;background:var(--panel);
+border:2px solid var(--work);box-shadow:3px 3px 0 #000c;padding:6px 9px;
+font-size:11px;line-height:1.45;color:var(--dim);max-width:200px;display:none}
+#maptip b{font-family:"Silkscreen";font-size:9px;color:var(--work);display:block}
+#maptip .st{color:var(--text)}
 #navmap path.fav,#navmap path.con,#navmap path.dep{animation:aterriza .7s ease}
 @keyframes aterriza{0%{fill-opacity:.2}60%{fill-opacity:1;filter:brightness(1.35)}100%{filter:none}}
 #navmap path.fav{fill:color-mix(in srgb,var(--ok) 45%,var(--panel2))}
@@ -122,6 +134,8 @@ border-right:4px solid var(--pc,var(--grid))}
 .resp .say.thinking::after{content:"···";animation:blink .8s steps(2) infinite;
 font-family:"Silkscreen";letter-spacing:2px}
 .resp .px{width:34px;height:34px;image-rendering:pixelated}
+.resp.talk .px{animation:bob .34s steps(2) infinite}
+@keyframes bob{50%{transform:translateY(-2px)}}
 /* ficha del residente: quién es según el DANE */
 #rmask{position:fixed;inset:0;background:#000a;z-index:30;display:none;
 align-items:center;justify-content:center}
@@ -235,7 +249,7 @@ grid-template-areas:"top" "censo" "encuesta" "ficha" "banner"}#kpis{display:none
 
   <section id="censo">
     <div class="panel"><h2>colombia <b id="maptag">toca un territorio</b></h2>
-      <div id="navmap" aria-busy="true"><div class="pxf" style="color:var(--faint);padding:24px;text-align:center">cargando 33 territorios…</div></div><div id="maplabel">—</div>
+      <div id="navmap" aria-busy="true"><div id="maptip"></div><div class="pxf" style="color:var(--faint);padding:24px;text-align:center">cargando 33 territorios…</div></div><div id="maplabel">—</div>
     </div>
     <div class="panel" style="flex:1"><h2>el censo <b id="c-src-tag">DANE</b></h2>
       <div class="body" id="censobody" aria-busy="true"><div class="fuente">cargando censo DANE…</div></div>
@@ -486,7 +500,7 @@ function syncSel(){
 
 async function drawNav(){
   if(!GEO){try{GEO=await fetch("colombia.json").then(r=>r.json())}catch(e){return}}
-  $("#navmap").innerHTML=`<svg viewBox="${GEO.viewBox}" role="group" aria-label="Mapa de Colombia: usa Tab y Enter para elegir territorio">${
+  $("#navmap").innerHTML=`<div id="maptip"></div><svg viewBox="${GEO.viewBox}" role="group" aria-label="Mapa de Colombia: usa Tab y Enter para elegir territorio">${
     Object.entries(GEO.paths).map(([c,p])=>`<path d="${p}" data-cod="${c}" role="button" tabindex="0" aria-label="${esc(MARG[c]?.nombre||c)}"/>`).join("")}</svg>`;
   const svg=$("#navmap svg");
   function elegir(cod){
@@ -500,12 +514,50 @@ async function drawNav(){
     const cod=e.target.dataset?.cod;
     if(cod&&(e.key==="Enter"||e.key===" ")){e.preventDefault();elegir(cod);}
   });
-  svg.addEventListener("mousemove",e=>{
-    const cod=e.target.dataset?.cod;
-    $("#maplabel").textContent=cod?
-      (MARG[cod]?.nombre||cod)+(DECIDIDO[cod]?" · "+({a_favor:"a favor",en_contra:"en contra",depende:"dividido"})[DECIDIDO[cod]]:""):"—";
+  let hovCod=null;
+  const estadoDe=cod=>{
+    const path=svg.querySelector(`path[data-cod="${cod}"]`);
+    if(path?.classList.contains("hot"))return "🟡 deliberando ahora…";
+    if(PAIS?.data?.[cod])return "✓ "+(PAIS.data[cod].concl||"").slice(0,70)+"…";
+    if(DECIDIDO[cod])return ({a_favor:"quedó a favor",en_contra:"quedó en contra",depende:"quedó dividido"})[DECIDIDO[cod]];
+    if(SEL.has(cod))return "en la muestra · click para quitar";
+    return "click para sumarlo a la muestra";
+  };
+  function hoverMapa(cod,ev){
+    if(cod===hovCod&&!ev)return;
+    svg.classList.toggle("spot",!!cod);
+    svg.querySelectorAll("path.hov").forEach(x=>x.classList.remove("hov"));
+    const tip=$("#maptip");
+    if(!cod){tip.style.display="none";hovCod=null;
+      $("#maplabel").textContent=MARG[cur]?.nombre||"—";return;}
+    hovCod=cod;
+    svg.querySelector(`path[data-cod="${cod}"]`)?.classList.add("hov");
+    const d=MARG[cod],dos=DOS[cod]||{};
+    $("#maplabel").textContent=(d?.nombre||cod)+" · "+estadoDe(cod);
+    tip.innerHTML=`<b>${esc(d?.nombre||cod)}</b>
+      ${d?.poblacion?(d.poblacion/1e6).toFixed(2).replace(".",",")+" M hab · ":""}200 residentes
+      ${dos.apodo_gentilicio?`<br><span style="color:var(--faint)">${esc(dos.apodo_gentilicio.split("·")[0].split(",")[0])}</span>`:""}
+      <br><span class="st">${esc(estadoDe(cod))}</span>`;
+    if(ev){const r=$("#navmap").getBoundingClientRect();
+      tip.style.left=Math.min(ev.clientX-r.x+14,r.width-205)+"px";
+      tip.style.top=(ev.clientY-r.y+10)+"px";}
+    tip.style.display="block";
+  }
+  window.hoverMapa=hoverMapa;
+  svg.addEventListener("mousemove",e=>hoverMapa(e.target.dataset?.cod||null,e));
+  svg.addEventListener("mouseleave",()=>hoverMapa(null));
+  svg.addEventListener("mousedown",e=>e.target.dataset?.cod&&e.target.classList.add("press"));
+  svg.addEventListener("mouseup",()=>svg.querySelectorAll(".press").forEach(x=>x.classList.remove("press")));
+  /* links inversos: chips y burbujas iluminan su territorio en el mapa */
+  document.addEventListener("mouseover",e=>{
+    const chip=e.target.closest?.("#selinfo .chip");
+    if(chip){const x=chip.querySelector("[data-c]");if(x)hoverMapa(x.dataset.c);return;}
+    const card=e.target.closest?.(".resp[data-rid],.seat[data-rid]");
+    if(card&&RESBY[card.dataset.rid])hoverMapa(RESBY[card.dataset.rid].dpto);
   });
-  svg.addEventListener("mouseleave",()=>{$("#maplabel").textContent=MARG[cur]?.nombre||"—"});
+  document.addEventListener("mouseout",e=>{
+    if(e.target.closest?.("#selinfo .chip,.resp[data-rid],.seat[data-rid]"))hoverMapa(null);
+  });
   paintNav();
 }
 function paintNav(){
@@ -522,7 +574,7 @@ const AGEG=["0-4","5-9","10-14","15-19","20-24","25-29","30-34","35-39","40-44",
 "45-49","50-54","55-59","60-64","65-69","70-74","75-79","80-84","85+"];
 
 /* retrato pixel v2 procedural: peinado, tono, accesorio por oficio (determinista) */
-function retrato(cv,seed,sexo,ocup,edad){
+function retrato(cv,seed,sexo,ocup,edad,boca){
   const S=16,ctx=cv.getContext("2d");cv.width=cv.height=S;
   let h=0;for(const c of seed)h=(h*31+c.charCodeAt(0))>>>0;
   const skin=["#f0c9a0","#e8b48c","#c98d5f","#a06b42","#8d5a3b","#6e4429"][h%6];
@@ -548,7 +600,8 @@ function retrato(cv,seed,sexo,ocup,edad){
   /* cara */
   F("#10141f",6,5,1,1);F("#10141f",9,5,1,1);
   F(skin2,7,7,2,1);
-  if((h>>12)%5===0)F("#8a3b2e",6,8,4,1);else F("#6e4429",7,8,2,1);
+  if(boca){F("#241512",6,8,4,2);F("#c96a5a",7,9,2,1);}          // hablando: boca abierta
+  else if((h>>12)%5===0)F("#8a3b2e",6,8,4,1);else F("#6e4429",7,8,2,1);
   if(sexo==="hombre"&&edad>=26){
     const fh=(h>>14)%4;                                   // 0 nada 1 bigote 2 barba 3 candado
     if(fh===1)F(pelo,6,7,4,1);
@@ -876,12 +929,19 @@ function scrollAbajo(el){
 }
 function typewriter(el,txt){
   const host=el.closest("#resps,#mesa");
+  const card=el.closest(".resp"),cv=card?.querySelector("canvas.px");
+  const r=card&&RESBY[card.dataset.rid];
+  let habla=null;
+  if(cv&&r){card.classList.add("talk");let b=0;
+    habla=setInterval(()=>retrato(cv,r.id,r.sexo,r.ocupacion,r.edad,(b=!b)),160);}
+  const fin=()=>{if(habla){clearInterval(habla);card.classList.remove("talk");
+    retrato(cv,r.id,r.sexo,r.ocupacion,r.edad);}};
   el.classList.remove("thinking");el.textContent="";
   let i=0;const paso=Math.max(1,Math.round(txt.length/60));
   const iv=setInterval(()=>{
     i+=paso;el.textContent=txt.slice(0,i);
     if(host)scrollAbajo(host);
-    if(i>=txt.length)clearInterval(iv);
+    if(i>=txt.length){clearInterval(iv);fin();}
   },28);
 }
 const RESBY={};
@@ -944,10 +1004,11 @@ function postura(txt){
   const m=txt.match(/\[POSTURA:?\s*(a_favor|en_contra|depende)/i);
   let limpio=txt.replace(/\[POSTURA[^\]]*\]?/gi,"").trim();
   // si el modelo quedó cortado a mitad de frase, recortar a la última completa
-  if(limpio.length>90&&!/[.!?…"»)]$/.test(limpio)){
+  if(limpio.length>60&&!/[.!?…"»)]$/.test(limpio)){
     const corte=Math.max(limpio.lastIndexOf(". "),limpio.lastIndexOf("! "),
-      limpio.lastIndexOf("? "),limpio.lastIndexOf(".\n"));
-    if(corte>limpio.length*0.5)limpio=limpio.slice(0,corte+1);
+      limpio.lastIndexOf("? "),limpio.lastIndexOf("… "),limpio.lastIndexOf(".\n"));
+    if(corte>limpio.length*0.35)limpio=limpio.slice(0,corte+1);
+    else limpio+="…";   // sin dónde cortar: al menos cerrar con elipsis honesta
   }
   return [m?m[1].toLowerCase():null,limpio];
 }
@@ -1039,8 +1100,15 @@ async function contexto(q){
     const [c1,c2]=await Promise.all([
       pide("TEMA: "+q+" (Colombia, septiembre 2026)"),
       pide("TEMA: panorama de fondo y datos clave de: "+q+" (Colombia, el ángulo que la gente discute normalmente)")]);
-    const vi=[...new Set((c1+"\n"+c2).split("\n").map(s=>s.trim())
-      .filter(s=>s.startsWith("- ")&&!/SIN_NOVEDADES/.test(s)))].slice(0,5);
+    const norm=s=>s.toLowerCase().normalize("NFD").replace(/[^a-z0-9 ]/g,"").slice(0,52);
+    const vistos=new Set(),vi=[];
+    for(const s of (c1+"\n"+c2).split("\n").map(x=>x.trim())){
+      if(!s.startsWith("- ")||/SIN_NOVEDADES/.test(s))continue;
+      const k=norm(s);
+      if([...vistos].some(v=>v.startsWith(k.slice(0,34))||k.startsWith(v.slice(0,34))))continue;
+      vistos.add(k);vi.push(s);
+      if(vi.length>=4)break;
+    }
     CTX.txt=vi.length?vi.join("\n"):null;
     /* Jev verifica el contexto antes de mostrarlo (fechas/consistencia) */
     if(CTX.txt){
@@ -1226,7 +1294,7 @@ async function conversar(q){
             "\nPROHIBIDO arrancar tu frase como arrancó cualquiera de los anteriores; suena a TI.":"abres tú";
           const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+`
 Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. Cierra con [POSTURA: a_favor|en_contra|depende] — a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},
-            {role:"user",content:`Tema: ${q}\n${charla}\nTe toca, ${r.nombre.split(" ")[0]}.`}],115);
+            {role:"user",content:`Tema: ${q}\n${charla}\nTe toca, ${r.nombre.split(" ")[0]}. Cierra tu idea COMPLETA antes de la etiqueta — nada de frases a medias.`}],140);
           let [pos,txt]=postura(raw);
           if(!pos)pos=await clasificarPostura(q,txt);
           if(pos){postDe[r.id]=pos;tallyVivo(postDe,sample.length);}
