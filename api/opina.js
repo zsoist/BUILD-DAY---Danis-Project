@@ -25,11 +25,16 @@ export default async function handler(req, res) {
   // cliente y rotándolo se saltaba el cupo de 30/min
   const ip = (req.headers["x-real-ip"] ||
     (req.headers["x-forwarded-for"] || "").split(",").pop() || "?").trim();
+  // día del evento: el WiFi comparte UNA IP pública — la llave del límite es
+  // IP+dispositivo para que 30 asistentes no se bloqueen entre sí; el techo
+  // económico real es el cupo diario en USD de más abajo.
+  const dev = (req.headers["user-agent"] || "").slice(0, 60);
+  const rlKey = ip + "|" + dev;
   const now = Date.now();
   globalThis.__rl ??= new Map();
-  const rl = globalThis.__rl.get(ip)?.filter(t => now - t < 60000) || [];
-  if (rl.length >= 30) return res.status(429).json({ error: "calma: máximo 30/min" });
-  rl.push(now); globalThis.__rl.set(ip, rl);
+  const rl = globalThis.__rl.get(rlKey)?.filter(t => now - t < 60000) || [];
+  if (rl.length >= 40) return res.status(429).json({ error: "calma: máximo 40/min" });
+  rl.push(now); globalThis.__rl.set(rlKey, rl);
   // poda SIEMPRE: antes las IPs viejas se quedaban en el Map y crecía sin
   // límite en instancias calientes → fuga de memoria; el tope duro acota el
   // peor caso. (El cupo sigue siendo por instancia: compartirlo exige
@@ -42,13 +47,13 @@ export default async function handler(req, res) {
   if (globalThis.__rl.size > 1000) {
     for (const k of globalThis.__rl.keys()) {
       if (globalThis.__rl.size <= 1000) break;
-      if (k !== ip) globalThis.__rl.delete(k);
+      if (k !== rlKey) globalThis.__rl.delete(k);
     }
   }
 
   // cupo diario de gasto (USD) por token de app: el rate-limit por IP se diluye
   // al escalar a N instancias; este cupo acota el coste agregado por día.
-  const cupoDiario = +(process.env.APP_DAILY_USD || 5);
+  const cupoDiario = +(process.env.APP_DAILY_USD || 15);  // noche del evento
   const token = req.headers["x-app-token"];
   globalThis.__cupo ??= new Map();
   const hoy = new Date().toISOString().slice(0, 10);
