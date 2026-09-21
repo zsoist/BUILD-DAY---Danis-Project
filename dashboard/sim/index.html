@@ -205,10 +205,10 @@ grid-template-areas:"top" "encuesta" "censo" "ficha" "banner"}#kpis{display:none
 
   <section id="censo">
     <div class="panel"><h2>colombia <b id="maptag">toca un territorio</b></h2>
-      <div id="navmap"></div><div id="maplabel">—</div>
+      <div id="navmap" aria-busy="true"><div class="pxf" style="color:var(--faint);padding:24px;text-align:center">cargando 33 territorios…</div></div><div id="maplabel">—</div>
     </div>
     <div class="panel" style="flex:1"><h2>el censo <b id="c-src-tag">DANE</b></h2>
-      <div class="body" id="censobody"></div>
+      <div class="body" id="censobody" aria-busy="true"><div class="fuente">cargando censo DANE…</div></div>
     </div>
   </section>
 
@@ -235,8 +235,8 @@ grid-template-areas:"top" "encuesta" "censo" "ficha" "banner"}#kpis{display:none
   </section>
 
   <aside id="ficha">
-    <div class="panel"><h2>la tierra</h2><div class="body" id="dossier"></div></div>
-    <div class="panel"><h2>residentes de muestra</h2><div id="muestra"></div></div>
+    <div class="panel"><h2>la tierra</h2><div class="body" id="dossier" aria-busy="true"><div class="fuente">cargando dossier…</div></div></div>
+    <div class="panel"><h2>residentes de muestra</h2><div id="muestra" aria-busy="true"><div class="fuente">cargando censo DANE…</div></div></div>
   </aside>
 
   <div id="banner">⚠ SIMULACIÓN — residentes sintéticos generados de marginales reales
@@ -265,7 +265,12 @@ $("#c-orkey").onchange=e=>{cfg.orkey=e.target.value.trim();try{localStorage.setI
 
 /* controles de la deliberación */
 let CONV={paused:false,stop:false,start:0};
-let RUN=0;  // token de corrida: solo la última pregunta puede escribir en pantalla
+let RUN=0;
+/* aborta cualquier corrida viva: invalida su token, suelta la pausa y devuelve los controles */
+function abortarCorrida(){RUN++;CONV.stop=true;CONV.paused=false;
+  $("#ctrl").style.display="none";$("#reloj").textContent="";
+  $("#btnpausa").textContent="⏸ PAUSAR";$("#btnpausa").classList.remove("pausa");
+  const b=$("#qbar button");if(b)b.disabled=false;}  // token de corrida: solo la última pregunta puede escribir en pantalla
 $("#btnpausa").onclick=()=>{CONV.paused=!CONV.paused;
   $("#btnpausa").textContent=CONV.paused?"▶ SEGUIR":"⏸ PAUSAR";
   $("#btnpausa").classList.toggle("pausa",CONV.paused);};
@@ -295,10 +300,11 @@ async function mesa(cod){
   const el=$("#mesa"),d=MARG[cod],dos=DOS[cod]||{};
   if(!el)return;
   const owner=PAIS,q=PAIS.q;
+  if(owner.cache[cod]&&PAIS===owner){el.innerHTML=owner.cache[cod];return;}
   owner.busy??={}; if(owner.busy[cod])return; owner.busy[cod]=true;
   const path=$(`#navmap path[data-cod="${cod}"]`);
-  if(PAIS!==owner||!document.body.contains(el))return;
-  if(owner.cache[cod]){el.innerHTML=owner.cache[cod];return;}
+  const finMesa=()=>{if(PAIS===owner)owner.busy[cod]=false;};
+  if(PAIS!==owner||!document.body.contains(el)){finMesa();return;}
   el.innerHTML=`<div class="ronda">— MESA DE ${esc(d.nombre).toUpperCase()} —</div>`;
   path?.classList.add("hot");
   const sample=RES.filter(r=>r.dpto===cod&&r.edad>=16).sort(()=>Math.random()-.5).slice(0,4);
@@ -336,7 +342,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
       {role:"user",content:`Tema: ${q}\n`+transcript.map(t=>`${t.n} (${t.p}): ${t.t}`).join("\n")}],130,0.5);
     [pos,concl]=[postura(raw)[0]||mayoria(transcript),postura(raw)[1]];
   }catch(e){pos=mayoria(transcript);concl="La mesa quedó dividida.";}
-  if(PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");return;}
+  if(PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
   el.insertAdjacentHTML("beforeend",
     `<div class="conclu" style="--pc:${COLORES[pos]}"><b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(concl)}</div>`);
   selloHumano(q,transcript,el);
@@ -352,7 +358,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
      <div class="tal con"><b>${owner.tally.en_contra}</b><span>dptos en contra</span></div>
      <div class="tal dep"><b>${owner.tally.depende}</b><span>dptos divididos</span></div>`;
   owner.cache[cod]=el.innerHTML;
-  owner.busy[cod]=false;
+  finMesa();
 }
 function mayoria(ts){
   const c={a_favor:0,en_contra:0,depende:0};ts.forEach(t=>c[t.p]++);
@@ -494,6 +500,7 @@ async function boot(){
     <div><b>33</b><span>territorios</span></div>
     <div><b>${(VAL.bloques_provisionales||[]).length?"parcial":"completa"}</b><span>base DANE</span></div>`;
   render();
+  ["#navmap","#censobody","#dossier","#muestra","#sugg"].forEach(s=>$(s)?.removeAttribute("aria-busy"));
 }
 
 function natMarg(){
@@ -504,6 +511,31 @@ function natMarg(){
     if(d.sexo){agg.sexo.hombre+=d.sexo.hombre;agg.sexo.mujer+=d.sexo.mujer;}
     if(d.edad)for(const[g,n]of Object.entries(d.edad))agg.edad[g]=(agg.edad[g]||0)+n;
   }
+  if(!Object.keys(agg.edad).length){delete agg.edad;agg.sexo=null;}
+  return agg;
+}
+/* marginales agregados de una selección: PIB y salud = media ponderada por población real */
+function margDe(codes){
+  if(codes.length===1)return MARG[codes[0]];
+  const agg={nombre:codes.length+" territorios",edad:{},sexo:{hombre:0,mujer:0},poblacion:0,
+    pib_sectores_pct:null,salud_pct:null,fuentes:{}};
+  const pib={},sal={};let pibW=0,salW=0;
+  for(const c of codes){
+    const d=MARG[c];if(!d)continue;
+    const w=d.poblacion||0;
+    agg.poblacion+=w;
+    if(d.sexo){agg.sexo.hombre+=d.sexo.hombre;agg.sexo.mujer+=d.sexo.mujer;}
+    if(d.edad)for(const[g,n]of Object.entries(d.edad))agg.edad[g]=(agg.edad[g]||0)+n;
+    if(d.pib_sectores_pct){for(const[s,v]of Object.entries(d.pib_sectores_pct))pib[s]=(pib[s]||0)+v*w;pibW+=w;}
+    if(d.salud_pct){for(const[k,v]of Object.entries(d.salud_pct))if(typeof v==="number")sal[k]=(sal[k]||0)+v*w;salW+=w;}
+  }
+  if(pibW){agg.pib_sectores_pct={};
+    for(const[s,v]of Object.entries(pib))agg.pib_sectores_pct[s]=+(v/pibW).toFixed(1);
+    agg.fuentes.pib="media ponderada por población de "+codes.length+" territorios (DANE)";}
+  if(salW){agg.salud_pct={};
+    for(const[k,v]of Object.entries(sal))agg.salud_pct[k]=+(v/salW).toFixed(1);
+    agg.fuentes.salud="media ponderada por población de "+codes.length+" territorios (DANE)";}
+  agg.fuentes.poblacion="DANE proyecciones 2026, agregado de "+codes.length+" territorios";
   return agg;
 }
 /* memo por firma de selección: un solo pase O(n) sobre `mine` por repintado
@@ -520,20 +552,21 @@ function piramide(mine){
 }
 function render(){
   const nac=SEL.size===0;
-  const d=nac?natMarg():MARG[cur];
-  const KEY=(nac?"CO":cur)+"|"+[...SEL].sort().join(",");
+  const codes=nac?Object.keys(MARG):[...SEL];
+  const d=nac?natMarg():margDe(codes);
+  const KEY=nac?"CO":codes.slice().sort().join(",");
   if(PIRCACHE.key!==KEY){
-    const m0=nac?RES:RES.filter(r=>r.dpto===cur);
+    const m0=nac?RES:RES.filter(r=>SEL.has(r.dpto));
     PIRCACHE={key:KEY,mine:m0,...piramide(m0)};
   }
   const mine=PIRCACHE.mine;
   const dos=nac?{}:(DOS[cur]||{});
   /* censo */
   let h="";
-  if(d.edad&&d.sexo){
+  const rtotal=Object.values(d.edad||{}).reduce((a,b)=>a+b,0);
+  if(d.edad&&d.sexo&&rtotal>0){
     h+=`<h3>PIRÁMIDE — real (línea) vs sintética (barra)</h3><div class="pyr">`;
     const tot=PIRCACHE.tot||1;
-    const rtotal=Object.values(d.edad).reduce((a,b)=>a+b,0);
     for(const g of [...AGEG].reverse()){
       const sh=(PIRCACHE.c.get(g+"|hombre")||0)/tot*100;
       const sm=(PIRCACHE.c.get(g+"|mujer")||0)/tot*100;
@@ -731,7 +764,7 @@ async function clasificarPostura(q,txt){
     {postura:{type:"choice",instructions:"La postura que expresa esta respuesta",
       criteria:{a_favor:"apoya o se inclina a favor",en_contra:"rechaza o se inclina en contra",
                 depende:"genuinamente dividida o condicionada"}}});
-  return a?.postura?.choice||"depende";
+  return a?.postura?.choice||null;
 }
 /* sello de humanidad: Jev califica si la mesa sonó a gente de verdad */
 async function selloHumano(q,transcript,host){
@@ -743,20 +776,24 @@ async function selloHumano(q,transcript,host){
   if(!a)return;
   const h=Math.round((a.humana?.noul||0)*100),s=a.sustancia?.score;
   (host||$("#resps")).insertAdjacentHTML("beforeend",
-    `<div class="ronda" style="letter-spacing:.08em">SELLO JEV · humanidad ${h}% · sustancia ${s?.toFixed(1)??"—"}/4</div>`);
+    `<div class="ronda" style="letter-spacing:.08em">SELLO HUMANO · humanidad ${h}% · sustancia ${s?.toFixed(1)??"—"}/4</div>`);
 }
 /* ── CONTEXTO REAL: una búsqueda web por pregunta; las voces reaccionan a hechos ── */
-let CTX={q:null,txt:null,ok:null};
+let CTX={q:null,txt:null,ok:false};  // fail-closed: sin verificación tipada de Jev, el contexto NUNCA se rotula como real
 async function contexto(q){
   if(CTX.q===q)return CTX.txt;
   CTX={q,txt:null,ok:null};
+  // la rama `online:true` es la reserva más cara (~$0.02): no se dispara sin pregunta
+  // real ni con texto desmedido — el cupo se cobra al recibir, no al responder el 400
+  if(typeof q!=="string"||!q.trim()||q.length>400){CTX={q:null,txt:null,ok:null};return null;}
   try{
     const r=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({online:true,max_tokens:330,messages:[
         {role:"system",content:"HOY es 21 de septiembre de 2026. Busca noticias recientes de Colombia sobre el TEMA y devuelve SOLO 3-4 viñetas ULTRA CORTAS (máximo 18 palabras cada una) con hechos que aparezcan EXPLÍCITAMENTE en las fuentes: qué está pasando, qué ley/fallo/decisión rige, qué se propone. Cierra cada viñeta con el nombre del medio entre paréntesis, ej (El Tiempo) — JAMÁS pongas URLs ni enlaces markdown. Si un dato no cuadra con la fecha de hoy, NO lo incluyas. Empieza directo con '- '. PROHIBIDO opinar, presentarte o responder la pregunta. Sin nada noticioso: SIN_NOVEDADES."},
         {role:"user",content:"TEMA: "+q+" (Colombia, septiembre 2026)"}]})});
-    if(r.ok){const c=(await r.json()).content||"";
-      CTX.txt=/SIN_NOVEDADES/.test(c)?null:c.trim();}
+    if(r.ok){const j=await r.json();const c=j.content||"";
+      // solo viñetas citadas cuentan como contexto: un 200 del path de chat genérico NO se muestra como prensa
+      CTX.txt=(/SIN_NOVEDADES/.test(c)||!/^\s*-\s/.test(c.trim()))?null:c.trim();}
     /* Jev verifica el contexto antes de mostrarlo (fechas/consistencia) */
     if(CTX.txt){
       try{
@@ -765,7 +802,10 @@ async function contexto(q){
             state:"HOY: 21 septiembre 2026. Resumen noticioso a verificar:\n"+CTX.txt,
             questions:{fiable:{type:"noul",instructions:
               "Las viñetas son internamente consistentes, coherentes con la fecha de hoy (sin cargos o mandatos vencidos presentados como vigentes, sin fechas imposibles) y suenan a hechos citados, no a invención"}}})});
-        if(v.ok)CTX.ok=(await v.json()).answers?.fiable?.noul>=0.5;
+        if(v.ok){const j=await v.json();
+          const n=j?.answers?.fiable?.noul;
+          // sin `answers.fiable` tipado no hay verificación: el contexto queda NO verificado
+          CTX.ok=typeof n==="number"&&n>=0.5;}
       }catch(e){}
     }
   }catch(e){}
@@ -780,20 +820,29 @@ function ctxBox(txt,host){
   const dudas=CTX.ok===false;
   (host||$("#resps")).insertAdjacentHTML("beforeend",
     txt?`<div class="ctx${dudas?" off":""}" style="${dudas?"border-color:var(--fail)":""}">
-      <b style="${dudas?"color:var(--fail)":""}">${dudas?"⚠ CONTEXTO CON DUDAS (Jev no lo aprobó — tómenlo con pinzas)":"📰 CONTEXTO REAL (búsqueda verificada por Jev)"}</b>${esc(txt)}</div>`
+      <b style="${dudas?"color:var(--fail)":""}">${dudas?"⚠ CONTEXTO SIN VERIFICAR — tómenlo con pinzas":"📰 CONTEXTO REAL (búsqueda web verificada)"}</b>${esc(txt)}</div>`
        :`<div class="ctx off"><b>📰 SIN NOTICIAS FRESCAS</b>opinan desde su experiencia, no desde la prensa</div>`);
 }
 const ctxPara=txt=>(txt&&CTX.ok!==false)?`\nLO QUE DICEN LAS NOTICIAS HOY (hechos reales, reacciona a ESTO desde tu vida, puedes dudar de lo que leas):\n${txt}\n`:"";
 
 let API_OK=null;  // ¿existe /api/opina? (en Vercel sí; en local http.server no)
 async function flash(messages,max=170,temp=0.95){
+  // validar ANTES de cualquier fetch facturable: el cupo del backend se carga al
+  // RECIBIR la petición, así que un `messages` vacío/malformado (o desmedido, p.ej.
+  // 41 turnos) quema reserva y luego responde 400 sin coste real
+  if(!Array.isArray(messages)||!messages.length||messages.length>16||
+     messages.some(m=>!m||typeof m.content!=="string"||!m.content.trim()))
+    throw new Error("messages inválidos: no se dispara ningún fetch facturable");
   if(API_OK!==false){
     try{
       const r=await fetch("/api/opina",{method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({messages,max_tokens:max,temperature:temp})});
       if(r.ok){API_OK=true;return (await r.json()).content||"";}
-      if(r.status===404||r.status===405)API_OK=false; else throw new Error("api "+r.status);
+      // el backend EXISTE y contestó con error (400/5xx/timeout): su reserva de cupo ya
+      // se cargó, así que NO se reintenta contra OpenRouter (pagaríamos dos veces el intento)
+      if(r.status===404||r.status===405){API_OK=false;}
+      else{API_OK=true;throw new Error("api "+r.status);}
     }catch(e){if(API_OK)throw e;API_OK=false;}
   }
   // respaldo local: key del navegador (ajustes o local_keys)
@@ -838,10 +887,25 @@ function muestraDe(sel,n){
   }
   return out;
 }
+/* una corrida preemptada deja su UI colgada: ctrl visible, reloj corriendo y
+   PREGUNTAR deshabilitado. abortar() la deja en reposo, pero solo si esta
+   corrida sigue siendo dueña de CONV — si otra ya tomó el control, tocarla
+   mataría su reloj y habilitaría su botón a media tertulia. */
+function abortar(C){
+  if(C&&CONV!==C)return;
+  $("#ctrl").style.display="none";$("#reloj").textContent="";
+  const b=$("#qbar button");if(b)b.disabled=false;
+}
 async function conversar(q){
+  // al entrar: limpia la UI de cualquier corrida preemptada ANTES del dispatch
+  // de modo — en PAÍS se sale temprano y nada más la tocaría.
+  abortar(null);
+  $("#btnpausa").textContent="⏸ PAUSAR";$("#btnpausa").classList.remove("pausa");
+  CONV.paused=false;CONV.stop=false;
   // hay backend /api/opina en producción: solo exigir key si NO existe
   if(API_OK===false&&!cfg.orkey){$("#resps").innerHTML=`<div style="color:var(--work);padding:16px">
     pega tu key de openrouter en AJUSTES para conversar</div>`;return;}
+  abortarCorrida();
   if(MODO==="pais")return pais(q);
   const nac=SEL.size!==1;
   const d=SEL.size===1?MARG[[...SEL][0]]:natMarg();
@@ -886,13 +950,14 @@ async function conversar(q){
           {role:"user",content:q}]);
         let [pos,txt]=postura(raw);
         if(!pos)pos=await clasificarPostura(q,txt);
-        p[pos]++;typewriter(say,txt);
+        if(pos)p[pos]++;else p.sin_postura=(p.sin_postura||0)+1;
+        typewriter(say,txt);
         card.style.setProperty("--pc",COLORES[pos]);tally(p);
       }catch(e){say.classList.remove("thinking");say.textContent="(no contestó)";}
     }));
   }else{
     /* ── DELIBERACIÓN CONTINUA: hasta 3 min, pausable, corta cuando hay acuerdo ── */
-    const run=++RUN;                 // token de corrida: si entra otra pregunta, esta se aborta
+    const run=RUN;                  // token ya invalidado por abortarCorrida(): si entra otra pregunta, esta se aborta
     const C={paused:false,stop:false,start:Date.now()};
     CONV=C;                          // pausa/cerrar siguen apuntando a la corrida viva
     const btn=$("#qbar button"); if(btn)btn.disabled=true;
@@ -902,13 +967,13 @@ async function conversar(q){
     const transcript=[];
     let ronda=0, tallyPrev="";
     while(!C.stop && Date.now()-C.start<LIMITE){
-      if(run!==RUN)return;
+      if(run!==RUN)return abortar(C);
       $("#resps").insertAdjacentHTML("beforeend",
         `<div class="ronda">— ${ronda===0?"ARRANCA LA TERTULIA":"VUELTA "+(ronda+1)} —</div>`);
       for(const [i,r] of sample.entries()){
-        if(run!==RUN)return;
+        if(run!==RUN)return abortar(C);
         while(C.paused && !C.stop && run===RUN) await new Promise(s=>setTimeout(s,300));
-        if(run!==RUN)return;
+        if(run!==RUN)return abortar(C);
         if(C.stop||Date.now()-C.start>=LIMITE)break;
         const card=bubble(r,i%2===1),say=card.querySelector(".say");
         try{
@@ -920,27 +985,33 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
             {role:"user",content:`Tema: ${q}\n${charla}\nTe toca, ${r.nombre.split(" ")[0]}.`}],85);
           let [pos,txt]=postura(raw);
           if(!pos)pos=await clasificarPostura(q,txt);
-          postDe[r.id]=pos;
+          if(pos){postDe[r.id]=pos;tallyVivo(postDe,sample.length);}
           typewriter(say,txt);
-          card.style.setProperty("--pc",COLORES[pos||"depende"]);
+          card.style.setProperty("--pc",COLORES[pos]||"var(--grid)");
           transcript.push({id:r.id,n:r.nombre.split(" ")[0],d:r.dpto_nombre,t:txt});
-          tallyVivo(postDe,sample.length);
         }catch(e){say.classList.remove("thinking");say.textContent="(se quedó callado)";}
       }
       ronda++;
       const votos=Object.values(postDe);
       const c={a_favor:0,en_contra:0,depende:0};votos.forEach(v=>c[v]++);
       const maxP=Math.max(...Object.values(c));
-      if(votos.length===sample.length && maxP>=Math.ceil(sample.length*0.8)){
+      if(votos.length===sample.length && c.depende===0 && maxP>=Math.ceil(sample.length*0.8)){
         $("#resps").insertAdjacentHTML("beforeend",
           `<div class="ronda">— HAY ACUERDO —</div>`);break;}
-      const firma=JSON.stringify(c);
-      if(ronda>=2 && firma===tallyPrev){
+      /* estancamiento real: ¿los últimos turnos aportan algo nuevo? — 1 Jev por ronda */
+      const est=await jevDecide(
+        `TEMA: ${q} · ULTIMOS TURNOS: `+transcript.slice(-8).map(t=>t.n+': '+t.t).join(" | "),
+        {estanca:{type:"noul",instructions:"Los últimos 8 turnos NO aportan ningún argumento, dato, experiencia ni réplica nuevos: repiten lo ya dicho con otras palabras. Responde 1 solo si quien leyera toda la tertulia no aprendería nada nuevo de los últimos turnos."}});
+      if(run!==RUN)return;
+      if((est?.estanca?.noul||0)>=0.6){
+        $("#resps").insertAdjacentHTML("beforeend",
+          `<div class="ronda">— NADIE APORTA NADA NUEVO: SE LEVANTA LA MESA —</div>`);break;}
+      if(est===null && ronda>=2 && JSON.stringify(c)===tallyPrev){
         $("#resps").insertAdjacentHTML("beforeend",
           `<div class="ronda">— NADIE CEDE: SE LEVANTA LA MESA —</div>`);break;}
-      tallyPrev=firma;
+      tallyPrev=JSON.stringify(c);
     }
-    if(run!==RUN)return;
+    if(run!==RUN)return abortar(C);
     if(btn)btn.disabled=false;
     $("#ctrl").style.display="none";$("#reloj").textContent="";
     Object.values(postDe).forEach(v=>p[v]++);
@@ -949,6 +1020,8 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
       const resumen=await flash([{role:"system",content:
         "Cierras tertulias. En máximo 2 frases: di si HUBO ACUERDO o no, quién quedó en qué orilla (nombres), y el porqué en una pincelada. Español colombiano vivo, neutral."},
         {role:"user",content:`Tema: ${q}\n`+transcript.map(t=>`${t.n}: ${t.t}`).join("\n")}],120,0.5);
+      /* mientras el veredicto viajaba pudo entrar otra pregunta: la corrida vieja no pinta ni guarda nada */
+      if(run!==RUN)return;
       const acordo=Math.max(p.a_favor,p.en_contra,p.depende)>=Math.ceil(sample.length*0.8);
       $("#resps").insertAdjacentHTML("beforeend",
         `<div class="mod" style="border-color:${acordo?"var(--ok)":"var(--fail)"}">

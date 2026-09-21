@@ -15,7 +15,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 ARCHIVO_POR_TAREA = {  # de qué archivo habla cada tarea de hallazgos
     "r2_api": "api/opina.js",
+    # nota: los parches se validan por match-único contra el archivo destino,
+    # así que un mapeo errado se rechaza solo — pero mejor acertar:
 }
+def archivo_de(stem):
+    if stem in ARCHIVO_POR_TAREA:
+        return ARCHIVO_POR_TAREA[stem]
+    return "api/opina.js" if "api" in stem else DEFAULT_FILE
 DEFAULT_FILE = "dashboard/sim/index.html"
 
 
@@ -30,7 +36,7 @@ def plan(run_dir: Path):
             d = json.loads(clean(f.read_text()))
         except Exception:
             continue
-        archivo = ARCHIVO_POR_TAREA.get(f.stem, DEFAULT_FILE)
+        archivo = archivo_de(f.stem)
         code = (ROOT / archivo).read_text()
         altas = [h for h in d.get("hallazgos", []) if h.get("gravedad") == "alta"]
         for i, h in enumerate(altas[:3]):
@@ -75,7 +81,7 @@ def apply(run_dir: Path):
         except Exception:
             rechazados.append((f.stem, "json inválido")); continue
         stem = f.stem.replace("fx_", "").rsplit("_", 1)[0]
-        archivo = ROOT / ARCHIVO_POR_TAREA.get(stem, DEFAULT_FILE)
+        archivo = ROOT / archivo_de(stem)
         original = archivo.read_text()
         texto = original
         ok = True
