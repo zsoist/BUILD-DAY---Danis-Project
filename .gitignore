@@ -9,3 +9,4 @@ __pycache__/
 node_modules/
 dashboard/assets/local_keys.json
 simcolombia/data/raw/
+simcolombia/data/raw_v2/

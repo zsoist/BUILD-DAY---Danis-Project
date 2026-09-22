@@ -1079,10 +1079,11 @@ function etiquetas(){
 function tallyHTML(c,extra){
   const [la,lb,ld]=etiquetas();
   const cel=(n,l,cls)=>`<div class="tal ${cls}"><b>${n}</b><span>${esc(l)}</span></div>`;
-  return cel(c.a_favor,la,"fav")+cel(c.en_contra,lb,"con")+cel(c.depende,ld,"dep")+(extra||"");
+  const nini=c.ni_ni?`<div class="tal" style="color:var(--faint)"><b>${c.ni_ni}</b><span>ni me va ni me viene</span></div>`:"";
+  return cel(c.a_favor,la,"fav")+cel(c.en_contra,lb,"con")+cel(c.depende,ld,"dep")+nini+(extra||"");
 }
 function postura(txt){
-  const m=txt.match(/\[POSTURA:?\s*(a_favor|en_contra|depende)/i);
+  const m=txt.match(/\[POSTURA:?\s*(a_favor|en_contra|depende|ni_ni)/i);
   let limpio=txt.replace(/\[POSTURA[^\]]*\]?/gi,"").trim();
   // si el modelo quedó cortado a mitad de frase, recortar a la última completa
   if(limpio.length>60&&!/[.!?…"»)]$/.test(limpio)){
@@ -1102,13 +1103,29 @@ async function jevDecide(state,questions){
   }catch(e){}
   return null;
 }
+/* set cerrado de posturas: cualquier etiqueta fuera de aquí no es postura */
+const POSTURAS=["a_favor","en_contra","depende","ni_ni"];
+const CRIT_POSTURA={
+  a_favor:"apoya o se inclina claramente a favor",
+  en_contra:"rechaza o se inclina claramente en contra",
+  depende:"genuinamente dividida o condicionada: pone una condición explícita (si X entonces Y), o depende del diseño, del caso o de quien lo proponga",
+  ni_ni:"indiferencia genuina: ni me va ni me viene — no le interesa el tema, no lo tiene en el radar, no ve diferencia entre las opciones o esquiva sin evaluar; SIN condición y SIN balance"
+};
+function etiquetaPostura(v){
+  v=(typeof v==="string")?v.trim().toLowerCase():null;
+  return POSTURAS.indexOf(v)>=0?v:null;   // fail-closed: etiqueta fuera del set -> null
+}
+function esNiNi(p){return p==="ni_ni";}
+function payloadPostura(){
+  return {postura:{type:"choice",
+    instructions:"Postura que expresa ESTA respuesta sobre el tema de la pregunta",
+    criteria:CRIT_POSTURA}};
+}
 /* postura robusta: si el residente no cerró la etiqueta, Jev clasifica el texto */
 async function clasificarPostura(q,txt){
-  const a=await jevDecide(`Pregunta: ${q}\nRespuesta: ${txt}`,
-    {postura:{type:"choice",instructions:"La postura que expresa esta respuesta",
-      criteria:{a_favor:"apoya o se inclina a favor",en_contra:"rechaza o se inclina en contra",
-                depende:"genuinamente dividida o condicionada"}}});
-  return a?.postura?.choice||null;
+  if(typeof txt!=="string"||!txt.trim())return null;   // sin texto no se gasta llamada
+  const a=await jevDecide(`Pregunta: ${q}\nRespuesta: ${txt}`,payloadPostura());
+  return etiquetaPostura(a?.postura?.choice);
 }
 /* sello de humanidad: Jev califica si la mesa sonó a gente de verdad */
 async function selloHumano(q,transcript,host){
@@ -1121,6 +1138,72 @@ async function selloHumano(q,transcript,host){
   const h=Math.round((a.humana?.noul||0)*100),s=a.sustancia?.score;
   (host||$("#resps")).insertAdjacentHTML("beforeend",
     `<div class="ronda" style="letter-spacing:.08em">SELLO HUMANO · humanidad ${h}% · sustancia ${s?.toFixed(1)??"—"}/4</div>`);
+}
+/* ── AUDITORÍA UNIFICADA: 1 sola llamada Jev por cada 5 respuestas ──
+   postura + fidelidad al personaje (compromiso político) + deseabilidad social.
+   Muestreo del 20% determinista por hash del texto: la misma respuesta cae siempre
+   en la misma muestra, así que nunca se paga dos veces la misma auditoría.
+   Por ahora solo loguea a consola; una etiqueta fuera de su set deja el campo en
+   null y ok:false, de modo que un fallo nunca se pinta como dato bueno. */
+const MUESTREO=20; // % de respuestas auditadas
+function hash32(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+function enMuestra(txt){return (hash32(String(txt))%100)<MUESTREO;} // determinista: misma respuesta, misma decisión, un solo cobro
+const COMPROMISOS=["indiferente","desencantado","opinador","militante"];
+const LEANS_TERR=["izquierda","centro","derecha","no_aplica"];
+const CRIT_FID={
+  respeta:"coherente con el compromiso asignado",
+  rompe:"contradice el compromiso asignado",
+  neutra:"la respuesta es puro dato o trámite y no revela compromiso: no se puede juzgar"
+};
+const CRIT_LEAN={
+  respeta:"el encuadre territorial (a quién culpa, a quién beneficia, qué zona nombra) coincide con el lean",
+  rompe:"el encuadre territorial contradice el lean",
+  no_aplica:"la respuesta no toca nada territorial, o el lean asignado es no_aplica"
+};
+const CRIT_DESEAB=["nada: opinión cruda, con interés propio y sin edulcorar","poco","algo","bastante","mucho: discurso de manual, institucionalista y sin aristas"];
+function payloadFidelidad(persona){
+  const comp=(persona&&COMPROMISOS.indexOf(persona.compromiso)>=0)?persona.compromiso:"no_declarado";
+  const lean=(persona&&LEANS_TERR.indexOf(persona.lean)>=0)?persona.lean:"no_aplica";
+  return {
+    fidelidad:{type:"choice",
+      instructions:"El personaje tiene asignado el compromiso político "+comp+". Responde si la RESPUESTA habla como alguien con ese compromiso: indiferente = no le interesa el tema y no lo tiene en el radar; desencantado = habla con desgana y desconfianza hacia la política; opinador = opina de todo con seguridad, incluso sin datos; militante = defiende activamente una causa o un partido con su vocabulario.",
+      criteria:CRIT_FID},
+    lean:{type:"choice",
+      instructions:"Lean territorial asignado: "+lean+". Responde si el encuadre territorial de la RESPUESTA lo respeta.",
+      criteria:CRIT_LEAN},
+    guion:{type:"noul",
+      instructions:"Devuelve 1 si la respuesta RECITA la ficha del personaje (muletillas del compromiso puestas a la fuerza) y 0 si suena orgánica"}
+  };
+}
+function payloadDeseabilidad(){
+  return {deseabilidad:{type:"score",
+    instructions:"0 = dice lo que piensa aunque suene mal o le perjudique; 4 = suena a ciudadano de manual (demócrata churchilliano: institucionalista, equilibrado, todos tienen parte de razón, cero tripas, cero interés propio). Puntúa SOLO el tono de corrección, nunca la veracidad.",
+    criteria:CRIT_DESEAB}};
+}
+/* UNA sola llamada facturable: postura + fidelidad_personaje + deseabilidad (0-4) */
+async function auditarRespuesta(q,txt,persona){
+  txt=String(txt||"");
+  if(!txt.trim())return null;                  // sin texto no se gasta llamada
+  if(!enMuestra(txt))return null;              // 80% restante: cero llamadas
+  const questions=Object.assign({},payloadPostura(),payloadFidelidad(persona),payloadDeseabilidad());
+  const a=await jevDecide(`Compromiso asignado: ${(persona&&persona.compromiso)||"?"}\nLean territorial: ${(persona&&persona.lean)||"?"}\nPregunta: ${q||""}\nRespuesta: ${txt}`,questions);
+  if(!a)return null;
+  const p=etiquetaPostura(a.postura?.choice);                      // fail-closed
+  const cF=a.fidelidad?.choice,cL=a.lean?.choice,d=a.deseabilidad?.score;
+  const f=["respeta","rompe","neutra"].indexOf(cF)>=0?cF:null;    // fail-closed
+  const l=["respeta","rompe","no_aplica"].indexOf(cL)>=0?cL:null; // fail-closed
+  const out={q:q||"",postura:p,fidelidad:f,lean:l,
+    recita:Number(a.guion?.noul)===1,
+    deseabilidad:(typeof d==="number"&&d>=0&&d<=4)?d:null};
+  out.alertas=[];
+  if(f==="rompe")out.alertas.push("rompe personaje");
+  if(l==="rompe")out.alertas.push("rompe lean territorial");
+  if(out.recita)out.alertas.push("recita la ficha");
+  if(out.deseabilidad>=3)out.alertas.push("deseabilidad social "+out.deseabilidad+"/4");
+  if(p==="ni_ni")out.alertas.push("ni_ni");
+  out.ok=(p!==null&&f!==null&&l!==null);        // si falta algo no se pinta como válido
+  console.log("🔎 auditoría"+(out.ok?"":" (incompleta)"),out);
+  return out;
 }
 /* ── CONTEXTO REAL: una búsqueda web por pregunta; las voces reaccionan a hechos ── */
 let CTX={q:null,txt:null,ok:false};  // fail-closed: sin verificación tipada de Jev, el contexto NUNCA se rotula como real
@@ -1269,8 +1352,8 @@ async function flash(messages,max=170,temp=0.95){
   return j.choices?.[0]?.message?.content||"";
 }
 function tallyVivo(postDe,n){
-  const c={a_favor:0,en_contra:0,depende:0};
-  Object.values(postDe).forEach(v=>c[v]++);
+  const c={a_favor:0,en_contra:0,depende:0,ni_ni:0};
+  Object.values(postDe).forEach(v=>{if(POSTURAS.indexOf(v)>=0)c[v]++;});
   const falta=n-Object.keys(postDe).length;
   $("#tally").innerHTML=tallyHTML(c,
     falta>0?`<div class="tal"><b>${falta}</b><span>por hablar</span></div>`:"");

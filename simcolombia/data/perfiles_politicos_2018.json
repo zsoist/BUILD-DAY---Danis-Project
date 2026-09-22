@@ -1,0 +1,365 @@
+{
+ "AMAZONAS": {
+  "lean_2018": {
+   "derecha_uribismo": 10.6,
+   "izquierda": 10.8,
+   "verdes_alternativos": 4.7,
+   "centro_tradicional": 44.1,
+   "otros_blanco_nulo": 27.1
+  },
+  "nota": "Votación más repartida de la muestra: ninguna familia llega al 45%, el centro_tradicional se sostiene en liberalismo y La U (14.9 y 13.8), el bloque indígena-izquierda reúne 12.7 y un cuarto del electorado queda fuera de familia.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "BOGOTA D.C.": {
+  "lean_2018": {
+   "derecha_uribismo": 16.7,
+   "izquierda": 13.9,
+   "verdes_alternativos": 19.4,
+   "centro_tradicional": 28.8,
+   "otros_blanco_nulo": 18.8
+  },
+  "nota": "Los cinco bloques caben en un rango estrecho (13.9 a 19.4 puntos), con la mayor votación verde de la muestra, un centro_tradicional atomizado en seis partidos y casi una quinta parte del voto fuera de familia.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "CAQUETA": {
+  "lean_2018": {
+   "derecha_uribismo": 15.5,
+   "izquierda": 5.9,
+   "verdes_alternativos": 3.5,
+   "centro_tradicional": 48.7,
+   "otros_blanco_nulo": 24.7
+  },
+  "nota": "Predominio del centro_tradicional (47.6) repartido entre liberal, conservador y MIRA, con la izquierda dividida en cuatro siglas (7.4) y un 24.3 del electorado fuera de familia.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "CONSULADOS": {
+  "lean_2018": {
+   "derecha_uribismo": 32.5,
+   "izquierda": 7.8,
+   "verdes_alternativos": 13.4,
+   "centro_tradicional": 34.2,
+   "otros_blanco_nulo": 8.7
+  },
+  "nota": "Único territorio donde derecha_uribismo compite por el primer lugar (32.5), con el centro_tradicional diversificado en cinco partidos (34.2), la izquierda más baja del conjunto (7.8) y solo 8.7 fuera de familia.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "GUAVIARE": {
+  "lean_2018": {
+   "derecha_uribismo": 8.0,
+   "izquierda": 2.8,
+   "verdes_alternativos": 4.3,
+   "centro_tradicional": 59.5,
+   "otros_blanco_nulo": 23.2
+  },
+  "nota": "Concentración más alta de centro_tradicional (59.5) sostenida por La U, liberal y Cambio Radical, frente a una izquierda marginal (2.8) y 23.2 del voto fuera de familia.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "META": {
+  "lean_2018": {
+   "derecha_uribismo": 17.6,
+   "izquierda": 6.1,
+   "verdes_alternativos": 5.8,
+   "centro_tradicional": 46.4,
+   "otros_blanco_nulo": 21.8
+  },
+  "nota": "Derecha_uribismo y centro_tradicional suman 64 puntos en competencia interna entre CD, La U, liberal y Cambio Radical, con una izquierda fragmentada (6.1) y 21.8 fuera de familia.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "QUINDIO": {
+  "lean_2018": {
+   "derecha_uribismo": 14.3,
+   "izquierda": 4.2,
+   "verdes_alternativos": 5.2,
+   "centro_tradicional": 50.8,
+   "otros_blanco_nulo": 23.2
+  },
+  "nota": "El centro_tradicional alcanza 50.8 con el liberalismo como primera fuerza de la muestra, mientras la izquierda no llega al 5% y casi una cuarta parte del voto queda fuera de familia.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "SUCRE": {
+  "lean_2018": {
+   "derecha_uribismo": 4.0,
+   "izquierda": 3.9,
+   "verdes_alternativos": 1.3,
+   "centro_tradicional": 70.5,
+   "otros_blanco_nulo": 19.0
+  },
+  "nota": "Cambio Radical aporta por sí solo 39.2 puntos de un centro_tradicional que llega a 70.5, con el uribismo en su registro más bajo (4.0) y una izquierda residual (3.9).",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "VICHADA": {
+  "lean_2018": {
+   "derecha_uribismo": 20.0,
+   "izquierda": 2.3,
+   "verdes_alternativos": 3.4,
+   "centro_tradicional": 43.0,
+   "otros_blanco_nulo": 27.3
+  },
+  "nota": "Más de un cuarto del electorado (27.3) queda fuera de familia y la izquierda depende casi por completo de MAIS (2.3), con CD y La U concentrando el voto de derecha y centro_tradicional.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "ANTIOQUIA": {
+  "lean_2018": {
+   "derecha_uribismo": 28.2,
+   "izquierda": 5.8,
+   "verdes_alternativos": 5.8,
+   "centro_tradicional": 37.6,
+   "otros_blanco_nulo": 19.5
+  },
+  "nota": "El Centro Democrático es la primera fuerza individual, pero las seis fuerzas de centro tradicional sumadas lo superan y el voto no clasificado equivale a la quinta parte del departamento.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "BOLIVAR": {
+  "lean_2018": {
+   "derecha_uribismo": 7.0,
+   "izquierda": 4.4,
+   "verdes_alternativos": 2.6,
+   "centro_tradicional": 66.8,
+   "otros_blanco_nulo": 18.3
+  },
+  "nota": "Liberal, Conservador, La U y Cambio Radical concentran dos tercios de la votación, con el Centro Democrático relegado a un dígito y una izquierda que apenas roza el 4%.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "CASANARE": {
+  "lean_2018": {
+   "derecha_uribismo": 34.7,
+   "izquierda": 3.3,
+   "verdes_alternativos": 8.6,
+   "centro_tradicional": 30.1,
+   "otros_blanco_nulo": 22.3
+  },
+  "nota": "El Centro Democrático lidera sobre un bloque tradicional fragmentado entre Cambio Radical, La U y Liberal, mientras Alianza Verde supera a la izquierda y el voto no clasificado supera el 20%.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "CORDOBA": {
+  "lean_2018": {
+   "derecha_uribismo": 7.4,
+   "izquierda": 1.1,
+   "verdes_alternativos": 1.7,
+   "centro_tradicional": 72.8,
+   "otros_blanco_nulo": 14.2
+  },
+  "nota": "Conservador, La U, Liberal y Cambio Radical reúnen casi tres cuartas partes del voto, con la izquierda en su nivel más bajo del país y el Centro Democrático por debajo de un dígito.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "HUILA": {
+  "lean_2018": {
+   "derecha_uribismo": 15.1,
+   "izquierda": 5.1,
+   "verdes_alternativos": 4.5,
+   "centro_tradicional": 52.2,
+   "otros_blanco_nulo": 20.8
+  },
+  "nota": "Conservador, Centro Democrático y Liberal compiten cabeza a cabeza dentro de un bloque tradicional mayoritario, con la izquierda en el rango medio-bajo y un quinto del voto sin clasificar.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "NARIÑO": {
+  "lean_2018": {
+   "derecha_uribismo": 3.9,
+   "izquierda": 5.2,
+   "verdes_alternativos": 7.3,
+   "centro_tradicional": 56.8,
+   "otros_blanco_nulo": 23.7
+  },
+  "nota": "El Conservador y el Liberal encabezan la votación, pero es el único departamento analizado donde la izquierda (MAIS, Polo, Decencia) supera al Centro Democrático y donde Alianza Verde iguala a la derecha uribista.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "RISARALDA": {
+  "lean_2018": {
+   "derecha_uribismo": 15.3,
+   "izquierda": 6.2,
+   "verdes_alternativos": 5.7,
+   "centro_tradicional": 46.9,
+   "otros_blanco_nulo": 22.8
+  },
+  "nota": "El centro tradicional no alcanza la mitad del voto, el Centro Democrático lidera como primera fuerza individual y el bloque no clasificado es el más alto entre los departamentos analizados.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "TOLIMA": {
+  "lean_2018": {
+   "derecha_uribismo": 15.6,
+   "izquierda": 4.8,
+   "verdes_alternativos": 3.8,
+   "centro_tradicional": 53.7,
+   "otros_blanco_nulo": 19.1
+  },
+  "nota": "El Conservador es la primera fuerza por encima del Centro Democrático, con Liberal, La U y Cambio Radical completando un bloque tradicional mayoritario y una izquierda por debajo del 5%.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "ARAUCA": {
+  "lean_2018": {
+   "derecha_uribismo": 26.6,
+   "izquierda": 3.8,
+   "verdes_alternativos": 2.9,
+   "centro_tradicional": 45.7,
+   "otros_blanco_nulo": 18.5
+  },
+  "nota": "En Arauca, la votación senatorial de 2018 combinó un bloque mayoritario de partidos tradicionales con una presencia significativa del Centro Democrático y un voto blanco/nulo alto.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "BOYACA": {
+  "lean_2018": {
+   "derecha_uribismo": 14.1,
+   "izquierda": 6.2,
+   "verdes_alternativos": 20.5,
+   "centro_tradicional": 33.3,
+   "otros_blanco_nulo": 23.7
+  },
+  "nota": "Boyacá mostró un mapa fragmentado donde Alianza Verde alcanzó uno de sus mejores resultados y los partidos tradicionales conservaron la mayor cuota conjunta.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "CAUCA": {
+  "lean_2018": {
+   "derecha_uribismo": 5.1,
+   "izquierda": 9.3,
+   "verdes_alternativos": 3.4,
+   "centro_tradicional": 51.6,
+   "otros_blanco_nulo": 27.4
+  },
+  "nota": "En Cauca, los partidos tradicionales concentraron la votación, mientras la izquierda tuvo presencia relevante a través de MAIS, Polo y la Lista de la Decencia.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "CUNDINAMARCA": {
+  "lean_2018": {
+   "derecha_uribismo": 15.5,
+   "izquierda": 6.3,
+   "verdes_alternativos": 7.9,
+   "centro_tradicional": 41.6,
+   "otros_blanco_nulo": 26.7
+  },
+  "nota": "Cundinamarca, el mayor peso electoral del país, combinó una votación significativa del Centro Democrático con el predominio agregado de los partidos tradicionales.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "LA GUAJIRA": {
+  "lean_2018": {
+   "derecha_uribismo": 3.5,
+   "izquierda": 2.6,
+   "verdes_alternativos": 1.9,
+   "centro_tradicional": 55.5,
+   "otros_blanco_nulo": 33.4
+  },
+  "nota": "La Guajira registró un voto mayoritariamente tradicional, con el conservatismo a la cabeza, alta votación de opciones locales y un peso menor del Centro Democrático y la izquierda.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "NORTE DE SAN": {
+  "lean_2018": {
+   "derecha_uribismo": 14.9,
+   "izquierda": 2.3,
+   "verdes_alternativos": 3.2,
+   "centro_tradicional": 58.8,
+   "otros_blanco_nulo": 17.3
+  },
+  "nota": "Norte de Santander presentó un escenario competitivo entre conservatismo, Cambio Radical y Centro Democrático, con los partidos tradicionales sumando la mayor parte.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "SAN ANDRES": {
+  "lean_2018": {
+   "derecha_uribismo": 8.3,
+   "izquierda": 2.7,
+   "verdes_alternativos": 2.1,
+   "centro_tradicional": 56.2,
+   "otros_blanco_nulo": 29.1
+  },
+  "nota": "San Andrés tuvo un mapa fragmentado, con Cambio Radical y liberalismo liderando, alta cuota de voto no clasificado y una izquierda minoritaria.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "VALLE": {
+  "lean_2018": {
+   "derecha_uribismo": 11.2,
+   "izquierda": 8.5,
+   "verdes_alternativos": 5.9,
+   "centro_tradicional": 52.8,
+   "otros_blanco_nulo": 19.7
+  },
+  "nota": "El Valle del Cauca combinó una alta votación de la U con un Centro Democrático fuerte y una izquierda articulada por Polo y la Lista de la Decencia.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "ATLANTICO": {
+  "lean_2018": {
+   "derecha_uribismo": 6.8,
+   "izquierda": 4.4,
+   "verdes_alternativos": 2.3,
+   "centro_tradicional": 68.9,
+   "otros_blanco_nulo": 15.8
+  },
+  "nota": "El centro tradicional concentra casi siete de cada diez votos, con el uribismo por delante de la izquierda y un voto verde marginal en el departamento más poblado del Caribe.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "CALDAS": {
+  "lean_2018": {
+   "derecha_uribismo": 13.8,
+   "izquierda": 6.6,
+   "verdes_alternativos": 4.9,
+   "centro_tradicional": 50.4,
+   "otros_blanco_nulo": 22.6
+  },
+  "nota": "Electorado fragmentado: el centro tradicional retiene la mitad del voto, el uribismo duplica a la izquierda y un tercio se reparte entre verdes y no clasificados.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "CHOCO": {
+  "lean_2018": {
+   "derecha_uribismo": 4.3,
+   "izquierda": 6.8,
+   "verdes_alternativos": 6.5,
+   "centro_tradicional": 57.4,
+   "otros_blanco_nulo": 22.7
+  },
+  "nota": "Único departamento del conjunto donde la izquierda supera al uribismo, aunque el centro tradicional sigue siendo primera fuerza y el voto verde duplica el promedio nacional.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "GUAINIA": {
+  "lean_2018": {
+   "derecha_uribismo": 15.2,
+   "izquierda": 1.7,
+   "verdes_alternativos": 3.5,
+   "centro_tradicional": 34.8,
+   "otros_blanco_nulo": 40.8
+  },
+  "nota": "Territorio sin fuerza hegemónica: el voto no clasificado supera un tercio, el centro tradicional ronda el tercio y el Centro Democrático es la primera opción identificable.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "MAGDALENA": {
+  "lean_2018": {
+   "derecha_uribismo": 8.2,
+   "izquierda": 2.7,
+   "verdes_alternativos": 4.1,
+   "centro_tradicional": 68.8,
+   "otros_blanco_nulo": 15.4
+  },
+  "nota": "Centro tradicional hegemónico articulado en torno a Cambio Radical y La U, con el uribismo triplicando a una izquierda de presencia marginal.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "PUTUMAYO": {
+  "lean_2018": {
+   "derecha_uribismo": 4.7,
+   "izquierda": 6.2,
+   "verdes_alternativos": 8.3,
+   "centro_tradicional": 52.6,
+   "otros_blanco_nulo": 26.7
+  },
+  "nota": "Predominio liberal-conservador dentro de un centro tradicional mayoritario, con una izquierda que, sumando Polo, FARC y Decencia, casi duplica al uribismo.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "SANTANDER": {
+  "lean_2018": {
+   "derecha_uribismo": 13.6,
+   "izquierda": 14.0,
+   "verdes_alternativos": 3.2,
+   "centro_tradicional": 46.7,
+   "otros_blanco_nulo": 19.9
+  },
+  "nota": "Departamento competitivo: el centro tradicional lidera, pero el peso del Polo convierte a la izquierda en segunda fuerza por delante del uribismo.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ },
+ "VAUPES": {
+  "lean_2018": {
+   "derecha_uribismo": 4.4,
+   "izquierda": 0.0,
+   "verdes_alternativos": 4.7,
+   "centro_tradicional": 56.1,
+   "otros_blanco_nulo": 29.7
+  },
+  "nota": "Electorado concentrado en las maquinarias tradicionales y casi un tercio sin clasificar, con el uribismo como fuerza minoritaria y sin voto de izquierda identificable.",
+  "fuente": "Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"
+ }
+}
