@@ -279,6 +279,27 @@ async def brain(prompt: str, rank: str = "general") -> str:
     return await llm(prompt, model=BRAIN_MODEL, thinking="medium")
 
 
+_CERCA = re.compile(r"\A\s*```[a-zA-Z0-9_+-]*[ \t]*\n(.*?)\n?```\s*\Z", re.S)
+
+
+def sin_cerca(texto: str, extension: str = "") -> str:
+    """Quita la cerca de código con la que el modelo envuelve el entregable.
+
+    Pasa todo el tiempo aunque el prompt lo prohíba, y en un archivo de código
+    la cerca lo deja inservible: el navegador o el intérprete revientan en la
+    primera línea. En un .md una cerca puede ser legítima (un ejemplo dentro
+    del texto), así que ahí solo se quita si envuelve el archivo ENTERO.
+    """
+    if not texto:
+        return texto
+    m = _CERCA.match(texto)
+    if not m:
+        return texto
+    if extension.lower() in (".md", ".markdown", ".txt") and texto.count("```") > 2:
+        return texto          # hay más cercas dentro: son parte del contenido
+    return m.group(1) + "\n"
+
+
 def extract_json(text: str) -> dict:
     text = re.sub(r"^```(?:json)?|```$", "", text.strip(), flags=re.MULTILINE)
     m = re.search(r"\{.*\}", text, re.DOTALL)
@@ -623,6 +644,7 @@ class Swarm:
     def ship(self, tid: str, filename: str | None, content: str):
         """Shippear YA: el artefacto toca disco en cuanto existe (escritura atómica)."""
         path = self.ship_dir / Path(filename or f"{tid}.md").name  # sin rutas del planner
+        content = sin_cerca(content, path.suffix)
         tmp = path.with_suffix(path.suffix + ".tmp")
         tmp.write_text(content)
         os.replace(tmp, path)

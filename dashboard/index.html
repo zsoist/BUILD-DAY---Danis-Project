@@ -335,6 +335,8 @@ animation:blink 1.2s steps(2) infinite}
   <div class="seg" id="c-scale"><button data-v="2">2x</button><button data-v="3" aria-pressed="true">3x</button><button data-v="4">4x</button></div>
   <label for="c-orkey">openrouter key (chat del visor)</label>
   <input id="c-orkey" spellcheck="false" placeholder="sk-or-v1-…">
+  <label for="c-chatmodel">modelo del chat (vacío = el de tu enjambre)</label>
+  <input id="c-chatmodel" spellcheck="false" placeholder="z-ai/glm-5.3">
 </div>
 
 <script src="leer_corrida.js"></script>
@@ -510,6 +512,13 @@ let SALUD={};
     if(typeof render==="function")render();
   }catch(e){ /* sin servidor local: el visor no depende de esto */ }
 })();
+
+/* Qué modelo responde las preguntas del visor. Por orden: lo que el usuario
+   haya puesto en ajustes, el cerebro que reporte el chequeo de salud, y si no
+   hay servidor local, GLM 5.3 por defecto. */
+function MODELO_CHAT(){
+  return (cfg.chatmodel||"").trim() || SALUD.cerebro || "z-ai/glm-5.3";
+}
 
 function pintaSalud(s){
   const caja=document.getElementById("saludcaja");
@@ -839,8 +848,12 @@ async function ask(q){
     const r=await fetch("https://openrouter.ai/api/v1/chat/completions",{
       method:"POST",
       headers:{Authorization:"Bearer "+cfg.orkey,"Content-Type":"application/json"},
-      body:JSON.stringify({model:"deepseek/deepseek-v4.1-flash",stream:true,max_tokens:400,
-        reasoning:{enabled:false},
+      /* el mismo modelo con el que trabaja tu enjambre: si cambias de flota,
+         el chat del visor cambia contigo. GLM exige razonar (no se puede
+         apagar) pero en effort bajo no gasta nada. */
+      body:JSON.stringify({model:MODELO_CHAT(),stream:true,max_tokens:500,
+        ...(MODELO_CHAT().includes("glm")?{reasoning:{effort:"low"}}
+                                         :{reasoning:{enabled:false}}),
         messages:[{role:"system",content:
           "Eres el visor de un enjambre de agentes. Responde en español, corto y "+
           "concreto (máx 4 líneas), SOLO con los datos del estado adjunto; si algo "+
@@ -871,11 +884,13 @@ function renderSugg(){
   $("#sugg").querySelectorAll("button").forEach(b=>b.onclick=()=>ask(b.textContent));
 }
 $("#c-orkey").onchange=e=>{cfg.orkey=e.target.value.trim();save();};
+$("#c-chatmodel").onchange=e=>{cfg.chatmodel=e.target.value.trim();save();};
 
 loadAssets().then(()=>{
   if(ASKC.panel) $("#l-ask").textContent=ASKC.panel;
   if(ASKC.placeholder) $("#askin").placeholder=ASKC.placeholder;
   $("#c-orkey").value=cfg.orkey;
+  $("#c-chatmodel").value=cfg.chatmodel||"";
   renderSugg();
   applyCfg();   // arranca el timer de refresco (hallazgo del bug-hunt)
   fetchRows();
