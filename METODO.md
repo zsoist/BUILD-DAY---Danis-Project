@@ -185,6 +185,33 @@ gana al azar; en la que nunca tocamos, le gana con claridad. Esa asimetría es
 información honesta sobre dónde estamos, y es el tipo de control que la
 literatura exige y que la mayoría de los trabajos del sector omite.
 
+### Tres preguntas, no una: dónde falla y dónde no
+
+Validar en una sola pregunta esconde el patrón. Con tres preguntas de la ECP
+—dos donde el país responde en negativo y una donde responde en positivo— el
+defecto se ve nítido:
+
+| Pregunta (sesgo del país) | W1 | baseline azar | baseline moda |
+|---|---|---|---|
+| Eficacia política (negativa) | **0.072** | 0.238 | 0.166 |
+| Satisfacción con la democracia (negativa) | **0.092** | 0.108 | 0.192 |
+| Importancia de la democracia (**positiva**) | **0.103** | 0.335 | 0.165 |
+
+Le gana a los baselines triviales en las tres. Pero el diagnóstico está en el
+detalle: en la pregunta positiva, **el 61.6% de los colombianos responde "muy
+importante" y nuestras voces solo un 17.5%** — se amontonan en "importante". El
+modelo se niega al extremo entusiasta aunque sea la respuesta mayoritaria del
+país.
+
+Se le dio permiso explícito para el entusiasmo (sin filtrar jamás la
+distribución objetivo). El efecto fue **un intercambio, no una victoria**: las
+preguntas positivas mejoraron (0.120 → 0.103), la negativa que era nuestra mejor
+empeoró (0.056 → 0.072), y el promedio apenas se movió (0.092 → 0.089). Lo
+conservamos porque **el rango entre preguntas se estrechó a la mitad** (0.064 →
+0.031): el simulador dejó de depender tanto de si la pregunta es optimista o
+pesimista. Es una decisión de consistencia, no de promedio, y se deja escrita
+como tal.
+
 ### Un método que probamos y descartamos (y por qué contarlo importa)
 
 La literatura psicométrica sugiere una idea elegante: **sacar la escala del

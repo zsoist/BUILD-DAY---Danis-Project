@@ -996,6 +996,12 @@ function render(){
       if(H.ingreso_mediano&&H.ingreso_mediano.v!=null)chips+=`<div class="stat"><b>$${fmt(H.ingreso_mediano.v)}</b><span>ingreso laboral mediano/mes</span></div>`;
       if(H.gini&&H.gini.v!=null)chips+=`<div class="stat"><b>${fmtN(H.gini.v,3)}</b><span>desigualdad (Gini 2025)</span></div>`;
       if(H.urbano&&H.urbano.v!=null)chips+=`<div class="stat"><b>${fmtN(H.urbano.v)}%</b><span>vive en cabecera urbana</span></div>`;
+      /* Nueve departamentos (Orinoquía, Amazonía y San Andrés) quedan fuera de la
+         serie departamental de pobreza del DANE: la muestra de la GEIH no alcanza
+         a estimarla ahí. Decirlo es más honesto que dejar el hueco en silencio. */
+      const faltaPob=!(H.pobreza&&H.pobreza.v!=null), faltaGini=!(H.gini&&H.gini.v!=null);
+      if(chips&&(faltaPob||faltaGini))
+        chips+=`<div class="stat" style="border-style:dashed"><b style="color:var(--faint)">sin dato</b><span>${faltaPob&&faltaGini?"pobreza y Gini":faltaPob?"pobreza":"Gini"}: el DANE no publica la serie departamental aquí (la muestra de la GEIH no alcanza)</span></div>`;
       if(chips)x+=`<span class="mh">ASÍ SE VIVE HOY · CIFRAS OFICIALES</span><div class="stats">${chips}</div>`;
     }
     if(dos.como_hablan) x+=`<span class="mh">CÓMO SE HABLA</span><div class="clamp">${esc(dos.como_hablan)}</div>`;
@@ -1208,7 +1214,7 @@ REGLAS DURAS:
 - PROHIBIDO el cliché de encuesta: la prima/vecina/sobrina que "casi se muere" en un procedimiento clandestino, "mi mamá parió once y enterró N", el familiar moribundo de plantilla. Si el drama no es TUYO y de tu casa, no lo cuentes: argumenta desde tu fundamento asignado.
 - EN TEMAS MORALES tu marco social MANDA aunque las noticias o la mesa jalen para otro lado: Colombia real es más conservadora que las redes; si tu marco dice tradicional, tu texto TERMINA del lado tradicional sin pedir perdón ni diluirlo en matices.
 - TU NIVEL DE LENGUA ES EL DE TUS ESTUDIOS, no el de un discurso: sin estudios o primaria = frases cortas, palabras de todos los días, cero tecnicismos; con estudios superiores = se te nota el vocabulario y la sintaxis armada. Un peón de 19 años no dice "menos del mínimo con recargos": dice "no me alcanza".
-- SI TE PREGUNTAN CON UNA ESCALA (del 1 al 5, del 1 al 10, o pidiéndote elegir una opción de una lista): contesta como contesta la gente en una encuesta de verdad, no como en una discusión. La respuesta MÁS COMÚN de los colombianos en estas escalas es la del MEDIO — ni bien ni mal, 'ahí vamos', 'ni fu ni fa' —, y hay bastante gente satisfecha o que simplemente no sabe. Los extremos existen pero son minoría: elige el extremo solo si tu vida realmente te llevó ahí. No conviertas una escala en una queja. Tu manera de usar la escala es la tuya: ${estiloRespuesta(r)[1]}.
+- SI TE PREGUNTAN CON UNA ESCALA (del 1 al 5, del 1 al 10, o pidiéndote elegir una opción de una lista): contesta como contesta la gente en una encuesta de verdad, no como en una discusión. La respuesta MÁS COMÚN de los colombianos en estas escalas es la del MEDIO — ni bien ni mal, 'ahí vamos', 'ni fu ni fa' —, y hay bastante gente satisfecha o que simplemente no sabe. Los extremos existen y hay que usarlos cuando corresponde: el colombiano que quiere a su familia, a su tierra o a lo que cree, lo dice con todo — 'muy importante', 'muy de acuerdo' — sin medias tintas. Matizar por prudencia cuando por dentro sientes el extremo es faltar a la verdad. No conviertas una escala en una queja, pero tampoco en una tibieza de oficina. Tu manera de usar la escala es la tuya: ${estiloRespuesta(r)[1]}.
 - Sin groserías pesadas. PROHIBIDO sonar a IA, folclor de cartilla o plantilla.`;
 }
 /* scroll coalescido: N typewriters → un solo layout por frame */
@@ -1756,7 +1762,11 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
           for(const otro of transcript){
             if(otro.id===r.id||!txt.includes(otro.n))continue;
             const pa=postDe[r.id],pb=postDe[otro.id];
-            if(pa&&pb&&pa!==pb)ROCES[otro.id]={quien:mio,tema:txt.slice(0,70)};
+            if(pa&&pb&&pa!==pb){ROCES[otro.id]={quien:mio,tema:txt.slice(0,70)};
+              /* memoria a la vista: un estudio con usuarios midió que la memoria
+                 OPACA baja la confianza percibida y la visible la sube */
+              card.insertAdjacentHTML("beforeend",
+                `<div style="font-size:9px;color:var(--faint);margin-top:3px">⚔ le lleva la contraria a ${esc(otro.n)}</div>`);}
           }
           transcript.push({id:r.id,n:mio,d:r.dpto_nombre,t:txt});
         }catch(e){say.classList.remove("thinking");say.textContent="(se quedó callado)";}
