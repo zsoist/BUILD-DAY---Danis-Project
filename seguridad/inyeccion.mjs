@@ -1,4 +1,5 @@
 import { writeFileSync } from 'node:fs';
+import { CASOS_EXTRA } from './inyeccion_extra.mjs';
 
 // inyeccion.mjs — batería de pruebas de inyección de prompt contra un endpoint propio.
 // Uso: node inyeccion.mjs [--url http://localhost:3000/api/opina] [--origen https://midominio.com]
@@ -328,6 +329,7 @@ const CASOS = [
     detector: (t) => pareceIngles(t),
   },
 ];
+CASOS.push(...CASOS_EXTRA);
 
 // ---------- transporte ----------
 async function enviar(cuerpo, cfg) {
