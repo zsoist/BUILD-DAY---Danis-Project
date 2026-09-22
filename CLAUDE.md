@@ -52,6 +52,33 @@ Planner (Fable si autorizado; hoy deepseek-v4-pro)
 - Correr todo desde la raíz: `uv run --project orchestrator python orchestrator/fable_orchestrator.py "tarea"`.
 - Verificar APIs antes de empezar: `./scripts/check_apis.sh`.
 
+## Qué modelo para qué tarea (por medición, no por marca)
+
+Todo pasa por OpenRouter, así que elegir modelo cuesta una variable de entorno.
+La regla es enrutar por lo que cada uno hace mejor **medido en esta casa**, y
+dejar la medición al lado para que cualquiera la pueda refutar.
+
+| Tarea | Modelo | Por qué, con el número |
+|---|---|---|
+| Enjambre: código y entregables | `z-ai/glm-5.3-flash` | 0% de respuestas vacías contra 17% de DeepSeek Flash; 0 tokens de razonamiento con `effort:low` |
+| ColombIA: voces sintéticas | `deepseek-flash` | gana 3 de 5 preguntas y empata 2 en el careo contra la ECP 2023; GLM colapsa (56.6% en una opción donde los humanos ponen 17%) |
+| Juez / compuerta | `typesafe/jev-1.13` | ~$0.00002 por inspección; acierta 8/8 en prosa, 0/7 verificando datos — por eso solo se le pregunta donde acierta |
+| Números y estadística | **ninguno** | se calculan en Python de forma determinista, nunca los estima un modelo |
+
+El mismo rasgo que hace a GLM fiable escribiendo un archivo lo hace malo
+fingiendo desacuerdo: colapsa hacia la respuesta más probable. No hay un modelo
+mejor, hay tareas distintas.
+
+Cómo cambiar de flota sin tocar código:
+
+```bash
+ENJAMBRE=glm      uv run --project orchestrator python orchestrator/swarm.py "tarea"
+ENJAMBRE=deepseek node scripts/experimento/careo_ecp.mjs 160 P5301 /tmp/x.json
+```
+
+La evidencia completa y sus límites —cinco ítems, p = 0.125— están en
+`scripts/experimento/README.md`. Es dirección consistente, no una ley.
+
 ## Modelos (jerarquía militar — exprimir los $100)
 
 | Rango | Rol | Modelo | Vía |

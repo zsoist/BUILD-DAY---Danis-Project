@@ -99,6 +99,9 @@ const MOTOR = FLOTA === "glm"
       url: "https://api.deepseek.com/chat/completions",
       key: env.DEEPSEEK_API_KEY || env.DEEPSEEK_KEY,
       extra: { reasoning_effort: "none" } };
+const TEMP = Number(process.env.TEMP_VOZ ?? 1.0);
+if (!Number.isFinite(TEMP) || TEMP < 0 || TEMP > 2) {
+  console.error(`⛔ TEMP_VOZ inválida: ${process.env.TEMP_VOZ}`); process.exit(1); }
 const KEY = MOTOR.key;
 if (!KEY) { console.error(`⛔ falta la llave para la flota "${FLOTA}"`); process.exit(1); }
 
@@ -110,7 +113,10 @@ async function flash(messages, max_tokens = 120) {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${KEY}` },
         body: JSON.stringify({ model: MOTOR.modelo, messages, max_tokens,
-          temperature: 1.0, ...MOTOR.extra }),
+          /* TEMP_VOZ permite barrer temperaturas sin tocar el script: así el
+             barrido usa EXACTAMENTE el mismo muestreo y las corridas se
+             pueden comparar entre sí. */
+          temperature: TEMP, ...MOTOR.extra }),
       });
       if (r.ok) {
         const txt = (await r.json()).choices?.[0]?.message?.content || "";
@@ -141,7 +147,17 @@ const INSTR_CON = "\nTe está encuestando el DANE en la puerta de tu casa. IGNOR
   + "Responde SOLO con un número entero de 0 a 100, donde 0 es lo más negativo que podrías "
   + "sentir sobre eso y 100 lo más positivo, y 50 es que te da exactamente igual. "
   + "Contesta con el número y nada más, sin explicaciones.";
-const INSTR = MODO === "continuo" ? INSTR_CON : INSTR_CAT;
+/* MODO LIBRE — el insumo del método SSR (Semantic Similarity Rating).
+   La persona no ve ninguna escala: habla como hablaría. La escala la reconstruye
+   después Python, midiendo a qué punto de anclaje se parece semánticamente lo
+   que dijo. La literatura de 2026 reporta que así la dispersión deja de
+   colapsar, porque el modelo nunca tiene que elegir una casilla —y elegir
+   casilla es justo donde se va a la más probable. */
+const INSTR_LIB = "\nTe está encuestando el DANE en la puerta de tu casa. NO te dan opciones "
+  + "ni números: te preguntan y tú contestas con tus propias palabras, en una o dos frases "
+  + "cortas, como hablarías de verdad. Nada de listas, nada de cifras, nada de explicar que "
+  + "eres un personaje. Solo lo que sientes al respecto.";
+const INSTR = MODO === "continuo" ? INSTR_CON : MODO === "libre" ? INSTR_LIB : INSTR_CAT;
 
 const out = [];
 const cola = [...muestra];
@@ -153,7 +169,10 @@ await Promise.all(Array.from({ length: 8 }, async () => {
       { role: "user", content: TEXTO },
     ]);
     let valor = null;
-    if (MODO === "continuo") {
+    if (MODO === "libre") {
+      /* sin número que extraer: el texto ES el dato */
+      valor = null;
+    } else if (MODO === "continuo") {
       const m = (txt || "").match(/\b(\d{1,3})\b/);
       const v = m ? Number(m[1]) : null;
       valor = v !== null && v >= 0 && v <= 100 ? v : null;
@@ -163,14 +182,16 @@ await Promise.all(Array.from({ length: 8 }, async () => {
     }
     out.push({ id: r.id, edad: r.edad, sexo: r.sexo, dpto: r.dpto,
       educacion: r.educacion, clase: r.clase, modo: MODO,
-      resp: valor, crudo: (txt || "").slice(0, 80) });
+      resp: valor,
+      /* en modo libre el texto completo es el insumo, no un vistazo para depurar */
+      crudo: (txt || "").slice(0, MODO === "libre" ? 600 : 80) });
     process.stderr.write(".");
   }
 }));
 /* La flota queda grabada en el archivo: un resultado sin saber qué modelo lo
    produjo no se puede comparar con nada dentro de un mes. */
 fs.writeFileSync(SALIDA, JSON.stringify({ codigo: CODIGO, pregunta: TEXTO, modo: MODO, n: out.length,
-  flota: FLOTA, modelo: MOTOR.modelo, vacias: VACIAS,
+  flota: FLOTA, modelo: MOTOR.modelo, temperatura: TEMP, vacias: VACIAS,
   fecha: new Date().toISOString(), respuestas: out }, null, 1));
 console.error(`\nOK — ${out.length} respuestas de ${MOTOR.modelo} → ${SALIDA}`);
 if (VACIAS) console.error(`   ⚠ ${VACIAS} respuesta(s) vacías reintentadas`);
