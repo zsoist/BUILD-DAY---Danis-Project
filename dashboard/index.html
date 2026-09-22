@@ -54,6 +54,14 @@ canvas{image-rendering:pixelated; display:block}
 #agents{position:sticky; top:62px; max-height:calc(100vh - 78px)}
 
 .panel{background:var(--panel); border:var(--px) solid var(--grid); position:relative}
+.staffc .mod{font-family:"Silkscreen",monospace; font-size:7px; color:var(--faint);
+  margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.sfila{display:flex; align-items:flex-start; gap:7px; padding:5px 9px;
+  border-bottom:1px solid var(--grid); font-size:11px; line-height:1.35}
+.sfila i{width:8px; height:8px; margin-top:4px; flex:0 0 auto; box-shadow:1px 1px 0 #000a}
+.sfila b{font-family:"Silkscreen",monospace; font-size:8px; color:var(--dim);
+  flex:0 0 78px; font-weight:400}
+.sfila span{color:var(--faint); flex:1 1 auto; min-width:0}
 .panel>h2{font-family:"Silkscreen"; font-size:10px; color:var(--dim); text-transform:lowercase;
   padding:7px 10px 5px; border-bottom:var(--px) solid var(--grid);
   display:flex; justify-content:space-between; align-items:center}
@@ -287,6 +295,10 @@ animation:blink 1.2s steps(2) infinite}
   </section>
 
   <aside id="side">
+    <section class="panel" aria-label="Estado del enjambre">
+      <h2><span>está todo conectado</span><b id="saludok"></b></h2>
+      <div id="saludcaja"></div>
+    </section>
     <div class="panel"><h2 id="l-stats">hoy</h2><div id="stats"></div></div>
     <div class="panel"><h2><span id="l-inspector">inspector jev</span></h2><div id="stamps"></div></div>
     <div class="panel"><h2 id="l-budget">presupuesto</h2><div id="budget"></div></div>
@@ -480,10 +492,45 @@ function lamp(on){$("#lamp").classList.toggle("on",on);
 function fmtT(ms,t0){const s=Math.max(0,(ms-t0)/1000);return s>=60?(s/60).toFixed(1)+"m":s.toFixed(0)+"s";}
 function tpl(str,vars){return str.replace(/\{(\w+)\}/g,(_,k)=>vars[k]??"");}
 
+/* Qué modelo es cada pieza y si responde. El servidor local lo expone en
+   /salud.json; si no está (por ejemplo servido desde Vercel), se queda vacío
+   y el visor sigue funcionando igual. */
+let SALUD={};
+(async()=>{
+  try{
+    const s=await (await fetch("/salud.json")).json();
+    const sacaModelo=d=>{const m=/modelo ([^\s]+) vía/.exec(d||"");return m?m[1]:"";};
+    SALUD={
+      cerebro:sacaModelo(s.planificador?.detalle),
+      tropa:sacaModelo(s.tropa?.detalle),
+      juez:sacaModelo(s.inspector?.detalle),
+      piezas:s,
+    };
+    pintaSalud(s);
+    if(typeof render==="function")render();
+  }catch(e){ /* sin servidor local: el visor no depende de esto */ }
+})();
+
+function pintaSalud(s){
+  const caja=document.getElementById("saludcaja");
+  if(!caja||!s)return;
+  const fila=(k,v)=>{
+    if(!v||typeof v!=="object"||!("ok" in v))return "";
+    const col=v.ok?"var(--ok)":"var(--fail)";
+    const d=String(v.detalle||"").replace(/^[a-záéíóú]+:\s*/i,"");
+    return `<div class="sfila"><i style="background:${col}"></i>`+
+           `<b>${esc(k)}</b><span>${esc(d)}</span></div>`;
+  };
+  caja.innerHTML=Object.entries(s).map(([k,v])=>fila(k,v)).join("")||
+    '<div style="color:var(--faint);padding:8px">sin datos de salud</div>';
+}
+
 function render(){
   const ids=Object.keys(runs).sort().reverse();
   const sel=$("#runsel");
-  curRun&&ids.includes(curRun)||(curRun=ids[0]);
+  /* arrancar en una corrida CON trabajo: abrir en una vacía no dice nada */
+  if(!(curRun&&ids.includes(curRun)))
+    curRun=ids.find(i=>(runs[i]?.order||[]).length)||ids[0];
   const selKey=ids.join("|")+"@"+curRun;
   if(sel.dataset.k!==selKey){sel.dataset.k=selKey;  /* no rehacer el select cada 3s: mata el dropdown abierto */
     /* Un identificador como "20260922-002225-swarm" no le dice nada a nadie:
@@ -538,20 +585,23 @@ function render(){
     {sp:"sp_main",fr:run.planMs?[0,1]:[2,3],
      nm:(FABLE.visto&&Date.now()-FABLE.visto<15*60*1000)?"👑 FABLE 5.1":(UI.main_agent||"agente principal"),
      st:run.planMs?`plan listo · ${run.order.length} tareas`:"planificando…",
-     cls:run.planMs?"okd":"busy"},
+     mod:SALUD.cerebro||"", cls:run.planMs?"okd":"busy"},
     {sp:"sp_staff",fr:[0,1,2,3],nm:UI.inspector||"inspector jev",
      st:Object.keys(run.jev).length? Object.keys(run.jev).length+" revisiones":"esperando entregas",
-     cls:Object.keys(run.jev).length?"okd":""},
+     mod:SALUD.juez||"", cls:Object.keys(run.jev).length?"okd":""},
     {sp:"sp_staff",fr:[4,5,6,7],nm:UI.assembler||"ensamblador",
      st:run.done?`entrega final · ${run.seconds??"?"}s`:okN===run.order.length&&okN?"ensamblando…":"esperando piezas",
-     cls:run.done?"okd":okN===run.order.length&&okN?"busy":""},
+     mod:SALUD.cerebro||"", cls:run.done?"okd":okN===run.order.length&&okN?"busy":""},
   ];
   $("#staff").innerHTML="";
   staff.forEach(s=>{
     const d=document.createElement("div");
     d.className="staffc "+s.cls+(s.nm.includes("FABLE")?" fable":"");
     d.append(spriteCanvas(s.sp,s.fr,null,2));
-    d.insertAdjacentHTML("beforeend",`<div class="nm">${esc(s.nm)}</div><div class="st">${esc(s.st)}</div>`);
+    /* el modelo de cada pieza, para saber con qué está pensando cada quien */
+    d.insertAdjacentHTML("beforeend",
+      `<div class="nm">${esc(s.nm)}</div><div class="st">${esc(s.st)}</div>`+
+      (s.mod?`<div class="mod" title="${esc(s.mod)}">${esc(s.mod)}</div>`:""));
     $("#staff").append(d);
   });
 
