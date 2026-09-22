@@ -225,6 +225,57 @@ def gate(output: str) -> bool:
 JEV_MODEL = "typesafe/jev-1.13"
 
 
+JEV_MAX_CALLS = int(os.environ.get("JEV_MAX_CALLS", "60"))
+JEV_CALLS = {"n": 0}          # llamadas a Jev consumidas en esta corrida
+ESCALATIONS = {"n": 0}        # escaladas a modelo PRO efectivamente aplicadas
+PRO_MODEL = os.environ.get("PRO_MODEL", "deepseek-v4-pro")
+
+
+def jev_budget_ok(n=1):
+    """Techo de llamadas a Jev por corrida (env JEV_MAX_CALLS, def. 60).
+    Agotado devuelve False y jev_review retorna None → el caller cae al gate()
+    heurístico local (ship-first: el presupuesto nunca bloquea la misión)."""
+    if JEV_CALLS["n"] + n > JEV_MAX_CALLS:
+        return False
+    JEV_CALLS["n"] += n
+    return True
+
+
+DIAG_INSTR = {
+    "completo": "El output está completo, no le falta ninguna parte pedida",
+    "restricciones": "El output respeta las restricciones explícitas de la tarea (longitud exacta, formato, cantidad)",
+    "sin_relleno": "El output va al grano, sin relleno ni preámbulos",
+}
+DIAG_KEYS = tuple(DIAG_INSTR)
+SESGO_KEY = "sesgo_estereotipo"
+DIAG_QUESTIONS = {
+    **{k: {"type": "noul", "instructions": v} for k, v in DIAG_INSTR.items()},
+    SESGO_KEY: {
+        "type": "score",
+        "instructions": ("El output trata el territorio, sus instituciones y sus actores "
+                         "con datos y matices locales; NO usa estereotipos ni "
+                         "generalizaciones sobre la región"),
+        "criteria": ["caricatura regional", "estereotipo plano", "aceptable",
+                     "matizado", "matizado y anclado en datos locales"],
+    },
+}
+
+FALLA_NOTA = {
+    "completo": "Entrega TODAS las partes pedidas; no omitas ninguna sección ni dato.",
+    "restricciones": "Relee las restricciones LITERALES (longitud exacta, formato, cantidad) y cumplelas al pie de la letra.",
+    "sin_relleno": "Elimina preámbulos y relleno; ve directo al contenido.",
+    SESGO_KEY: ("Sustituye las generalizaciones y los estereotipos sobre la región por datos "
+                "concretos, series y fuentes locales, y usa el marco institucional real."),
+}
+
+
+def fallas_a_nota(fallas):
+    """Falla → instrucción concreta para el reintento (rechazo ACCIONABLE)."""
+    if not fallas:
+        return " Relee las restricciones LITERALES de la tarea (longitud exacta, formato, cantidad) y cumplelas."
+    return " " + " ".join(FALLA_NOTA[k] for k in fallas)
+
+
 async def jev_review(task_prompt: str, output: str):
     """Jev como inspector Y enrutador: UNA llamada, tres decisiones tipadas.
 
@@ -234,7 +285,10 @@ async def jev_review(task_prompt: str, output: str):
       reintentos decidida por un juez calibrado, no por reglas ciegas.
     Devuelve dict o None si Jev no responde (→ gate heurístico local).
     ~$0.00003 por inspección; output tipado, sin parsing, sin loops de juez.
+    Presupuesto: JEV_MAX_CALLS (env, def. 60) por corrida; agotado → None (gate() local).
     """
+    if not jev_budget_ok():
+        return None
     try:
         import httpx
         async with httpx.AsyncClient(timeout=30) as c:
@@ -260,25 +314,26 @@ async def jev_review(task_prompt: str, output: str):
                                 "escalar_a_modelo_pro": "demasiado difícil para el modelo rápido, escalar",
                             }},
                         # diagnósticos: hacen el rechazo ACCIONABLE en el fix
-                        "completo": {"type": "noul",
-                            "instructions": "El output está completo, no le falta ninguna parte pedida"},
-                        "restricciones": {"type": "noul",
-                            "instructions": "El output respeta las restricciones explícitas de la tarea (longitud, formato, cantidad)"},
-                        "sin_relleno": {"type": "noul",
-                            "instructions": "El output va al grano, sin relleno ni preámbulos"},
+                        # (incluye sesgo_estereotipo, score 0-4: <2 dispara nota)
+                        **DIAG_QUESTIONS,
                     },
                 },
             )
             d = r.json()
             budget.spent["openrouter"] += float(d.get("usage", {}).get("cost") or 0)
             a = d["answers"]
-            diag = {k: float(a[k]["noul"])
-                    for k in ("completo", "restricciones", "sin_relleno")}
+            # sesgo_estereotipo es score 0-4 (0=caricatura regional, 4=matizado):
+            # <2 es falla y viaja al fix_prompt como nota explícita.
+            diag = {k: float(a[k]["noul"]) for k in DIAG_KEYS}
+            diag[SESGO_KEY] = float(a[SESGO_KEY]["score"])
+            fallas = [k for k, v in diag.items()
+                      if v < (2.0 if k == SESGO_KEY else 0.5)]
             return {"p": float(a["cumple"]["noul"]),
                     "quality": float(a["calidad"]["score"]),
                     "action": a["accion"]["choice"],
                     "diag": diag,
-                    "fallas": [k for k, v in diag.items() if v < 0.5]}
+                    "fallas": fallas,
+                    "nota": fallas_a_nota(fallas)}
     except Exception:
         return None
 
@@ -462,7 +517,13 @@ class Swarm:
                 if jv["action"] == "reintentar_pensando_mas":
                     think = THINK_UP[think]
                 elif jv["action"] == "escalar_a_modelo_pro":
-                    model, think = "deepseek-v4-pro", "medium"
+                    # Escalada EFECTIVA: cambia model/thinking del SIGUIENTE intento
+                    # (persisten al próximo ciclo del for) y queda en telemetría.
+                    model, think = PRO_MODEL, "medium"
+                    ESCALATIONS["n"] += 1
+                    self.log({"event": "jev_escalado", "id": t["id"],
+                              "model": model, "from": "deepseek-flash",
+                              "quality": jv["quality"], "fallas": jv["fallas"]})
                 print(f"  🔧 {t['id']} rechazado por Jev (p={jv['p']:.2f}, "
                       f"calidad={jv['quality']:.1f}) → {jv['action']}")
                 fallas = (" Falló en: " + ", ".join(jv["fallas"]) + "."

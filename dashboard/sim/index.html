@@ -26,41 +26,32 @@ FORM: continuación del arcade-mission-control del visor, pinneado por Daniel.
 --dim:#9aa3b8;--faint:#7d879c;--work:#ffd23e;--ok:#59d97e;--fail:#ff5c5c;
 --accent:#5aa7ff;--muj:#ff6fa5;--hom:#4dd6c1;--px:3px}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:"Saira",system-ui,sans-serif;
-font-stretch:90%;font-size:13px;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:"Saira",system-ui,sans-serif;font-stretch:90%;font-size:15.5px;line-height:1.62;min-height:100vh;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .pxf{font-family:"Silkscreen",monospace}
 .panel{background:var(--panel);border:var(--px) solid var(--grid)}
-.panel>h2{font-family:"Silkscreen";font-size:10px;color:var(--dim);padding:7px 10px 5px;
-border-bottom:var(--px) solid var(--grid);text-transform:lowercase;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 8px}
-select,button,input{background:var(--panel2);color:var(--text);border:2px solid var(--grid);
-font:inherit;font-size:12.5px;padding:5px 9px;cursor:pointer}
+.panel>h2{font-family:"Silkscreen";font-size:11px;color:var(--dim);padding:10px 13px 8px;border-bottom:var(--px) solid var(--grid);text-transform:lowercase;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px 10px}
+select,button,input{background:var(--panel2);color:var(--text);border:2px solid var(--grid);font:inherit;font-size:14.5px;padding:9px 13px;cursor:pointer}
 select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--work)}
-.pxbtn{font-family:"Silkscreen";font-size:10px;box-shadow:2px 2px 0 #000a}
+.pxbtn{font-family:"Silkscreen";font-size:11px;letter-spacing:.02em;padding:9px 12px;box-shadow:2px 2px 0 #000a}
 .pxbtn:active{transform:translate(2px,2px);box-shadow:none}
 
-#app{max-width:1500px;margin:0 auto;padding:8px;display:grid;gap:8px;
-grid-template-columns:340px 1fr 320px;
-grid-template-areas:"top top top" "censo encuesta ficha" "banner banner banner"}
-#top{grid-area:top;display:flex;align-items:center;gap:14px;padding:8px 12px;
-background:var(--panel);border:var(--px) solid var(--grid);flex-wrap:wrap}
-#title{font-family:"Silkscreen";font-weight:700;font-size:16px;color:var(--work);
-text-shadow:3px 3px 0 #0007}
-#title small{color:var(--fable,#ff8a65);font-size:16px}
-#logo{image-rendering:pixelated;border:2px solid var(--grid);margin-right:-6px;
-background:#fff;box-shadow:2px 2px 0 #000a}
-#lema{font-style:normal;display:block;font-size:8px;color:var(--faint);
-letter-spacing:.14em;margin-top:1px;animation:lemain .8s steps(6) both .3s}
+#app{max-width:1560px;margin:0 auto;padding:12px;display:grid;gap:12px;grid-template-columns:360px 1fr 340px;grid-template-areas:"top top top" "censo encuesta ficha" "banner banner banner"}
+#top{grid-area:top;display:flex;align-items:center;gap:18px;padding:12px 15px;background:var(--panel);border:var(--px) solid var(--grid);flex-wrap:wrap}
+#title{font-family:"Silkscreen";font-weight:700;font-size:17px;color:var(--work);text-shadow:3px 3px 0 #0007}
+#title small{color:var(--fable,#ff8a65);font-size:17px}
+#logo{image-rendering:pixelated;border:2px solid var(--grid);margin-right:-6px;background:#fff;box-shadow:2px 2px 0 #000a}
+#lema{font-style:normal;display:block;font-size:9.5px;color:var(--faint);letter-spacing:.12em;margin-top:2px;animation:lemain .8s steps(6) both .3s}
 @keyframes lemain{from{opacity:0;transform:translateY(3px)}}
-#dptosel{min-width:250px;font-size:13.5px;padding:7px 10px;border-color:var(--work)}
-#kpis{margin-left:auto;display:flex;gap:18px;text-align:right}
-#kpis div b{display:block;font-family:"Silkscreen";font-size:12px;color:var(--text);font-weight:400}
-#kpis div span{font-size:10px;color:var(--faint)}
-a.back{color:var(--faint);text-decoration:none;font-size:11px}
+#dptosel{min-width:300px;font-size:15.5px;padding:9px 12px;border-color:var(--work)}
+#kpis{margin-left:auto;display:flex;gap:20px;text-align:right}
+#kpis div b{display:block;font-family:"Silkscreen";font-size:13px;color:var(--text);font-weight:400}
+#kpis div span{font-size:12px;color:var(--faint)}
+a.back{color:var(--faint);text-decoration:none;font-size:13px}
 a.back:hover{color:var(--work)}
 
-#censo{grid-area:censo;display:flex;flex-direction:column;gap:8px;background:none;border:none}
+#censo{grid-area:censo;display:flex;flex-direction:column;gap:10px;background:none;border:none}
 #censo .panel{display:flex;flex-direction:column;min-height:0}
-#censo .body{padding:12px 14px;overflow-y:auto}
+#censo .body{padding:14px 16px;overflow-y:auto}
 /* mapa-navegador: el país siempre a la vista, clic = elegir territorio */
 #navmap{padding:8px 8px 4px;position:relative}
 #navmap svg{width:100%;height:auto;display:block}
@@ -77,10 +68,8 @@ transition:fill .6s ease,stroke .25s ease,stroke-width .25s ease;stroke-linejoin
 #navmap path.hov{stroke:var(--work);stroke-width:2;filter:brightness(1.25) drop-shadow(0 0 5px #ffd23e44)}
 #navmap path.press{filter:brightness(.7);transition:filter .06s}
 /* tooltip flotante pixel */
-#maptip{position:absolute;pointer-events:none;z-index:5;background:var(--panel);
-border:2px solid var(--work);box-shadow:3px 3px 0 #000c;padding:6px 9px;
-font-size:11px;line-height:1.45;color:var(--dim);max-width:200px;display:none}
-#maptip b{font-family:"Silkscreen";font-size:9px;color:var(--work);display:block}
+#maptip{position:absolute;pointer-events:none;z-index:5;background:var(--panel);border:2px solid var(--work);box-shadow:3px 3px 0 #000c;padding:8px 11px;font-size:13px;line-height:1.5;color:var(--dim);max-width:240px;display:none}
+#maptip b{font-family:"Silkscreen";font-size:10px;color:var(--work);display:block}
 #maptip .st{color:var(--text)}
 #navmap path.fav,#navmap path.con,#navmap path.dep{animation:aterriza .7s ease}
 @keyframes aterriza{0%{fill-opacity:.2}60%{fill-opacity:1;filter:brightness(1.35)}100%{filter:none}}
@@ -90,98 +79,85 @@ font-size:11px;line-height:1.45;color:var(--dim);max-width:200px;display:none}
 #navmap path.hot{stroke:var(--work);animation:pulsohot 1.1s ease-in-out infinite}
 @keyframes pulsohot{0%,100%{stroke-width:1.6;filter:drop-shadow(0 0 1px var(--work))}
 50%{stroke-width:3;filter:drop-shadow(0 0 7px var(--work))}}
-#maplabel{font-family:"Silkscreen";font-size:9px;color:var(--work);text-align:center;
-padding:5px 0 3px;min-height:20px;letter-spacing:.06em}
+#maplabel{font-family:"Silkscreen";font-size:10px;color:var(--work);text-align:center;padding:7px 0 4px;min-height:22px;letter-spacing:.06em}
 #ctrl{display:none;gap:4px}
-#ctrl button{font-family:"Silkscreen";font-size:8px;padding:3px 8px}
+#ctrl button{font-family:"Silkscreen";font-size:9px;padding:5px 10px}
 #ctrl button.pausa{color:var(--work);border-color:var(--work)}
-#reloj{font-family:"Silkscreen";font-size:9px;color:var(--faint)}
-.acuerdo{flex:1 1 100%;border:2px solid var(--grid);padding:6px 10px}
-.acuerdo .t{display:flex;justify-content:space-between;font-size:10.5px;color:var(--dim);margin-bottom:4px}
-.acuerdo .t b{font-family:"Silkscreen";font-size:10px;color:var(--text);font-weight:400}
-.acuerdo .g{height:10px;background:var(--panel2);border:1px solid var(--grid);display:flex}
+#reloj{font-family:"Silkscreen";font-size:10px;color:var(--faint)}
+.acuerdo{flex:1 1 100%;border:2px solid var(--grid);padding:8px 12px}
+.acuerdo .t{display:flex;justify-content:space-between;font-size:12.5px;color:var(--dim);margin-bottom:5px}
+.acuerdo .t b{font-family:"Silkscreen";font-size:11px;color:var(--text);font-weight:400}
+.acuerdo .g{height:13px;background:var(--panel2);border:1px solid var(--grid);display:flex}
 .acuerdo .g i{height:100%}
-h3{font-family:"Silkscreen";font-size:9px;color:var(--faint);margin:18px 0 8px;font-weight:400;display:flex;align-items:center;gap:8px}
+h3{font-family:"Silkscreen";font-size:10px;color:var(--faint);margin:20px 0 10px;font-weight:400;display:flex;align-items:center;gap:8px}
 h3::after{content:"";flex:1;height:2px;background:var(--grid)}
 h3:first-child{margin-top:0}
-.pyr{display:grid;grid-template-columns:1fr 36px 1fr;gap:3px 8px;font-size:10px;padding:2px 0 4px}
-.pyr .lab{color:var(--faint);text-align:center;font-family:"Silkscreen";font-size:7px;padding-top:1px}
-.pyr .bar{position:relative;height:13px;background:var(--panel2);border:1px solid var(--grid)}
+.pyr{display:grid;grid-template-columns:1fr 42px 1fr;gap:4px 8px;font-size:12px;padding:4px 0 6px}
+.pyr .lab{color:var(--faint);text-align:center;font-family:"Silkscreen";font-size:8px;padding-top:2px}
+.pyr .bar{position:relative;height:16px;background:var(--panel2);border:1px solid var(--grid)}
 .pyr .bar i{position:absolute;top:1px;bottom:1px;opacity:.9}
 .pyr .bar.l i{right:0;background:var(--hom)}
 .pyr .bar.r i{left:0;background:var(--muj)}
 .pyr .bar s{position:absolute;top:-1px;bottom:-1px;width:2px;background:var(--text);opacity:.85}
-.leyenda{display:flex;gap:14px;font-size:10px;color:var(--faint);margin-top:6px}
-.leyenda i{display:inline-block;width:9px;height:9px;vertical-align:-1px;margin-right:4px}
-.hbar{margin:7px 0}
-.hbar .t{display:flex;justify-content:space-between;font-size:11.5px;color:var(--dim)}
-.hbar .t b{font-family:"Silkscreen";font-size:10px;color:var(--text);font-weight:400}
-.hbar .g{height:12px;background:var(--panel2);border:1px solid var(--grid);position:relative}
+.leyenda{display:flex;gap:16px;font-size:12px;color:var(--faint);margin-top:8px}
+.leyenda i{display:inline-block;width:11px;height:11px;vertical-align:-1px;margin-right:5px}
+.hbar{margin:10px 0}
+.hbar .t{display:flex;justify-content:space-between;font-size:13.5px;color:var(--dim)}
+.hbar .t b{font-family:"Silkscreen";font-size:11px;color:var(--text);font-weight:400}
+.hbar .g{height:15px;background:var(--panel2);border:1px solid var(--grid);position:relative}
 .hbar .g i{position:absolute;inset:1px auto 1px 1px;background:var(--accent)}
-.fuente{font-size:9.5px;color:var(--faint);margin-top:2px}
+.fuente{font-size:11.5px;color:var(--faint);margin-top:3px}
 
 #encuesta{grid-area:encuesta;display:flex;flex-direction:column;min-height:74vh}
 #encuesta>h2>span{min-width:0}
 #estado{overflow-wrap:anywhere}
 #modo{display:flex;gap:4px;flex:0 0 auto}
-#modo button{font-family:"Silkscreen";font-size:8px;padding:3px 8px;color:var(--faint)}
+#modo button{font-family:"Silkscreen";font-size:9px;padding:5px 10px;color:var(--faint)}
 #modo button[aria-pressed="true"]{color:var(--work);border-color:var(--work)}
-#resps{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
-.resp{display:grid;grid-template-columns:38px 1fr;gap:9px;background:var(--panel2);box-shadow:2px 2px 0 #0006;
-border:2px solid var(--grid);padding:8px;border-left:4px solid var(--pc,var(--grid));
-max-width:92%;animation:entra .22s steps(3)}
-.resp.alt{margin-left:auto;grid-template-columns:1fr 34px;border-left:2px solid var(--grid);
-border-right:4px solid var(--pc,var(--grid))}
+#resps{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.resp{display:grid;grid-template-columns:44px 1fr;gap:11px;background:var(--panel2);box-shadow:2px 2px 0 #0006;border:2px solid var(--grid);padding:11px 12px;border-left:4px solid var(--pc,var(--grid));max-width:94%;animation:entra .22s steps(3)}
+.resp.alt{margin-left:auto;grid-template-columns:1fr 40px;border-left:2px solid var(--grid);border-right:4px solid var(--pc,var(--grid))}
 .resp.alt .px{order:2}.resp.alt>div{order:1;text-align:right}
 @keyframes entra{from{transform:translateY(8px);opacity:0}}
-.resp .who{font-family:"Silkscreen";font-size:8px;color:var(--dim);margin-bottom:3px}
-.resp .say{font-size:12.5px;line-height:1.45}
+.resp .who{font-family:"Silkscreen";font-size:9px;color:var(--dim);margin-bottom:4px}
+.resp .say{font-size:15px;line-height:1.62}
 .resp .say.thinking{color:var(--faint)}
-.resp .say.thinking::after{content:"···";animation:blink .8s steps(2) infinite;
-font-family:"Silkscreen";letter-spacing:2px}
-.resp .px{width:34px;height:34px;image-rendering:pixelated}
+.resp .say.thinking::after{content:"···";animation:blink .8s steps(2) infinite;font-family:"Silkscreen";letter-spacing:2px}
+.resp .px{width:40px;height:40px;image-rendering:pixelated}
 .resp.talk .px{animation:bob .34s steps(2) infinite}
 @keyframes bob{50%{transform:translateY(-2px)}}
 /* ficha del residente: quién es según el DANE */
 #rmask{position:fixed;inset:0;background:#000a;z-index:30;display:none;
 align-items:center;justify-content:center}
 #rmask.open{display:flex}
-#rcard{width:min(420px,92vw);background:var(--panel);border:var(--px) solid var(--work);
-box-shadow:8px 8px 0 #000c;animation:entra .2s steps(3)}
-#rcard header{display:flex;gap:14px;padding:14px;border-bottom:var(--px) solid var(--grid);
-align-items:center;background:var(--panel2)}
-#rcard header canvas{width:80px;height:80px;image-rendering:pixelated;
-background:var(--bg);border:2px solid var(--grid);padding:4px}
-#rcard header .nm{font-family:"Silkscreen";font-size:12px;color:var(--work);line-height:1.6}
-#rcard header .sub{font-size:12px;color:var(--dim)}
-#rcard .rkv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;padding:12px 14px;font-size:12.5px}
-#rcard .rkv b{font-family:"Silkscreen";font-size:8px;color:var(--faint);padding-top:3px}
-#rcard .rkv .src{display:block;font-size:9.5px;color:var(--faint)}
-#rcard footer{padding:8px 14px 12px;font-size:10.5px;color:var(--faint);
-border-top:2px solid var(--grid)}
-#rcard .cerrar{margin-left:auto;font-family:"Silkscreen";font-size:10px}
+#rcard{width:min(480px,94vw);background:var(--panel);border:var(--px) solid var(--work);box-shadow:8px 8px 0 #000c;animation:entra .2s steps(3)}
+#rcard header{display:flex;gap:16px;padding:16px;border-bottom:var(--px) solid var(--grid);align-items:center;background:var(--panel2)}
+#rcard header canvas{width:88px;height:88px;image-rendering:pixelated;background:var(--bg);border:2px solid var(--grid);padding:4px}
+#rcard header .nm{font-family:"Silkscreen";font-size:13px;color:var(--work);line-height:1.6}
+#rcard header .sub{font-size:14.5px;color:var(--dim)}
+#rcard .rkv{display:grid;grid-template-columns:120px 1fr;gap:8px 14px;padding:14px 16px;font-size:15px}
+#rcard .rkv b{font-family:"Silkscreen";font-size:9px;color:var(--faint);padding-top:4px}
+#rcard .rkv .src{display:block;font-size:11px;color:var(--faint)}
+#rcard footer{padding:10px 16px 14px;font-size:12.5px;color:var(--faint);border-top:2px solid var(--grid)}
+#rcard .cerrar{margin-left:auto;font-family:"Silkscreen";font-size:11px}
 .resp,.seat,.res{cursor:pointer}
 
 /* la mesa se arma: los vecinos llegan mientras se busca el contexto */
-#seats{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 2px}
-.seat{display:flex;align-items:center;gap:6px;background:var(--panel2);
-border:2px solid var(--grid);padding:4px 9px 4px 5px;font-size:11px;color:var(--dim);
-opacity:0;animation:llega .3s steps(4) forwards}
-.seat canvas{width:22px;height:22px;image-rendering:pixelated}
+#seats{display:flex;flex-wrap:wrap;gap:8px;padding:6px 0 3px}
+.seat{display:flex;align-items:center;gap:8px;background:var(--panel2);border:2px solid var(--grid);padding:6px 12px 6px 7px;font-size:13px;color:var(--dim);opacity:0;animation:llega .3s steps(4) forwards}
+.seat canvas{width:26px;height:26px;image-rendering:pixelated}
 @keyframes llega{0%{opacity:0;transform:translateY(-10px) scale(.6)}
 60%{opacity:1;transform:translateY(2px) scale(1.08)}100%{opacity:1;transform:none}}
-#ticker{font-size:12px;color:var(--dim);padding:6px 2px;display:flex;gap:8px;align-items:center}
+#ticker{font-size:14px;color:var(--dim);padding:8px 2px;display:flex;gap:9px;align-items:center}
 #ticker::before{content:"";width:8px;height:8px;background:var(--work);
 animation:tickblink .7s steps(2) infinite}
 @keyframes tickblink{50%{opacity:.2}}
-.ctx{border:2px solid var(--accent);border-left-width:5px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 7%,var(--panel2)),var(--panel2));
-padding:8px 12px 9px;font-size:12px;line-height:1.5;color:var(--text);;box-shadow:3px 3px 0 #0008;overflow-wrap:anywhere}
-.ctx b{font-family:"Silkscreen";font-size:8px;color:var(--accent);display:block;margin-bottom:4px}
+.ctx{border:2px solid var(--accent);border-left-width:5px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 7%,var(--panel2)),var(--panel2));padding:11px 14px 12px;font-size:14.5px;line-height:1.65;color:var(--text);box-shadow:3px 3px 0 #0008;overflow-wrap:anywhere}
+.ctx b{font-family:"Silkscreen";font-size:9px;color:var(--accent);display:block;margin-bottom:5px}
 .ctx .cbody{white-space:pre-line;display:block}
 .ctx.off{border-color:var(--grid);opacity:.85}
-.mod{border:2px solid var(--accent);background:var(--panel2);padding:9px 12px;
-font-size:12.5px;line-height:1.5;color:var(--dim)}
-.mod b{font-family:"Silkscreen";font-size:8px;color:var(--accent);display:block;margin-bottom:4px}
+.mod{border:2px solid var(--accent);background:var(--panel2);padding:11px 14px;font-size:14.5px;line-height:1.65;color:var(--dim)}
+.mod b{font-family:"Silkscreen";font-size:9px;color:var(--accent);display:block;margin-bottom:5px}
 /* mapa del país */
 #mapa{display:grid;grid-template-columns:minmax(240px,340px) 1fr;gap:10px;min-height:0}
 #mapa svg{width:100%;height:auto;max-height:66vh}
@@ -194,51 +170,45 @@ transition:fill .25s}
 #mapa path.dep{fill:color-mix(in srgb,var(--work) 40%,var(--panel2))}
 #mesa{display:flex;flex-direction:column;gap:8px;overflow-y:auto;max-height:66vh;min-width:0}
 #mesa .hint{color:var(--faint);padding:14px;text-align:center}
-.conclu{border:2px solid var(--pc,var(--accent));background:var(--panel2);padding:9px 12px;
-font-size:12.5px;line-height:1.5}
-.conclu b{font-family:"Silkscreen";font-size:8px;display:block;margin-bottom:4px;color:var(--pc,var(--accent))}
-.ronda{font-family:"Silkscreen";font-size:8px;color:var(--faint);text-align:center;
-padding:4px 0;letter-spacing:.2em}
+.conclu{border:2px solid var(--pc,var(--accent));background:var(--panel2);padding:12px 14px;font-size:15px;line-height:1.62}
+.conclu b{font-family:"Silkscreen";font-size:9px;display:block;margin-bottom:5px;color:var(--pc,var(--accent))}
+.ronda{font-family:"Silkscreen";font-size:9px;color:var(--faint);text-align:center;padding:6px 0;letter-spacing:.2em}
 @keyframes blink{50%{opacity:.3}}
-#tally{display:flex;gap:8px;padding:8px 10px;flex-wrap:wrap}
+#tally{display:flex;gap:10px;padding:10px 12px;flex-wrap:wrap}
 #tally:not(:empty){border-bottom:var(--px) solid var(--grid)}
-.tal{flex:1;min-width:110px;border:2px solid var(--grid);padding:8px 9px 7px;text-align:center;
-position:relative;background:var(--panel2);box-shadow:3px 3px 0 #0007}
+.tal{flex:1;min-width:120px;border:2px solid var(--grid);padding:10px 11px 9px;text-align:center;position:relative;background:var(--panel2);box-shadow:3px 3px 0 #0007}
 .tal::before{content:"";position:absolute;top:3px;left:3px;width:6px;height:6px;background:var(--grid)}
 .tal.fav::before{background:var(--ok)}.tal.con::before{background:var(--fail)}.tal.dep::before{background:var(--work)}
-.tal b{font-family:"Silkscreen";font-size:18px;display:block;font-weight:700;animation:pop2 .2s steps(3)}
+.tal b{font-family:"Silkscreen";font-size:20px;display:block;font-weight:700;animation:pop2 .2s steps(3)}
 @keyframes pop2{from{transform:scale(1.5)}}
-.tal span{font-size:10px;color:var(--faint);text-transform:lowercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.tal span{font-size:12px;color:var(--faint);text-transform:lowercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
 .tal.fav{border-color:var(--ok)} .tal.fav b{color:var(--ok)}
 .tal.con{border-color:var(--fail)} .tal.con b{color:var(--fail)}
 .tal.dep{border-color:var(--work)} .tal.dep b{color:var(--work)}
-#qbar{display:flex;flex-wrap:wrap;gap:6px;padding:10px;border-bottom:2px solid var(--grid)}
-#qin{flex:1 1 100%;min-width:0}
+#qbar{display:flex;flex-wrap:wrap;gap:8px;padding:12px;border-bottom:2px solid var(--grid)}
+#qin{flex:1 1 100%;min-width:0;font-size:15.5px !important;padding:10px 13px !important}
 #qbar select,#qbar button{flex:0 0 auto}
-#modohelp{font-size:11px;color:var(--work);padding:7px 10px 0;letter-spacing:.02em}
-#selinfo{font-size:11.5px;color:var(--dim);padding:4px 10px 6px;border-bottom:2px solid var(--grid)}
-#selinfo b{font-family:"Silkscreen";font-size:8px;color:var(--faint)}
-#selinfo .chip{display:inline-block;border:1px solid var(--work);color:var(--work);
-padding:1px 4px 1px 8px;margin:1px 3px}
+#modohelp{font-size:13px;color:var(--work);padding:8px 12px 0;letter-spacing:.02em}
+#selinfo{font-size:13.5px;color:var(--dim);padding:5px 12px 8px;border-bottom:2px solid var(--grid)}
+#selinfo b{font-family:"Silkscreen";font-size:9px;color:var(--faint)}
+#selinfo .chip{display:inline-block;border:1px solid var(--work);color:var(--work);padding:2px 5px 2px 9px;margin:2px 3px}
 #selinfo .chip .chip-x{cursor:pointer;font-style:normal;padding:0 4px;margin:0;background:none;border:0;font:inherit;font-size:inherit;line-height:1;color:var(--dim)}
 #selinfo .chip .chip-x:hover{color:var(--fail)}
-#selinfo button{font-size:10px;padding:1px 7px;margin-left:6px;color:var(--dim)}
-#sugg{display:flex;flex-wrap:wrap;gap:4px;padding:0 10px 10px}
-#sugg button{font-size:10.5px;padding:2px 8px;color:var(--dim)}
+#selinfo button{font-size:12px;padding:2px 8px;margin-left:6px;color:var(--dim)}
+#sugg{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 12px}
+#sugg button{font-size:12.5px;padding:4px 9px;color:var(--dim)}
 #sugg button:hover{color:var(--work);border-color:var(--work)}
 
-#ficha{grid-area:ficha;display:flex;flex-direction:column;gap:8px}
-#ficha .body{padding:10px;font-size:12px;line-height:1.5;color:var(--dim)}
+#ficha{grid-area:ficha;display:flex;flex-direction:column;gap:10px}
+#ficha .body{padding:14px 16px;font-size:14.5px;line-height:1.62;color:var(--dim)}
 #ficha .body b{color:var(--text);font-weight:500}
-#ficha .tag{display:inline-block;border:1px solid var(--grid);padding:1px 7px;
-margin:2px 3px 2px 0;font-size:10.5px;color:var(--dim)}
-#muestra{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:8px}
-.res{display:flex;gap:6px;align-items:center;background:var(--panel2);
-border:1px solid var(--grid);padding:4px 6px;font-size:10.5px;color:var(--dim)}
-.res canvas{width:20px;height:20px;image-rendering:pixelated}
+#ficha .tag{display:inline-block;border:1px solid var(--grid);padding:2px 9px;margin:2px 3px 2px 0;font-size:12.5px;color:var(--dim)}
+#muestra{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px}
+.res{display:flex;gap:8px;align-items:center;background:var(--panel2);border:1px solid var(--grid);padding:6px 8px;font-size:12.5px;color:var(--dim)}
+.res canvas{width:24px;height:24px;image-rendering:pixelated}
 
-#banner{grid-area:banner;text-align:center;font-size:10.5px;color:var(--faint);
-padding:6px;border:1px dashed var(--grid)}
+#banner{grid-area:banner;text-align:center;font-size:12.5px;color:var(--faint);
+padding:10px;border:1px dashed var(--grid)}
 @media(max-width:1000px){#app{grid-template-columns:1fr;
 grid-template-areas:"top" "censo" "encuesta" "ficha" "banner"}#kpis{display:none}}
 /* ═══ RONDA 8 · efectos pixel premium ═══ */
@@ -469,13 +439,13 @@ async function mesa(cod){
       const charla=transcript.length?
         "La mesa va así:\n"+transcript.map(t=>`${t.n}: ${t.t}`).join("\n"):"abres tú la mesa";
       const raw=await flash([{role:"system",content:persona(r,dos)+ctxPara(ctx)+`
-Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU territorio. Reacciona a lo dicho (cita por nombre, contradice o apoya), aterriza con tu vida y tu región. 1-2 frases. Cierra con [POSTURA: a_favor|en_contra|depende] — a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},
+Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU territorio. Reacciona a lo dicho (cita por nombre, contradice o apoya), aterriza con tu vida y tu región. 1-2 frases. Cierra con [POSTURA: a_favor|en_contra|depende|ni_ni] — ni_ni SOLO si a tu personaje genuinamente le da igual el tema; a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},
         {role:"user",content:`Tema: ${q}\n${charla}\nHabla, ${r.nombre.split(" ")[0]}.`}],160);
       if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
       let [pos,txt]=postura(raw);
       if(!pos)pos=(await clasificarPostura(q,txt))||'';
       if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
-      if(!['a_favor','en_contra','depende'].includes(pos))pos='depende';
+      if(!['a_favor','en_contra','depende','ni_ni'].includes(pos))pos='depende';
       typewriter(say,txt);
       card.style.setProperty("--pc",COLORES[pos]);
       transcript.push({n:r.nombre.split(" ")[0],t:txt,p:pos});
@@ -723,7 +693,8 @@ async function boot(){
   try{
     // ORDEN: residents.json (el pesado, 1.3MB) primero y solo — es el que bloquea el
     // render; marginals/validacion (livianos) van después, en paralelo entre sí
-    RES=await jfetch("residents.json");
+    try{RES=await jfetch("residents_v2.json");}
+    catch(e){RES=await jfetch("residents.json");}
     [MARG,VAL]=await Promise.all([
       jfetch("marginals.json").then(m=>m.departamentos),
       jfetch("validacion.json").catch(()=>({})),
@@ -892,7 +863,7 @@ $("#modo").onclick=e=>{const m=e.target.dataset.m;if(!m||m===MODO)return;
   MODO=m;
   $("#modo").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===m)));
   $("#modohelp").textContent=MODOTXT[m];paintNav();};
-const COLORES={a_favor:"var(--ok)",en_contra:"var(--fail)",depende:"var(--work)"};
+const COLORES={a_favor:"var(--ok)",en_contra:"var(--fail)",depende:"var(--work)",ni_ni:"var(--faint)"};
 const SUGG_BASE=["el nuevo metro / transporte público","que la IA haga su trabajo",
 "el precio del café","irse a vivir a otra ciudad","que sus hijos estudien virtual"];
 function renderSugg(){
@@ -979,6 +950,14 @@ function estiloDe(r){
           franq:FRANQUEZA[(h>>8)%5],
           arranque:ARRANQUES[(h>>11)%8]};
 }
+const COMPROMISO_TXT={
+ indiferente:"TU RELACIÓN CON LA POLÍTICA: ni te va ni te viene — 'a mí que me alcance la plata'. Respondes corto, sin militancia; en temas políticos puros puedes cerrar con [POSTURA: ni_ni].",
+ desencantado:"TU RELACIÓN CON LA POLÍTICA: desencanto — 'todos son iguales, voté y no cambió nada'. Opinas con desgano y escepticismo.",
+ opinador:"TU RELACIÓN CON LA POLÍTICA: sigues las noticias y tienes opinión propia, sin militar en nada.",
+ militante:"TU RELACIÓN CON LA POLÍTICA: tienes posición activa, argumentas y tratas de convencer."};
+const LEAN_TXT={derecha_uribismo:"la derecha (uribismo)",izquierda:"la izquierda",centro_tradicional:"los partidos tradicionales (liberal/conservador)",verdes_alternativos:"lo verde/alternativo",otros_blanco_nulo:"ningún partido (voto blanco o no vota)"};
+function leanLinea(r){const peso=(r.compromiso==="indiferente"||r.compromiso==="desencantado")?" (aunque a ti te pesa poco)":"";
+ return `El aire político de tu casa y tu barrio tira hacia ${LEAN_TXT[r.lean]||"ningún partido"}${peso} — es ambiente, no una orden: si tu vida lo contradice, gana tu vida. Jamás cites cifras electorales.\n`;}
 function persona(r,dos){
   const mule=(dos.muletillas||[]).slice(0,6).join(" · ");
   const lug=(dos.lugares||[]).slice(0,4).join(", ");
@@ -986,7 +965,7 @@ function persona(r,dos){
   const edu=r.educacion&&!/colegio|infancia/.test(r.educacion)?`, estudios: ${r.educacion}`:"";
   return `Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}${vida(r)?", "+vida(r):""}${edu}, régimen ${r.regimen_salud}, de ${r.dpto_nombre}, Colombia.
 Tu tierra: ${dos.vida_cotidiana||""} ${dos.economia_vivida||""}
-QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre el tema de hoy, ${estiloDe(r).lean}. ${OPC?`LA PREGUNTA ES UNA ELECCIÓN: [POSTURA: a_favor] = eliges «${OPC.a}», [POSTURA: en_contra] = eliges «${OPC.b}», [depende] solo si no vas con ninguno.\n`:""}Tu postura asignada ES la tuya: tu historia la justifica y NO la cambias porque el contexto o los demás digan otra cosa. Franqueza: eres ${estiloDe(r).franq}.
+${r.compromiso?COMPROMISO_TXT[r.compromiso]+"\n":""}${r.lean?leanLinea(r):""}QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre el tema de hoy, ${estiloDe(r).lean}. ${OPC?`LA PREGUNTA ES UNA ELECCIÓN: [POSTURA: a_favor] = eliges «${OPC.a}», [POSTURA: en_contra] = eliges «${OPC.b}», [depende] solo si no vas con ninguno.\n`:""}Tu postura asignada ES la tuya: tu historia la justifica y NO la cambias porque el contexto o los demás digan otra cosa. Franqueza: eres ${estiloDe(r).franq}.
 LA VERDAD INCÓMODA: la gente real tiene prejuicios, manías, rivalidades regionales (cachaco/costeño, paisa orgulloso, rolo frío) y opiniones que no dirían en televisión — si tu personaje las tendría, DILAS con la franqueza que te tocó (cero insultos ni odio, pero sí la pulla, el estereotipo confesado, la queja incómoda). Responder "yo no generalizo" cuando tu personaje SÍ generalizaría es mentir. Tu edad, educación y territorio MOLDEAN tu opinión: un mayor de vereda y un universitario de ciudad NO piensan igual, y eso debe notarse. "Depende" es la salida del político: solo si tu vida DE VERDAD te parte en dos.
 Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te puede escapar UN rasgo de tu tierra (${dialectoDe(r.dpto)||"tu región"}) de vez en cuando, y JAMÁS repites un cliché regional que ya haya dicho otro en la mesa ni el mismo tuyo dos veces.
 Referentes que puedes soltar si vienen al caso: ${lug||"—"}.${(dos.rivalidades||[]).length?"\nPullas de tu tierra (puedes soltar UNA con picardía si cuadra): "+dos.rivalidades.slice(0,2).join(" · "):""}${(dos.quejas_incomodas||[]).length?"\nQuejas que en tu tierra se dicen en confianza: "+dos.quejas_incomodas.slice(0,2).join(" · "):""}
@@ -997,6 +976,8 @@ REGLAS DURAS:
 - SOLO usas expresiones de TU región (las listadas) o ninguna: jamás 'vea pues' si no eres paisa, jamás 'mondá'/'ombe' si no eres costeño, jamás 'sumercé' si no eres cundiboyacense.
 - DATOS: no afirmes hechos que no te constan (de qué ciudad es un equipo, qué dice una ley): si dudas, habla desde tu experiencia personal y ya. (Por si sale fútbol: Nacional y el DIM son de Medellín; Millonarios y Santa Fe de Bogotá; América y Cali del Valle; Junior de Barranquilla.)
 - OBEDECE tu inclinación asignada: el texto debe terminar del lado que te tocó, y la etiqueta final debe COINCIDIR con lo que dijiste.
+- No eres un encuestado educado: si te da lo mismo, dilo ("me da igual la democracia si hay comida"). Si no sabes, dilo: inventar postura está prohibido.
+- No eres más demócrata, más confiado en las FFAA ni más optimista que la gente de tu barrio. No suavices por quedar bien.
 - Sin groserías pesadas. PROHIBIDO sonar a IA, folclor de cartilla o plantilla.`;
 }
 /* scroll coalescido: N typewriters → un solo layout por frame */
@@ -1438,7 +1419,7 @@ async function conversar(q){
       const card=bubble(r,false),say=card.querySelector(".say");
       try{
         const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+
-          "\nResponde la encuesta en 1-2 frases con POSTURA CLARA (a favor o en contra; depende solo si es irrenunciable) y cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende] donde a_favor significa SÍ A LA PREGUNTA LITERAL que te hicieron (no al debate de las noticias)."},
+          "\nResponde la encuesta en 1-2 frases con POSTURA CLARA (a favor o en contra; depende solo si es irrenunciable) y cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende|ni_ni] (ni_ni solo si te da igual de verdad) donde a_favor significa SÍ A LA PREGUNTA LITERAL que te hicieron (no al debate de las noticias)."},
           {role:"user",content:q}]);
         let [pos,txt]=postura(raw);
         if(!pos)pos=await clasificarPostura(q,txt);
@@ -1473,7 +1454,7 @@ async function conversar(q){
             "La mesa va así:\n"+transcript.slice(-10).map(t=>`${t.n}: ${t.t}`).join("\n")+
             "\nPROHIBIDO arrancar tu frase como arrancó cualquiera de los anteriores; suena a TI.":"abres tú";
           const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+`
-Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. Cierra con [POSTURA: a_favor|en_contra|depende] — a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},
+Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. Cierra con [POSTURA: a_favor|en_contra|depende|ni_ni] — ni_ni SOLO si a tu personaje genuinamente le da igual el tema; a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},
             {role:"user",content:`Tema: ${q}\n${charla}\nTe toca, ${r.nombre.split(" ")[0]}. Cierra tu idea COMPLETA antes de la etiqueta — nada de frases a medias.`}],140);
           let [pos,txt]=postura(raw);
           if(!pos)pos=await clasificarPostura(q,txt);

@@ -1,0 +1,147 @@
+{
+  "generado": "2026-09-22T04:15:23.126455+00:00",
+  "ok": false,
+  "n_residentes": 8000,
+  "peso_total": 53474636.9,
+  "checks": [
+    {
+      "id": "1",
+      "nombre": "MAE pirámide edad×sexo/dpto",
+      "umbral": 0.05,
+      "umbral_str": "≤0.050",
+      "ok": true,
+      "metrica": 0.00979,
+      "metrica_str": "0.0098",
+      "detalle": {
+        "mae_por_dpto": {
+          "05": 0.00525,
+          "08": 0.00552,
+          "11": 0.0042,
+          "13": 0.00631,
+          "15": 0.00913,
+          "17": 0.00843,
+          "18": 0.01139,
+          "19": 0.00846,
+          "20": 0.00828,
+          "23": 0.00727,
+          "25": 0.00612,
+          "27": 0.00894,
+          "41": 0.0103,
+          "44": 0.01168,
+          "47": 0.00972,
+          "50": 0.01149,
+          "52": 0.00846,
+          "54": 0.01056,
+          "63": 0.01024,
+          "66": 0.01006,
+          "68": 0.00647,
+          "70": 0.01099,
+          "73": 0.01025,
+          "76": 0.00702,
+          "81": 0.01329,
+          "85": 0.00826,
+          "86": 0.01237,
+          "88": 0.01338,
+          "91": 0.01412,
+          "94": 0.01706,
+          "95": 0.01132,
+          "97": 0.01459,
+          "99": 0.01215
+        },
+        "dptos": 33,
+        "fuera_de_banda": 0
+      },
+      "fallas": 0
+    },
+    {
+      "id": "2",
+      "nombre": "Coherencia conjunta",
+      "umbral": 0,
+      "umbral_str": "==0",
+      "ok": false,
+      "metrica": 6,
+      "metrica_str": "6",
+      "detalle": {
+        "fallas": {
+          "oficio_fisico_80mas": 6,
+          "profesional_sin_educacion": 0,
+          "menor15_no_estudiante": 0
+        },
+        "ejemplos": {
+          "oficio_fisico_80mas": [
+            "11-041",
+            "19-032",
+            "19-166",
+            "23-047",
+            "23-246"
+          ],
+          "profesional_sin_educacion": [],
+          "menor15_no_estudiante": []
+        }
+      },
+      "fallas": 6
+    },
+    {
+      "id": "3",
+      "nombre": "Masa poblacional (pesos)",
+      "umbral": 0.02,
+      "umbral_str": "±2%",
+      "ok": true,
+      "metrica": 0.896,
+      "metrica_str": "+0.90%",
+      "detalle": {
+        "peso_total": 53474636.9,
+        "objetivo": 53000000,
+        "poblacion_millones": 53.475
+      },
+      "fallas": 0
+    },
+    {
+      "id": "4",
+      "nombre": "Compromiso político (objetivo)",
+      "umbral": 3.0,
+      "umbral_str": "±3pp",
+      "ok": false,
+      "metrica": 30.0,
+      "metrica_str": "30.0pp",
+      "detalle": {
+        "observado_pct": {
+          "izquierda": 0.0,
+          "centro": 0.0,
+          "derecha": 0.0,
+          "indeciso": 0.0
+        },
+        "objetivo_pct": {
+          "izquierda": 25.0,
+          "centro": 30.0,
+          "derecha": 30.0,
+          "indeciso": 15.0
+        },
+        "delta_pp": {
+          "izquierda": -25.0,
+          "centro": -30.0,
+          "derecha": -30.0,
+          "indeciso": -15.0
+        },
+        "extras_pct": {
+          "militante": 15.15,
+          "desencantado": 30.11,
+          "opinador": 29.02,
+          "indiferente": 25.71
+        }
+      },
+      "fallas": 1
+    },
+    {
+      "id": "5",
+      "nombre": "Lean vs perfiles 2018",
+      "umbral": 5.0,
+      "umbral_str": "±5pp",
+      "ok": false,
+      "metrica": null,
+      "metrica_str": "n/a",
+      "detalle": "perfiles_politicos_2018.json ausente o no reconocible",
+      "fallas": -1
+    }
+  ]
+}
