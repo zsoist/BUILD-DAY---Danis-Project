@@ -197,7 +197,8 @@ def _es_profesional(s):
                                 "funcionario", "servidorpublico", "empleadopublico"))
 
 def _es_estudiante(s):
-    return any(k in s for k in ("estudiante", "escolar", "colegial", "alumno"))
+    return any(k in s for k in ("estudiante", "escolar", "colegial", "alumno",
+                                "primerainfancia"))
 
 EDUC_MAP = {"1": "ninguna", "2": "preescolar", "3": "primaria", "4": "secundaria",
             "5": "media", "6": "media", "7": "tecnico", "8": "superior", "9": "superior",

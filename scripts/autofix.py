@@ -24,6 +24,7 @@ ARCHIVO_POR_TAREA = {  # de qué archivo habla cada tarea de hallazgos
     "r5_effsim": "dashboard/sim/index.html",
     "r5_visor2": "dashboard/index.html",
     "r5_gen2": "simcolombia/pipeline/generate_population.py",
+    "c_infancia": "simcolombia/pipeline/generate_population_v2.py",
     # nota: los parches se validan por match-único contra el archivo destino,
     # así que un mapeo errado se rechaza solo — pero mejor acertar:
 }

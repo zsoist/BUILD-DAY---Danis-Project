@@ -329,6 +329,8 @@ ESFUERZO = {"61", "62", "63", "71", "72", "73", "74", "75", "81", "82", "83",
 
 def _sin_oficio(edad, educacion, rid, clase="cabecera"):
     """Oficio de reserva cuando el pool no trae CIUO (regla por edad + hash)."""
+    if edad < 6:
+        return "primera infancia"
     if edad < 18:
         return "estudiante"
     h = _hash(rid, "ocio") & 1

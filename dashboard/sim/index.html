@@ -1119,6 +1119,25 @@ function estiloDe(r){
           franq:FRANQUEZA[(h>>>8)%5],
           arranque:ARRANQUES[(h>>>11)%8]};
 }
+const FUNDAMENTOS=["tu propia experiencia vivida: te pasó a TI o en tu casa, con detalle propio",
+ "tu fe y cómo te criaron: lo que se enseñó en tu casa pesa",
+ "la plata: qué cuesta, quién lo paga, cómo toca tu bolsillo",
+ "la ley y el orden: qué dice la norma y si de verdad se cumple",
+ "tu desconfianza: los políticos prometen y no cumplen, eso te filtra todo",
+ "lo que ves en tu barrio o vereda todos los días"];
+function marcoDe(r){
+  let h=0;for(const c of r.id)h=(h*31+c.charCodeAt(0))>>>0;
+  /* p = % conservador calibrado con encuestas reales (Invamer post-C-055, ECP):
+     hasta los jóvenes rechazaban mayoritariamente el fallo — nada de 0% en ninguna franja */
+  let p=r.edad>=60?68:r.edad>=45?52:r.edad>=30?38:26;
+  if(r.clase==="resto")p+=10;
+  if(r.educacion==="superior")p-=12;
+  else if(r.educacion==="ninguna"||r.educacion==="primaria")p+=8;
+  p=Math.max(5,Math.min(92,p));
+  const roll=(h>>>5)%100;
+  const nivel=roll<p*0.45?"muy conservador":roll<p?"conservador":roll<p+18?"moderado":"liberal";
+  return {cons:nivel,fund:FUNDAMENTOS[(h>>>3)%FUNDAMENTOS.length],anecdota:(h>>>9)%4===0};
+}
 const COMPROMISO_TXT={
  indiferente:"TU RELACIÓN CON LA POLÍTICA: ni te va ni te viene — 'a mí que me alcance la plata'. Respondes corto, sin militancia; en temas políticos puros puedes cerrar con [POSTURA: ni_ni].",
  desencantado:"TU RELACIÓN CON LA POLÍTICA: desencanto — 'todos son iguales, voté y no cambió nada'. Opinas con desgano y escepticismo.",
@@ -1134,13 +1153,13 @@ function persona(r,dos){
   const edu=r.educacion&&!/colegio|infancia/.test(r.educacion)?`, estudios: ${r.educacion}`:"";
   return `Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}${vida(r)?", "+vida(r):""}${edu}, régimen ${r.regimen_salud}, de ${r.dpto_nombre}, Colombia.
 Tu tierra: ${dos.vida_cotidiana||""} ${dos.economia_vivida||""}
-${r.compromiso?COMPROMISO_TXT[r.compromiso]+"\n":""}${r.lean?leanLinea(r):""}QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre el tema de hoy, ${estiloDe(r).lean}. ${OPC?`LA PREGUNTA ES UNA ELECCIÓN: [POSTURA: a_favor] = eliges «${OPC.a}», [POSTURA: en_contra] = eliges «${OPC.b}», [depende] solo si no vas con ninguno.\n`:""}Tu postura asignada ES la tuya: tu historia la justifica y NO la cambias porque el contexto o los demás digan otra cosa. Franqueza: eres ${estiloDe(r).franq}.
+${r.compromiso?COMPROMISO_TXT[r.compromiso]+"\n":""}${r.lean?leanLinea(r):""}QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. Sobre el tema de hoy, ${estiloDe(r).lean}. ${OPC?`LA PREGUNTA ES UNA ELECCIÓN: [POSTURA: a_favor] = eliges «${OPC.a}», [POSTURA: en_contra] = eliges «${OPC.b}», [POSTURA: depende] solo si no vas con ninguno.\n`:""}TU MARCO SOCIAL (obligatorio): creciste en un entorno ${marcoDe(r).cons} frente a lo moral. EN TEMAS MORALES (aborto, eutanasia, drogas, adopción, iglesia, familia) tu lado NO lo decide la inclinación genérica sino tu marco: conservador → defiendes la postura tradicional de tu casa aunque suene duro; liberal → defiendes el cambio; moderado → sigue tu inclinación asignada. TU FUNDAMENTO (obligatorio): argumentas SOLO desde ${marcoDe(r).fund}. ${marcoDe(r).anecdota?"":"PROHIBIDO contar tragedias de terceros (primas, vecinas, sobrinas moribundas): habla de TU vida. "}Tu postura asignada ES la tuya: tu historia la justifica y NO la cambias porque el contexto o los demás digan otra cosa. Franqueza: eres ${estiloDe(r).franq}.
 LA VERDAD INCÓMODA: la gente real tiene prejuicios, manías, rivalidades regionales (cachaco/costeño, paisa orgulloso, rolo frío) y opiniones que no dirían en televisión — si tu personaje las tendría, DILAS con la franqueza que te tocó (cero insultos ni odio, pero sí la pulla, el estereotipo confesado, la queja incómoda). Responder "yo no generalizo" cuando tu personaje SÍ generalizaría es mentir. Tu edad, educación y territorio MOLDEAN tu opinión: un mayor de vereda y un universitario de ciudad NO piensan igual, y eso debe notarse. "Depende" es la salida del político: solo si tu vida DE VERDAD te parte en dos.
 Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te puede escapar UN rasgo de tu tierra (${dialectoDe(r.dpto)||"tu región"}) de vez en cuando, y JAMÁS repites un cliché regional que ya haya dicho otro en la mesa ni el mismo tuyo dos veces.
 Referentes que puedes soltar si vienen al caso: ${lug||"—"}.${(dos.rivalidades||[]).length?"\nPullas de tu tierra (puedes soltar UNA con picardía si cuadra): "+dos.rivalidades.slice(0,2).join(" · "):""}${(dos.quejas_incomodas||[]).length?"\nQuejas que en tu tierra se dicen en confianza: "+dos.quejas_incomodas.slice(0,2).join(" · "):""}
 TU ARRANQUE (obligatorio, es lo que te hace distinto): ${estiloDe(r).arranque}.
 REGLAS DURAS:
-- primera persona, concreta TU vida (tu camello, tu plata, tu edad, tu familia); nivel de lengua según tus estudios.
+- primera persona, concreta TU vida (tu camello o tu día a día si no trabajas, tu plata, tu edad, tu familia); nivel de lengua según tus estudios.
 - PROHIBIDO arrancar con "Vea pues", "Mire", "Le digo una cosa", "Uy" o la muletilla de moda: tu arranque es el asignado.
 - SOLO usas expresiones de TU región (las listadas) o ninguna: jamás 'vea pues' si no eres paisa, jamás 'mondá'/'ombe' si no eres costeño, jamás 'sumercé' si no eres cundiboyacense.
 - DATOS: no afirmes hechos que no te constan (de qué ciudad es un equipo, qué dice una ley): si dudas, habla desde tu experiencia personal y ya. (Por si sale fútbol: Nacional y el DIM son de Medellín; Millonarios y Santa Fe de Bogotá; América y Cali del Valle; Junior de Barranquilla.)
@@ -1148,6 +1167,8 @@ REGLAS DURAS:
 - OBEDECE tu inclinación asignada: el texto debe terminar del lado que te tocó, y la etiqueta final debe COINCIDIR con lo que dijiste.
 - No eres un encuestado educado: si te da lo mismo, dilo ("me da igual la democracia si hay comida"). Si no sabes, dilo: inventar postura está prohibido.
 - No eres más demócrata, más confiado en las FFAA ni más optimista que la gente de tu barrio. No suavices por quedar bien.
+- PROHIBIDO el cliché de encuesta: la prima/vecina/sobrina que "casi se muere" en un procedimiento clandestino, "mi mamá parió once y enterró N", el familiar moribundo de plantilla. Si el drama no es TUYO y de tu casa, no lo cuentes: argumenta desde tu fundamento asignado.
+- EN TEMAS MORALES tu marco social MANDA aunque las noticias o la mesa jalen para otro lado: Colombia real es más conservadora que las redes; si tu marco dice tradicional, tu texto TERMINA del lado tradicional sin pedir perdón ni diluirlo en matices.
 - Sin groserías pesadas. PROHIBIDO sonar a IA, folclor de cartilla o plantilla.`;
 }
 /* scroll coalescido: N typewriters → un solo layout por frame */
@@ -1628,19 +1649,24 @@ async function conversar(q){
 
   if(MODO==="sondeo"){
     $("#estado").textContent="sondeando…";
+    let obed=0,obedN=0;
     await Promise.all(sample.map(async r=>{
       const card=bubble(r,false),say=card.querySelector(".say");
       try{
         const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+
-          "\nResponde la encuesta en 1-2 frases. Cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende|ni_ni]. Si tu personaje es indiferente a la política, ni_ni es la respuesta HONESTA, úsala sin pena; depende solo si tu vida te parte genuinamente en dos; si tienes postura, dila clara. a_favor significa SÍ A LA PREGUNTA LITERAL que te hicieron (no al debate de las noticias)."},
+          "\nResponde la encuesta en 1-2 frases. Cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende|ni_ni]. Si tu personaje es indiferente a la política, ni_ni es la respuesta HONESTA, úsala sin pena; depende solo si tu vida te parte genuinamente en dos; si tienes postura, dila clara. a_favor significa SÍ A LA PREGUNTA LITERAL que te hicieron (no al debate de las noticias). Tu marco social y tu inclinación asignada fijan tu lado: PROHIBIDO correrte al lado 'simpático' del debate."},
           {role:"user",content:q}]);
         let [pos,txt]=postura(raw);
         if(!pos)pos=await clasificarPostura(q,txt);
         if(!['a_favor','en_contra','depende','ni_ni'].includes(pos)){pos='sin_postura';p.sin_postura=(p.sin_postura||0)+1;}else p[pos]++;
+        const gl=estiloDe(r).lean;
+        if(pos!=='sin_postura'&&pos!=='ni_ni'&&r.compromiso!=='indiferente'){obedN++;
+          if((gl.includes('A FAVOR')&&pos==='a_favor')||(gl.includes('EN CONTRA')&&pos==='en_contra')||(gl.includes('dividido')&&pos==='depende'))obed++;}
         typewriter(say,txt);
         card.style.setProperty("--pc",COLORES[pos]||COLORES.depende);tally(p);
       }catch(e){p.sin_postura=(p.sin_postura||0)+1;tally(p);say.classList.remove("thinking");say.textContent="(no contestó)";}
     }));
+    if(obedN)$("#tally").insertAdjacentHTML("beforeend",`<div style="color:var(--dim);font-size:10px;margin-top:2px">libreto: ${obed}/${obedN} fieles a su inclinación asignada</div>`);
   }else{
     /* ── DELIBERACIÓN CONTINUA: hasta 3 min, pausable, corta cuando hay acuerdo ── */
     const run=RUN;                  // token ya invalidado por abortarCorrida(): si entra otra pregunta, esta se aborta
@@ -1658,7 +1684,7 @@ async function conversar(q){
         `<div class="ronda">— ${ronda===0?"ARRANCA LA TERTULIA":"VUELTA "+(ronda+1)} —</div>`);
       for(const [i,r] of sample.entries()){
         if(run!==RUN)return abortar(C);
-        while(C.paused && !C.stop && run===RUN) await new Promise(s=>setTimeout(s,300));
+        while(C.paused && !C.stop && run===RUN){await new Promise(s=>setTimeout(s,300));C.start+=300;}
         if(run!==RUN)return abortar(C);
         if(C.stop||Date.now()-C.start>=LIMITE)break;
         const card=bubble(r,i%2===1),say=card.querySelector(".say");
@@ -1668,10 +1694,10 @@ async function conversar(q){
             "\nPROHIBIDO arrancar tu frase como arrancó cualquiera de los anteriores, PROHIBIDO reciclar su anécdota, su muletilla o su lema, y PROHIBIDO reusar un ejemplo que ya salió en la mesa; suena a TI y traes material NUEVO de tu propio oficio y tu edad. Si el tema ya se agotó, abre OTRA arista (plata/familia/barrio/historia/futuro).":"abres tú";
           const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+`
 Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. PROHIBIDO adoptar la anécdota de otro como propia: si alguien ya contó lo de la camiseta/aguinaldo, tú traes una vivencia DISTINTA de tu oficio y tu edad, con tus propios detalles (plata, barrio, familia, edad) que nadie más pueda firmar. PROHIBIDO repetir una metáfora o frase-lema que ya sonó 2 veces en la mesa — cámbiale el ángulo (otro oficio, otro año, otra ciudad) o cede el punto y pasa a OTRA arista del tema. Si la mesa lleva 2 vueltas dando vueltas a lo mismo, tu intervención abre una arista nueva (plata/familia/barrio/historia/futuro) y no vuelve a citar el ejemplo ajeno como si fuera tuyo. Cierra con [POSTURA: a_favor|en_contra|depende|ni_ni] — ni_ni SOLO si a tu personaje genuinamente le da igual el tema; a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},
-            {role:"user",content:`Tema: ${q}\n${charla}\nTe toca, ${r.nombre.split(" ")[0]}. Cierra tu idea COMPLETA antes de la etiqueta — nada de frases a medias.`}],140);
+            {role:"user",content:`Tema: ${q}\n${charla}\nVUELTA ${ronda+1}. TU ÚLTIMA POSTURA REGISTRADA: ${postDe[r.id]?postDe[r.id].replace("_"," ")+" — si cambias de lado, DILO explícito ('me convencieron', 'ya no estoy tan seguro')":"ninguna aún"}.${r.compromiso==="indiferente"?" Si de verdad no tienes nada nuevo, puedes pasar corto ('yo paso, eso ya está dicho').":""}\nTe toca, ${r.nombre.split(" ")[0]}. Cierra tu idea COMPLETA antes de la etiqueta — nada de frases a medias.`}],140);
           let [pos,txt]=postura(raw);
           if(!pos)pos=await clasificarPostura(q,txt);
-          if(pos){postDe[r.id]=pos;tallyVivo(postDe,sample.length);}
+          if(pos){const prev=postDe[r.id];postDe[r.id]=pos;tallyVivo(postDe,sample.length);if(prev&&prev!==pos)card.insertAdjacentHTML("beforeend",`<div style="font-size:9px;color:var(--work);margin-top:3px">↷ cambió: ${prev.replace("_"," ")} → ${pos.replace("_"," ")}</div>`);}
           typewriter(say,txt);
           card.style.setProperty("--pc",COLORES[pos]||"var(--grid)");
           transcript.push({id:r.id,n:r.nombre.split(" ")[0],d:r.dpto_nombre,t:txt});
@@ -1679,9 +1705,9 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
       }
       ronda++;
       const votos=Object.values(postDe);
-      const c={a_favor:0,en_contra:0,depende:0};votos.forEach(v=>c[v]++);
-      const maxP=Math.max(...Object.values(c));
-      if(votos.length===sample.length && c.depende===0 && maxP>=Math.ceil(sample.length*0.8)){
+      const c={a_favor:0,en_contra:0,depende:0,ni_ni:0};votos.forEach(v=>{if(c[v]!=null)c[v]++});
+      const maxP=Math.max(c.a_favor,c.en_contra);
+      if(votos.length===sample.length && c.depende===0 && maxP>0 && maxP>=Math.ceil((sample.length-c.ni_ni)*0.8)){
         $("#resps").insertAdjacentHTML("beforeend",
           `<div class="ronda">— HAY ACUERDO —</div>`);break;}
       /* estancamiento real: ¿los últimos turnos aportan algo nuevo? — 1 Jev por ronda */
@@ -1697,6 +1723,7 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
           `<div class="ronda">— NADIE CEDE: SE LEVANTA LA MESA —</div>`);break;}
       tallyPrev=JSON.stringify(c);
     }
+    if(!C.stop&&Date.now()-C.start>=LIMITE)$("#resps").insertAdjacentHTML("beforeend",`<div class="ronda">— SE ACABÓ EL TIEMPO: SE LEVANTA LA MESA —</div>`);
     if(run!==RUN)return abortar(C);
     if(btn)btn.disabled=false;
     $("#ctrl").style.display="none";$("#reloj").textContent="";
