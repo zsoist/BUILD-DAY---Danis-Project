@@ -157,3 +157,49 @@ subtareas, un simulador de población construido encima:
 
 El presupuesto de Anthropic viene en **0** a propósito. Súbelo cuando lo
 decidas, no por accidente.
+
+---
+
+## El tablero
+
+```bash
+python enjambre/servir.py
+```
+
+Abre `localhost:8777`: el DAG de tareas con sus dependencias dibujadas, la línea
+de tiempo donde se **ve** el paralelismo (barras que se solapan son trabajo
+simultáneo), el costo desglosado y el veredicto del juez tarea por tarea. Sin
+build, sin dependencias, un solo archivo HTML.
+
+## Cuándo confiar en el juez — medido, no supuesto
+
+Contrastamos los veredictos del juez contra la verdad verificada a mano
+(`enjambre/calibrar_juez.py`). El patrón por tipo de tarea fue inequívoco:
+
+| Tipo de tarea | Aciertos del juez |
+|---|---|
+| Prosa y textos | **8/8** |
+| Generación de código | 2/5 |
+| Lote de parches | 1/10 |
+| **Verificación de datos** | **0/7** |
+
+La causa está documentada en la literatura: un juez que evalúa **hechos** sin
+tener la fuente delante inventa veredictos, y evaluar un **lote** en vez de una
+pieza dispara el sesgo de posición. Así que el enjambre solo le pregunta al juez
+donde acierta; lo demás lo deciden las compuertas deterministas —que compile,
+que el JSON parsee, que el match sea único—, que no se equivocan.
+
+> Salvedad honesta: la muestra son casos que revisamos porque **notamos** algo
+> raro, así que sobre-representa los fallos. Las tasas absolutas son pesimistas;
+> el patrón por tipo de tarea es el hallazgo que importa.
+
+Mide el tuyo:
+
+```bash
+python enjambre/calibrar_juez.py --etiquetar   # etiquetas 20 casos
+python enjambre/calibrar_juez.py               # informe
+```
+
+Reporta **sensibilidad y especificidad por separado**, nunca "acierto": un juez
+que aprueba todo tiene 95% de acierto cuando los fallos son raros, y no sirve
+para nada.

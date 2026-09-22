@@ -97,7 +97,27 @@ budget = Budget()
 
 # Modelo por defecto de toda la tropa: se cambia con la variable de entorno
 # WORKER_MODEL (p.ej. WORKER_MODEL=z-ai/glm-5.3-flash) sin tocar código.
-WORKER_MODEL = os.environ.get("WORKER_MODEL", "deepseek-flash")
+# ── QUIÉN HACE QUÉ ────────────────────────────────────────────────────────
+# Por defecto todo corre en GLM 5.3 (Z.ai) vía OpenRouter. DeepSeek queda
+# quieto pero listo: un solo interruptor lo devuelve a la vida.
+#
+#   ENJAMBRE=deepseek  uv run ... swarm.py "tu reto"
+#
+# La razón del cambio está medida, no supuesta (ver enjambre/README.md):
+# DeepSeek flash gastaba su presupuesto de salida en razonamiento silencioso y
+# devolvía 17% de respuestas vacías; GLM con effort low gasta CERO tokens de
+# razonamiento y devolvió 0% de vacías, por un tercio del costo.
+ENJAMBRE = os.environ.get("ENJAMBRE", "glm").lower()
+
+_FLOTAS = {
+    # tropa (workers en paralelo) · cerebro (planificador y ensamblador)
+    "glm": ("z-ai/glm-5.3-flash", "z-ai/glm-5.3"),
+    "deepseek": ("deepseek-flash", "deepseek-v4-pro"),
+}
+_TROPA, _CEREBRO = _FLOTAS.get(ENJAMBRE, _FLOTAS["glm"])
+
+WORKER_MODEL = os.environ.get("WORKER_MODEL", _TROPA)
+BRAIN_MODEL = os.environ.get("BRAIN_MODEL", _CEREBRO)
 # Proveedores preferidos en OpenRouter, en orden. Los tres soportan el juego
 # completo de parámetros (salida estructurada, seed, penalizaciones) y son los
 # más baratos que lo hacen; `allow_fallbacks` deja salir de ahí si se caen.
@@ -222,7 +242,10 @@ async def brain(prompt: str, rank: str = "general") -> str:
         # extraer SOLO los bloques de texto, jamás content[0] a ciegas
         return "".join(b.text for b in r.content
                        if getattr(b, "type", "") == "text") or ""
-    return await llm(prompt, model="deepseek-v4-pro")
+    # Sin Anthropic autorizado, el cerebro es el modelo de la flota elegida:
+    # GLM 5.3 por defecto (razona bien y cuesta una fracción), DeepSeek si se
+    # cambia el interruptor. thinking="medium": planificar SÍ merece pensar.
+    return await llm(prompt, model=BRAIN_MODEL, thinking="medium")
 
 
 def extract_json(text: str) -> dict:
@@ -234,7 +257,7 @@ def extract_json(text: str) -> dict:
 
 
 PLAN_PROMPT = """Descompón este reto en un DAG de subtareas para un enjambre de \
-{n} agentes deepseek-flash. Maximiza el paralelismo: solo declara una dependencia \
+{n} agentes baratos en paralelo. Maximiza el paralelismo: solo declara una dependencia \
 si el output de otra tarea es INSUMO REAL. Cada prompt debe ser autocontenido y \
 pedir un entregable concreto (código, texto, análisis), no un plan.
 Asigna "thinking" por tarea — optimiza el costo: "none" para tareas mecánicas \
@@ -276,7 +299,7 @@ JEV_MODEL = "typesafe/jev-1.13"
 JEV_MAX_CALLS = int(os.environ.get("JEV_MAX_CALLS", "60"))
 JEV_CALLS = {"n": 0}          # llamadas a Jev consumidas en esta corrida
 ESCALATIONS = {"n": 0}        # escaladas a modelo PRO efectivamente aplicadas
-PRO_MODEL = os.environ.get("PRO_MODEL", "deepseek-v4-pro")
+PRO_MODEL = os.environ.get("PRO_MODEL", _CEREBRO)
 
 
 def jev_budget_ok(n=1):
@@ -324,6 +347,31 @@ def fallas_a_nota(fallas):
     return " " + " ".join(FALLA_NOTA[k] for k in fallas)
 
 
+# Dónde SÍ sirve el juez, medido contra veredictos contrastados a mano
+# (enjambre/enjambre/calibrar_juez.py). El patrón fue inequívoco:
+#
+#   prosa y dossiers        8/8 aciertos   → confiar
+#   generación de código    2/5
+#   lote de parches         1/10
+#   verificación de datos   0/7            → nunca
+#
+# La causa es conocida y está documentada: un juez que evalúa HECHOS sin tener
+# la fuente delante inventa veredictos, y evaluar un LOTE en vez de una pieza
+# dispara el sesgo de posición. Así que el juez solo opina donde acierta; lo
+# demás lo deciden las compuertas deterministas (que compile, que parsee, que
+# el match sea único), que no se equivocan.
+SIN_JUEZ = (
+    "devuelve solo json", "json crudo", "verifica", "auditoría", "auditoria",
+    "hallazgos", "parches", "buscar", "reemplazar", "cifras", "exactitud",
+)
+
+
+def juez_aplica(task_prompt: str) -> bool:
+    """¿Vale la pena gastar una llamada de juez en esta tarea?"""
+    p = task_prompt.lower()
+    return not any(m in p for m in SIN_JUEZ)
+
+
 async def jev_review(task_prompt: str, output: str):
     """Jev como inspector Y enrutador: UNA llamada, tres decisiones tipadas.
 
@@ -335,7 +383,7 @@ async def jev_review(task_prompt: str, output: str):
     ~$0.00003 por inspección; output tipado, sin parsing, sin loops de juez.
     Presupuesto: JEV_MAX_CALLS (env, def. 60) por corrida; agotado → None (gate() local).
     """
-    if not jev_budget_ok():
+    if not juez_aplica(task_prompt) or not jev_budget_ok():
         return None
     try:
         import httpx
