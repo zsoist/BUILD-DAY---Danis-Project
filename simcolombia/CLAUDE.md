@@ -1,35 +1,31 @@
-# simcolombia/ — Sim Colombia
+# simcolombia/ — de dónde salen las personas
 
-Gemelo poblacional sintético de Colombia (patrón Sim Francisco, 2° puesto Build
-Day Opus 4.8) con datos REALES del DANE. Reto del Build Day Bogotá 2026-09-21.
+8.000 personas sintéticas en 33 departamentos (85 a 875 según población). Cada
+una es una persona real de la GEIH del DANE (13 meses de microdatos), repesada
+con proyecciones DANE 2026. Método y resultados: `docs/METODO.md`.
 
-## Arquitectura
+## Pipeline
 
+| Script (`pipeline/`) | Produce |
+|---|---|
+| `download_dane.py`, `download_v2.py` | microdatos en `data/raw_v2/` (5.2 GB, ignorado por git) |
+| `build_marginals.py`, `build_pool_geih.py` | `data/marginals.json`, `data/pool_geih.json.gz` |
+| `generate_population_v2.py` | `web/residents_v2.json` — lo que carga el sitio |
+| `generate_population.py` | `web/residents.json` — respaldo si falla el v2 |
+| `validar_v2.py` | `web/validacion_v2.json`; sale 1 si algún marginal no cuadra |
+
+```bash
+uv run python simcolombia/pipeline/validar_v2.py   # Python 3.12, entorno en la raíz
 ```
-pipeline/download_dane.py     baja fuentes reales → data/raw/ (gitignored)
-pipeline/build_marginals.py   normaliza → data/marginals.json (por departamento:
-                              población, sexo, edad x5, urbano/rural, PIB pc, salud)
-pipeline/generate_population.py  residentes sintéticos que REPRODUCEN los
-                              marginales → dashboard/sim/residents.json
-dashboard/sim/index.html      visor: pirámide real vs sintética por dpto +
-                              "pregúntale a los residentes" (encuesta LLM en vivo)
-```
 
-## División de trabajo (quién valida qué)
-
-- **Python (determinista)**: que los sintéticos cuadren con los marginales reales
-  — reporte de error % por dpto/sexo/edad. La estadística NUNCA se le pide a un LLM.
-- **Ejército DS**: dossiers narrativos por departamento (contexto cultural,
-  economía, habla) que dan carne a los residentes. Prompts con los números reales.
-- **Jev**: gate de los dossiers — verosímil, sin estereotipos, fiel a los números.
-- **Fable 5.1 (evento, $100)**: demógrafo jefe — audita la población sintética,
-  la interroga, encuentra dónde se rompe contra la realidad. El Breakthrough.
+`data/`: `marginals.json`, `pool_geih.json.gz`, `perfiles_politicos_2018.json`,
+`dossiers/dossier_*.json` (33, contexto por departamento), `ecp2023_codebook.json`
+(para el careo contra la ECP).
 
 ## Reglas
 
-- Fuente real o nada: cada número trazable a su dataset (DANE/datos.gov.co).
-- Residentes: ~100 por departamento (33 unidades: 32 dptos + Bogotá D.C.).
-- Encuesta en vivo: muestrear N residentes del dpto, cada uno responde EN PERSONAJE
-  (persona = atributos censales + dossier), agregación con conteo transparente.
-- Sesgos: los residentes opinan como PERSONAJES VEROSÍMILES, no como caricaturas;
-  disclaimer visible de que es simulación.
+- Números en Python, nunca estimados por un modelo. Cada cifra, trazable a su
+  archivo del DANE.
+- Tras regenerar la población, corre `validar_v2.py` a mano: el despliegue no
+  tiene paso de build que lo haga por ti.
+- La ECP 2023 no genera personas: es contra lo que se comparan las respuestas.

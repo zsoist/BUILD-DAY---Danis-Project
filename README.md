@@ -1,65 +1,77 @@
 # ColombIA ¡Que Piensa!
 
-47 mil personas sintéticas sobre microdatos del DANE. Escoges departamento,
-preguntas, responden. **No es una encuesta**: no tiene margen de error.
+Simulador de opinión pública colombiana. Escoges departamento, preguntas, responden.
+**No es una encuesta**: no tiene margen de error. No se usa para campañas ni segmentación de votantes.
 
 ## Estructura
 
-| Ruta | Qué |
+| Ruta | Contenido |
 |---|---|
-| `web/` | el sitio (lo que Vercel despliega) |
+| `web/` | el sitio que despliega Vercel |
 | `api/opina.js` | única función de servidor; guarda la llave |
+| `lib/filtro.mjs` | filtro de salida del proxy (copiado dentro de `api/opina.js`; una prueba avisa si difieren) |
 | `simcolombia/` | microdatos del DANE y su procesamiento |
 | `scripts/experimento/` | cómo sabemos si sirve |
-| `seguridad/` | barrido de credenciales y cierre de Supabase |
-| `enjambre/` `orchestrator/` `dashboard/` | herramienta interna, no se despliega — [zsoist/SWARMS](https://github.com/zsoist/SWARMS) |
+| `seguridad/` | barrido de credenciales, batería de inyección, cierre de Supabase |
+| `docs/` | `METODO.md`, `PRODUCT.md`, `OPENROUTER.md` |
 
 ## Correrlo
 
-```bash
-cd web && python3 -m http.server 8377     # local, sin backend
-```
+Local: `cd web && python3 -m http.server 8377`. Sin backend pide la llave de OpenRouter en Ajustes, o la lee de `web/assets/local_keys.json` (ignorado por git).
 
-Sin backend pide llave de OpenRouter en Ajustes, o la lees de
-`web/assets/local_keys.json` (ignorado por git, nunca se despliega).
+Vercel: `vercel.json` ya apunta a `web/`. Variables:
 
-En Vercel: importas el repo (`vercel.json` ya apunta a `web/`) y pones:
-
-| Variable | Por defecto |
+| Variable | Valor |
 |---|---|
-| `OPENROUTER_API_KEY` | — obligatoria |
+| `OPENROUTER_API_KEY` | obligatoria |
 | `ALLOWED_ORIGINS` | tus dominios, separados por coma |
-| `OPENROUTER_DAILY_USD` | 10 |
-| `MAX_TOKENS_TECHO` | 260 |
+| `OPENROUTER_DAILY_USD` | `10` |
+| `MAX_TOKENS_TECHO` | `260` |
 | `MODELOS_VOZ` | `deepseek/deepseek-v4.1-flash,z-ai/glm-5.3-flash` |
-| `OR_MAX_PROMPT` / `OR_MAX_COMPLETION` | 1.0 / 3.0 (USD por millón) |
+| `OR_MAX_PROMPT` / `OR_MAX_COMPLETION` | `1.0` / `3.0` USD por millón |
+| `SITE_URL` | la del sitio |
 
-Una sola llave: todo pasa por OpenRouter, con respaldo automático entre modelos.
+Supabase es opcional y solo para telemetría: aplica antes `seguridad/cerrar_supabase.sql` (deja las tablas en solo-insertar) y comprueba con `./seguridad/comprobar.sh`.
 
-Supabase es opcional (solo telemetría). Si la usas, aplica antes
-[`seguridad/cerrar_supabase.sql`](seguridad/cerrar_supabase.sql) —deja las
-tablas en solo-insertar— y comprueba con `./seguridad/comprobar.sh`.
+## Las personas
+
+8.000 personas sintéticas en 33 departamentos (de 85 a 875 según población). Cada una es una persona real encuestada por el DANE en la GEIH (13 meses de microdatos), repesada con proyecciones DANE 2026. La ECP 2023 del DANE (46.392 adultos reales) no es la fuente de las personas: es contra lo que se comparan las respuestas.
 
 ## Qué modelo y por qué
 
-Por medición, no por marca. Detalle en
-[`scripts/experimento/README.md`](scripts/experimento/README.md).
+Voces: `deepseek/deepseek-v4.1-flash`; respaldo `z-ai/glm-5.3-flash`. Todo por OpenRouter.
+DeepSeek gana 3 de 5 preguntas y empata 2 contra la ECP. Detalle: `docs/OPENROUTER.md`.
 
-| Para | Modelo | El número |
-|---|---|---|
-| voces | `deepseek-flash` | gana 3 de 5 preguntas, empata 2, contra el DANE |
-| enjambre | `z-ai/glm-5.3-flash` | 0% de respuestas vacías vs 17% |
-| juez | `typesafe/jev-1.13` | ~$0.00002 por revisión |
+## Los fallos medidos
 
-## Los fallos, medidos
+| Fallo | Estado |
+|---|---|
+| Sub-dispersión (voces demasiado parecidas) | corregida con SSR: razón de desviación 0.77 → 0.98 (1.00 ideal) |
+| Termómetro 0-100 en vez de escala | descartado: empeoró el W1 de 0.084 a 0.154 |
+| IRTree | descartado: holdout W1 0.272, peor que el azar |
+| Sesgo de GLM | 38% en "muy insatisfecho" donde los humanos ponen 18%; por eso es respaldo |
 
-- **Sub-dispersión** — corregida con SSR: razón de desviación 0.77 → 0.98 (1.00 ideal).
-- **Sesgo** — GLM pone 38% en "muy insatisfecho" donde los humanos ponen 18%.
-- **Caricatura** — que la demografía prediga la opinión más que en gente real.
+Cómo se mide: `scripts/experimento/README.md`. Método: `docs/METODO.md`.
+
+## Seguridad
 
 ```bash
-node scripts/experimento/careo_ecp.mjs 160 P5301 /tmp/l.json libre
-uv run --with pyreadstat --with pandas --python 3.12 python scripts/experimento/ssr.py /tmp/l.json
+./seguridad/barrer.sh                                # antes de cada commit
+node --test seguridad/filtro.test.mjs                # 36 pruebas
+node seguridad/inyeccion.mjs --url <tu-dominio>/api/opina --origen <tu-dominio>
 ```
 
-No se usa para campañas ni segmentación de votantes. Método: [`docs/METODO.md`](docs/METODO.md).
+La batería de inyección lanza 34 ataques. Última medición contra producción: 32 contenidos, 1 marcado que resultó ser una voz negándose, 1 indeterminado.
+
+## Enjambre de agentes
+
+Vive en su propio repo, no copia este:
+
+```bash
+uvx --from git+https://github.com/zsoist/SWARMS enjambre "tarea"
+uvx --from git+https://github.com/zsoist/SWARMS enjambre-visor
+```
+
+Lee el `.env` de aquí y escribe `runs/` aquí.
+
+Python 3.12, entorno en la raíz: `uv run python <script>`.

@@ -1,7 +1,14 @@
 # PRODUCT.md — ColombIA ¡Que Piensa!
 
 ## Qué es
-Simulador de opinión pública colombiana. 47.000 personas sintéticas construidas sobre microdatos del DANE (censo + Encuesta de Cultura Política 2023, 46.392 adultos). Cada voz tiene edad, sexo, departamento, educación y estrato reales en proporción. El usuario elige un departamento o el país, escribe una pregunta en sus palabras, y las voces responden.
+Simulador de opinión pública colombiana. 8.000 personas sintéticas: personas reales encuestadas por el DANE en la GEIH (13 meses de microdatos), repesadas con proyecciones DANE 2026 y distribuidas en 33 departamentos (85 a 875 según población). Cada voz tiene edad, sexo, departamento, educación y estrato reales. El usuario elige un departamento o el país, escribe una pregunta en sus palabras, y las voces responden.
+
+## Voces y validación
+| Componente | Detalle |
+|---|---|
+| Modelo de voces | deepseek/deepseek-v4.1-flash vía OpenRouter; respaldo z-ai/glm-5.3-flash |
+| Contra qué se comparan las respuestas | ECP 2023 del DANE (46.392 adultos reales). No es la fuente de las personas |
+| Resultado | DeepSeek gana 3 de 5 preguntas y empata 2 contra la ECP |
 
 ## Para quién y cómo lo usa
 | Usuario | Uso |
@@ -24,10 +31,11 @@ Restricciones de diseño: una sesión dura segundos y cuesta poco por visita. To
   | Fallo | Qué es | Estado |
   |---|---|---|
   | Sub-dispersión | Voces demasiado parecidas entre sí | Corregido con SSR: razón de desviación 0,77 → 0,98 (1,00 = ideal) |
-  | Sesgo | Modelo corrido: GLM ubica 38% en "muy insatisfecho" donde humanos ponen 18% | Medido, pendiente mitigar |
+  | Sesgo | GLM (el respaldo) ubica 38% en "muy insatisfecho" donde humanos ponen 18% | Medido; por eso GLM no es el principal |
   | Caricatura | La demografía predice opinión más de lo que predice en gente real | Medido, mitigable con contexto por voz |
 
-Cualquier uso que dependa de precisión encuestística está fuera de alcance por diseño.
+- **IRTree: probado y rechazado.** Calibración W1 0,019, holdout 0,272: peor que el azar.
+- Cualquier uso que dependa de precisión encuestística está fuera de alcance por diseño.
 
 ## Cómo sabemos si sirve
 - Una persona nueva pregunta y entiende la respuesta en menos de 2 minutos, sin ayuda.
@@ -36,6 +44,6 @@ Cualquier uso que dependa de precisión encuestística está fuera de alcance po
 - La gente vuelve o comparte el enlace: señal de que jugó y le importó.
 
 ## Qué sigue
-- Mitigar el sesgo del GLM (38% vs 18% en "muy insatisfecho").
+- Medir el sesgo de las voces principales en más preguntas de la ECP (hoy son 5).
 - Reducir la caricatura agregando contexto no demográfico a cada voz.
 - Panel visible por consulta con los fallos conocidos, para que nadie cite sin verlos.
