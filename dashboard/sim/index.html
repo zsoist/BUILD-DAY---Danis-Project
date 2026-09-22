@@ -102,7 +102,9 @@ h3:first-child{margin-top:0}
 .leyenda{display:flex;gap:16px;font-size:12px;color:var(--faint);margin-top:8px}
 .leyenda i{display:inline-block;width:11px;height:11px;vertical-align:-1px;margin-right:5px}
 .hbar{margin:10px 0}
-.hbar .t{display:flex;justify-content:space-between;font-size:13.5px;color:var(--dim)}
+.hbar .t{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;font-size:13.5px;color:var(--dim)}
+.hbar .t span{flex:1 1 auto;min-width:0;white-space:normal;line-height:1.3}
+.hbar .t b{flex:0 0 auto;white-space:nowrap}
 .hbar .t b{font-family:"Silkscreen";font-size:11px;color:var(--text);font-weight:400}
 .hbar .g{height:15px;background:var(--panel2);border:1px solid var(--grid);position:relative}
 .hbar .g i{position:absolute;inset:1px auto 1px 1px;background:var(--accent)}
@@ -868,13 +870,15 @@ function margDe(codes){
    (antes: RES.filter + 2×18 pirámide + régimen = 38 pasadas y ~38 arrays por render) */
 let PIRCACHE={key:null,mine:null,c:null,tot:0,con:0};
 function piramide(mine){
-  const c=new Map();let con=0;
+  const c=new Map();let con=0;let tot=0;
   for(const r of mine){
     const k=r.grupo_edad+"|"+r.sexo;
-    c.set(k,(c.get(k)||0)+1);
+    const w=Number(r.peso)>0?Number(r.peso):1;
+    c.set(k,(c.get(k)||0)+w);
+    tot+=w;
     if(r.regimen_salud==="contributivo")con++;
   }
-  return {c,tot:mine.length,con};
+  return {c,tot,con,n:mine.length};
 }
 function render(){
   const nac=SEL.size===0;
@@ -893,17 +897,34 @@ function render(){
   if(d.edad&&d.sexo&&rtotal>0){
     h+=`<h3>PIRÁMIDE — real (línea) vs sintética (barra)</h3><div class="pyr">`;
     const tot=PIRCACHE.tot||1;
-    for(const g of [...AGEG].reverse()){
-      const sh=(PIRCACHE.c.get(g+"|hombre")||0)/tot*100;
-      const sm=(PIRCACHE.c.get(g+"|mujer")||0)/tot*100;
-      const rr=(d.edad[g]||0)/rtotal*100;
-      h+=`<div class="bar l"><i style="width:${sh*6}%"></i><s style="right:${rr/2*6}%"></s></div>
-          <div class="lab">${g}</div>
-          <div class="bar r"><i style="width:${sm*6}%"></i><s style="left:${rr/2*6}%"></s></div>`;
+    const chico=(PIRCACHE.n||0)<200;
+    const ags=[];
+    if(chico){
+      for(let i=0;i<AGEG.length;i+=2){
+        const a=AGEG[i],b=AGEG[i+1];
+        const na=a.match(/\d+/g)||[],nb=b?(b.match(/\d+/g)||[]):null;
+        ags.push({lab:b?(na[0]+"-"+nb[nb.length-1]+(/\+$/.test(b)?"+":"")):a,gs:b?[a,b]:[a]});
+      }
+    } else for(const g of AGEG) ags.push({lab:g,gs:[g]});
+    const F=chico?3:6;
+    const ex=!!(d.edad_sexo&&d.edad_sexo.hombre&&d.edad_sexo.mujer);
+    for(const b of [...ags].reverse()){
+      let wH=0,wM=0,rh=0,rm=0;
+      for(const g of b.gs){
+        wH+=PIRCACHE.c.get(g+"|hombre")||0;
+        wM+=PIRCACHE.c.get(g+"|mujer")||0;
+        if(ex){rh+=(d.edad_sexo.hombre[g]||0)/rtotal*100;rm+=(d.edad_sexo.mujer[g]||0)/rtotal*100;}
+        else{rh+=(d.edad[g]||0)/rtotal*50;rm+=(d.edad[g]||0)/rtotal*50;}
+      }
+      const sh=wH/tot*100,sm=wM/tot*100;
+      h+=`<div class="bar l"><i style="width:${sh*F}%"></i><s style="right:${rh*F}%"></s></div>
+          <div class="lab">${b.lab}</div>
+          <div class="bar r"><i style="width:${sm*F}%"></i><s style="left:${rm*F}%"></s></div>`;
     }
     h+=`</div><div class="leyenda"><span><i style="background:var(--hom)"></i>hombres</span>
         <span><i style="background:var(--muj)"></i>mujeres</span>
-        <span><i style="background:var(--text);width:2px"></i>censo real</span></div>`;
+        <span><i style="background:var(--text);width:2px"></i>censo real</span></div>
+        <div class="fuente">muestra sintética: n=${PIRCACHE.n||0} residentes (pesos → ${Math.round(PIRCACHE.tot||0).toLocaleString("es-CO")} hab.)${(PIRCACHE.n||0)<200?" · bandas de 10 años (muestra pequeña)":""}</div>`;
   } else {
     h+=`<h3>PIRÁMIDE</h3><div class="fuente">⚠ sexo/edad provisionales — a la espera del
         archivo de proyecciones DANE (el resto de bloques ya es real)</div>`;
@@ -921,9 +942,10 @@ function render(){
   const pib=d.pib_sectores_pct;
   if(pib){
     h+=`<h3>DE QUÉ VIVE (PIB por sector)</h3>`;
+    const maxP=Math.max(...Object.values(pib))||1;
     for(const [s,p] of Object.entries(pib))
-      h+=`<div class="hbar"><div class="t"><span>${esc(s.slice(0,38))}</span><b>${p}%</b></div>
-          <div class="g"><i style="width:${Math.min(100,p*2)}%;background:var(--work)"></i></div></div>`;
+      h+=`<div class="hbar"><div class="t"><span>${esc(s.split(';')[0].trim())}</span><b>${p}%</b></div>
+          <div class="g"><i style="width:${(p/maxP*100).toFixed(1)}%;background:var(--work)"></i></div></div>`;
     h+=`<div class="fuente">${esc(d.fuentes?.pib||"")}</div>`;
   }
   $("#censobody").innerHTML=h;
@@ -1048,9 +1070,9 @@ const FRANQUEZA=[
 function estiloDe(r){
   let h=0;for(const c of r.id)h=(h*37+c.charCodeAt(0))>>>0;
   return {temp:TEMPERAMENTOS[h%TEMPERAMENTOS.length],
-          lean:LEAN[(h>>4)%5],
-          franq:FRANQUEZA[(h>>8)%5],
-          arranque:ARRANQUES[(h>>11)%8]};
+          lean:LEAN[(h>>>4)%5],
+          franq:FRANQUEZA[(h>>>8)%5],
+          arranque:ARRANQUES[(h>>>11)%8]};
 }
 const COMPROMISO_TXT={
  indiferente:"TU RELACIÓN CON LA POLÍTICA: ni te va ni te viene — 'a mí que me alcance la plata'. Respondes corto, sin militancia; en temas políticos puros puedes cerrar con [POSTURA: ni_ni].",
@@ -1123,6 +1145,17 @@ function verResidente(r){
     ["temperamento",e.temp.split(":")[0],"motor de personas: asignación determinista"],
     ["llega al tema",e.lean.replace(/ por algo.*| de verdad.*/,""),"inclinación 40/40/20 anti-sesgo 'depende'"],
   ];
+  const mil=n=>Number(n).toLocaleString("es-CO");
+  if(r.origen==="geih")filas.splice(1,0,
+    ["perfil real","muestreado de una persona real de la GEIH (DANE)","GEIH 2025-2026, factor de expansión"]);
+  if(r.clase)filas.push(["zona",r.clase,"GEIH variable CLASE"]);
+  if("ingreso_m" in r)filas.push(["ingreso laboral",
+    r.ingreso_m?("$"+mil(r.ingreso_m)+"/mes aprox"):"sin ingreso laboral","GEIH INGLABO, redondeado"]);
+  if(r.compromiso)filas.push(["compromiso político",r.compromiso,
+    "motor v2: distribución realista 25/30/30/15"]);
+  if(r.lean&&typeof LEAN_TXT!=="undefined")filas.push(["aire político del territorio",
+    LEAN_TXT[r.lean]||r.lean,"Senado 2018 nivel mesa (datos.gov.co 75f2-fe2s)"]);
+  if(r.peso)filas.push(["representa","~"+mil(Math.round(r.peso))+" colombianos","n∝población del dpto, piso 80"]);
   $("#rkv").innerHTML=filas.map(([k,v,s])=>
     `<b>${esc(k)}</b><span>${esc(v)}<span class="src">${esc(s)}</span></span>`).join("");
   $("#rmask").classList.add("open");
