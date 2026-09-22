@@ -133,8 +133,10 @@ animation:blink 1.2s steps(2) infinite}
 .staffc.okd{border-color:var(--ok)} .staffc.okd .nm{color:var(--ok)}
 #grid8{display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:0 8px 8px; flex:1}
 .ag{background:var(--panel2); border:2px solid var(--grid); padding:6px; display:grid;
-  grid-template-columns:40px 1fr; gap:2px 8px; align-items:center; min-height:64px}
-.ag canvas{grid-row:1/3}
+  grid-template-columns:60px 1fr; gap:2px 8px; align-items:center; min-height:64px}
+/* la columna vale lo que mide el sprite pintado (60px): con 40px se desbordaba
+   sobre el nombre del agente */
+.ag canvas{grid-row:1/3; width:60px; height:60px}
 .ag .nm{font-family:"Silkscreen"; font-size:9px; color:var(--dim); display:flex; justify-content:space-between}
 .ag .nm i{font-style:normal; color:var(--agc,var(--faint))}
 .ag .tk{font-size:11px; line-height:1.25; color:var(--faint); overflow:hidden;
@@ -341,6 +343,8 @@ animation:blink 1.2s steps(2) infinite}
 
 <script src="leer_corrida.js"></script>
 <script src="flujo.js"></script>
+<script src="actividad.js"></script>
+<script src="detalle.js"></script>
 <script>
 /* ═══ config ═══ */
 const DEF={src:"supabase",url:"https://pwcvskguqyhbhlwnsmmy.supabase.co",
@@ -438,6 +442,9 @@ setInterval(()=>{ tick++;
 
 /* ═══ estado ═══ */
 let runs={},curRun=null,timer=null;
+/* por defecto el visor SIGUE la corrida más reciente: si arrancas un enjambre
+   nuevo aparece solo, sin recargar. Elegir una del menú lo fija ahí. */
+let runFijo=false;
 let FABLE={visto:0,acto:null,usd:0};
 function ingest(list){
   runs={};
@@ -445,7 +452,7 @@ function ingest(list){
     if(r.run_id==null) continue;
     const run=runs[r.run_id]??={id:r.run_id,events:[],tasks:{},order:[],task:"",
       spent:null,done:false,t0:null,tEnd:null,jev:{},seconds:null,planMs:null};
-    const p=r.payload||{}, _t=r.ts?+new Date(r.ts):NaN, ts=Number.isFinite(_t)?_t:null;
+    const p=r.payload||{}, ts=r._t??null;
     run.events.push({...r,ms:ts});
     if(ts!=null){run.t0=run.t0==null?ts:Math.min(run.t0,ts);
       run.tEnd=run.tEnd==null?ts:Math.max(run.tEnd,ts);}
@@ -455,7 +462,8 @@ function ingest(list){
     if(r.event==="shipped"&&r.task_id){const t=run.tasks[r.task_id]; if(t){t.status="ok";t.doneMs=ts;}}
     if(r.event==="jev"&&r.task_id){run.jev[r.task_id]=p.p;
       (run.jevlog??={})[r.task_id]??=[]; run.jevlog[r.task_id].push(p);
-      if(p.p<0.5&&run.tasks[r.task_id])run.tasks[r.task_id].fixed=true;}
+      /* null<0.5 es TRUE en JS: una tarea sin juez se marcaba 'con fixes' */
+      if(typeof p.p==="number"&&p.p<0.5&&run.tasks[r.task_id])run.tasks[r.task_id].fixed=true;}
     if(r.event==="done"){run.done=true;run.spent=p.spent;run.seconds=p.seconds;}
     if(r.event&&r.event.startsWith("fable")){
       if(ts!=null&&ts>FABLE.visto)FABLE.visto=ts;  // solo tiempo real: sin ts no se renueva la marquesina
@@ -481,7 +489,12 @@ async function fetchRows(){
       if(!Array.isArray(list)) throw 0;}
     /* orden estable por fila: ts si parsea, si no id; desempate por id (dentro
        del mismo segundo Supabase venía id.desc y 'done' salía antes que 'shipped') */
-    list.forEach((r,i)=>{const t=Date.parse(r.ts);r._k=Number.isFinite(t)?t:(Number.isFinite(+r.id)?+r.id:i);});
+    /* La hora buena es payload.t (la escribió el enjambre al ocurrir el evento).
+       r.ts puede ser la hora de INSERCIÓN en Supabase, que agrupa todo un lote en
+       un mismo instante y aplana la línea de tiempo. Se prefiere t; ts es respaldo. */
+    list.forEach((r,i)=>{const pt=r.payload?.t, t=Number.isFinite(pt)?pt*1000:Date.parse(r.ts);
+      r._t=Number.isFinite(t)?t:null;
+      r._k=r._t??(Number.isFinite(+r.id)?+r.id:i);});
     list.sort((a,b)=>a._k-b._k||((+a.id||0)-(+b.id||0)));
     ingest(list); render(); lamp(true);
   }catch(e){lamp(false);}
@@ -538,8 +551,10 @@ function render(){
   const ids=Object.keys(runs).sort().reverse();
   const sel=$("#runsel");
   /* arrancar en una corrida CON trabajo: abrir en una vacía no dice nada */
-  if(!(curRun&&ids.includes(curRun)))
-    curRun=ids.find(i=>(runs[i]?.order||[]).length)||ids[0];
+  const conTrabajo=i=>(runs[i]?.order||[]).length;
+  const masNueva=ids.find(conTrabajo)||ids[0];
+  if(!(curRun&&ids.includes(curRun))) curRun=masNueva;
+  else if(!runFijo&&masNueva&&masNueva!==curRun&&conTrabajo(masNueva)) curRun=masNueva;
   const selKey=ids.join("|")+"@"+curRun;
   if(sel.dataset.k!==selKey){sel.dataset.k=selKey;  /* no rehacer el select cada 3s: mata el dropdown abierto */
     /* Un identificador como "20260922-002225-swarm" no le dice nada a nadie:
@@ -725,6 +740,11 @@ function drawFeed(run){
   if(el.dataset.firma===firma) return;      /* nada nuevo: no tocar el scroll */
   el.dataset.firma=firma;
   const st=el.scrollTop;
+  if(window.pintarActividad){
+    window.pintarActividad(el,run.events,{t0,esc,fmtT:ms=>fmtT(ms,0),
+      colorAgente:i=>AGCOLORS[i??0], tareas:run.tasks, abrirTarea:openTask});
+    el.scrollTop=st; return;
+  }
   el.innerHTML=[...run.events].reverse().map(e=>{
     const p=e.payload||{},t=run.tasks[e.task_id]||{};
     let key=e.event,cls="wk";
@@ -750,7 +770,10 @@ function drawFeed(run){
 }
 
 /* ═══ controles ═══ */
-$("#runsel").onchange=e=>{curRun=e.target.value;render();};
+$("#runsel").onchange=e=>{curRun=e.target.value;
+  /* al elegir a mano deja de seguir; vuelve a seguir si eliges la más nueva */
+  runFijo=curRun!==Object.keys(runs).sort().reverse().find(i=>(runs[i]?.order||[]).length);
+  render();};
 $("#gear").onclick=e=>{e.stopPropagation();$("#cfg").classList.toggle("open");};
 document.addEventListener("click",e=>{if(!$("#cfg").contains(e.target))$("#cfg").classList.remove("open");});
 function applyCfg(){
@@ -781,6 +804,14 @@ function openTask(tid){
   const t=run.tasks[tid]; if(!t)return;
   const t0=run.planMs??run.t0, col=AGCOLORS[t.agent];
   const jl=(run.jevlog?.[tid])||[];
+  /* el componente cuenta la historia y deja el prompt plegado; si no cargó,
+     el visor cae al detalle crudo de siempre */
+  if(window.detalleTarea){
+    openModal((t.titulo?t.titulo+" · ":"")+tid,
+      window.detalleTarea({...t,id:tid},jl,
+        {t0,colorAgente:col,fmtT,esc,abrirOtra:"openTask",modelo:SALUD.tropa||""}));
+    return;
+  }
   const jevHtml=jl.map((j,i)=>{
     const cls=j.p>=.85?"var(--ok)":j.p>=.5?"var(--work)":"var(--fail)";
     const diag=j.diag?Object.entries(j.diag).filter(([,v])=>v<.5).map(([k])=>k).join(", "):"";
@@ -792,7 +823,7 @@ function openTask(tid){
   openModal(tid+" · agente "+(t.agent+1),`
     <div class="kv">
       <b>estado</b><span style="color:${t.status==="ok"?"var(--ok)":col}">${t.status==="ok"?"entregada":"en curso"}${t.fixed?" (con fixes)":""}</span>
-      <b>agente</b><span style="color:${col}">agente ${t.agent+1} · deepseek-flash</span>
+      <b>agente</b><span style="color:${col}">agente ${t.agent+1} · ${esc(SALUD.tropa||"tropa")}</span>
       <b>thinking</b><span>${esc(t.thinking||"none")}</span>
       <b>archivo</b><span>${esc(t.filename||tid+".md")}</span>
       <b>depende de</b><span>${(t.deps||[]).map(d=>`<a href="#" onclick="openTask('${esc(d)}');return false" style="color:${AGCOLORS[run.tasks[d]?.agent??0]}">${esc(d)}</a>`).join(" · ")||"nada — arranca de una"}</span>
@@ -806,7 +837,7 @@ function openAgent(i){
   const run=runs[curRun]; if(!run)return;
   const mine=run.order.filter(id=>run.tasks[id].agent===i);
   if(!mine.length){openModal("agente "+(i+1),`<div class="kv"><b>estado</b><span>en espera — sin tareas en esta misión</span></div>`);return;}
-  openModal("agente "+(i+1)+" · deepseek-flash",
+  openModal("agente "+(i+1)+" · "+(SALUD.tropa||"tropa"),
     mine.map(id=>{const t=run.tasks[id],p=run.jev[id];
       return `<div class="jv" style="cursor:pointer" onclick="openTask('${esc(id)}')">
         <span class="p" style="color:${AGCOLORS[i]}">${esc(id)}</span>
@@ -832,7 +863,7 @@ function askContext(){
     mision:run.task, corrida:curRun, completada:run.done,
     duracion_seg:run.seconds, tareas:tasks,
     corridas_de_hoy:ids.length, gasto_hoy_usd:{deepseek:+ds.toFixed(4),openrouter:+or_.toFixed(4)},
-    arquitectura:"agente principal (deepseek-v4-pro o Fable 5.1) planifica el DAG; 8 agentes deepseek-flash ejecutan en paralelo con thinking por tarea; el inspector Jev (typesafe/jev-1.13) revisa cada entrega y enruta reintentos; un ensamblador une el resultado final",
+    arquitectura:"el agente principal planifica el DAG; la tropa lo ejecuta en paralelo con thinking graduado por tarea; el inspector Jev (typesafe/jev-1.13) revisa cada entrega y enruta reintentos; un ensamblador une el resultado final",
   });
 }
 function addMsg(cls,txt){

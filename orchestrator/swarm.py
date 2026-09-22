@@ -21,6 +21,7 @@ Uso:
 """
 
 import asyncio
+import datetime as _dt
 import json
 import os
 import re
@@ -591,8 +592,15 @@ class Swarm:
         if not url:
             return
         try:
+            # La hora del EVENTO, no la de la inserción. Sin esto Supabase
+            # pone now() al llegar el lote y los ~20 eventos de un mismo flush
+            # aterrizan en el mismo instante: la línea de tiempo se aplana.
+            t = obj.get("t")
+            ts = (_dt.datetime.fromtimestamp(t, tz=_dt.timezone.utc).isoformat()
+                  if isinstance(t, (int, float)) else None)
             self._pending_events.append({
                 "run_id": self.run_dir.name,
+                "ts": ts,
                 "event": obj.get("event", "?"),
                 "task_id": obj.get("id"),
                 "payload": obj,
