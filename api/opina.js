@@ -231,6 +231,57 @@ export default async function handler(req, res) {
   const body = req.body || {};
   let messages = body.messages;
 
+  // ── SSR: postura por similitud semántica, para la estimación del sondeo ──
+  // El cliente manda los textos de las voces y recibe, por cada uno, una
+  // distribución sobre (sí, no, depende, no sé). Solo devuelve números: no hay
+  // generación que abusar. Anclas, T y método: docs/METODO.md, sección mezcla.
+  // Las anclas deben ser idénticas a GENERICAS en scripts/experimento/postura.py
+  // (lo verifica scripts/experimento/anclas.test.mjs).
+  if (body.ssr === true) {
+    const orK = process.env.OPENROUTER_API_KEY || process.env.OPENROUTER_KEY;
+    const textos = Array.isArray(body.textos)
+      ? body.textos.slice(0, 16).map(x => String(x || "").slice(0, 800)) : [];
+    if (!orK) return res.status(502).json({ error: "sin openrouter en el servidor" });
+    if (!textos.length || textos.some(x => x.trim().length < 3))
+      return res.status(400).json({ error: "textos" });
+    const ANCLAS_SSR = [
+      "Sí, claro que estoy de acuerdo con eso. Me parece bien y lo apoyo.",
+      "No, eso me parece mal. Lo rechazo, no lo apoyo para nada.",
+      "Depende. Tiene su lado bueno y su lado malo, no es tan sencillo.",
+      "No sé, la verdad eso no lo he pensado y no tengo opinión.",
+    ];
+    const T_SSR = 0.25;
+    try {
+      // las anclas no cambian: se embeben una vez por instancia
+      const faltan = globalThis.__anclasSSR ? [] : ANCLAS_SSR;
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), Math.min(10000, restante()));
+      const r = await fetch("https://openrouter.ai/api/v1/embeddings", {
+        method: "POST", signal: ctrl.signal,
+        headers: { Authorization: `Bearer ${orK}`, "Content-Type": "application/json", ...ATRIB },
+        body: JSON.stringify({ model: "openai/text-embedding-3-small",
+                               input: [...faltan, ...textos] }),
+      }).finally(() => clearTimeout(timer));
+      const j = await r.json();
+      const v = (j.data || []).sort((a, b) => a.index - b.index).map(d => d.embedding);
+      if (v.length !== faltan.length + textos.length)
+        return res.status(502).json({ error: "embeddings", detalle: JSON.stringify(j).slice(0, 150) });
+      if (faltan.length) globalThis.__anclasSSR = v.slice(0, 4);
+      const anclas = globalThis.__anclasSSR, vt = v.slice(faltan.length);
+      const cos = (a, b) => { let s = 0, na = 0, nb = 0;
+        for (let i = 0; i < a.length; i++) { s += a[i] * b[i]; na += a[i] * a[i]; nb += b[i] * b[i]; }
+        return na && nb ? s / Math.sqrt(na * nb) : 0; };
+      const pmfs = vt.map(x => {
+        const sims = anclas.map(a => cos(x, a));
+        const lo = Math.min(...sims), hi = Math.max(...sims);
+        const e = sims.map(s => Math.exp((hi > lo ? (s - lo) / (hi - lo) : 0.5) / T_SSR));
+        const tot = e.reduce((a, b) => a + b, 0);
+        return e.map(z => +(z / tot).toFixed(4));
+      });
+      return res.status(200).json({ pmfs });
+    } catch (e) { return res.status(502).json({ error: String(e).slice(0, 150) }); }
+  }
+
   // El cliente arma los mensajes, así que hasta ahora cualquiera podía mandar
   // su propio prompt de sistema y usar esto como un modelo de propósito
   // general pagado por la casa. Comprobado: pedía una traducción al latín y la

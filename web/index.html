@@ -370,6 +370,7 @@ button,.pxbtn{min-height:44px;touch-action:manipulation}
 #rcard .rkv b{padding-top:10px}
 #rcard footer{flex:0 0 auto;padding:12px 16px 14px;padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 }
+.estim{color:var(--dim);font-size:10px;margin-top:3px}.estim b{color:var(--text)}
 </style>
 </head>
 <body>
@@ -1340,6 +1341,27 @@ function postura(txt){
   }
   return [m?m[1].toLowerCase():null,limpio];
 }
+/* ESTIMACIÓN DEL SONDEO: cada voz pesa 0.75 por su etiqueta y 0.25 por lo que
+   dijo, leído con SSR (similitud semántica contra anclas de sí/no/depende/no sé).
+   Medido contra la ECP 2023 en 8 preguntas que no se usaron para calibrar: error
+   en el % de "sí" de 26.9 a 21.8 pts; gana en 7 de 8. Solo el sondeo: es el
+   formato que se midió. Detalle: docs/METODO.md. Voz sin etiqueta: solo SSR. */
+const ALFA_MEZCLA=0.75;
+async function estimacion(votos){
+  const v=votos.filter(x=>x&&typeof x.txt==="string"&&x.txt.trim().length>=3);
+  if(!v.length||API_OK!==true)return null;
+  try{
+    const r=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({ssr:true,textos:v.map(x=>x.txt)})});
+    if(!r.ok)return null;
+    const {pmfs}=await r.json();if(!Array.isArray(pmfs)||pmfs.length!==v.length)return null;
+    const I={a_favor:0,en_contra:1,depende:2,ni_ni:3},acc=[0,0,0,0];
+    v.forEach((x,i)=>{const t=I[x.pos],a=t===undefined?0:ALFA_MEZCLA;
+      for(let k=0;k<4;k++)acc[k]+=a*(k===t?1:0)+(1-a)*(pmfs[i][k]||0);});
+    const dec=acc[0]+acc[1];
+    return {favor:dec?acc[0]/dec:NaN,decididos:dec/v.length};
+  }catch(e){return null;}
+}
 /* Jev vía backend: decisiones tipadas para el sim (null si no hay backend) */
 async function jevDecide(state,questions){
   try{
@@ -1639,7 +1661,7 @@ async function conversar(q){
       `<span>${esc(r.nombre.split(" ")[0])}, ${r.edad}</span>`);
     seats.append(s);
   });
-  const FRASES=["llegan los vecinos…","📡 5 búsquedas en camino: noticia, cifras, calle, historia, región…",
+  const FRASES=["llegan los vecinos…","📡 buscando la noticia: cifras, calle, historia, región…",
     "sirven el tinto ☕","acomodan las sillas…","Jev revisa la prensa…",
     "ya casi arranca esto…"];
   let fi=0;const ticker=setInterval(()=>{
@@ -1651,7 +1673,7 @@ async function conversar(q){
 
   if(MODO==="sondeo"){
     $("#estado").textContent="sondeando…";
-    let obed=0,obedN=0;
+    let obed=0,obedN=0;const votos=[];
     await Promise.all(sample.map(async r=>{
       const card=bubble(r,false),say=card.querySelector(".say");
       try{
@@ -1667,11 +1689,15 @@ async function conversar(q){
         const gl=estiloDe(r).lean;
         if(pos!=='sin_postura'&&pos!=='ni_ni'&&r.compromiso!=='indiferente'){obedN++;
           if((gl.includes('A FAVOR')&&pos==='a_favor')||(gl.includes('EN CONTRA')&&pos==='en_contra')||(gl.includes('dividido')&&pos==='depende'))obed++;}
+        votos.push({pos,txt});
         typewriter(say,txt);
         card.style.setProperty("--pc",COLORES[pos]||COLORES.depende);tally(p);
       }catch(e){p.sin_postura=(p.sin_postura||0)+1;tally(p);say.classList.remove("thinking");say.textContent="(no contestó)";}
     }));
     if(obedN)$("#tally").insertAdjacentHTML("beforeend",`<div style="color:var(--dim);font-size:10px;margin-top:2px">libreto: ${obed}/${obedN} fieles a su inclinación asignada</div>`);
+    const est=await estimacion(votos);
+    if(est&&isFinite(est.favor)){const [la]=etiquetas();
+      $("#tally").insertAdjacentHTML("beforeend",`<div class="estim" title="Mezcla medida contra la ECP 2023 del DANE: pesa la etiqueta de cada voz y lo que dijo en sus palabras. No es una encuesta: no tiene margen de error.">≈ <b>${Math.round(100*est.favor)}%</b> ${esc(la)} entre quienes toman partido · estimación calibrada, no es encuesta</div>`);}
   }else{
     /* ── DELIBERACIÓN CONTINUA: hasta 3 min, pausable, corta cuando hay acuerdo ── */
     const run=RUN;                  // token ya invalidado por abortarCorrida(): si entra otra pregunta, esta se aborta

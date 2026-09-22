@@ -38,11 +38,11 @@ function extraer(nombre) {
 
 const NOMBRES = ["TEMPERAMENTOS", "LEAN", "FRANQUEZA", "ARRANQUES", "estiloDe",
   "FUNDAMENTOS", "marcoDe", "GUSTOS", "FASTIDIOS", "momentoDe", "COMPROMISO_TXT",
-  "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "ESTILOS_RESP", "estiloRespuesta", "persona"];
+  "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "ESTILOS_RESP", "estiloRespuesta", "persona", "sondeoInstr"];
 /* LIBRETO=0: sin la postura asignada por hash. Es lo que decide si la
    dispersión es del método o fabricada por el prompt. Por defecto, la del sitio. */
 const LIBRETO = (process.env.LIBRETO ?? "1") !== "0";
-const mod = new Function("OPC", "LIBRETO", NOMBRES.map(extraer).join("\n") + "\nreturn {persona};")(null, LIBRETO);
+const mod = new Function("OPC", "LIBRETO", NOMBRES.map(extraer).join("\n") + "\nreturn {persona, sondeoInstr};")(null, LIBRETO);
 
 const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "web/residents_v2.json"), "utf8"));
 const residentes = (RES.residentes || RES).filter(r => r.edad >= 18);   // universo ECP
@@ -72,6 +72,7 @@ console.error(`Pregunta ECP ${CODIGO}: ${TEXTO.slice(0, 120)}…`);
 const TEXTO_LIBRE = (() => {
   let s = TEXTO.replace(/^\d+\.\s*/, "")
                .replace(/:\s*[a-z]\.\s*Que\b/, " que")
+               .replace(/:\s*[a-z]\.\s+/, ": ")
                .replace(/\s+1\s+S[ií]\s+2\s+No\b.*$/s, "");
   if (!s.startsWith("¿")) s = "¿" + s;
   if (!/\?\s*$/.test(s)) s += "?";
@@ -182,7 +183,11 @@ const INSTR_LIB = "\nTe está encuestando el DANE en la puerta de tu casa. NO te
   + "ni números: te preguntan y tú contestas con tus propias palabras, en una o dos frases "
   + "cortas, como hablarías de verdad. Nada de listas, nada de cifras, nada de explicar que "
   + "eres un personaje. Solo lo que sientes al respecto.";
-const INSTR = MODO === "continuo" ? INSTR_CON : MODO === "libre" ? INSTR_LIB : INSTR_CAT;
+/* MODO SITIO — exactamente lo que ve la gente: la persona, la instrucción real
+   del sondeo (extraída del sitio, no copiada) y la etiqueta [POSTURA: …] al
+   final. Da a la vez el texto (para SSR) y la etiqueta (lo que cuenta hoy el
+   sitio), de la MISMA voz: es lo que permite medir la mezcla de los dos. */
+const INSTR = MODO === "continuo" ? INSTR_CON : MODO === "libre" ? INSTR_LIB : MODO === "sitio" ? "" : INSTR_CAT;
 
 const out = [];
 const cola = [...muestra];
@@ -190,11 +195,17 @@ await Promise.all(Array.from({ length: 8 }, async () => {
   while (cola.length) {
     const r = cola.shift();
     const txt = await flash([
-      { role: "system", content: mod.persona(r, DOS[r.dpto] || {}) + INSTR },
-      { role: "user", content: MODO === "libre" ? TEXTO_LIBRE : TEXTO },
-    ]);
+      { role: "system", content: mod.persona(r, DOS[r.dpto] || {}) + (MODO === "sitio" ? mod.sondeoInstr(r) : INSTR) },
+      { role: "user", content: MODO === "libre" ? TEXTO_LIBRE : MODO === "sitio"
+          ? TEXTO_LIBRE + "\n\nRecuerda: cierra tu respuesta con la etiqueta [POSTURA: a_favor|en_contra|depende|ni_ni]."
+          : TEXTO },
+    ], MODO === "sitio" ? 170 : 120);   // 170: el presupuesto del sitio; con 120 la etiqueta final se corta
     let valor = null;
-    if (MODO === "libre") {
+    if (MODO === "sitio") {
+      /* la misma lectura que postura() en el sitio */
+      const m = (txt || "").match(/\[POSTURA:?\s*(a_favor|en_contra|depende|ni_ni)/i);
+      valor = m ? m[1].toLowerCase() : null;
+    } else if (MODO === "libre") {
       /* sin número que extraer: el texto ES el dato */
       valor = null;
     } else if (MODO === "continuo") {
@@ -209,7 +220,7 @@ await Promise.all(Array.from({ length: 8 }, async () => {
       educacion: r.educacion, clase: r.clase, modo: MODO,
       resp: valor,
       /* en modo libre el texto completo es el insumo, no un vistazo para depurar */
-      crudo: (txt || "").slice(0, MODO === "libre" ? 600 : 80) });
+      crudo: (txt || "").replace(/\[POSTURA[^\]]*\]?/gi, "").trim().slice(0, ["libre", "sitio"].includes(MODO) ? 600 : 80) });
     process.stderr.write(".");
   }
 }));
