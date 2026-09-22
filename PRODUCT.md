@@ -1,29 +1,41 @@
-# PRODUCT.md — Army Dashboard (Build Day)
+# PRODUCT.md — ColombIA ¡Que Piensa!
 
 ## Qué es
-Visor de mando del enjambre: Fable/v4-pro planifica, 8 tropas deepseek-flash ejecutan,
-Jev juzga. El dashboard muestra el estado vivo de cada corrida: orden de batalla,
-tablero de operaciones (DAG en el tiempo), parte de guerra (eventos), munición
-(presupuesto) y veredictos de Jev.
+Simulador de opinión pública colombiana. 47.000 personas sintéticas construidas sobre microdatos del DANE (censo + Encuesta de Cultura Política 2023, 46.392 adultos). Cada voz tiene edad, sexo, departamento, educación y estrato reales en proporción. El usuario elige un departamento o el país, escribe una pregunta en sus palabras, y las voces responden.
 
-## Usuario y escena
-Daniel (comandante) y el público del Build Day. Aula oscura, proyector, laptops.
-Se mira de reojo mientras el enjambre trabaja y se proyecta en la demo de 2 min:
-debe leerse a 3 metros. Modo: **Operate**.
+## Para quién y cómo lo usa
+| Usuario | Uso |
+|---|---|
+| Ciudadano curioso | Entra por enlace, pregunta, juega, se va. Sin registro. |
+| Periodista / educador | Explora cómo variaría una opinión por región o perfil demográfico. |
+| Constructor (dev) | Lee este doc y extiende encima, respetando la sección "qué NO es". |
 
-## Verdad del producto (no inventable)
-- Datos reales de `army_events` (Supabase, proyecto DAN GPT) o `feed.json` local.
-- Rangos reales: General (Fable 5.1) / Oficial (Opus 5) / 8× deepseek-flash / juez Jev.
-- Presupuestos reales: DeepSeek $10, OpenRouter $10, Anthropic $100 (evento).
-- Nada de métricas fabricadas: si no hay corrida, estado vacío honesto.
+Restricciones de diseño: una sesión dura segundos y cuesta poco por visita. Tope de gasto diario de 10 USD aplicado en el servidor. Nada que exija cuenta, instalación ni onboarding.
 
-## Compromisos de marca
-- Español, wording corto y asertivo (preferencia explícita de Daniel).
-- Premium, NO "AI slop": prohibido neon-glow genérico, gradient text, progress rings.
-- Mundo visual: puesto de mando / war-room (pinneado por el brief: "army", "general").
-- Personalización real: fuente de datos, ritmo de refresco, acento, densidad.
+## Qué lo hace distinto
+- Opinión cruzada con demografía real del DANE, no con una muestra genérica.
+- Pregunta libre en lenguaje natural, no encuesta de opción múltiple.
+- Fallos medidos y publicados, no escondidos (ver abajo).
 
-## Supuestos declarados (inferidos del brief, corregibles)
-- Oscuro por escena (aula de noche + proyector), no por categoría.
-- Una sola pantalla sin scroll en desktop; apilado legible en móvil.
-- Corre como archivo estático: local (`python -m http.server`) y Vercel.
+## Qué NO es
+- **NO es una encuesta.** No tiene margen de error. Prohibido reportar resultados como "el 38% de los colombianos" con pretensión de representación estadística.
+- **NO sirve para campañas políticas ni segmentación de votantes.** Línea que no se cruza, sin excepciones.
+- **Fallos conocidos, medidos y visibles:**
+  | Fallo | Qué es | Estado |
+  |---|---|---|
+  | Sub-dispersión | Voces demasiado parecidas entre sí | Corregido con SSR: razón de desviación 0,77 → 0,98 (1,00 = ideal) |
+  | Sesgo | Modelo corrido: GLM ubica 38% en "muy insatisfecho" donde humanos ponen 18% | Medido, pendiente mitigar |
+  | Caricatura | La demografía predice opinión más de lo que predice en gente real | Medido, mitigable con contexto por voz |
+
+Cualquier uso que dependa de precisión encuestística está fuera de alcance por diseño.
+
+## Cómo sabemos si sirve
+- Una persona nueva pregunta y entiende la respuesta en menos de 2 minutos, sin ayuda.
+- Costo por sesión muy por debajo del tope diario de 10 USD bajo tráfico razonable.
+- Métricas de calidad de simulación (sesgo, dispersión) reportadas junto a cada resultado, no en un anexo.
+- La gente vuelve o comparte el enlace: señal de que jugó y le importó.
+
+## Qué sigue
+- Mitigar el sesgo del GLM (38% vs 18% en "muy insatisfecho").
+- Reducir la caricatura agregando contexto no demográfico a cada voz.
+- Panel visible por consulta con los fallos conocidos, para que nadie cite sin verlos.

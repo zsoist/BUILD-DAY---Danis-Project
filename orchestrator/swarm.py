@@ -122,6 +122,9 @@ BRAIN_MODEL = os.environ.get("BRAIN_MODEL", _CEREBRO)
 # Proveedores preferidos en OpenRouter, en orden. Los tres soportan el juego
 # completo de parámetros (salida estructurada, seed, penalizaciones) y son los
 # más baratos que lo hacen; `allow_fallbacks` deja salir de ahí si se caen.
+# dólares por millón de tokens; por encima de esto, otro proveedor
+MAX_PRECIO = {"prompt": float(os.environ.get("OR_MAX_PROMPT", "1.0")),
+              "completion": float(os.environ.get("OR_MAX_COMPLETION", "3.0"))}
 PROVEEDORES_OR = os.environ.get(
     "OPENROUTER_PROVIDERS", "DeepInfra,Morph,Crusoe"
 ).split(",")
@@ -201,7 +204,16 @@ async def llm(
         # nunca caemos ahí por accidente.
         af = afinado_de(model)
         prov = {"order": PROVEEDORES_OR, "require_parameters": True,
-                "allow_fallbacks": True}
+                "allow_fallbacks": True,
+                # Los prompts llevan trabajo del usuario. "deny" saca de la
+                # rotación a los proveedores que se reservan el derecho a
+                # entrenar con lo que les mandas.
+                "data_collection": "deny",
+                # Techo por petición, en dólares por millón de tokens. El mismo
+                # modelo y los mismos 25 tokens nos costaron 5.25e-06 con un
+                # proveedor y 7.25e-06 con otro: sin techo, una ruta cara pasa
+                # desapercibida hasta que aparece en la factura.
+                "max_price": MAX_PRECIO}
         if af.get("sort"):
             prov["sort"] = af["sort"]
         cuerpo = {"usage": {"include": True}, "provider": prov, **extra_or}

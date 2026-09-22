@@ -3,6 +3,32 @@ export const maxDuration = 60;  // los timeouts internos (hasta 30s) necesitan m
 // Corre en Vercel con las keys en variables de entorno: el navegador nunca ve
 // una key. FULL DeepSeek nativo primero; OpenRouter de respaldo.
 export const config = { maxDuration: 60 };
+// Política de enrutamiento de OpenRouter, en un solo sitio.
+//   data_collection: aquí viajan preguntas escritas por gente que no sabe que
+//     existe OpenRouter. "deny" saca de la rotación a quien se reserve el
+//     derecho a entrenar con ellas. Es lo mínimo decente para un sitio abierto.
+//   max_price: techo en dólares por millón de tokens. El mismo modelo y los
+//     mismos 25 tokens nos costaron 5.25e-06 con un proveedor y 7.25e-06 con
+//     otro; sin techo esa diferencia solo se ve en la factura.
+//   require_parameters: si el proveedor no soporta lo que pedimos, OpenRouter
+//     lo descarta EN SILENCIO. Esto obliga a enrutar solo a quien lo acepta.
+const RUTEO = {
+  require_parameters: true,
+  allow_fallbacks: true,
+  data_collection: "deny",
+  sort: "price",
+  max_price: {
+    prompt: Number(process.env.OR_MAX_PROMPT) || 1.0,
+    completion: Number(process.env.OR_MAX_COMPLETION) || 3.0,
+  },
+};
+// Atribución: OpenRouter la usa para sus rankings y para hablar contigo si algo
+// se sale de madre, en vez de cortarte sin avisar.
+const ATRIB = {
+  "HTTP-Referer": process.env.SITE_URL || "https://colombia-que-piensa.vercel.app",
+  "X-Title": "ColombIA ¡Que Piensa!",
+};
+
 export default async function handler(req, res) {
   // deadline global: el abort SIEMPRE debe ganar a la plataforma (10s/15s por
   // defecto): si el presupuesto se agota, salimos con 502 JSON, no con 504 opaco.
@@ -212,10 +238,11 @@ export default async function handler(req, res) {
       const timer = setTimeout(() => ctrl.abort(), Math.min(15000, restante()));
       const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST", signal: ctrl.signal,
-        headers: { Authorization: `Bearer ${orKey}`, "Content-Type": "application/json" },
+        headers: { Authorization: `Bearer ${orKey}`, "Content-Type": "application/json",
+                   ...ATRIB },
         body: JSON.stringify({ model: "deepseek/deepseek-v4.1-flash:online",
           messages, max_tokens: Math.min(max_tokens, 350), temperature: 0.3,
-          reasoning: { enabled: false } }),
+          reasoning: { enabled: false }, provider: RUTEO }),
       }).finally(() => clearTimeout(timer));
       const j = await r.json();
       const content = j?.choices?.[0]?.message?.content;
@@ -240,18 +267,33 @@ export default async function handler(req, res) {
   }
 
   const intentos = [];
+  // UNA sola API. OpenRouter trae respaldo entre modelos de fábrica: si el
+  // primero falla o está caído, pasa al siguiente en la misma petición. Eso
+  // reemplaza la doble ruta que había antes (DeepSeek nativo y luego
+  // OpenRouter), que eran dos llaves, dos formatos de error y dos facturas.
+  //
+  // El orden no es de marca sino de medición: DeepSeek gana 3 de 5 preguntas
+  // y empata 2 contra los datos del DANE simulando voces. GLM va de respaldo
+  // porque colapsa (amontona las voces en una opción), no porque sea peor
+  // modelo: en el enjambre gana él.
+  const MODELOS = (process.env.MODELOS_VOZ ||
+    "deepseek/deepseek-v4.1-flash,z-ai/glm-5.3-flash").split(",").map(s => s.trim());
+  if (orKey) intentos.push({
+    url: "https://openrouter.ai/api/v1/chat/completions", key: orKey,
+    body: { model: MODELOS[0], models: MODELOS, route: "fallback",
+            messages, max_tokens, temperature,
+            reasoning: { enabled: false }, provider: RUTEO,
+            usage: { include: true } },
+  });
+  // DeepSeek nativo queda como último recurso solo si alguien todavía tiene esa
+  // llave configurada; no hace falta ponerla.
   if (dsKey) intentos.push({
     url: "https://api.deepseek.com/chat/completions", key: dsKey,
     body: { model: "deepseek-flash", messages, max_tokens, temperature,
             thinking: { type: "disabled" } },
   });
-  if (orKey) intentos.push({
-    url: "https://openrouter.ai/api/v1/chat/completions", key: orKey,
-    body: { model: "deepseek/deepseek-v4.1-flash", messages, max_tokens,
-            temperature, reasoning: { enabled: false } },
-  });
   if (!intentos.length)
-    return res.status(500).json({ error: "sin keys: define DEEPSEEK_API_KEY u OPENROUTER_API_KEY en Vercel" });
+    return res.status(500).json({ error: "sin key: define OPENROUTER_API_KEY en Vercel" });
 
   let ultimo = "";
   for (const it of intentos) {
@@ -262,7 +304,8 @@ export default async function handler(req, res) {
       const timer = setTimeout(() => ctrl.abort(), Math.min(12000, restante()));
       const r = await fetch(it.url, {
         method: "POST", signal: ctrl.signal,
-        headers: { Authorization: `Bearer ${it.key}`, "Content-Type": "application/json" },
+        headers: { Authorization: `Bearer ${it.key}`, "Content-Type": "application/json",
+                   ...(it.url.includes("openrouter") ? ATRIB : {}) },
         body: JSON.stringify(it.body),
       }).finally(() => clearTimeout(timer));
       const j = await r.json();

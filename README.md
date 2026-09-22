@@ -1,145 +1,65 @@
 # ColombIA ¡Que Piensa!
 
-**Un país sintético al que le puedes preguntar cualquier cosa.**
+47 mil personas sintéticas sobre microdatos del DANE. Escoges departamento,
+preguntas, responden. **No es una encuesta**: no tiene margen de error.
 
-Cuarenta y siete mil personas sintéticas construidas sobre el censo y las
-encuestas del DANE. Escoges un departamento o el país entero, haces una
-pregunta, y responden como responderían: con su edad, su educación, su
-estrato, su región y sus contradicciones.
+## Estructura
 
-No es una encuesta. Es una simulación, y la diferencia importa —está explicada
-abajo y repetida en la propia herramienta.
-
-```
-https://<tu-dominio>        →  la herramienta, abierta a quien llegue
-```
-
----
-
-## Qué hay aquí
-
-| Carpeta | Qué es |
+| Ruta | Qué |
 |---|---|
-| `web/` | **El sitio.** Lo que se despliega. Un solo HTML y sus datos |
-| `api/opina.js` | La única función de servidor: habla con el modelo y guarda la llave |
-| `simcolombia/` | De dónde salen las personas: microdatos del DANE y su procesamiento |
-| `scripts/experimento/` | **Cómo sabemos si esto sirve.** El careo contra la realidad |
-| `seguridad/` | Barrido de credenciales y cierre de la base de datos |
-| `enjambre/` `orchestrator/` `dashboard/` | Herramienta interna de trabajo, no se despliega (ver abajo) |
+| `web/` | el sitio (lo que Vercel despliega) |
+| `api/opina.js` | única función de servidor; guarda la llave |
+| `simcolombia/` | microdatos del DANE y su procesamiento |
+| `scripts/experimento/` | cómo sabemos si sirve |
+| `seguridad/` | barrido de credenciales y cierre de Supabase |
+| `enjambre/` `orchestrator/` `dashboard/` | herramienta interna, no se despliega — [zsoist/SWARMS](https://github.com/zsoist/SWARMS) |
 
----
-
-## Correrlo en tu propia infraestructura
-
-Todo el proyecto vive en tres servicios y ninguno es obligatorio para probarlo
-en local.
-
-### 1. En tu máquina, sin nada
+## Correrlo
 
 ```bash
-cd web && python3 -m http.server 8377
+cd web && python3 -m http.server 8377     # local, sin backend
 ```
 
-Abre `localhost:8377`. Sin función de servidor, la herramienta pide una llave
-de OpenRouter en Ajustes y la guarda **en tu navegador**. Si prefieres no
-teclearla cada vez, ponla en `web/assets/local_keys.json`:
+Sin backend pide llave de OpenRouter en Ajustes, o la lees de
+`web/assets/local_keys.json` (ignorado por git, nunca se despliega).
 
-```json
-{ "openrouter": "sk-or-v1-…" }
-```
+En Vercel: importas el repo (`vercel.json` ya apunta a `web/`) y pones:
 
-Ese archivo está en `.gitignore` a propósito: **nunca se versiona ni se
-despliega**. Antes de cualquier commit, `./seguridad/barrer.sh` comprueba que
-no se te haya colado ninguna credencial.
+| Variable | Por defecto |
+|---|---|
+| `OPENROUTER_API_KEY` | — obligatoria |
+| `ALLOWED_ORIGINS` | tus dominios, separados por coma |
+| `OPENROUTER_DAILY_USD` | 10 |
+| `MAX_TOKENS_TECHO` | 260 |
+| `MODELOS_VOZ` | `deepseek/deepseek-v4.1-flash,z-ai/glm-5.3-flash` |
+| `OR_MAX_PROMPT` / `OR_MAX_COMPLETION` | 1.0 / 3.0 (USD por millón) |
 
-### 2. Vercel
+Una sola llave: todo pasa por OpenRouter, con respaldo automático entre modelos.
 
-El repo ya trae `vercel.json` apuntando a `web/`. Importas el repo y pones
-estas variables de entorno:
+Supabase es opcional (solo telemetría). Si la usas, aplica antes
+[`seguridad/cerrar_supabase.sql`](seguridad/cerrar_supabase.sql) —deja las
+tablas en solo-insertar— y comprueba con `./seguridad/comprobar.sh`.
 
-| Variable | Para qué | Obligatoria |
-|---|---|---|
-| `OPENROUTER_API_KEY` | la única llave de modelo que hace falta | sí |
-| `OPENROUTER_DAILY_USD` | tope de gasto del día, por defecto 10 | no |
-| `ALLOWED_ORIGINS` | tus dominios, separados por coma | sí |
-| `MAX_TOKENS_TECHO` | techo de tokens por respuesta, por defecto 260 | no |
-| `APP_TOKEN` | si lo pones, el proxy se cierra a quien no lo traiga | no |
-| `SUPABASE_URL` + `SUPABASE_PUBLISHABLE_KEY` | telemetría de uso | no |
+## Qué modelo y por qué
 
-**Una sola llave.** El proyecto habla con DeepSeek, GLM o cualquier otro modelo
-a través de OpenRouter, así que cambiar de modelo es cambiar un nombre, no una
-integración.
-
-### 3. Supabase (opcional)
-
-Solo guarda telemetría: cuánto se gastó y qué se preguntó. La herramienta
-funciona sin ella. Si la usas, aplica primero
-[`seguridad/cerrar_supabase.sql`](seguridad/cerrar_supabase.sql): deja las
-tablas en **solo insertar**, porque la llave del navegador es pública por
-diseño y sin eso cualquiera podría leer o borrar lo guardado. Comprueba con
-`./seguridad/comprobar.sh`.
-
-### 4. Cloudflare
-
-Apuntas el dominio a Vercel y añades el dominio a `ALLOWED_ORIGINS`. Nada más.
-
----
-
-## Qué modelo usa y por qué
-
-Enrutamos por medición, no por marca. Todo pasa por OpenRouter:
-
-| Para qué | Modelo | El número que lo decide |
-|---|---|---|
-| Las voces del simulador | `deepseek-flash` | gana 3 de 5 preguntas y empata 2 contra los datos del DANE |
-| El enjambre de trabajo | `z-ai/glm-5.3-flash` | 0% de respuestas vacías contra 17% de DeepSeek Flash |
-| El juez barato | `typesafe/jev-1.13` | ~$0.00002 por revisión |
-
-El mismo rasgo que hace a GLM fiable escribiendo código lo hace malo fingiendo
-desacuerdo: colapsa hacia la respuesta más probable. No hay un modelo mejor,
-hay tareas distintas. La evidencia y sus límites están en
+Por medición, no por marca. Detalle en
 [`scripts/experimento/README.md`](scripts/experimento/README.md).
 
----
+| Para | Modelo | El número |
+|---|---|---|
+| voces | `deepseek-flash` | gana 3 de 5 preguntas, empata 2, contra el DANE |
+| enjambre | `z-ai/glm-5.3-flash` | 0% de respuestas vacías vs 17% |
+| juez | `typesafe/jev-1.13` | ~$0.00002 por revisión |
 
-## Honestidad sobre qué es esto
+## Los fallos, medidos
 
-**No es una encuesta y no tiene margen de error.** Son modelos de lenguaje
-imitando a personas, y eso falla de maneras conocidas que medimos en vez de
-esconder:
-
-- **Sub-dispersión**: las voces sintéticas solían opinar más parecido entre sí
-  que los colombianos reales. Se corrigió con SSR —la persona habla libre y la
-  escala se reconstruye después— y la razón de desviación pasó de 0.77 a 0.98,
-  donde 1.00 es lo ideal.
-- **Sesgo**: aun con la dispersión correcta, un modelo puede estar
-  sistemáticamente corrido. GLM pone el 38% de las voces en "muy insatisfecho"
-  donde los humanos ponen el 18%.
-- **Caricatura**: que la identidad demográfica prediga la opinión *más* de lo
-  que la predice en gente real.
-
-Todo esto se mide contra la Encuesta de Cultura Política 2023 del DANE:
+- **Sub-dispersión** — corregida con SSR: razón de desviación 0.77 → 0.98 (1.00 ideal).
+- **Sesgo** — GLM pone 38% en "muy insatisfecho" donde los humanos ponen 18%.
+- **Caricatura** — que la demografía prediga la opinión más que en gente real.
 
 ```bash
-node scripts/experimento/careo_ecp.mjs 160 P5301 /tmp/libre.json libre
-uv run --with pyreadstat --with pandas --python 3.12 python scripts/experimento/ssr.py /tmp/libre.json
+node scripts/experimento/careo_ecp.mjs 160 P5301 /tmp/l.json libre
+uv run --with pyreadstat --with pandas --python 3.12 python scripts/experimento/ssr.py /tmp/l.json
 ```
 
-**No se usa para campañas ni para segmentar votantes.** El método completo está
-en [`METODO.md`](METODO.md).
-
----
-
-## La herramienta interna
-
-`enjambre/`, `orchestrator/` y `dashboard/` son el enjambre de agentes con el
-que se construyó buena parte de esto: un modelo bueno reparte el trabajo,
-varios baratos lo ejecutan en paralelo, un juez de centavos revisa.
-
-No se despliega y no tiene nada que ver con ColombIA. Vive empaquetado y
-aparte en **[zsoist/SWARMS](https://github.com/zsoist/SWARMS)**; aquí queda
-para trabajar en local:
-
-```bash
-python enjambre/servir.py        # el visor, en localhost
-```
+No se usa para campañas ni segmentación de votantes. Método: [`METODO.md`](METODO.md).
