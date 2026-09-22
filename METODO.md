@@ -184,6 +184,43 @@ Dicho sin adornos: en la pregunta contra la que afinamos, el simulador apenas le
 gana al azar; en la que nunca tocamos, le gana con claridad. Esa asimetría es
 información honesta sobre dónde estamos, y es el tipo de control que la
 literatura exige y que la mayoría de los trabajos del sector omite.
+
+### Un método que probamos y descartamos (y por qué contarlo importa)
+
+La literatura psicométrica sugiere una idea elegante: **sacar la escala del
+modelo**. En vez de darle cinco opciones etiquetadas —que arrastran sesgos de
+orden, de etiqueta y de atracción al punto medio— se le pide una intensidad
+continua de 0 a 100, y la conversión a 1-5 la hace después un árbol de respuesta
+al ítem (IRTree) con umbrales propios de cada persona: estilo extremo,
+aquiescencia y propensión a opinar. Lo implementamos
+(`scripts/experimento/irtree.py` y `careo_irtree.py`).
+
+En la pregunta contra la que se calibró, el resultado fue espectacular:
+
+| | humanos | IRTree calibrado |
+|---|---|---|
+| media | 2.70 | 2.68 |
+| desviación estándar | 1.07 | 1.08 (**razón 1.01**) |
+| "no sé" | 4.2% | 4.1% |
+| **W1** | — | **0.019** |
+
+Dispersión resuelta, tasa de "no sé" resuelta, distribución casi calcada. Era
+tentador declararlo un éxito y publicarlo.
+
+**Pero en la pregunta que el modelo nunca vio, W1 = 0.272 — peor que contestar
+al azar.** La calibración global había absorbido la dificultad propia de *esa*
+pregunta: al trasladar los umbrales para ajustar una, se desajustan todas las
+demás. Es el aviso de la literatura sobre el "jardín de senderos que se
+bifurcan" hecho carne: la configuración óptima cambia con cada pregunta, y
+calibrar por pregunta es enseñarle al examen.
+
+**Conclusión, contra nuestro propio interés**: el método sencillo —pedir la
+categoría y darle a cada persona un estilo de respuesta en el prompt— generaliza
+mejor (W1 0.056 en la pregunta no tocada) que el método sofisticado (0.272).
+Por eso el IRTree **no está en producción**; queda en el repositorio como
+resultado negativo documentado y reproducible. Para que funcionara haría falta
+estimar parámetros por ítem, y eso exige tener ya las respuestas humanas de cada
+pregunta — es decir, exige no necesitar el simulador.
 - **Nadie está satisfecho**: 0% elige 4 o 5, cuando el 18.8% de los colombianos
   sí lo hace.
 - **Nadie dice "no sé"**: 0% frente al 4.2% real.

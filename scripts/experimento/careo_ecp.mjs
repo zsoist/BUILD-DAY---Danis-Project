@@ -94,10 +94,23 @@ async function flash(messages, max_tokens = 120) {
   return "";
 }
 
-/* La instrucción imita a un encuestador del DANE leyendo la tarjeta, no a un chat. */
-const INSTR = "\nTe está encuestando el DANE en la puerta de tu casa. Contesta la pregunta "
+/* Dos modos.
+   CATEGÓRICO: el encuestador lee la tarjeta y la persona escoge una de las cinco
+   opciones. Es lo que hace todo el mundo — y arrastra los sesgos de formato
+   (orden, etiqueta, atracción al punto medio) documentados en la literatura.
+   CONTINUO: la persona NUNCA ve las cinco opciones. Da una intensidad de 0 a 100
+   y la discretización la hace después el IRTree en Python, con umbrales propios
+   de cada quien. Así el sesgo de formato desaparece por construcción. */
+const MODO = (process.argv[5] || "categorico").toLowerCase();
+const INSTR_CAT = "\nTe está encuestando el DANE en la puerta de tu casa. Contesta la pregunta "
   + "tal como te la leen, eligiendo UNA sola opción de la escala. Responde con el NÚMERO "
   + "y nada más (o 99 si de verdad no sabes). Sin explicaciones.";
+const INSTR_CON = "\nTe está encuestando el DANE en la puerta de tu casa. IGNORA cualquier lista "
+  + "de opciones numeradas que traiga la pregunta: aquí te lo preguntan con un termómetro. "
+  + "Responde SOLO con un número entero de 0 a 100, donde 0 es lo más negativo que podrías "
+  + "sentir sobre eso y 100 lo más positivo, y 50 es que te da exactamente igual. "
+  + "Contesta con el número y nada más, sin explicaciones.";
+const INSTR = MODO === "continuo" ? INSTR_CON : INSTR_CAT;
 
 const out = [];
 const cola = [...muestra];
@@ -108,12 +121,21 @@ await Promise.all(Array.from({ length: 8 }, async () => {
       { role: "system", content: mod.persona(r, DOS[r.dpto] || {}) + INSTR },
       { role: "user", content: TEXTO },
     ]);
-    const m = (txt || "").match(/\b(99|[1-5])\b/);
+    let valor = null;
+    if (MODO === "continuo") {
+      const m = (txt || "").match(/\b(\d{1,3})\b/);
+      const v = m ? Number(m[1]) : null;
+      valor = v !== null && v >= 0 && v <= 100 ? v : null;
+    } else {
+      const m = (txt || "").match(/\b(99|[1-5])\b/);
+      valor = m ? Number(m[1]) : null;
+    }
     out.push({ id: r.id, edad: r.edad, sexo: r.sexo, dpto: r.dpto,
-      educacion: r.educacion, clase: r.clase, resp: m ? Number(m[1]) : null, crudo: (txt || "").slice(0, 80) });
+      educacion: r.educacion, clase: r.clase, modo: MODO,
+      resp: valor, crudo: (txt || "").slice(0, 80) });
     process.stderr.write(".");
   }
 }));
-fs.writeFileSync(SALIDA, JSON.stringify({ codigo: CODIGO, pregunta: TEXTO, n: out.length,
+fs.writeFileSync(SALIDA, JSON.stringify({ codigo: CODIGO, pregunta: TEXTO, modo: MODO, n: out.length,
   fecha: new Date().toISOString(), respuestas: out }, null, 1));
 console.error(`\nOK — ${out.length} respuestas → ${SALIDA}`);
