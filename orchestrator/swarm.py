@@ -265,8 +265,8 @@ Asigna "thinking" por tarea — optimiza el costo: "none" para tareas mecánicas
 "high" SOLO para razonamiento pesado (matemáticas, pruebas, algoritmos, debugging \
 sutil). Escribe restricciones MEDIBLES y sin ambigüedad ("máximo 250 caracteres", \
 no "de 250 caracteres"): un inspector automático las verificará literalmente. \
-Responde SOLO JSON:
-{{"tasks": [{{"id": "t1", "prompt": "...", "deps": [], "thinking": "none", \
+Añade un campo "titulo" por tarea: frase corta en español, en infinitivo, de máximo 45 caracteres, sin jerga técnica y sin repetir el id — es lo que verá una persona en el visor para entender qué hace la tarea. Responde SOLO JSON:
+{{"tasks": [{{"id": "t1", "prompt": "...", "deps": [], "titulo": "redactar la introducción", "thinking": "none", \
 "filename": "opcional.ext"}}]}}
 Máximo {max_tasks} tareas.
 
@@ -360,19 +360,70 @@ def fallas_a_nota(fallas):
 # dispara el sesgo de posición. Así que el juez solo opina donde acierta; lo
 # demás lo deciden las compuertas deterministas (que compile, que parsee, que
 # el match sea único), que no se equivocan.
-SIN_JUEZ = (
-    "devuelve solo json", "json crudo", "verifica", "auditoría", "auditoria",
-    "hallazgos", "parches", "buscar", "reemplazar", "cifras", "exactitud",
+# La lista de palabras prohibidas se retiró: era frágil (una tarea de prosa que
+# menciona 'verifica' perdía el juez; una de datos que no la mencionaba lo
+# gastaba). La decisión ahora es por SEÑALES y devuelve el motivo, medido en
+# calibrar_juez.py: prosa 8/8, código 2/5, lote de parches 1/10, datos 0/7.
+
+# Entregable verificable por máquina → lo deciden las compuertas deterministas
+# (que compile, que parsee, que el match sea único), no el juez.
+_SENAL_VERIFICABLE = (
+    "devuelve solo json", "json crudo", "parches", "buscar", "reemplazar",
+    "cifras exactas", "cifras", "auditoría", "auditoria", "hallazgos",
+    "código completo", "ejecutable",
 )
 
+# Prosa sujeta a criterio → aquí el juez acierta 8 de 8: sí gastar la llamada.
+_SENAL_PROSA = (
+    "redacta", "resume", "explica", "guion", "guión", "narrativa",
+    "dossier", "escribe",
+)
 
-def juez_aplica(task_prompt: str) -> bool:
-    """¿Vale la pena gastar una llamada de juez en esta tarea?"""
+_MOTIVO_VERIFICABLE = "entregable verificable por máquina: lo deciden las compuertas"
+_MOTIVO_PROSA = "prosa: el juez acierta 8 de 8 aquí"
+_MOTIVO_PROSA_PROBABLE = "sin señal clara: prosa es lo más probable y el juez acierta 8 de 8 ahí"
+
+# Extensiones de código o datos → verificable por máquina; de texto → prosa.
+_EXT_VERIFICABLE = (".py", ".js", ".json", ".yaml", ".csv")
+_EXT_PROSA = (".md", ".txt")
+
+
+def clasificar_juez(task_prompt: str, filename: str = "") -> tuple[bool, str]:
+    """¿Vale la pena gastar una llamada de juez? Devuelve (aplica, motivo).
+
+    Clasificación por señales del entregable, no por palabras prohibidas:
+    verificable por máquina → compuertas deterministas; prosa → juez (8/8);
+    sin señal clara → decide el filename de la tarea.
+    """
     p = task_prompt.lower()
-    return not any(m in p for m in SIN_JUEZ)
+    fn = (filename or "").lower()
+
+    # El TIPO DE ENTREGABLE manda sobre el verbo del encargo: "escribe la
+    # función que ordena" es escritura, pero lo que sale es código, y el código
+    # lo juzga el intérprete mejor que el juez (medido: 2 aciertos de 5).
+    if fn.endswith(_EXT_VERIFICABLE):
+        return False, _MOTIVO_VERIFICABLE
+
+    for s in _SENAL_VERIFICABLE:
+        if s in p:
+            return False, _MOTIVO_VERIFICABLE
+
+    if fn.endswith(_EXT_PROSA):
+        return True, _MOTIVO_PROSA
+
+    for s in _SENAL_PROSA:
+        if s in p:
+            return True, _MOTIVO_PROSA
+
+    return True, _MOTIVO_PROSA_PROBABLE
 
 
-async def jev_review(task_prompt: str, output: str):
+def juez_aplica(task_prompt: str, filename: str = "") -> bool:
+    """Compatibilidad: firma nueva, solo el booleano."""
+    return clasificar_juez(task_prompt, filename)[0]
+
+
+async def jev_review(task_prompt: str, output: str, filename: str = ""):
     """Jev como inspector Y enrutador: UNA llamada, tres decisiones tipadas.
 
     - cumple (noul): ¿el output cumple la tarea? → gate
@@ -383,7 +434,12 @@ async def jev_review(task_prompt: str, output: str):
     ~$0.00003 por inspección; output tipado, sin parsing, sin loops de juez.
     Presupuesto: JEV_MAX_CALLS (env, def. 60) por corrida; agotado → None (gate() local).
     """
-    if not juez_aplica(task_prompt) or not jev_budget_ok():
+    aplica, motivo = clasificar_juez(task_prompt, filename)
+    if not aplica:
+        # no es un fallo: es una decisión. El visor muestra el motivo para que
+        # el usuario entienda por qué esta tarea no tiene veredicto.
+        return {"sin_juez": True, "motivo": motivo}
+    if not jev_budget_ok():
         return None
     try:
         import httpx
@@ -595,7 +651,11 @@ class Swarm:
                                     model=model, system=WORKER_CONSTITUTION,
                                     thinking=think)
                     continue
-                jv = await jev_review(t["prompt"], out)
+                jv = await jev_review(t["prompt"], out, t.get("filename", ""))
+                if jv and jv.get("sin_juez"):
+                    self.log({"event": "jev", "id": t["id"], "p": None,
+                              "sin_juez": True, "motivo": jv["motivo"]})
+                    break
                 if jv is None:  # Jev caído → gate heurístico local, sin reintentos ciegos
                     if not gate(out) and attempt == 0:
                         out = await llm(f"Este output falló ({out[:300]!r}). Entrega el "
@@ -701,7 +761,9 @@ class Swarm:
             j = jevs.get(tid)
             fn = tasks and next((t.get("filename") for t in tasks if t["id"] == tid), None)
             print(f"   • {self.ship_dir / (fn or tid + '.md')}"
-                  + (f"  [Jev {j['p']*100:.0f}%]" if j else ""))
+                  + (f"  [sin juez: {j.get('motivo','')[:34]}]" if j and j.get("sin_juez")
+                     else f"  [Jev {j['p']*100:.0f}%]" if j and j.get("p") is not None
+                     else ""))
         print(f"   • {self.run_dir}/FINAL.md  (entregable ensamblado)")
         # drenar telemetría antes de que muera el loop (o el 'done' nunca llega)
         self._flush()
