@@ -369,31 +369,25 @@ export default async function handler(req, res) {
   }
 
   const intentos = [];
-  // UNA sola API. OpenRouter trae respaldo entre modelos de fábrica: si el
-  // primero falla o está caído, pasa al siguiente en la misma petición. Eso
-  // reemplaza la doble ruta que había antes (DeepSeek nativo y luego
-  // OpenRouter), que eran dos llaves, dos formatos de error y dos facturas.
+  // UNA sola llave (OpenRouter), pero un intento por modelo y NO el arreglo
+  // `models`: con `models` OpenRouter manda el MISMO cuerpo a todos, y cada
+  // modelo necesita su propio parámetro de razonamiento. Medido, 6 llamadas
+  // con max_tokens 128:
+  //   deepseek  effort:"low"   → razona los 128 tokens, 5 de 6 VACÍAS
+  //   deepseek  enabled:false  → 1 de 6 vacías
+  //   glm       enabled:false  → 400 "Reasoning is mandatory"
+  // No existe un cuerpo que sirva bien a los dos.
   //
-  // El orden no es de marca sino de medición: DeepSeek gana 3 de 5 preguntas
-  // y empata 2 contra los datos del DANE simulando voces. GLM va de respaldo
-  // porque colapsa (amontona las voces en una opción), no porque sea peor
-  // modelo: en el enjambre gana él.
+  // El orden es por medición: DeepSeek gana 3 de 5 preguntas y empata 2
+  // contra los datos del DANE simulando voces; GLM va de respaldo.
+  const RAZONA = { deepseek: { enabled: false }, glm: { effort: "low" } };
+  const razonDe = m => m.includes("glm") ? RAZONA.glm : RAZONA.deepseek;
   const MODELOS = (process.env.MODELOS_VOZ ||
-    "deepseek/deepseek-v4.1-flash,z-ai/glm-5.3-flash").split(",").map(s => s.trim());
-  if (orKey) intentos.push({
+    "deepseek/deepseek-v4.1-flash,z-ai/glm-5.3-flash").split(",").map(s => s.trim()).filter(Boolean);
+  if (orKey) for (const m of MODELOS) intentos.push({
     url: "https://openrouter.ai/api/v1/chat/completions", key: orKey,
-    // reasoning effort "low" y no {enabled:false}: con respaldo entre modelos,
-    // OpenRouter manda el MISMO cuerpo al modelo al que enrute, y GLM rechaza
-    // apagar el razonamiento con 400 "Reasoning is mandatory". Medido:
-    //   deepseek  enabled:false $0.0000050 · effort:low $0.0000124
-    //   glm       enabled:false 400        · effort:low $0.0000071
-    // Cuesta $0.0000074 más por llamada en DeepSeek y evita que el respaldo
-    // falle entero. Y omitirlo sale peor: GLM sin effort razona por defecto y
-    // cuesta 3 veces más que con "low".
-    body: { model: MODELOS[0], models: MODELOS, route: "fallback",
-            messages, max_tokens, temperature,
-            reasoning: { effort: "low" }, provider: RUTEO,
-            usage: { include: true } },
+    body: { model: m, messages, max_tokens, temperature,
+            reasoning: razonDe(m), provider: RUTEO, usage: { include: true } },
   });
   // DeepSeek nativo queda como último recurso solo si alguien todavía tiene esa
   // llave configurada; no hace falta ponerla.
@@ -419,7 +413,9 @@ export default async function handler(req, res) {
         body: JSON.stringify(it.body),
       }).finally(() => clearTimeout(timer));
       const j = await r.json();
-      const content = j?.choices?.[0]?.message?.content;
+      // Un espacio no es una respuesta: el razonamiento se comió el presupuesto.
+      // Se prueba el siguiente modelo en vez de devolver una voz en blanco.
+      const content = (j?.choices?.[0]?.message?.content || "").trim() || null;
       // 422 y no un texto de relleno: el cliente ya maneja una voz que no
       // contesta ("no contestó"). Inventarle una frase sería fabricar una voz.
       const rev = content ? revisarSalida(content, { urls: false }) : null;
