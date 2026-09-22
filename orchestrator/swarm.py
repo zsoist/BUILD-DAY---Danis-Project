@@ -95,13 +95,19 @@ class Budget:
 budget = Budget()
 
 
+# Modelo por defecto de toda la tropa: se cambia con la variable de entorno
+# WORKER_MODEL (p.ej. WORKER_MODEL=z-ai/glm-5.3-flash) sin tocar código.
+WORKER_MODEL = os.environ.get("WORKER_MODEL", "deepseek-flash")
+
+
 async def llm(
     prompt: str,
-    model: str = "deepseek-flash",
+    model: str = WORKER_MODEL,
     system: str | None = None,
     thinking: str = "none",
 ) -> str:
-    """Una llamada worker. DeepSeek nativo primero, OpenRouter fallback.
+    """Una llamada worker. DeepSeek nativo primero (salvo slugs de OpenRouter:
+    cualquier modelo con '/' va DIRECTO a OpenRouter), OpenRouter fallback.
 
     `thinking` (por tarea, lo asigna el planner): "none" apaga el razonamiento
     (flash lo trae ON por defecto — si no se apaga, cada worker paga tokens de
@@ -110,29 +116,49 @@ async def llm(
     messages = ([{"role": "system", "content": system}] if system else []) + [
         {"role": "user", "content": prompt}
     ]
+    # Un modelo cuyo nombre contiene '/' es un slug de OpenRouter (p.ej.
+    # "z-ai/glm-5.3-flash"): NO existe en la API nativa de DeepSeek, así que
+    # intentarlo primero sólo gastaría un round-trip fallido por llamada.
+    es_openrouter = "/" in model
     if thinking == "none":
         extra_ds = {"reasoning_effort": "none"}
-        extra_or = {"reasoning": {"enabled": False}}
+        # Para los slugs de OpenRouter no vale {"reasoning": {"enabled": False}}:
+        # GLM lo rechaza con 400 "Reasoning is mandatory for this endpoint and
+        # cannot be disabled.". Lo que SÍ funciona es effort "low"; si no se pide
+        # effort bajo, el razonamiento se come el max_tokens y `content` vuelve VACÍO.
+        if es_openrouter:
+            extra_or = {"reasoning": {"effort": "low"}}
+        else:
+            extra_or = {"reasoning": {"enabled": False}}
         temperature = 0.3
     else:
         extra_ds = {"reasoning_effort": thinking}
         extra_or = {"reasoning": {"effort": thinking}}
         temperature = 0.6  # recomendación paper R1 para modo razonamiento
-    try:
-        r = await deepseek.chat.completions.create(
-            model=model, messages=messages, timeout=600,
-            temperature=temperature, extra_body=extra_ds,
-        )
-        budget.add("deepseek", model, r.usage)
-    except RuntimeError:
-        raise  # techo de presupuesto: no hacer fallback, parar
-    except Exception:
+    if es_openrouter:
+        # Slug de OpenRouter: directo allí, sin pasar por DeepSeek nativo.
         r = await openrouter.chat.completions.create(
-            model=OPENROUTER_EQUIV.get(model, f"deepseek/{model}"),
-            messages=messages, timeout=600, temperature=temperature,
+            model=model, messages=messages, timeout=600,
+            temperature=temperature,
             extra_body={"usage": {"include": True}, **extra_or},
         )
         budget.add("openrouter", model, r.usage)
+    else:
+        try:
+            r = await deepseek.chat.completions.create(
+                model=model, messages=messages, timeout=600,
+                temperature=temperature, extra_body=extra_ds,
+            )
+            budget.add("deepseek", model, r.usage)
+        except RuntimeError:
+            raise  # techo de presupuesto: no hacer fallback, parar
+        except Exception:
+            r = await openrouter.chat.completions.create(
+                model=OPENROUTER_EQUIV.get(model, f"deepseek/{model}"),
+                messages=messages, timeout=600, temperature=temperature,
+                extra_body={"usage": {"include": True}, **extra_or},
+            )
+            budget.add("openrouter", model, r.usage)
     return r.choices[0].message.content or ""
 
 
