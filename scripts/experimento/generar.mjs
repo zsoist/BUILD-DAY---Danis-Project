@@ -51,7 +51,7 @@ const mod = new Function("OPC", fuente + "\nreturn {persona,sondeoInstr,marcoDe,
 
 /* ── residentes: misma muestra determinista para A y B ── */
 const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "web/residents_v2.json"), "utf8"));
-const residentes = (RES.residentes || RES).filter(r => r.edad >= 16);
+const residentes = (RES.residentes || RES).filter(r => r.edad >= 18);   // universo ECP, igual que el sitio
 const DOS = JSON.parse(fs.readFileSync(path.join(ROOT, "web/dossiers.json"), "utf8"));
 const MARG = JSON.parse(fs.readFileSync(path.join(ROOT, "web/marginals.json"), "utf8")).departamentos;
 

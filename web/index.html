@@ -449,7 +449,7 @@ let cfg={orkey:""};
 try{cfg={...cfg,...JSON.parse(localStorage.getItem("sim-cfg")||"{}")};
   if(!cfg.orkey){const ag=JSON.parse(localStorage.getItem("ag-cfg")||"{}");if(ag.orkey)cfg.orkey=ag.orkey;}}catch(e){}
 // clave local (solo existe en la máquina de Daniel; gitignoreada)
-if(!cfg.orkey)fetch("assets/local_keys.json").then(r=>r.json())
+if(!cfg.orkey&&/^(localhost|127\.)/.test(location.hostname))fetch("assets/local_keys.json").then(r=>r.json())
   .then(d=>{if(d.openrouter)cfg.orkey=d.openrouter}).catch(()=>{});
 $("#gear").onclick=e=>{e.stopPropagation();const c=$("#cfg");c.style.display=c.style.display==="none"?"block":"none"};
 document.addEventListener("click",e=>{if(!$("#cfg").contains(e.target)&&e.target.id!=="gear")$("#cfg").style.display="none"});
@@ -542,7 +542,7 @@ async function mesa(cod){
   if(PAIS!==owner||!document.body.contains(el)){finMesa();return;}
   el.innerHTML=`<div class="ronda">— MESA DE ${esc(d.nombre).toUpperCase()} —</div>`;
   path?.classList.add("hot");
-  const sample=RES.filter(r=>r.dpto===cod&&r.edad>=16).sort(()=>Math.random()-.5).slice(0,4);
+  const sample=RES.filter(r=>r.dpto===cod&&r.edad>=18).sort(()=>Math.random()-.5).slice(0,4);
   el.insertAdjacentHTML("beforeend",`<div class="seats"></div><div class="ticker"><span class="tickertxt">llegan los de ${esc(d.nombre)}…</span></div>`);
   const _seats=el.querySelector(".seats");
   sample.forEach((r,i)=>{const s=document.createElement("div");s.className="seat";
@@ -1449,7 +1449,7 @@ let CTX={q:null,txt:null,ok:false};  // fail-closed: sin verificación tipada de
 /* CACHE COMPARTIDA (anti-gasto): 1) contexto.json pre-horneado con las sugerencias
    (contexto() corrido sobre las 5 de cada dpto + "Toda Colombia" antes de las 6pm);
    2) localStorage por pregunta: si alguien ya pagó la búsqueda, los demás la reusan.
-   Un hit devuelve texto SIN disparar ninguna de las 3 llamadas facturables. */
+   Un hit devuelve texto SIN disparar ninguna de las 2 llamadas facturables (búsqueda y verificación). */
 const CTX_LS="sim-ctx-v1",CTX_TTL=6*3600*1000;
 let CTX_ESTATICO={},CTX_STATIC_P=null;
 function cargarCtxStatic(){
@@ -1536,24 +1536,22 @@ async function contexto1(q){
   // real ni con texto desmedido — el cupo se cobra al recibir, no al responder el 400
   if(typeof q!=="string"||!q.trim()||q.length>400){CTX={q:null,txt:null,ok:null};return null;}
   try{
-    const SIS="HOY es "+hoyCO()+". Interpreta el TEMA como lo entendería un colombiano de a pie (ej: 'Millonarios o Santa Fe' es la rivalidad futbolera de siempre, principalmente fútbol masculino, no solo la noticia del día). Busca noticias recientes de Colombia y devuelve SOLO 2-3 viñetas ULTRA CORTAS (máx 16 palabras) con hechos EXPLÍCITOS de fuentes, cada una cerrando con el medio entre paréntesis, ej (El Tiempo) — JAMÁS URLs. Si un dato no cuadra con la fecha, exclúyelo. Empieza directo con '- '. PROHIBIDO opinar o presentarte. Sin nada: SIN_NOVEDADES.";
+    const SIS="HOY es "+hoyCO()+". Interpreta el TEMA como lo entendería un colombiano de a pie (ej: 'Millonarios o Santa Fe' es la rivalidad futbolera de siempre, principalmente fútbol masculino, no solo la noticia del día). Busca noticias recientes de Colombia y devuelve SOLO de 4 a 6 viñetas ULTRA CORTAS (máx 16 palabras) con hechos EXPLÍCITOS de fuentes, cada una cerrando con el medio entre paréntesis, ej (El Tiempo) — JAMÁS URLs. Si un dato no cuadra con la fecha, exclúyelo. Empieza directo con '- '. PROHIBIDO opinar o presentarte. Sin nada: SIN_NOVEDADES.";
     const pide=u=>fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({online:true,max_tokens:260,messages:[
           {role:"system",content:SIS},{role:"user",content:u}]})})
       .then(r=>r.ok?r.json():null).then(j=>j?.content||"").catch(()=>"");
-    // CINCO búsquedas en paralelo, cada una con su lente
+    /* UNA búsqueda que cubre las cinco lentes. Eran cinco en paralelo: ~$0.10 y
+       ~30 s por pregunta, o sea ~100 preguntas al día con el tope de $10 para
+       todo el público. Una sola: ~$0.02 y un tercio de la espera. */
     const terr=SEL.size&&SEL.size<=4?[...SEL].map(c=>MARG[c]?.nombre).filter(Boolean).join(", "):null;
-    const brotes=await Promise.all([
-      pide("TEMA: "+q+" — la noticia del momento (Colombia, "+mesCO()+")"),
-      pide("TEMA: cifras y datos duros sobre: "+q+" (Colombia: precios, porcentajes, fechas)"),
-      pide("TEMA: qué dice la gente de a pie y las redes sobre: "+q+" (Colombia: quejas, memes, sentir popular)"),
-      pide("TEMA: el fondo: qué ha pasado antes en Colombia con: "+q+" (historia corta, antecedentes)"),
-      pide(terr?("TEMA: cómo toca esto a "+terr+": "+q):("TEMA: diferencias regionales en Colombia sobre: "+q)),
-    ]);
-    const c1=brotes.join("\n"),c2="";
+    const c1=await pide("TEMA: "+q+" (Colombia, "+mesCO()+"). Cubre, una viñeta por lente: "+
+      "(1) la noticia del momento; (2) cifras y datos duros: precios, porcentajes, fechas; "+
+      "(3) qué dice la gente de a pie y las redes; (4) el antecedente en Colombia; "+
+      "(5) "+(terr?"cómo toca esto a "+terr:"diferencias regionales")+".");
     const norm=s=>s.toLowerCase().normalize("NFD").replace(/[^a-z0-9 ]/g,"").slice(0,52);
     const vistos=new Set(),vi=[];
-    for(const s of (c1+"\n"+c2).split("\n").map(x=>x.trim())){
+    for(const s of c1.split("\n").map(x=>x.trim())){
       if(!s.startsWith("- ")||/SIN_NOVEDADES/.test(s))continue;
       const k=norm(s);
       if([...vistos].some(v=>v.startsWith(k.slice(0,34))||k.startsWith(v.slice(0,34))))continue;
@@ -1648,7 +1646,9 @@ function muestraDe(sel,n){
   while(out.length<n&&guardia++<n*200){
     let x=Math.random()*tot,cod=pesos[0][0];
     for(const [c,w] of pesos){x-=w;if(x<=0){cod=c;break}}
-    const pool=RES.filter(r=>r.dpto===cod&&r.edad>=16&&!usados.has(r.id));
+    /* 18+: es el universo de la ECP contra la que se valida todo; con 16+ el
+       sitio mostraba voces que ninguna medición respalda */
+    const pool=RES.filter(r=>r.dpto===cod&&r.edad>=18&&!usados.has(r.id));
     if(pool.length){const r=pool[Math.floor(Math.random()*pool.length)];
       usados.add(r.id);out.push(r);}
   }
