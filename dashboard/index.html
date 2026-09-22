@@ -49,7 +49,15 @@ canvas{image-rendering:pixelated; display:block}
 #app{min-height:100%; display:grid; gap:8px; padding:8px;
   grid-template-columns:332px minmax(0,1fr) 288px;
   grid-template-areas:"top top top" "agents flujo side" "agents board side"
-                      "agents feed ask"}
+                      "agents feed ask";
+  /* La columna de agentes es alta y abarca las tres filas del medio. Sin fijar
+     las filas, su sobrante se repartía entre ellas y dejaba huecos bajo cada
+     sección plegada; así todo el sobrante cae al final. */
+  grid-template-rows:auto auto auto 1fr}
+/* Cada panel mide lo que mide su contenido. Sin esto, una sección plegada se
+   estiraba para llenar la fila que definen las columnas altas de al lado y
+   dejaba una caja vacía enorme bajo su cabecera. */
+#flujo,#board,#feed,#ask{align-self:start}
 #top{position:sticky; top:8px; z-index:20}
 #agents{position:sticky; top:62px; max-height:calc(100vh - 78px)}
 
@@ -78,6 +86,21 @@ select,button,input{background:var(--panel2); color:var(--text); border:2px soli
 select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--work)}
 .pxbtn{font-family:"Silkscreen"; font-size:10px; box-shadow:2px 2px 0 #000a}
 .pxbtn:active{transform:translate(2px,2px); box-shadow:none}
+/* El distintivo hace dos trabajos: dice si estás viendo lo último y, cuando
+   no lo estás, es el botón que te devuelve. Un solo control, una sola mirada. */
+#vivo{font-family:"Silkscreen",monospace; font-size:9px; letter-spacing:1px;
+  padding:6px 10px; border:var(--px) solid var(--grid); background:var(--panel2);
+  color:var(--faint); cursor:default; white-space:nowrap; flex:0 0 auto}
+#vivo.envivo{border-color:var(--ok); color:var(--ok); background:#0f1d16}
+#vivo.envivo::before{content:"● "; animation:blink 1.1s steps(2) infinite}
+#vivo.ultima{border-color:var(--grid); color:var(--dim)}
+#vivo.atras{border-color:var(--work); color:var(--work); background:#1d1a0d;
+  cursor:pointer; box-shadow:2px 2px 0 #000a}
+#vivo.atras:hover{border-color:var(--accent); color:var(--accent)}
+@media(max-width:760px){#vivo{font-size:8px; padding:5px 7px}}
+/* la cabecera plegable ya pone el título: el <h2> original queda repetido
+   justo debajo. El contador que vivía en su <b> se mueve al resumen. */
+.pl-cont > h2:first-child{display:none}
 #lamp{font-family:"Silkscreen"; font-size:10px; color:var(--faint); display:flex; gap:6px; align-items:center}
 #lamp i{width:10px;height:10px;background:var(--faint)}
 #lamp.on{color:var(--ok)} #lamp.on i{background:var(--ok); animation:blink 1s steps(2) infinite}
@@ -268,6 +291,8 @@ animation:blink 1.2s steps(2) infinite}
     <span id="title">MIS AGENTES</span>
     <span id="mission">—</span>
     <select id="runsel" aria-label="Corrida"></select>
+    <!-- Responde "¿estoy viendo lo último?" y, si no, es el botón para volver -->
+    <button id="vivo" type="button" aria-live="polite"></button>
     <span id="lamp"><i></i><span id="lamptxt">LIVE</span></span>
     <span id="clock"></span>
     <button id="gear" class="pxbtn" aria-label="Ajustes">AJUSTES</button>
@@ -344,6 +369,8 @@ animation:blink 1.2s steps(2) infinite}
 <script src="leer_corrida.js"></script>
 <script src="flujo.js"></script>
 <script src="actividad.js"></script>
+<script src="plegable.js"></script>
+<script src="tarjeta.js"></script>
 <script src="detalle.js"></script>
 <script>
 /* ═══ config ═══ */
@@ -501,7 +528,9 @@ async function fetchRows(){
   finally{_fetching=false;}
 }
 function lamp(on){$("#lamp").classList.toggle("on",on);
-  $("#lamptxt").textContent=on?(UI.live||"LIVE"):(UI.offline||"OFFLINE");}
+  /* la lámpara dice si hay datos llegando; el distintivo de al lado dice si
+     estás mirando la última corrida. Eran dos "en vivo" y se pisaban. */
+  $("#lamptxt").textContent=on?(UI.live||"CONECTADO"):(UI.offline||"SIN CONEXIÓN");}
 
 /* ═══ render ═══ */
 function fmtT(ms,t0){const s=Math.max(0,(ms-t0)/1000);return s>=60?(s/60).toFixed(1)+"m":s.toFixed(0)+"s";}
@@ -547,8 +576,93 @@ function pintaSalud(s){
     '<div style="color:var(--faint);padding:8px">sin datos de salud</div>';
 }
 
+/* "20260922-131518-swarm" no le dice nada a nadie. Lo que ubica una corrida
+   es cuándo fue —en tiempo de persona, no en sello de reloj— y qué se pidió. */
+const MESES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+function fechaDe(id){
+  const m=/^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})?/.exec(id||"");
+  return m?new Date(+m[1],+m[2]-1,+m[3],+m[4],+m[5],+(m[6]||0)):null;
+}
+function cuandoFue(id){
+  const d=fechaDe(id); if(!d) return id;
+  const min=Math.round((Date.now()-d.getTime())/60000);
+  if(min<1)  return "ahora mismo";
+  if(min<60) return `hace ${min} min`;
+  const hoy=new Date(), mismoDia=d.toDateString()===hoy.toDateString();
+  const hh=String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
+  if(mismoDia) return `hoy ${hh}`;
+  const ayer=new Date(hoy); ayer.setDate(hoy.getDate()-1);
+  if(d.toDateString()===ayer.toDateString()) return `ayer ${hh}`;
+  return `${d.getDate()} ${MESES[d.getMonth()]} ${hh}`;
+}
+function retoCorto(reto,max=54){
+  let s=(reto||"").replace(/\s+/g," ").trim();
+  if(!s) return "(sin título)";
+  s=s.replace(/^(visor|enjambre|tarea)\s*:\s*/i,"");   /* prefijos que no informan */
+  s=s.charAt(0).toUpperCase()+s.slice(1);
+  if(s.length<=max) return s;
+  const corte=s.slice(0,max);
+  /* cortar en palabra entera: "y activida…" se lee como un error */
+  const esp=corte.lastIndexOf(" ");
+  return (esp>max*0.6?corte.slice(0,esp):corte).replace(/[,;:.\s]+$/,"")+"…";
+}
+/* Estado + escape en un solo control */
+function pintaVivo(ids,masNueva){
+  const b=$("#vivo"), r=runs[curRun]||{};
+  b.classList.remove("envivo","ultima","atras");
+  if(curRun===masNueva){
+    const viva=!r.done&&(r.order||[]).length;
+    b.classList.add(viva?"envivo":"ultima");
+    b.textContent=viva?"CORRIENDO AHORA":"ÚLTIMA CORRIDA";
+    b.disabled=true; b.removeAttribute("title");
+  }else{
+    b.classList.add("atras");
+    b.textContent="↩ VOLVER A LA ÚLTIMA";
+    b.disabled=false;
+    b.title=`estás viendo ${cuandoFue(curRun)}; la última es ${cuandoFue(masNueva)}`;
+  }
+}
+$("#vivo").addEventListener("click",()=>{runFijo=false;render();});
+
+/* La página era un rollo interminable con todo abierto. Ahora solo se despliega
+   lo que está pasando; el resto se anuncia en una línea y se abre si te interesa.
+   Lo que el usuario abre se recuerda entre visitas. */
+let _plegado=false;
+function montaPlegables(){
+  if(_plegado||!window.hacerPlegable) return;
+  _plegado=true;
+  const r=()=>runs[curRun]||{};
+  const nT=()=>(r().order||[]).length;
+  window.hacerPlegable({secciones:[
+    {sel:"#agents", titulo:"tus agentes", abierta:true,
+     resumen:()=>$("#grid8")?.dataset.resumen||"sin agentes todavía"},
+    {sel:"#flujo", titulo:"cómo trabajó tu enjambre", abierta:false,
+     resumen:()=>{const run=r(),n=nT();
+       if(!n) return "todavía no hay plan";
+       const ok=(run.order||[]).filter(i=>run.tasks[i]?.status==="ok").length;
+       return `${n} tarea${n>1?"s":""} · ${ok} entregada${ok===1?"":"s"}`;}},
+    {sel:"#board", titulo:"tablero de tareas", abierta:true,
+     resumen:()=>{const run=r();
+       return run.seconds?`terminó en ${(run.seconds/60).toFixed(1)} min`
+                         :(nT()?"en curso":"sin tareas");}},
+    {sel:"#feed", titulo:"qué ha pasado", abierta:false,
+     resumen:()=>{const n=(r().events||[]).length;
+       return n?`${n} evento${n>1?"s":""}`:"sin actividad";}},
+    {sel:"#ask", titulo:"pregúntale al visor", abierta:false,
+     resumen:()=>MODELO_CHAT()},
+  ]});
+}
+
 function render(){
-  const ids=Object.keys(runs).sort().reverse();
+  /* por fecha real, de la más nueva a la más vieja; las corridas sin fecha en
+     el nombre (ej. "fable-showtime") caen al final en vez de encabezar el menú */
+  const ids=Object.keys(runs).sort((x,y)=>{
+    const a=fechaDe(x),b=fechaDe(y);
+    if(a&&b) return b-a;
+    if(a) return -1;
+    if(b) return 1;
+    return x<y?1:-1;
+  });
   const sel=$("#runsel");
   /* arrancar en una corrida CON trabajo: abrir en una vacía no dice nada */
   const conTrabajo=i=>(runs[i]?.order||[]).length;
@@ -561,14 +675,15 @@ function render(){
        lo que identifica una corrida es LO QUE SE LE PIDIÓ y cuándo. */
     sel.innerHTML=ids.map(i=>{
       const r=runs[i]||{}, n=(r.order||[]).length;
-      const m=/^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/.exec(i);
-      const MES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
-      const cuando=m?`${+m[3]} ${MES[+m[2]-1]} ${m[4]}:${m[5]}`:i;
-      let reto=(r.task||"").replace(/\s+/g," ").trim();
-      if(reto.length>52)reto=reto.slice(0,51)+"…";
-      const cola=n?`  ·  ${n} tarea${n>1?"s":""}`:"";
-      return `<option value="${esc(i)}" ${i===curRun?"selected":""}>${esc(cuando)}  ${esc(reto||"(sin título)")}${cola}</option>`;
+      /* sin tareas ya lo dice todo: no repetirlo como estado */
+      const cola=n?`${n} tarea${n>1?"s":""}  ·  ${r.done?"terminada":"en curso"}`
+                 :"sin tareas";
+      return `<option value="${esc(i)}" ${i===curRun?"selected":""}>${
+        esc(cuandoFue(i))}  ·  ${esc(retoCorto(r.task))}  ·  ${cola}</option>`;
     }).join("");}
+  pintaVivo(ids,masNueva);
+  montaPlegables();
+  if(window.refrescarPlegables) window.refrescarPlegables();
   const fbOn=FABLE.visto&&(Date.now()-FABLE.visto<15*60*1000);
   $("#fablebar").classList.toggle("on",!!fbOn);
   if(fbOn){$("#fbacto").textContent=FABLE.acto||"trabajando";
@@ -632,23 +747,44 @@ function render(){
   /* 8 agentes */
   const g=$("#grid8"); g.innerHTML="";
   let busyN=0;
+  /* Un agente ocioso no merece el mismo espacio que uno trabajando: la tarjeta
+     colapsa a una línea cuando no hay nada que contar. */
+  const flota=[];
   for(let i=0;i<8;i++){
     const tid=runningIds.find(id=>run.tasks[id].agent===i);
     const t=tid?run.tasks[tid]:null;
     if(t)busyN++;
+    flota.push({n:i+1, color:AGCOLORS[i],
+      estado:t?"trabajando":(run.done||okN?"listo":"espera"),
+      tarea:t?{id:tid,titulo:t.titulo||t.filename||tid,filename:t.filename,
+               thinking:t.thinking}:null,
+      hechas:run.order.filter(id=>run.tasks[id].agent===i
+                              &&run.tasks[id].status==="ok").length,
+      modelo:SALUD.tropa||""});
+  }
+  if(window.tarjetaAgente){
+    g.innerHTML=flota.map(a=>window.tarjetaAgente(a,{esc,abrirTarea:"openTask"})).join("");
+    /* el sprite lo pinta el visor, no la tarjeta: ella solo deja el hueco */
+    g.querySelectorAll(".ag-sprite").forEach(h=>{
+      const i=(+h.dataset.ag||1)-1, ocupado=flota[i]?.estado==="trabajando";
+      h.append(spriteCanvas(ocupado?"sp_worker":"sp_states",
+                            ocupado?[2,3,4,5]:[0,1],null,2.5));
+    });
+  }else for(let i=0;i<8;i++){
+    const a=flota[i], t=a.tarea;
     const div=document.createElement("div");
     div.className="ag "+(t?"busy":run.done||okN?"okd":"");
     div.style.setProperty("--agc",AGCOLORS[i]);
     div.onclick=()=>openAgent(i);
-    const key=t?"sp_worker":run.done?"sp_states":"sp_worker";
-    const fr=t?[2,3,4,5]:run.done?[0,1,2,3]:[0,1];
-    div.append(spriteCanvas(key,fr,null,2.5));
+    div.append(spriteCanvas(t?"sp_worker":run.done?"sp_states":"sp_worker",
+                            t?[2,3,4,5]:run.done?[0,1,2,3]:[0,1],null,2.5));
     div.insertAdjacentHTML("beforeend",
-      `<div class="nm">agente ${i+1}<i>${t?"■ "+esc(tid):run.done?"✓":"·"}</i></div>
-       <div class="tk">${t? esc(t.filename||t.prompt?.slice(0,70)||tid) :
+      `<div class="nm">agente ${i+1}<i>${t?"■ "+esc(t.id):run.done?"✓":"·"}</i></div>
+       <div class="tk">${t? esc(t.filename||t.id) :
          run.done?(UI.done_all||"misión completa"):(UI.idle||"en espera")}</div>`);
     g.append(div);
   }
+  if(window.resumenAgentes) g.dataset.resumen=window.resumenAgentes(flota);
   $("#agcount").textContent=busyN? busyN+" trabajando":"";
 
   /* stats del día */
