@@ -63,6 +63,8 @@ let pregunta = null;
   if (o.codigo === CODIGO) { pregunta = o; return; }
   Object.values(o).forEach(buscar);
 })(cb);
+// con PREGUNTA fijada, el código puede ser de otra fuente (LAPOP, Latinobarómetro)
+if (!pregunta && process.env.PREGUNTA) pregunta = { texto_literal: process.env.PREGUNTA };
 if (!pregunta) throw new Error(`no encontré ${CODIGO} en el codebook`);
 const TEXTO = (pregunta.texto_literal || pregunta.etiqueta).trim();
 console.error(`Pregunta ECP ${CODIGO}: ${TEXTO.slice(0, 120)}…`);
@@ -206,9 +208,11 @@ const ACT = _ACTS.por_id, HERM = _ACTS.hermanas || {};
    la ECP que encontró la búsqueda (ANCLA_ITEM). PREGUNTA reemplaza el texto que
    ve la voz: es lo que teclearía la persona en el sitio. */
 const ANCLA_ITEM = process.env.ANCLA_ITEM || "";
+/* RESP_FILE / BANCO_FILE: para LAPOP y Latinobarómetro, los archivos LOCALES de
+   raw_v2/ (su licencia prohíbe publicarlos: nunca van a web/). */
 const RESP = VARIANTE === "recuperada" && ANCLA_ITEM
-  ? JSON.parse(fs.readFileSync(path.join(ROOT, "web/respuestas_ecp.json"), "utf8")) : null;
-const BANCO_ECP = RESP ? JSON.parse(fs.readFileSync(path.join(ROOT, "web/banco_ecp.json"), "utf8")) : [];
+  ? JSON.parse(fs.readFileSync(process.env.RESP_FILE || path.join(ROOT, "web/respuestas_ecp.json"), "utf8")) : null;
+const BANCO_ECP = RESP ? JSON.parse(fs.readFileSync(process.env.BANCO_FILE || path.join(ROOT, "web/banco_ecp.json"), "utf8")) : [];
 function anclaItemDe(r) {
   if (!RESP) return "";
   const k = RESP.items.indexOf(ANCLA_ITEM), b = BANCO_ECP.find(x => x.codigo === ANCLA_ITEM);

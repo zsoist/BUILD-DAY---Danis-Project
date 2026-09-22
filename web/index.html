@@ -1370,8 +1370,14 @@ function postura(txt){
    el error en % de sí bajó de 23.8 a 5.0 pts. Solo sondeo: es lo medido. */
 function anclaItemDe(b,v){
   if(!b)return "";
-  const dijo=v==null?"no supiste o no quisiste responder":`«${b.opciones[String(v)]||v}»`;
-  return `\nLO QUE LE RESPONDISTE AL DANE (es tuyo: una persona real como tú lo contestó así). Te preguntaron: «${b.texto}». Respondiste: ${dijo}. Esa es tu postura sobre este tema: explícala desde tu vida.\n`;
+  /* escala numérica con etiqueta solo en los extremos: sin decirla, «5» no
+     significa nada y la voz adivina (medido: la confianza en los jóvenes
+     salió 18 pts peor con el ancla desnuda) */
+  const e=b.escala,lab=k=>b.opciones[String(k)];
+  let dijo=v==null?"no supiste o no quisiste responder":`«${lab(v)||v}»`;
+  if(e&&v!=null&&!lab(v))dijo+=` en una escala de ${e[0]}${lab(e[0])?` («${lab(e[0])}»)`:""} a ${e[1]}${lab(e[1])?` («${lab(e[1])}»)`:""}`;
+  const quien=b.fuente&&!/^ECP/.test(b.fuente)?`A LA ENCUESTA ${b.fuente.toUpperCase()}`:"AL DANE";
+  return `\nLO QUE LE RESPONDISTE ${quien} (es tuyo: una persona real como tú lo contestó así). Te preguntaron: «${b.texto}». Respondiste: ${dijo}. Esa es tu postura sobre este tema: explícala desde tu vida.\n`;
 }
 let _RESP=null;
 async function respuestasECP(){
