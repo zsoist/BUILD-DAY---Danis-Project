@@ -5,11 +5,13 @@
    de verdad (ponderada con el factor de expansión oficial).
 
    Usa el prompt de producción extraído del index.html vivo. Solo DeepSeek. */
+import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 import path from "node:path";
 
-const ROOT = "/Users/daniel/21 sept - Claude Build Day";
-const html = fs.readFileSync(path.join(ROOT, "dashboard/sim/index.html"), "utf8");
+// la raíz del repo, calculada: una ruta de disco quemada solo servía en una máquina
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const html = fs.readFileSync(path.join(ROOT, "web/index.html"), "utf8");
 const script = html.slice(html.indexOf("<script>") + 8, html.lastIndexOf("</script>"));
 
 function extraer(nombre) {
@@ -39,10 +41,10 @@ const NOMBRES = ["TEMPERAMENTOS", "LEAN", "FRANQUEZA", "ARRANQUES", "estiloDe",
   "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "ESTILOS_RESP", "estiloRespuesta", "persona"];
 const mod = new Function("OPC", NOMBRES.map(extraer).join("\n") + "\nreturn {persona};")(null);
 
-const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "dashboard/sim/residents_v2.json"), "utf8"));
+const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "web/residents_v2.json"), "utf8"));
 const residentes = (RES.residentes || RES).filter(r => r.edad >= 18);   // universo ECP
-const DOS = JSON.parse(fs.readFileSync(path.join(ROOT, "dashboard/sim/dossiers.json"), "utf8"));
-const MARG = JSON.parse(fs.readFileSync(path.join(ROOT, "dashboard/sim/marginals.json"), "utf8")).departamentos;
+const DOS = JSON.parse(fs.readFileSync(path.join(ROOT, "web/dossiers.json"), "utf8"));
+const MARG = JSON.parse(fs.readFileSync(path.join(ROOT, "web/marginals.json"), "utf8")).departamentos;
 
 let seed = 20260922;
 const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;

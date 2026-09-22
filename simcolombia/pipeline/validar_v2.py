@@ -3,9 +3,9 @@
 """Validador determinista de residents_v2.json (simcolombia · pipeline v2).
 
 Uso:  uv --project orchestrator run python simcolombia/pipeline/validar_v2.py
-Contrasta dashboard/sim/residents_v2.json con data/marginals.json y
+Contrasta web/residents_v2.json con data/marginals.json y
 data/perfiles_politicos_2018.json, imprime tabla, escribe
-dashboard/sim/validacion_v2.json y sale 0 (todo OK) o 1 (algún check falla).
+web/validacion_v2.json y sale 0 (todo OK) o 1 (algún check falla).
 Solo stdlib.
 """
 
@@ -21,7 +21,7 @@ from pathlib import Path
 # --- rutas (relativas a simcolombia/) ----------------------------------------
 RAIZ = Path(__file__).resolve().parents[1]
 DATA = RAIZ / "data"
-DASH = RAIZ.parent / "dashboard" / "sim"
+DASH = RAIZ.parent / "web"   # el sitio desplegado lee de aquí
 RUTA_RESIDENTES = DASH / "residents_v2.json"
 RUTA_MARGINALES = DATA / "marginals.json"
 RUTA_PERFILES = DATA / "perfiles_politicos_2018.json"

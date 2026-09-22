@@ -2,11 +2,13 @@
    A = andamiaje completo de producción (persona() + sondeoInstr(), extraídos del index.html vivo)
    B = control desnudo (mismos residentes, prompt mínimo)
    Mismos residentes, misma pregunta, misma temperatura => la diferencia ES el andamiaje. */
+import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 import path from "node:path";
 
-const ROOT = "/Users/daniel/21 sept - Claude Build Day";
-const html = fs.readFileSync(path.join(ROOT, "dashboard/sim/index.html"), "utf8");
+// la raíz del repo, calculada: una ruta de disco quemada solo servía en una máquina
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const html = fs.readFileSync(path.join(ROOT, "web/index.html"), "utf8");
 const script = html.slice(html.indexOf("<script>") + 8, html.lastIndexOf("</script>"));
 
 /* extractor por nombre: toma la declaración completa balanceando llaves/corchetes */
@@ -48,10 +50,10 @@ const OPC = null;                                    // sondeo libre, sin opcion
 const mod = new Function("OPC", fuente + "\nreturn {persona,sondeoInstr,marcoDe,estiloDe,vida};")(OPC);
 
 /* ── residentes: misma muestra determinista para A y B ── */
-const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "dashboard/sim/residents_v2.json"), "utf8"));
+const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "web/residents_v2.json"), "utf8"));
 const residentes = (RES.residentes || RES).filter(r => r.edad >= 16);
-const DOS = JSON.parse(fs.readFileSync(path.join(ROOT, "dashboard/sim/dossiers.json"), "utf8"));
-const MARG = JSON.parse(fs.readFileSync(path.join(ROOT, "dashboard/sim/marginals.json"), "utf8")).departamentos;
+const DOS = JSON.parse(fs.readFileSync(path.join(ROOT, "web/dossiers.json"), "utf8"));
+const MARG = JSON.parse(fs.readFileSync(path.join(ROOT, "web/marginals.json"), "utf8")).departamentos;
 
 /* PRNG con semilla fija: el experimento es reproducible */
 let seed = 20260922;

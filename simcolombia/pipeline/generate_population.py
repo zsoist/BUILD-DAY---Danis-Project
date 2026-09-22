@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Genera los residentes sintéticos → dashboard/sim/residents.json
-y el reporte de fidelidad → dashboard/sim/validacion.json.
+"""Genera los residentes sintéticos → web/residents.json
+y el reporte de fidelidad → web/validacion.json.
 
 Principio: cada atributo se muestrea del marginal REAL si existe; si un bloque
 aún no tiene fuente, el atributo sale marcado "provisional" y el reporte lo
@@ -13,7 +13,7 @@ from collections import Counter
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
-DASH = BASE.parent / "dashboard" / "sim"
+DASH = BASE.parent / "web"   # el sitio desplegado lee de aquí
 DASH.mkdir(parents=True, exist_ok=True)
 N_POR_DPTO = 200
 rng = random.Random(2026_09_21)

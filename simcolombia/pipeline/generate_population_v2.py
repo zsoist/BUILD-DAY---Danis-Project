@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Genera los residentes sintéticos v2 → dashboard/sim/residents_v2.json.
+"""Genera los residentes sintéticos v2 → web/residents_v2.json.
 
 Muestreo CONJUNTO del pool GEIH: edad, sexo, educación, clase, ingreso y oficio
 CIUO-08 salen de UNA misma persona real (fin de la abuela albañil). n por dpto
@@ -18,7 +18,7 @@ from collections import Counter
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent          # simcolombia/
-DASH = BASE.parent / "dashboard" / "sim"               # <repo>/dashboard/sim
+DASH = BASE.parent / "web"   # el sitio desplegado lee de aquí
 DASH.mkdir(parents=True, exist_ok=True)
 
 rng = random.Random(2026_09_21)
