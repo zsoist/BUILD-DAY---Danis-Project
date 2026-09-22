@@ -14,3 +14,12 @@ for (const c of casos) {
     assert.equal(!r.ok, c.bloquear, `motivo=${r.motivo} · texto=${c.texto.slice(0, 90)}`);
   });
 }
+
+test("la copia en api/opina.js coincide con lib/filtro.mjs", () => {
+  const lib = readFileSync(new URL("../lib/filtro.mjs", import.meta.url), "utf8")
+    .replace(/export function/g, "function").trim();
+  const api = readFileSync(new URL("../api/opina.js", import.meta.url), "utf8");
+  const m = api.match(/\/\/ ── filtro:inicio ──\n([\s\S]*?)\n\/\/ ── filtro:fin/);
+  assert.ok(m, "no encuentro los marcadores filtro:inicio / filtro:fin en api/opina.js");
+  assert.equal(m[1].trim(), lib, "api/opina.js tiene una copia vieja del filtro: vuelve a copiarla");
+});
