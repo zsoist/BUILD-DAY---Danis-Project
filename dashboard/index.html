@@ -35,18 +35,23 @@ animaciones, denso, sin jerga militar, que se vea qué hacen").
   --px:3px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%}
+html,body{min-height:100%}
 body{background:var(--bg); color:var(--text);
-  font-family:"Saira",system-ui,sans-serif; font-stretch:90%; font-size:13px; overflow:hidden}
+  font-family:"Saira",system-ui,sans-serif; font-stretch:90%; font-size:13px}
 .pxf{font-family:"Silkscreen",monospace; letter-spacing:0}
 canvas{image-rendering:pixelated; display:block}
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-thumb{background:var(--grid); border:2px solid var(--bg)}
 
-#app{height:100%; display:grid; gap:8px; padding:8px;
-  grid-template-rows:46px 1fr 196px;
-  grid-template-columns:332px 1fr 288px;
-  grid-template-areas:"top top top" "agents board side" "agents feed ask"}
+/* Página LARGA que se scrollea: había mucho espacio muerto forzando todo a
+   caber en una pantalla. Los agentes y la barra superior se quedan pegados;
+   el resto crece hacia abajo cuanto haga falta. */
+#app{min-height:100%; display:grid; gap:8px; padding:8px;
+  grid-template-columns:332px minmax(0,1fr) 288px;
+  grid-template-areas:"top top top" "agents flujo side" "agents board side"
+                      "agents feed ask"}
+#top{position:sticky; top:8px; z-index:20}
+#agents{position:sticky; top:62px; max-height:calc(100vh - 78px)}
 
 .panel{background:var(--panel); border:var(--px) solid var(--grid); position:relative}
 .panel>h2{font-family:"Silkscreen"; font-size:10px; color:var(--dim); text-transform:lowercase;
@@ -131,7 +136,7 @@ animation:blink 1.2s steps(2) infinite}
 .ag.okd{border-color:var(--grid)} .ag.okd .nm i{color:var(--ok)}
 
 /* ── tablero ── */
-#board{grid-area:board; overflow:hidden; position:relative}
+#board{grid-area:board; position:relative; min-height:220px}
 .ag canvas,.staffc canvas{filter:drop-shadow(2px 3px 0 #00000088);will-change:transform;
   animation:pxbob 1.6s steps(2) infinite}
 @keyframes pxbob{50%{transform:translateY(-2px)}}
@@ -265,6 +270,12 @@ animation:blink 1.2s steps(2) infinite}
     <div id="grid8"></div>
   </section>
 
+  <section id="flujo" class="panel" aria-label="Flujo de trabajo del enjambre"
+           style="grid-area:flujo">
+    <h2><span>cómo trabajó tu enjambre</span><b id="flujoinfo"></b></h2>
+    <div id="flujocaja" style="padding:10px"></div>
+  </section>
+
   <section id="board" class="panel" aria-label="Tablero de tareas">
     <h2><span id="l-board">tablero de tareas</span><b id="taskcount"></b></h2>
     <svg id="ops" preserveAspectRatio="none"></svg>
@@ -314,6 +325,8 @@ animation:blink 1.2s steps(2) infinite}
   <input id="c-orkey" spellcheck="false" placeholder="sk-or-v1-…">
 </div>
 
+<script src="leer_corrida.js"></script>
+<script src="flujo.js"></script>
 <script>
 /* ═══ config ═══ */
 const DEF={src:"supabase",url:"https://pwcvskguqyhbhlwnsmmy.supabase.co",
@@ -473,7 +486,18 @@ function render(){
   curRun&&ids.includes(curRun)||(curRun=ids[0]);
   const selKey=ids.join("|")+"@"+curRun;
   if(sel.dataset.k!==selKey){sel.dataset.k=selKey;  /* no rehacer el select cada 3s: mata el dropdown abierto */
-    sel.innerHTML=ids.map(i=>`<option ${i===curRun?"selected":""}>${esc(i)}</option>`).join("");}
+    /* Un identificador como "20260922-002225-swarm" no le dice nada a nadie:
+       lo que identifica una corrida es LO QUE SE LE PIDIÓ y cuándo. */
+    sel.innerHTML=ids.map(i=>{
+      const r=runs[i]||{}, n=(r.order||[]).length;
+      const m=/^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/.exec(i);
+      const MES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+      const cuando=m?`${+m[3]} ${MES[+m[2]-1]} ${m[4]}:${m[5]}`:i;
+      let reto=(r.task||"").replace(/\s+/g," ").trim();
+      if(reto.length>52)reto=reto.slice(0,51)+"…";
+      const cola=n?`  ·  ${n} tarea${n>1?"s":""}`:"";
+      return `<option value="${esc(i)}" ${i===curRun?"selected":""}>${esc(cuando)}  ${esc(reto||"(sin título)")}${cola}</option>`;
+    }).join("");}
   const fbOn=FABLE.visto&&(Date.now()-FABLE.visto<15*60*1000);
   $("#fablebar").classList.toggle("on",!!fbOn);
   if(fbOn){$("#fbacto").textContent=FABLE.acto||"trabajando";
@@ -482,6 +506,25 @@ function render(){
   $("#empty").hidden=!!run;
   if(!run){$("#mission").textContent="—";return;}
   $("#mission").textContent=run.task||curRun;
+
+  /* ── FLUJO DE TRABAJO ──────────────────────────────────────────────
+     El visor guarda los eventos con la forma de la telemetría (event +
+     payload); leerCorrida espera la del swarm.jsonl. Un puente, no una
+     segunda carga de datos. */
+  try{
+    if(window.leerCorrida&&window.pintarFlujo){
+      const crudos=(run.events||[]).map(e=>({
+        t:e.ms!=null?e.ms/1000:undefined, event:e.event,
+        id:e.task_id, ...(e.payload||{})}));
+      const c=window.leerCorrida(crudos);
+      if(!c.reto)c.reto=run.task||"";
+      window.pintarFlujo($("#flujocaja"),c);
+      const s=c.resumen;
+      $("#flujoinfo").textContent=
+        `${s.total} tareas · ${s.paralelasMax} a la vez · ${s.aprobadas} aprobadas`;
+    }
+  }catch(err){ $("#flujocaja").innerHTML=
+    `<div style="color:var(--faint);padding:14px">no pude dibujar el flujo: ${esc(err.message)}</div>`; }
 
   const okN=run.order.filter(id=>run.tasks[id].status==="ok").length;
   $("#taskcount").textContent=okN+"/"+run.order.length;

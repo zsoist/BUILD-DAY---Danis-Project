@@ -125,6 +125,33 @@ PROVEEDORES_OR = os.environ.get(
     "OPENROUTER_PROVIDERS", "DeepInfra,Morph,Crusoe"
 ).split(",")
 
+# Afinado por modelo. Un mismo slug lo sirven decenas de proveedores con
+# latencias que difieren hasta 17 veces en el primer token, y con tareas cortas
+# en paralelo lo que manda es el primer token, no el throughput.
+#
+# Para GLM, Z.ai recomienda temperature 1.0 y top_p 0.95, y advierte que NO se
+# toquen los dos a la vez. El max_tokens tiene que ser generoso: el modelo
+# razona obligatoriamente, y si el razonamiento se topa con el techo, devuelve
+# una cadena vacía y te la cobra igual.
+AFINADO = {
+    "glm": {
+        "max_tokens": 8192,
+        "top_p": 0.95,
+        "temp_directo": 1.0,     # Z.ai: no ajustar temperature y top_p a la vez
+        "temp_razonando": 1.0,
+        "sort": "latency",       # el cuello con tareas cortas es el primer token
+    },
+}
+
+
+def afinado_de(model: str) -> dict:
+    """Los parámetros propios del modelo, si los tiene medidos."""
+    m = (model or "").lower()
+    for clave, cfg in AFINADO.items():
+        if clave in m:
+            return cfg
+    return {}
+
 
 async def llm(
     prompt: str,
@@ -171,18 +198,22 @@ async def llm(
         # soporta salida estructurada ni `seed`. `require_parameters` obliga a
         # enrutar solo a proveedores que aceptan TODO lo que mandamos, así que
         # nunca caemos ahí por accidente.
+        af = afinado_de(model)
+        prov = {"order": PROVEEDORES_OR, "require_parameters": True,
+                "allow_fallbacks": True}
+        if af.get("sort"):
+            prov["sort"] = af["sort"]
+        cuerpo = {"usage": {"include": True}, "provider": prov, **extra_or}
+        if af.get("top_p"):
+            cuerpo["top_p"] = af["top_p"]
         r = await openrouter.chat.completions.create(
             model=model, messages=messages, timeout=600,
-            temperature=temperature,
-            extra_body={
-                "usage": {"include": True},
-                "provider": {
-                    "order": PROVEEDORES_OR,
-                    "require_parameters": True,
-                    "allow_fallbacks": True,
-                },
-                **extra_or,
-            },
+            # sin techo explícito, una respuesta larga puede cortarse justo
+            # donde el razonamiento se comió el presupuesto
+            max_tokens=af.get("max_tokens", 4096),
+            temperature=(af.get("temp_directo" if thinking == "none"
+                                else "temp_razonando", temperature)),
+            extra_body=cuerpo,
         )
         budget.add("openrouter", model, r.usage)
     else:
