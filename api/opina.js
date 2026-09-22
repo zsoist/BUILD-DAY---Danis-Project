@@ -231,6 +231,64 @@ export default async function handler(req, res) {
   const body = req.body || {};
   let messages = body.messages;
 
+  // ── RECUPERAR: ¿el DANE ya preguntó esto? ──────────────────────────────
+  // Los LLM traen la creencia de que en Colombia nada funciona y no la corrigen
+  // por inferencia; pero sí adoptan una postura dada (39/39). Si la pregunta de
+  // la persona es una que la ECP 2023 midió, se devuelve ese ítem y cada voz
+  // recibe lo que respondió su donante real. Medido en 8 preguntas escritas
+  // como las teclea la gente: error en % de sí de 23.8 a 5.0 pts.
+  // Embeddings proponen 3 candidatas; el juez decide si alguna pregunta LO
+  // MISMO (0 anclas falsas en 39 preguntas ajenas). Mismo texto que se midió.
+  if (body.recuperar === true) {
+    const orK = process.env.OPENROUTER_API_KEY || process.env.OPENROUTER_KEY;
+    const q = String(body.pregunta || "").slice(0, 400).trim();
+    if (!orK) return res.status(502).json({ error: "sin openrouter en el servidor" });
+    if (q.length < 4) return res.status(400).json({ error: "pregunta" });
+    try {
+      if (!globalThis.__banco) {
+        const host = req.headers["x-forwarded-host"] || req.headers.host;
+        const r = await fetch(process.env.BANCO_URL || `https://${host}/banco_ecp.json`);
+        globalThis.__banco = await r.json();
+      }
+      const banco = globalThis.__banco;
+      const emb = async input => {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), Math.min(10000, restante()));
+        const r = await fetch("https://openrouter.ai/api/v1/embeddings", {
+          method: "POST", signal: ctrl.signal,
+          headers: { Authorization: `Bearer ${orK}`, "Content-Type": "application/json", ...ATRIB },
+          body: JSON.stringify({ model: "openai/text-embedding-3-small", input }),
+        }).finally(() => clearTimeout(timer));
+        return ((await r.json()).data || []).sort((a, b) => a.index - b.index).map(d => d.embedding);
+      };
+      if (!globalThis.__bancoVec) globalThis.__bancoVec = await emb(banco.map(b => b.texto));
+      const [vq] = await emb([q]);
+      const cos = (a, b) => { let s = 0, na = 0, nb = 0;
+        for (let i = 0; i < a.length; i++) { s += a[i] * b[i]; na += a[i] * a[i]; nb += b[i] * b[i]; }
+        return na && nb ? s / Math.sqrt(na * nb) : 0; };
+      const top = globalThis.__bancoVec.map((v, i) => [cos(vq, v), i])
+        .sort((a, b) => b[0] - a[0]).slice(0, 3).map(([, i]) => banco[i]);
+      const L = "ABC";
+      const criteria = Object.fromEntries(top.map((c, i) => [L[i], `pregunta lo mismo que «${c.texto.slice(-120)}»`]));
+      criteria.ninguna = "ninguna pregunta lo mismo: el tema o el sentido es otro";
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), Math.min(15000, restante()));
+      const r = await fetch("https://openrouter.ai/api/alpha/decisions", {
+        method: "POST", signal: ctrl.signal,
+        headers: { Authorization: `Bearer ${orK}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "typesafe/jev-1.13",
+          state: `Pregunta que escribió una persona: «${q}»\nPreguntas de una encuesta oficial:\n` +
+                 top.map((c, i) => `${L[i]}: ${c.texto}`).join("\n"),
+          questions: { igual: { type: "choice", criteria,
+            instructions: "¿Cuál pregunta de la encuesta pregunta ESENCIALMENTE LO MISMO que la persona: el mismo tema Y el mismo sentido, aunque cambien las palabras? Si solo comparten palabras o tema general pero preguntan otra cosa, es 'ninguna'." } } }),
+      }).finally(() => clearTimeout(timer));
+      const ch = (await r.json())?.answers?.igual?.choice;
+      const i = typeof ch === "string" ? L.indexOf(ch) : -1;
+      // ante cualquier duda, sin ancla: un ancla equivocada es peor que ninguna
+      return res.status(200).json({ item: i >= 0 && top[i] ? top[i] : null });
+    } catch (e) { return res.status(200).json({ item: null, detalle: String(e).slice(0, 120) }); }
+  }
+
   // ── SSR: postura por similitud semántica, para la estimación del sondeo ──
   // El cliente manda los textos de las voces y recibe, por cada uno, una
   // distribución sobre (sí, no, depende, no sé). Solo devuelve números: no hay

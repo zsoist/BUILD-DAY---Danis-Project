@@ -38,6 +38,10 @@ HERMANAS = ["P5304S1", "P5304S3", "P5304S4", "P5304S9", "P5306S4", "P5306S5",
 EVAL = ["P5304S6", "P5306S2", "P5317S7", "P5302", "P5261S8", "P5261S4",
         "P5304S2", "P5304S5", "P5304S10", "P5306S1", "P5306S3", "P5306S7", "P5317S2", "P5317S8"]
 LLAVES = ["DIRECTORIO", "NRO_ENCUESTA", "HOGAR_NUMERO", "PERSONA_NUMERO"]
+# todo el banco de preguntas (scripts/experimento/banco_ecp.json): para anclar
+# por recuperación, cada persona lleva lo que su donante respondió a cada una
+BANCO = [b["codigo"] for b in json.loads(
+    (RAIZ / "web" / "banco_ecp.json").read_text())]
 
 # Regiones de la ECP (1 Bogotá · 2 Caribe · 3 Oriental · 4 Central · 5 Pacífica).
 # Orinoquía y Amazonía no tienen región propia en la ECP: van a la vecina.
@@ -80,7 +84,8 @@ def main():
         clave = (int(f["REGION"]), int(f["P220"]), grupo_edad(f["P5785"]), grupo_edu_ecp(int(f["P6210"])))
         ev = [None if (f[i] != f[i] or int(f[i]) == 99) else int(f[i]) for i in EVAL]
         he = [None if (f[i] != f[i] or int(f[i]) == 99) else int(f[i]) for i in HERMANAS]
-        celdas[clave].append((float(f["FEX_P"] or 0), resp, ev, he))
+        ba = [None if (f[i] != f[i] or int(f[i]) == 99) else int(f[i]) for i in BANCO]
+        celdas[clave].append((float(f["FEX_P"] or 0), resp, ev, he, ba))
 
     def elegir(cands, semilla):
         tot = sum(c[0] for c in cands)
@@ -93,7 +98,7 @@ def main():
 
     res = json.loads((RAIZ / "web" / "residents_v2.json").read_text())
     res = res if isinstance(res, list) else res.get("residentes")
-    por_id, evaluacion, hermanas, nivel = {}, {}, {}, defaultdict(int)
+    por_id, evaluacion, hermanas, banco, nivel = {}, {}, {}, {}, defaultdict(int)
     for r in res:
         if r["edad"] < 18:
             continue
@@ -104,8 +109,8 @@ def main():
         for i, clave in enumerate([(reg, sx, ge, gu), (reg, sx, ge, None), (reg, None, ge, None), (reg, None, None, None)]):
             cands = [c for k, v in celdas.items() if all(a is None or a == b for a, b in zip(clave, k)) for c in v]
             if len(cands) >= 5:
-                _, a, ev, he = elegir(cands, r["id"])
-                por_id[r["id"]], evaluacion[r["id"]], hermanas[r["id"]] = a, ev, he
+                _, a, ev, he, ba = elegir(cands, r["id"])
+                por_id[r["id"]], evaluacion[r["id"]], hermanas[r["id"]], banco[r["id"]] = a, ev, he, ba
                 nivel[i] += 1
                 break
 
@@ -113,6 +118,8 @@ def main():
               "items": ITEMS, "por_id": por_id,
               "hermanas_items": HERMANAS, "hermanas": hermanas}
     (RAIZ / "web" / "actitudes.json").write_text(json.dumps(salida, separators=(",", ":")))
+    (RAIZ / "web" / "respuestas_ecp.json").write_text(json.dumps(
+        {"fuente": salida["fuente"], "items": BANCO, "por_id": banco}, separators=(",", ":")))
     # fuera de web/ a propósito: son respuestas que la voz no debe ver nunca
     (RAIZ / "scripts" / "experimento" / "donantes_eval.json").write_text(
         json.dumps({"items": EVAL, "por_id": evaluacion}, separators=(",", ":")))

@@ -371,6 +371,7 @@ button,.pxbtn{min-height:44px;touch-action:manipulation}
 #rcard footer{flex:0 0 auto;padding:12px 16px 14px;padding-bottom:calc(14px + env(safe-area-inset-bottom))}
 }
 .estim{color:var(--dim);font-size:10px;margin-top:3px}.estim b{color:var(--text)}
+.ancla{font-size:11px;color:var(--dim);border:1px solid var(--grid);padding:6px 9px;margin:0 0 8px}.ancla b{color:var(--text)}
 </style>
 </head>
 <body>
@@ -1362,6 +1363,30 @@ function postura(txt){
   }
   return [m?m[1].toLowerCase():null,limpio];
 }
+/* ANCLA POR RECUPERACIÓN: si el DANE ya preguntó esto, cada voz recibe lo que
+   respondió SU donante real de la ECP 2023 (mismo sexo, edad, educación y
+   región). Los LLM traen la creencia de que en Colombia nada funciona y no la
+   corrigen solos; con esto, en 8 preguntas escritas como las teclea la gente,
+   el error en % de sí bajó de 23.8 a 5.0 pts. Solo sondeo: es lo medido. */
+function anclaItemDe(b,v){
+  if(!b)return "";
+  const dijo=v==null?"no supiste o no quisiste responder":`«${b.opciones[String(v)]||v}»`;
+  return `\nLO QUE LE RESPONDISTE AL DANE (es tuyo: una persona real como tú lo contestó así). Te preguntaron: «${b.texto}». Respondiste: ${dijo}. Esa es tu postura sobre este tema: explícala desde tu vida.\n`;
+}
+let _RESP=null;
+async function respuestasECP(){
+  if(_RESP)return _RESP;
+  try{_RESP=await (await fetch("respuestas_ecp.json")).json();}catch(e){_RESP=null;}
+  return _RESP;
+}
+async function recuperarItem(q){
+  if(API_OK===false)return null;
+  try{
+    const r=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({recuperar:true,pregunta:q})});
+    return r.ok?((await r.json()).item||null):null;
+  }catch(e){return null;}
+}
 /* ESTIMACIÓN DEL SONDEO: cada voz pesa 0.75 por su etiqueta y 0.25 por lo que
    dijo, leído con SSR (similitud semántica contra anclas de sí/no/depende/no sé).
    Medido contra la ECP 2023 en 8 preguntas que no se usaron para calibrar: error
@@ -1688,9 +1713,11 @@ async function conversar(q){
   let fi=0;const ticker=setInterval(()=>{
     const t=$("#tickertxt");if(t)t.textContent=FRASES[++fi%FRASES.length];},1400);
   $("#estado").textContent="preparando la mesa…";
-  const ctx=await contexto(q);
+  const [ctx,anc]=await Promise.all([contexto(q),MODO==="sondeo"?recuperarItem(q):null]);
+  const R=anc?await respuestasECP():null, kAnc=R&&anc?R.items.indexOf(anc.codigo):-1;
   clearInterval(ticker);$("#ticker")?.remove();
   ctxBox(ctx);
+  if(anc&&kAnc>=0)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>El DANE ya preguntó esto</b> (Encuesta de Cultura Política 2023): «${esc(anc.texto)}». Cada voz responde lo que respondió su donante real, una persona de su misma edad, sexo, educación y región.</div>`);
 
   if(MODO==="sondeo"){
     $("#estado").textContent="sondeando…";
@@ -1698,7 +1725,8 @@ async function conversar(q){
     await Promise.all(sample.map(async r=>{
       const card=bubble(r,false),say=card.querySelector(".say");
       try{
-        const msgs=[{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+sondeoInstr(r)},
+        const vAnc=kAnc>=0?(R.por_id[r.id]||[])[kAnc]:undefined;
+        const msgs=[{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+(kAnc>=0&&R.por_id[r.id]?anclaItemDe(anc,vAnc):"")+sondeoInstr(r)},
           {role:"user",content:q+"\n\nRecuerda: cierra tu respuesta con la etiqueta [POSTURA: a_favor|en_contra|depende|ni_ni]."}];
         const raw=await flash(msgs);
         let [pos,txt]=postura(raw);
@@ -1711,6 +1739,8 @@ async function conversar(q){
         if(pos!=='sin_postura'&&pos!=='ni_ni'&&r.compromiso!=='indiferente'){obedN++;
           if((gl.includes('A FAVOR')&&pos==='a_favor')||(gl.includes('EN CONTRA')&&pos==='en_contra')||(gl.includes('dividido')&&pos==='depende'))obed++;}
         votos.push({pos,txt});
+        if(vAnc===1||vAnc===2){const s=(window.__ancla??={sigue:0,n:0});s.n++;
+          if((vAnc===1&&pos==="a_favor")||(vAnc===2&&pos==="en_contra"))s.sigue++;}
         typewriter(say,txt);
         card.style.setProperty("--pc",COLORES[pos]||COLORES.depende);tally(p);
       }catch(e){p.sin_postura=(p.sin_postura||0)+1;tally(p);say.classList.remove("thinking");say.textContent="(no contestó)";}

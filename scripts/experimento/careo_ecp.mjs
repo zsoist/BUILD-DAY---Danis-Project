@@ -38,11 +38,11 @@ function extraer(nombre) {
 
 const NOMBRES = ["TEMPERAMENTOS", "LEAN", "FRANQUEZA", "ARRANQUES", "estiloDe",
   "FUNDAMENTOS", "marcoDe", "GUSTOS", "FASTIDIOS", "momentoDe", "COMPROMISO_TXT",
-  "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "ESTILOS_RESP", "estiloRespuesta", "persona", "sondeoInstr", "INSTITUCIONES", "anclaDe"];
+  "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "ESTILOS_RESP", "estiloRespuesta", "persona", "sondeoInstr", "INSTITUCIONES", "anclaDe", "anclaItemDe"];
 /* LIBRETO=0: sin la postura asignada por hash. Es lo que decide si la
    dispersión es del método o fabricada por el prompt. Por defecto, la del sitio. */
 const LIBRETO = (process.env.LIBRETO ?? "1") !== "0";
-const mod = new Function("OPC", "LIBRETO", NOMBRES.map(extraer).join("\n") + "\nreturn {persona, sondeoInstr, anclaDe};")(null, LIBRETO);
+const mod = new Function("OPC", "LIBRETO", NOMBRES.map(extraer).join("\n") + "\nreturn {persona, sondeoInstr, anclaDe, anclaItemDe};")(null, LIBRETO);
 
 const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "web/residents_v2.json"), "utf8"));
 const residentes = (RES.residentes || RES).filter(r => r.edad >= 18);   // universo ECP
@@ -69,7 +69,7 @@ console.error(`Pregunta ECP ${CODIGO}: ${TEXTO.slice(0, 120)}…`);
 /* En modo libre la persona no debe ver opciones: el texto literal de la ECP
    trae la tarjeta pegada ("1 Si 2 No 99 No sabe"), y así "libre" no era libre.
    Se quita la numeración, el literal de la sub-pregunta y la cola de opciones. */
-const TEXTO_LIBRE = (() => {
+const TEXTO_LIBRE = process.env.PREGUNTA ? process.env.PREGUNTA : (() => {
   let s = TEXTO.replace(/^\d+\.\s*/, "")
                .replace(/:\s*[a-z]\.\s*Que\b/, " que")
                .replace(/:\s*[a-z]\.\s+/, ": ")
@@ -199,9 +199,22 @@ const INSTR_LIB = "\nTe está encuestando el DANE en la puerta de tu casa. NO te
      podada  la persona del sitio con los reemplazos de PODA=<archivo.json>
              ([[texto, reemplazo], ...]) aplicados sobre el prompt final */
 const VARIANTE = (process.env.VARIANTE || "sitio").toLowerCase();
-const _ACTS = ["anclada", "anclada_min", "hermanas", "hermanas_min"].includes(VARIANTE)
+const _ACTS = ["anclada", "anclada_min", "hermanas", "hermanas_min", "recuperada"].includes(VARIANTE)
   ? JSON.parse(fs.readFileSync(path.join(ROOT, "web/actitudes.json"), "utf8")) : { por_id: {}, hermanas: {} };
 const ACT = _ACTS.por_id, HERM = _ACTS.hermanas || {};
+/* recuperada: la voz del sitio + lo que su donante respondió a la pregunta de
+   la ECP que encontró la búsqueda (ANCLA_ITEM). PREGUNTA reemplaza el texto que
+   ve la voz: es lo que teclearía la persona en el sitio. */
+const ANCLA_ITEM = process.env.ANCLA_ITEM || "";
+const RESP = VARIANTE === "recuperada" && ANCLA_ITEM
+  ? JSON.parse(fs.readFileSync(path.join(ROOT, "web/respuestas_ecp.json"), "utf8")) : null;
+const BANCO_ECP = RESP ? JSON.parse(fs.readFileSync(path.join(ROOT, "web/banco_ecp.json"), "utf8")) : [];
+function anclaItemDe(r) {
+  if (!RESP) return "";
+  const k = RESP.items.indexOf(ANCLA_ITEM), b = BANCO_ECP.find(x => x.codigo === ANCLA_ITEM);
+  if (k < 0 || !b) return "";
+  return mod.anclaItemDe(b, (RESP.por_id[r.id] || [])[k]);   // la frase vive en el sitio
+}
 /* Las respuestas reales del donante a preguntas hermanas (mismas baterías de la
    ECP, disjuntas de las que se miden). Etiquetas fieles al cuestionario. */
 const HERM_TXT = [
@@ -237,6 +250,15 @@ function sistemaSitio(r) {
     const zona = r.clase === "cabecera" ? "en la ciudad o el casco urbano" : "en zona rural";
     const ficha = `Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, vives en ${r.dpto_nombre} ${zona}. ` +
       `Educación: ${r.educacion}. Oficio: ${r.ocupacion}.`;
+    /* oraculo: SOLO diagnóstico, nunca para desplegar ni para evaluar métodos:
+       le dice a la voz lo que su donante respondió a ESTA pregunta. Mide si el
+       modelo es capaz siquiera de adoptar una postura dada. */
+    if (VARIANTE === "oraculo_min") {
+      const EV = JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/experimento/donantes_eval.json"), "utf8"));
+      const k = EV.items.indexOf(CODIGO), a = k >= 0 ? (EV.por_id[r.id] || [])[k] : null;
+      const dijo = a === 1 ? "SÍ" : a === 2 ? "NO" : null;
+      return ficha + (dijo ? `\nCuando el DANE te hizo exactamente esta pregunta, respondiste: ${dijo}. Esa es tu opinión.` : "") + CIERRE;
+    }
     const extra = VARIANTE === "anclada_min" ? mod.anclaDe(ACT[r.id])
       : VARIANTE === "hermanas_min" ? mod.anclaDe(ACT[r.id]) + hermanasDe(HERM[r.id]) : "";
     return ficha + extra + CIERRE;
@@ -244,6 +266,8 @@ function sistemaSitio(r) {
   /* anclada: persona + la postura real de su donante de la ECP + instrucción */
   if (VARIANTE === "anclada")
     return mod.persona(r, DOS[r.dpto] || {}) + mod.anclaDe(ACT[r.id]) + mod.sondeoInstr(r);
+  if (VARIANTE === "recuperada")
+    return mod.persona(r, DOS[r.dpto] || {}) + anclaItemDe(r) + mod.sondeoInstr(r);
   if (VARIANTE === "hermanas")
     return mod.persona(r, DOS[r.dpto] || {}) + mod.anclaDe(ACT[r.id]) + hermanasDe(HERM[r.id]) + mod.sondeoInstr(r);
   let s = mod.persona(r, DOS[r.dpto] || {}) + mod.sondeoInstr(r);
