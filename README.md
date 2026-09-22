@@ -62,4 +62,4 @@ node scripts/experimento/careo_ecp.mjs 160 P5301 /tmp/l.json libre
 uv run --with pyreadstat --with pandas --python 3.12 python scripts/experimento/ssr.py /tmp/l.json
 ```
 
-No se usa para campañas ni segmentación de votantes. Método: [`METODO.md`](METODO.md).
+No se usa para campañas ni segmentación de votantes. Método: [`docs/METODO.md`](docs/METODO.md).

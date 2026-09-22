@@ -1,17 +1,21 @@
+# credenciales
 .env
 .env.*
 !.env.example
-runs/
-__pycache__/
-.venv/
-*.pyc
-.DS_Store
-node_modules/
-dashboard/assets/local_keys.json
-# el respaldo de llave para trabajar sin Vercel: nunca se versiona ni se despliega
+# respaldo de llave para correr sin Vercel: nunca se versiona ni se despliega
 web/assets/local_keys.json
+
+# salida del enjambre (se lee con el visor)
+runs/
+
+# microdatos del DANE: pesan GB y se descargan con simcolombia/pipeline/
 simcolombia/data/raw/
 simcolombia/data/raw_v2/
 simcolombia/data/ecp2023_docs/
+
+# entorno
+.venv/
 __pycache__/
-dashboard/feed.json
+*.pyc
+node_modules/
+.DS_Store

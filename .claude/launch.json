@@ -2,10 +2,16 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "dashboard",
+      "name": "colombia",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8377", "--directory", "dashboard"],
+      "runtimeArgs": ["-m", "http.server", "8377", "--directory", "web"],
       "port": 8377
+    },
+    {
+      "name": "visor-enjambre",
+      "runtimeExecutable": "uvx",
+      "runtimeArgs": ["--from", "git+https://github.com/zsoist/SWARMS", "enjambre-visor", "--sin-abrir", "--puerto", "8777"],
+      "port": 8777
     }
   ]
 }

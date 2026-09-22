@@ -22,7 +22,7 @@ y **V de Cramér identidad→opinión**, la métrica de caricatura de la literat
 
 Ningún número lo juzga un modelo de lenguaje.
 
-Ver `METODO.md` en la raíz para resultados y contexto científico.
+Ver `docs/METODO.md` para resultados y contexto científico.
 
 ## Careo contra humanos reales (ECP del DANE)
 
