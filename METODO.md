@@ -92,9 +92,17 @@ Hallazgos verificados en fuente primaria:
 - **Park et al. 2024** (*Generative Agent Simulations of 1,000 People*,
   arXiv:2411.10109): agentes anclados en una **entrevista real** alcanzan 83% del
   techo de consistencia test-retest del propio humano; con **solo demografía**,
-  74%. Anclar en datos individuales reales compra ~**+8 a +12 puntos**. Es
-  exactamente lo que hace ColombIA con la GEIH — con una ganancia esperable
-  moderada, no transformadora.
+  74%. Anclar en datos individuales reales compra ~**+8 a +12 puntos**.
+  **Matiz honesto**: ColombIA no tiene dos horas de entrevista por persona, así
+  que se parece a la condición *encuesta sola* (**82%**), no a la de entrevista.
+  La ganancia del anclaje es real pero moderada, no transformadora. Y el techo
+  de ese 82% no es "la verdad": es la consistencia del propio humano consigo
+  mismo dos semanas después.
+- **Chen, Zhu & Zheng 2026** (arXiv:2607.26348): en la World Values Survey los
+  modelos quedan **11 a 22 puntos por debajo de una simple regresión
+  demográfica**, y sobredeterminan la identidad (la ideología explicaba ~1.5%
+  de la varianza en humanos y hasta 67% en los modelos). Por eso aquí se mide
+  la V de Cramér: para vigilar que la identidad no decida la opinión.
 - **Argyle et al. 2023** (*Out of One, Many*, Political Analysis): acuña
   "algorithmic fidelity" y "silicon sampling"; ya condicionaba en historias de
   personas reales. La tradición metodológica es correcta.
