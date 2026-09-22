@@ -45,7 +45,7 @@ Restricciones de diseño: una sesión dura segundos y cuesta poco por visita. To
 - La gente vuelve o comparte el enlace: señal de que jugó y le importó.
 
 ## Qué sigue
-- Corregir el sesgo pesimista sobre instituciones: las voces dan ~0% de "sí" donde
-  los colombianos dan 40-58% (igualdad ante la ley, salud, centralización).
+- El sesgo pesimista está corregido solo para las 166 preguntas que midió la ECP
+  (ancla por recuperación). Para el resto, falta una fuente de datos o un método.
 - Reducir la caricatura agregando contexto no demográfico a cada voz.
 - Panel visible por consulta con los fallos conocidos, para que nadie cite sin verlos.

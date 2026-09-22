@@ -199,3 +199,35 @@ cal_<ítem>.json sitio` y `uv run python scripts/experimento/mezcla.py <carpeta>
 
 Reproducir: `ENJAMBRE=sitio LIBRETO=1 node scripts/experimento/careo_ecp.mjs
 120 P5261S1 x.json libre` y `uv run python scripts/experimento/postura.py x.json`.
+
+## Sesgo pesimista: diagnóstico y ancla por recuperación (22 sep 2026)
+
+**Diagnóstico por ablación.** Sin persona, el modelo responde "no" al 100% en
+preguntas institucionales donde los colombianos dicen sí 41-58%. Siete modelos
+de cinco familias (DeepSeek, GLM, Qwen, Llama, Gemma, Mistral, gpt-oss) igual:
+es una creencia de los LLM sobre Colombia, no de la persona ni de un modelo.
+
+**Lo que no funcionó.** Anclar con actitudes reales de un donante de la ECP
+(confianza en 15 instituciones, preguntas hermanas): error 42.6 → 38.4 como
+mucho. Persona por persona, cuando el donante dijo sí, la voz dijo sí 1/25 a
+8/24. La tarjeta de encuesta tampoco (0-5%). El modelo no infiere contra su
+creencia.
+
+**Lo que sí.** El modelo adopta una postura dicha (oráculo: 34/39 y 39/39;
+con la persona completa del sitio, 16/17). Entonces: si la pregunta es una que
+la ECP midió, cada voz recibe lo que respondió su donante real.
+
+| Paso | Medición |
+|---|---|
+| Donantes (`simcolombia/pipeline/donantes_ecp.py`) | 5.796/5.797 emparejados por región, sexo, edad y educación |
+| Búsqueda: embeddings, 3 candidatas + juez | 0 anclas falsas en 39 preguntas ajenas; 31/32 paráfrasis a su ítem o uno equivalente |
+| Punta a punta, 8 ítems nuevos, paráfrasis del enjambre | error en % de sí 23.8 → **5.0 pts**; mejora en 8 de 8 |
+
+Corrige en las dos direcciones ("¿la gente puede vigilar al gobierno?": sitio
+94%, real 38%, anclado 31%). En producción, 7 de 8 voces siguen a su donante
+con noticias en el contexto.
+
+**Alcance.** No hace razonar mejor al modelo: para preguntas que el DANE midió
+(166 en el banco), las voces responden con datos del DANE. Para lo demás no hay
+ancla y manda la creencia del modelo. Las paráfrasis de prueba las escribió un
+modelo, no usuarios reales.

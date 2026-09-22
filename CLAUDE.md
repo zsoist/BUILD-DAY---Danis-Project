@@ -66,7 +66,12 @@ node --test scripts/experimento/anclas.test.mjs     # antes de tocar la estimaci
 | voces | `deepseek/deepseek-v4.1-flash` | gana 3/5 y empata 2 contra la ECP |
 | respaldo de voces | `z-ai/glm-5.3-flash` | colapsa más (38% en una opción vs 18% real) |
 | enjambre | `z-ai/glm-5.3-flash` | 0% respuestas vacías vs 17% |
-| juez | `typesafe/jev-1.13` | ~$0.00002; solo para prosa (8/8), no datos (0/7) |
+| juez | `typesafe/jev-1.13` | ~$0.00002; prosa (8/8) y "¿preguntan lo mismo?" (0 anclas falsas), no datos (0/7) |
+
+Los LLM (todos los probados) creen que en Colombia nada funciona y no se corrigen
+infiriendo; sí adoptan una postura dicha. Por eso el sondeo ancla en la respuesta
+real de un donante de la ECP cuando el DANE ya hizo la pregunta. Si cambias
+`donantes_ecp.py` o `banco_ecp.py`, regenera y vuelve a medir.
 
 ## Seguridad del proxy: lo que aguanta y lo que no
 

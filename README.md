@@ -48,7 +48,7 @@ DeepSeek gana 3 de 5 preguntas y empata 2 contra la ECP. Detalle: `docs/OPENROUT
 |---|---|
 | Sub-dispersión (voces demasiado parecidas) | en escalas 1-5, SSR la corrige (desviación 0.77 → 0.98; igual sin libreto). **Aún no está en el sitio** |
 | Conteo del sondeo | mezcla 0.75 etiqueta + 0.25 SSR: error en % de "sí" 26.9 → 21.8 pts en 8 preguntas ciegas. Desplegada |
-| **Sesgo pesimista** | sobre instituciones las voces dan ~0% de "sí" donde los colombianos dan 40-58%. El problema abierto más grande |
+| Sesgo pesimista | creencia de todos los LLM sobre Colombia. Si el DANE ya lo preguntó, las voces responden con la respuesta de su donante real: error 23.8 → 5.0 pts. Para lo demás, sigue abierto |
 | Postura asignada por hash (libreto 40/40/20) | efecto pequeño: el modelo la ignora en temas de consenso |
 | Termómetro 0-100 en vez de escala | descartado: empeoró el W1 de 0.084 a 0.154 |
 | IRTree | descartado: holdout W1 0.272, peor que el azar |
