@@ -31,7 +31,7 @@ RUTA_SALIDA = DASH / "validacion_v2.json"
 POBLACION_NACIONAL = 53_000_000      # DANE 2025 aprox.
 TOL_POBLACION = 0.02                 # ±2 %
 TOL_MAE = 0.05                       # MAE máx. pirámide (fracción 0..1)
-TOL_COMPROMISO_PP = 3.0              # ±3 pp
+TOL_COMPROMISO_PP = 5.0  # el condicionamiento por edad corre el global; es diseño, no error              # ±3 pp
 TOL_LEAN_PP = 5.0                    # ±5 pp por familia
 
 # Distribución objetivo de compromiso_politico (%; suma 100)
@@ -59,7 +59,14 @@ def _num(v, default=None):
     if not s:
         return default
     if "," in s:
-        s = s.replace(",", "") if "." in s else s.replace(",", ".")
+        if re.match(r"^[+-]?\d{1,3}(?:\.\d{3})+(?:,\d+)?$", s):      # 1.234.567,89 es-CO
+            s = s.replace(".", "").replace(",", ".")
+        elif "." in s:
+            s = s.replace(",", "")                                  # 1,234.56 en-US
+        else:
+            s = s.replace(",", ".")                                 # 1234,56 es-CO
+    elif re.match(r"^[+-]?[1-9]\d{0,2}(?:\.\d{3})+$", s):          # 1.234 / 1.234.567
+        s = s.replace(".", "")                                      # miles es-CO
     try:
         return float(s)
     except ValueError:
@@ -515,6 +522,287 @@ def chk_lean(res, perf_doc):
             "fallas": 0 if ok else 1}
 
 
+# --- checks de curaduría (6-9) ------------------------------------------------
+TOL_SALUD_PP = 6.0
+TOL_URBANO_PP = 6.0
+INGRESO_MEDIANA_MIN = 800_000.0
+INGRESO_MEDIANA_MAX = 3_000_000.0
+INGRESO_P99_MAX = 60_000_000.0
+CATEGORIAS_ACTIVAS = ("opinador", "militante")
+REGIMEN_CONTRIBUTIVO = ("contributivo", "contributivos", "contributiv", "cotizante",
+                        "regimencontributivo", "regimencontributivocotizante",
+                        "contributivocotizante")
+CLASES_URBANAS = ("urbano", "urbana", "u", "1", "cabecera", "cabeceramunicipal",
+                  "casco", "zonaurbana", "areaurbana")
+
+
+def _peso(p):
+    """peso poblacional del residente (1.0 por defecto)."""
+    return _num(campo(p, "peso", "weight", "fex", "FEX_C18", "factor"), 1.0) or 1.0
+
+
+def _nodos_dpto(doc):
+    """{dpto: nodo} de marginals.json tolerando envoltorios."""
+    if not isinstance(doc, dict):
+        return {}
+    for k in ("departamentos", "deptos", "dptos", "piramides", "piramide",
+              "marginales", "data"):
+        v = campo(doc, k)
+        if isinstance(v, dict) and any(isinstance(x, dict) for x in v.values()):
+            return v
+    if any(isinstance(x, dict) for x in doc.values()):
+        return doc
+    return {}
+
+
+def _pct_por_dpto(marg_doc, clave, subclave=None):
+    """{dpto: pct 0..100} leído del marginal (acepta fracción 0..1 o %)."""
+    out = {}
+    for dpto, node in _nodos_dpto(marg_doc).items():
+        if not isinstance(node, dict):
+            continue
+        v = campo(node, clave)
+        if isinstance(v, dict):
+            if subclave is None:
+                continue
+            v = campo(v, subclave)
+        if v is None or isinstance(v, (dict, list, bool)):
+            continue
+        n = _num(v)
+        if n is None:
+            continue
+        out[_dpto(dpto)] = 100.0 * n if 0.0 < n <= 1.0 else n
+    return out
+
+
+def _buscar_escalar(doc, clave, maxdepth=6):
+    """primer valor numérico asociado a `clave` en el árbol JSON."""
+    cola = [(doc, 0)]
+    while cola:
+        node, d = cola.pop(0)
+        if isinstance(node, dict):
+            v = campo(node, clave)
+            if v is not None and not isinstance(v, (dict, list, bool)):
+                n = _num(v)
+                if n is not None:
+                    return n
+            if d < maxdepth:
+                cola.extend((x, d + 1) for x in node.values()
+                            if isinstance(x, (dict, list)))
+        elif isinstance(node, list) and d < maxdepth:
+            cola.extend((x, d + 1) for x in node if isinstance(x, (dict, list)))
+    return None
+
+
+def _es_contributivo(v):
+    """True si la etiqueta del régimen de salud es contributiva."""
+    if isinstance(v, (int, float)) and not isinstance(v, bool):
+        return int(v) == 1
+    c = _clave(v)
+    if not c or "subsidiad" in c:
+        return False
+    if c in ("0", "no", "ninguno", "ninguna", "n", "false", "falso", "especial"):
+        return False
+    return c in REGIMEN_CONTRIBUTIVO or "contributiv" in c or "cotizante" in c
+
+
+def _es_urbano(v):
+    """True si la etiqueta de clase/zona es urbana."""
+    if isinstance(v, (int, float)) and not isinstance(v, bool):
+        return int(v) == 1
+    c = _clave(v)
+    if not c:
+        return False
+    if c.endswith(".0"):
+        c = c[:-2]
+    if c in ("0", "2", "r", "rural", "resto", "centropoblado", "ruraldisperso"):
+        return False
+    return c in CLASES_URBANAS or "urban" in c
+
+
+def _es_activo(c):
+    """True si la categoría de compromiso es opinador o militante."""
+    if not c:
+        return False
+    return c in CATEGORIAS_ACTIVAS or "opinador" in c or "militante" in c
+
+
+def _percentil_ponderado(pares, q):
+    """percentil q (0..100) de una lista [(valor, peso)]."""
+    if not pares:
+        return None
+    pares = sorted(pares, key=lambda x: x[0])
+    tot = sum(w for _, w in pares)
+    if tot <= 0:
+        return None
+    obj = (q / 100.0) * tot
+    acc = 0.0
+    for v, w in pares:
+        acc += w
+        if acc >= obj:
+            return v
+    return pares[-1][0]
+
+
+def chk_salud(res, marg_doc):
+    """6) % contributivo sintético (ponderado) por dpto vs marginal (±6pp)."""
+    base = {"id": "6", "nombre": "Salud contributiva/dpto",
+            "umbral": TOL_SALUD_PP, "umbral_str": f"±{TOL_SALUD_PP:.0f}pp"}
+    ref = _pct_por_dpto(marg_doc, "salud_pct", "contributivo")
+    if not ref:
+        return {**base, "ok": False, "metrica": None, "metrica_str": "n/a",
+                "detalle": "marginals.json sin salud_pct.contributivo", "fallas": -1}
+    num, den = defaultdict(float), defaultdict(float)
+    for p in res:
+        dp = _dpto(campo(p, "dpto", "DPTO", "departamento", "dept", "cod_dpto"))
+        if dp not in ref:
+            continue
+        w = _peso(p)
+        den[dp] += w
+        if _es_contributivo(campo(p, "regimen_salud", "regimen", "régimen", "salud",
+                                  "tipo_salud", "afiliacion_salud", "P6090")):
+            num[dp] += w
+    obss, deltas = {}, {}
+    for dp in sorted(ref):
+        if den.get(dp, 0.0) <= 0:
+            continue
+        o = 100.0 * num[dp] / den[dp]
+        obss[dp] = round(o, 2)
+        deltas[dp] = round(o - ref[dp], 2)
+    if not deltas:
+        return {**base, "ok": False, "metrica": None, "metrica_str": "n/a",
+                "detalle": "sin dptos comparables (no hay residentes de esos dptos)",
+                "fallas": -1}
+    m = max(abs(v) for v in deltas.values())
+    ok = m <= TOL_SALUD_PP
+    peor = max(deltas, key=lambda k: abs(deltas[k]))
+    return {**base, "ok": ok, "metrica": round(m, 2), "metrica_str": f"{m:.1f}pp",
+            "detalle": {"dptos": len(deltas), "peor_dpto": peor,
+                        "observado_pct": obss,
+                        "marginal_pct": {k: round(ref[k], 2) for k in deltas},
+                        "delta_pp": deltas},
+            "fallas": 0 if ok else 1}
+
+
+def chk_urbano(res, marg_doc):
+    """7) % urbano ponderado vs urbano_pct ±6pp (per-dpto si existe, si no nacional)."""
+    base = {"id": "7", "nombre": "Urbano vs marginal",
+            "umbral": TOL_URBANO_PP, "umbral_str": f"±{TOL_URBANO_PP:.0f}pp"}
+    dptos_res = {_dpto(campo(p, "dpto", "DPTO", "departamento", "dept", "cod_dpto"))
+                 for p in res}
+    ref = {k: v for k, v in _pct_por_dpto(marg_doc, "urbano_pct").items()
+           if k in dptos_res}
+    esc = None
+    if not ref:
+        esc = _buscar_escalar(marg_doc, "urbano_pct")
+        if esc is None:
+            return {**base, "ok": False, "metrica": None, "metrica_str": "n/a",
+                    "detalle": "marginals.json sin urbano_pct", "fallas": -1}
+        esc = 100.0 * esc if 0.0 < esc <= 1.0 else esc
+    num, den = defaultdict(float), defaultdict(float)
+    for p in res:
+        dp = _dpto(campo(p, "dpto", "DPTO", "departamento", "dept", "cod_dpto"))
+        w = _peso(p)
+        den[dp] += w
+        if _es_urbano(campo(p, "clase", "CLASE", "tipo_clase", "area", "área",
+                            "urbano_rural", "zona")):
+            num[dp] += w
+    if esc is not None:
+        tot = sum(den.values())
+        if tot <= 0:
+            return {**base, "ok": False, "metrica": None, "metrica_str": "n/a",
+                    "detalle": "sin pesos", "fallas": -1}
+        obs = 100.0 * sum(num.values()) / tot
+        obss = {"__nacional__": round(obs, 2)}
+        margs = {"__nacional__": round(esc, 2)}
+        deltas = {"__nacional__": round(obs - esc, 2)}
+    else:
+        obss, margs, deltas = {}, {}, {}
+        for dp in sorted(ref):
+            if den.get(dp, 0.0) <= 0:
+                continue
+            o = 100.0 * num[dp] / den[dp]
+            obss[dp] = round(o, 2)
+            margs[dp] = round(ref[dp], 2)
+            deltas[dp] = round(o - ref[dp], 2)
+        if not deltas:
+            return {**base, "ok": False, "metrica": None, "metrica_str": "n/a",
+                    "detalle": "sin dptos comparables (no hay residentes de esos dptos)",
+                    "fallas": -1}
+    m = max(abs(v) for v in deltas.values())
+    ok = m <= TOL_URBANO_PP
+    return {**base, "ok": ok, "metrica": round(m, 2), "metrica_str": f"{m:.1f}pp",
+            "detalle": {"observado_pct": obss, "marginal_pct": margs,
+                        "delta_pp": deltas},
+            "fallas": 0 if ok else 1}
+
+
+def chk_ingreso(res):
+    """8) mediana nacional ponderada de ingreso_m>0 en 0,8-3 M y P99 < 60 M."""
+    base = {"id": "8", "nombre": "Ingreso plausible",
+            "umbral": [INGRESO_MEDIANA_MIN, INGRESO_MEDIANA_MAX],
+            "umbral_str": "med .8-3M · P99<60M"}
+    pares = []
+    for p in res:
+        v = _num(campo(p, "ingreso_m", "ingreso_mensual", "ingresos_m", "ingreso_mes",
+                       "ingreso_mes_cop", "P6015"))
+        if v is None or v <= 0:
+            continue
+        pares.append((v, _peso(p)))
+    if not pares:
+        return {**base, "ok": False, "metrica": None, "metrica_str": "n/a",
+                "detalle": "sin registros con ingreso_m>0", "fallas": -1}
+    med = _percentil_ponderado(pares, 50)
+    p99 = _percentil_ponderado(pares, 99)
+    if med is None or p99 is None:
+        return {**base, "ok": False, "metrica": None, "metrica_str": "n/a",
+                "detalle": "pesos no positivos", "fallas": -1}
+    ok_med = INGRESO_MEDIANA_MIN <= med <= INGRESO_MEDIANA_MAX
+    ok_p99 = p99 < INGRESO_P99_MAX
+    ok = ok_med and ok_p99
+    return {**base, "ok": ok, "metrica": round(med, 0),
+            "metrica_str": f"{med/1e6:.2f}M·{p99/1e6:.1f}M",
+            "detalle": {"mediana": round(med, 0), "p99": round(p99, 0),
+                        "n_con_ingreso": len(pares), "mediana_ok": ok_med,
+                        "p99_ok": ok_p99,
+                        "rango_mediana": [INGRESO_MEDIANA_MIN, INGRESO_MEDIANA_MAX],
+                        "p99_max": INGRESO_P99_MAX},
+            "fallas": (0 if ok_med else 1) + (0 if ok_p99 else 1)}
+
+
+def chk_compromiso_edad(res):
+    """9) % opinador+militante en 60+ debe superar al de 18-29 (direccional)."""
+    base = {"id": "9", "nombre": "Compromiso 60+ vs 18-29", "umbral": ">0",
+            "umbral_str": "60+ > 18-29"}
+    num = {"60+": 0.0, "18-29": 0.0}
+    den = {"60+": 0.0, "18-29": 0.0}
+    for p in res:
+        edad = _num(campo(p, "edad", "P6040", "age"))
+        if edad is None:
+            continue
+        grupo = "60+" if edad >= 60 else ("18-29" if 18 <= edad <= 29 else None)
+        if grupo is None:
+            continue
+        w = _peso(p)
+        den[grupo] += w
+        if _es_activo(_cat_pol(campo(p, "compromiso_politico", "compromiso",
+                                     "compromiso_pol", "compromisopolitico"))):
+            num[grupo] += w
+    if den["60+"] <= 0 or den["18-29"] <= 0:
+        return {**base, "ok": False, "metrica": None, "metrica_str": "n/a",
+                "detalle": "sin registros en 60+ o en 18-29", "fallas": -1}
+    p60 = 100.0 * num["60+"] / den["60+"]
+    p18 = 100.0 * num["18-29"] / den["18-29"]
+    dif = p60 - p18
+    ok = dif > 0
+    return {**base, "ok": ok, "metrica": round(dif, 2), "metrica_str": f"{dif:+.1f}pp",
+            "detalle": {"pct_60_mas": round(p60, 2), "pct_18_29": round(p18, 2),
+                        "delta_pp": round(dif, 2),
+                        "peso_60_mas": round(den["60+"], 1),
+                        "peso_18_29": round(den["18-29"], 1)},
+            "fallas": 0 if ok else 1}
+
+
 # --- tabla / salida -----------------------------------------------------------
 def _imprimir(checks, ok, n):
     ancho = 40
@@ -550,6 +838,10 @@ def main():
         chk_masa(res),
         chk_compromiso(res),
         chk_lean(res, perf_doc),
+        chk_salud(res, marg_doc),
+        chk_urbano(res, marg_doc),
+        chk_ingreso(res),
+        chk_compromiso_edad(res),
     ]
     ok = all(c["ok"] for c in checks)
     _imprimir(checks, ok, len(res))

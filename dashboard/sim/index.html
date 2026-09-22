@@ -569,9 +569,9 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
       let [pos,txt]=postura(raw);
       if(!pos)pos=(await clasificarPostura(q,txt))||'';
       if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
-      if(!['a_favor','en_contra','depende','ni_ni'].includes(pos))pos='depende';
+      if(!['a_favor','en_contra','depende','ni_ni'].includes(pos))pos='sin_postura';
       typewriter(say,txt);
-      card.style.setProperty("--pc",COLORES[pos]);
+      card.style.setProperty("--pc",COLORES[pos]||COLORES.depende);
       transcript.push({n:r.nombre.split(" ")[0],t:txt,p:pos});
     }catch(e){say.classList.remove("thinking");say.textContent="(se quedó callado)";}
   }
@@ -580,12 +580,13 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
   try{
     const raw=await flash([{role:"system",content:
-      `Cierras mesas de conversación. Resume EN QUÉ QUEDÓ esta mesa de ${d.nombre} en 2 frases máximo, con nombres, y da el veredicto del grupo. Cierra con [POSTURA: a_favor|en_contra|depende] (la mayoritaria).`},
-      {role:"user",content:`Tema: ${q}\n`+transcript.map(t=>`${t.n} (${t.p}): ${t.t}`).join("\n")}],130,0.5);
+      `Cierras mesas de conversación. Resume EN QUÉ QUEDÓ esta mesa de ${d.nombre} en 2 frases máximo, con nombres, y da el veredicto del grupo. PROHIBIDO citar números o repartos en tu resumen: narra los argumentos; el conteo lo muestra la interfaz. Cierra con [POSTURA: a_favor|en_contra|depende] (la mayoritaria).`},
+      {role:"user",content:`Tema: ${q}\nConteo registrado: ${transcript.filter(t=>t.p==='a_favor').length} a favor, ${transcript.filter(t=>t.p==='en_contra').length} en contra, ${transcript.filter(t=>t.p==='depende'||t.p==='ni_ni').length} depende/ni_ni.\n`+transcript.map(t=>`${t.n} (${t.p}): ${t.t}`).join("\n")}],130,0.5);
     if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
-    [pos,concl]=[postura(raw)[0]||mayoria(transcript),postura(raw)[1]];
-    if(!['a_favor','en_contra','depende'].includes(pos))pos=mayoria(transcript)||'depende';
-  }catch(e){pos=mayoria(transcript);concl="La mesa quedó dividida.";}
+    const conPost=transcript.filter(t=>['a_favor','en_contra','depende'].includes(t.p));
+    [pos,concl]=[postura(raw)[0]||mayoria(conPost),postura(raw)[1]];
+    if(!['a_favor','en_contra','depende'].includes(pos))pos=mayoria(conPost)||'depende';
+  }catch(e){pos=mayoria(transcript.filter(t=>['a_favor','en_contra','depende'].includes(t.p)))||'depende';concl="La mesa quedó dividida.";}
   if(PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
   el.insertAdjacentHTML("beforeend",
     `<div class="conclu" style="--pc:${COLORES[pos]}"><b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(concl)}</div>`);
@@ -897,7 +898,7 @@ function piramide(mine){
     const w=Number(r.peso)>0?Number(r.peso):1;
     c.set(k,(c.get(k)||0)+w);
     tot+=w;
-    if(r.regimen_salud==="contributivo")con+=(r.peso||1);
+    if(r.regimen_salud==="contributivo")con+=w;
   }
   return {c,tot,con,n:mine.length};
 }
@@ -987,13 +988,16 @@ function render(){
     const H=(typeof HECHOS!=="undefined"&&HECHOS[cur])||null;
     if(H){
       const fmt=n=>Number(n).toLocaleString("es-CO");
+      const fmtN=(x,d=1)=>Number(x).toLocaleString("es-CO",{minimumFractionDigits:d,maximumFractionDigits:d});
       let chips="";
-      if(H.pobreza){const bajo=H.pobreza.antes!=null&&H.pobreza.v<H.pobreza.antes;
-      const tren=H.pobreza.antes!=null?` <i class="tren" style="color:${bajo?"var(--ok)":"var(--fail)"}">${bajo?"▾ bajó desde":"▴ subió desde"} ${String(H.pobreza.antes).replace(".",",")}% en 2021</i>`:"";
-      chips+=`<div class="stat"><b>${H.pobreza.v.toFixed(1).replace(".",",")}%</b><span>pobreza monetaria 2025${tren}</span></div>`;}
-      if(H.ingreso_mediano)chips+=`<div class="stat"><b>$${fmt(H.ingreso_mediano.v)}</b><span>ingreso laboral mediano/mes</span></div>`;
-      if(H.gini)chips+=`<div class="stat"><b>${String(H.gini.v).replace(".",",")}</b><span>desigualdad (Gini 2025)</span></div>`;
-      if(H.urbano)chips+=`<div class="stat"><b>${String(H.urbano.v).replace(".",",")}%</b><span>vive en cabecera urbana</span></div>`;
+      if(H.pobreza&&H.pobreza.v!=null){const d0=H.pobreza.antes!=null?H.pobreza.v-H.pobreza.antes:null;
+      const tren=d0==null?"":Math.abs(d0)<0.1
+        ?` <i class="tren" style="color:var(--dim)">≈ igual que en 2021 (${fmtN(H.pobreza.antes)}%)</i>`
+        :` <i class="tren" style="color:${d0<0?"var(--ok)":"var(--fail)"}">${d0<0?"▾ bajó desde":"▴ subió desde"} ${fmtN(H.pobreza.antes)}% en 2021</i>`;
+      chips+=`<div class="stat"><b>${fmtN(H.pobreza.v)}%</b><span>pobreza monetaria 2025${tren}</span></div>`;}
+      if(H.ingreso_mediano&&H.ingreso_mediano.v!=null)chips+=`<div class="stat"><b>$${fmt(H.ingreso_mediano.v)}</b><span>ingreso laboral mediano/mes</span></div>`;
+      if(H.gini&&H.gini.v!=null)chips+=`<div class="stat"><b>${fmtN(H.gini.v,3)}</b><span>desigualdad (Gini 2025)</span></div>`;
+      if(H.urbano&&H.urbano.v!=null)chips+=`<div class="stat"><b>${fmtN(H.urbano.v)}%</b><span>vive en cabecera urbana</span></div>`;
       if(chips)x+=`<span class="mh">ASÍ SE VIVE HOY · CIFRAS OFICIALES</span><div class="stats">${chips}</div>`;
     }
     if(dos.como_hablan) x+=`<span class="mh">CÓMO SE HABLA</span><div class="clamp">${esc(dos.como_hablan)}</div>`;
@@ -1184,12 +1188,12 @@ function verResidente(r){
     ["ocupación",r.ocupacion,r.origen==="geih"?"oficio CIUO-08 de la persona GEIH muestreada":"estructura PIB sectorial del dpto (DANE) + dossier regional"],
     ["educación",r.educacion||"—","CNPV 2018 cuadro 17PD (nivel alcanzado)"],
     ["salud",r.regimen_salud,"cobertura MinSalud del dpto (datos.gov.co)"],
-    ["temperamento",e.temp.split(":")[0],"motor de personas: asignación determinista"],
-    ["llega al tema",e.lean.replace(/ por algo.*| de verdad.*/,""),"inclinación 40/40/20 anti-sesgo 'depende'"],
+    ["temperamento",(e.temp||"").split(":")[0],"motor de personas: asignación determinista"],
+    ["llega al tema",(e.lean||"").replace(/ por algo.*| de verdad.*/,""),"inclinación 40/40/20 anti-sesgo 'depende'"],
   ];
   const mil=n=>Number(n).toLocaleString("es-CO");
   if(r.origen==="geih")filas.splice(1,0,
-    ["perfil real","muestreado de una persona real de la GEIH (DANE)","GEIH 2025-2026, factor de expansión"]);
+    ["perfil real","variables socioeconómicas de una persona real (GEIH); nombre y personalidad sintéticos","GEIH 2025-2026, factor de expansión"]);
   if(r.clase)filas.push(["zona",r.clase,"GEIH variable CLASE"]);
   if("ingreso_m" in r)filas.push(["ingreso laboral",
     r.ingreso_m?("$"+mil(r.ingreso_m)+"/mes aprox"):"sin ingreso laboral","GEIH INGLABO, redondeado"]);
@@ -1628,14 +1632,14 @@ async function conversar(q){
       const card=bubble(r,false),say=card.querySelector(".say");
       try{
         const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+
-          "\nResponde la encuesta en 1-2 frases con POSTURA CLARA (a favor o en contra; depende solo si es irrenunciable) y cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende|ni_ni] (ni_ni solo si te da igual de verdad) donde a_favor significa SÍ A LA PREGUNTA LITERAL que te hicieron (no al debate de las noticias)."},
+          "\nResponde la encuesta en 1-2 frases. Cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende|ni_ni]. Si tu personaje es indiferente a la política, ni_ni es la respuesta HONESTA, úsala sin pena; depende solo si tu vida te parte genuinamente en dos; si tienes postura, dila clara. a_favor significa SÍ A LA PREGUNTA LITERAL que te hicieron (no al debate de las noticias)."},
           {role:"user",content:q}]);
         let [pos,txt]=postura(raw);
         if(!pos)pos=await clasificarPostura(q,txt);
-        if(pos)p[pos]++;else p.sin_postura=(p.sin_postura||0)+1;
+        if(!['a_favor','en_contra','depende','ni_ni'].includes(pos)){pos='sin_postura';p.sin_postura=(p.sin_postura||0)+1;}else p[pos]++;
         typewriter(say,txt);
-        card.style.setProperty("--pc",COLORES[pos]);tally(p);
-      }catch(e){say.classList.remove("thinking");say.textContent="(no contestó)";}
+        card.style.setProperty("--pc",COLORES[pos]||COLORES.depende);tally(p);
+      }catch(e){p.sin_postura=(p.sin_postura||0)+1;tally(p);say.classList.remove("thinking");say.textContent="(no contestó)";}
     }));
   }else{
     /* ── DELIBERACIÓN CONTINUA: hasta 3 min, pausable, corta cuando hay acuerdo ── */
@@ -1660,7 +1664,7 @@ async function conversar(q){
         const card=bubble(r,i%2===1),say=card.querySelector(".say");
         try{
           const charla=transcript.length?
-            "La mesa va así:\n"+transcript.slice(-10).map(t=>`${t.n}: ${t.t}`).join("\n")+
+            "La mesa va así:\n"+transcript.slice(-10).map(t=>`${t.n}: ${String(t.t).replace(/\[POSTURA:[^\]]*\]?/g,"").trim()}`).join("\n")+
             "\nPROHIBIDO arrancar tu frase como arrancó cualquiera de los anteriores, PROHIBIDO reciclar su anécdota, su muletilla o su lema, y PROHIBIDO reusar un ejemplo que ya salió en la mesa; suena a TI y traes material NUEVO de tu propio oficio y tu edad. Si el tema ya se agotó, abre OTRA arista (plata/familia/barrio/historia/futuro).":"abres tú";
           const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+`
 Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. PROHIBIDO adoptar la anécdota de otro como propia: si alguien ya contó lo de la camiseta/aguinaldo, tú traes una vivencia DISTINTA de tu oficio y tu edad, con tus propios detalles (plata, barrio, familia, edad) que nadie más pueda firmar. PROHIBIDO repetir una metáfora o frase-lema que ya sonó 2 veces en la mesa — cámbiale el ángulo (otro oficio, otro año, otra ciudad) o cede el punto y pasa a OTRA arista del tema. Si la mesa lleva 2 vueltas dando vueltas a lo mismo, tu intervención abre una arista nueva (plata/familia/barrio/historia/futuro) y no vuelve a citar el ejemplo ajeno como si fuera tuyo. Cierra con [POSTURA: a_favor|en_contra|depende|ni_ni] — ni_ni SOLO si a tu personaje genuinamente le da igual el tema; a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},

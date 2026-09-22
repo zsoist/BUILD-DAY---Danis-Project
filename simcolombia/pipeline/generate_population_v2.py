@@ -243,6 +243,32 @@ def _grupo(edad):
     return f"{lo}-{lo + 4}"
 
 
+def _nombres_regionales(cod):
+    """(5) Nombres frecuentes del dossier del dpto (DOSSIERS o archivo); [] si no hay."""
+    cache = _nombres_regionales.__dict__.setdefault("_cache", {})
+    if cod in cache:
+        return cache[cod]
+    dossier = None
+    dossiers = globals().get("DOSSIERS")
+    if isinstance(dossiers, dict):
+        dossier = dossiers.get(cod) or dossiers.get(cod_norm(cod))
+    if dossier is None:
+        for cand in (BASE / "data" / "dossiers" / f"{cod}.json",
+                     BASE / "data" / f"dossier_{cod}.json"):
+            if cand.exists():
+                try:
+                    dossier = json.loads(cand.read_text(encoding="utf-8"))
+                except (json.JSONDecodeError, OSError):
+                    dossier = None
+                break
+    if isinstance(dossier, dict) and isinstance(dossier.get("dossier"), dict):
+        dossier = dossier["dossier"]
+    nm = dossier.get("nombres_frecuentes") if isinstance(dossier, dict) else None
+    reg = [str(x) for x in nm if str(x).strip()] if isinstance(nm, list) else []
+    cache[cod] = reg
+    return reg
+
+
 # ───────────── CIUO-08: 2 primeros dígitos → oficio legible (Colombia) ─────────────
 CIUO = {
  "11": "director(a) y alto(a) funcionario(a)",
@@ -301,20 +327,28 @@ ESFUERZO = {"61", "62", "63", "71", "72", "73", "74", "75", "81", "82", "83",
             "91", "92", "93", "94", "95", "96"}
 
 
-def _sin_oficio(edad, educacion, rid):
+def _sin_oficio(edad, educacion, rid, clase="cabecera"):
     """Oficio de reserva cuando el pool no trae CIUO (regla por edad + hash)."""
     if edad < 18:
         return "estudiante"
     h = _hash(rid, "ocio") & 1
     if edad >= 62:
-        # pensionado realista solo con educación superior/media (proxy)
+        # (1) pensión con TOPE: ~28% de los 62+ sin oficio, sesgada a educación
+        # media/superior y clase urbana (lotería determinista por hash).
+        prob = 0.24
         if educacion in ("superior", "media"):
+            prob += 0.10
+        if educacion == "ninguna":
+            prob -= 0.12
+        prob += 0.06 if clase == "cabecera" else -0.10
+        prob = min(max(prob, 0.0), 0.6)
+        if (_hash(rid, "pension") % 1000) / 1000.0 < prob:
             return "pensionado(a)"
         return "oficios del hogar" if h else "inactivo(a)"
     return "buscando trabajo" if h else "oficios del hogar"
 
 
-def oficio_de(ciuo, edad, educacion, rid):
+def oficio_de(ciuo, edad, educacion, rid, clase="cabecera"):
     """Devuelve (oficio legible, código de 2 dígitos o None)."""
     if ciuo not in (None, "", " "):
         digits = "".join(ch for ch in str(ciuo) if ch.isdigit())
@@ -322,9 +356,9 @@ def oficio_de(ciuo, edad, educacion, rid):
         oc = CIUO.get(dos) or CIUO_1.get(dos[:1])
         if oc:
             if edad > 85 and dos in ESFUERZO:   # anti-absurdo: >85 no hace esfuerzo físico
-                return _sin_oficio(edad, educacion, rid), dos
+                return _sin_oficio(edad, educacion, rid, clase), dos
             return oc, dos
-    return _sin_oficio(edad, educacion, rid), None
+    return _sin_oficio(edad, educacion, rid, clase), None
 
 
 # ───────────── carga de insumos ─────────────
@@ -427,16 +461,26 @@ FALLBACK_LEAN = {"centro_tradicional": 20.0, "derecha_uribismo": 20.0,
                  "otros_blanco_nulo": 20.0}
 
 
-def elegir_compromiso(rid):
-    """25% indiferente / 30% desencantado / 30% opinador / 15% militante."""
-    b = _hash(rid, 37) % 100
-    if b < 25:
-        return "indiferente"
-    if b < 55:
-        return "desencantado"
-    if b < 85:
-        return "opinador"
-    return "militante"
+COMPROMISO_PESOS = {
+    "18-29": (("indiferente", 34), ("desencantado", 30), ("opinador", 24), ("militante", 12)),
+    "30-59": (("indiferente", 25), ("desencantado", 32), ("opinador", 29), ("militante", 14)),
+    "60+":   (("indiferente", 15), ("desencantado", 26), ("opinador", 38), ("militante", 21)),
+}
+
+
+def tramo_edad(edad):
+    return "18-29" if edad < 30 else ("30-59" if edad < 60 else "60+")
+
+
+def elegir_compromiso(rid, edad):
+    """(2) Pesos por tramo de edad; el agregado se mantiene ≈ 25/30/30/15."""
+    b = _hash(rid, 37) % 1000
+    acum = 0
+    for etiqueta, w in COMPROMISO_PESOS[tramo_edad(edad)]:
+        acum += w * 10
+        if b < acum:
+            return etiqueta
+    return COMPROMISO_PESOS[tramo_edad(edad)][-1][0]
 
 
 def elegir_lean(perfil, r):
@@ -477,7 +521,24 @@ for cod in sorted(DEP):
     perfil = (PERFILES.get(norm_txt(nombre_dpto)) or PERFILES.get(cod)
               or PERFILES.get(cod_norm(cod)) or {})
     sal = d.get("salud_pct") or {}
-    for i, r in enumerate(muestrear(recs, n)):
+    muestras = muestrear(recs, n)
+    regionales = _nombres_regionales(cod)
+    # (3) dos etapas: cuota del marginal por dpto y, dentro de la cuota, contributivo
+    # a los mayores ingresos/formales (jitter de hash desempata); subsidiado al resto.
+    contributivos = set()
+    if sal:
+        tot_sal = sum(max(_num(v, 0), 0) for v in sal.values()) or 1.0
+        pct_contrib = sum(max(_num(v, 0), 0) for k, v in sal.items()
+                          if "contribut" in str(k).lower()) / tot_sal
+        cuota = max(0, min(n, int(round(n * pct_contrib))))
+        contributivos = set(sorted(
+            range(n),
+            key=lambda j: (_num(_get(muestras[j], "ingreso", "INGLABO",
+                                     "ingreso_laboral"), 0) or 0)
+            + (400_000 if _get(muestras[j], "formal", "P6450") in (1, "1", True) else 0)
+            + (_hash(f"{cod}-{j}", "salud") % 200_000),
+            reverse=True)[:cuota])
+    for i, r in enumerate(muestras):
         rid = f"{cod}-{i:03d}"
         edad = int(_num(_get(r, "edad", "P6040", default=30), 30))
         sexo = _norm_sexo(_get(r, "sexo", "P3271", default="mujer"))
@@ -485,19 +546,20 @@ for cod in sorted(DEP):
         clase = _norm_clase(_get(r, "clase", "CLASE", default=1))
         ingreso = _num(_get(r, "ingreso", "INGLABO", "ingreso_laboral"))
         ciuo = _get(r, "oficio_ciuo", "oficio", "OFICIO_C8", "ciuo")
-        ocupacion, cod2 = oficio_de(ciuo, edad, educacion, rid)
+        ocupacion, cod2 = oficio_de(ciuo, edad, educacion, rid, clase)
         # anti-absurdo: un grupo profesional (CIUO 21-26) exige educación superior
         if educacion == "ninguna" and cod2 and cod2.isdigit() and 21 <= int(cod2) <= 26:
             AVISOS.append(f"{rid}: {ocupacion} con educación 'ninguna' en el pool → superior")
             educacion = "superior"
         if sal:
-            regimen = sample_w(list(sal.items())) or "subsidiado"
+            regimen = "contributivo" if i in contributivos else "subsidiado"
         else:
             regimen = "contributivo" if (ingreso and ingreso > 1_400_000) else "subsidiado"
-        ingreso_m = int(round(ingreso / 100_000.0) * 100_000) if ingreso else None
+        # (4) 0 = sin ingreso (se muestra 0) · None = no aplica · redondeo a decenas de mil.
+        ingreso_m = int(round(ingreso / 100_000.0) * 100_000) if ingreso is not None else None
         RES.append({
             "id": rid,
-            "nombre": f"{nombre_pila(edad, sexo, [])} {rng.choice(APELLIDOS)} {rng.choice(APELLIDOS)}",
+            "nombre": f"{nombre_pila(edad, sexo, regionales)} {rng.choice(APELLIDOS)} {rng.choice(APELLIDOS)}",
             "edad": edad,
             "sexo": sexo,
             "dpto": cod,
@@ -508,7 +570,7 @@ for cod in sorted(DEP):
             "grupo_edad": _grupo(edad),
             "clase": clase,
             "peso": round(peso, 3),
-            "compromiso": elegir_compromiso(rid),
+            "compromiso": elegir_compromiso(rid, edad),
             "lean": elegir_lean(perfil, random.Random(_hash(rid, "lean"))),
             "ingreso_m": ingreso_m,
             "origen": "geih",
@@ -528,6 +590,33 @@ print(f"anti-absurdo: >85 en esfuerzo físico = {fis} (esperado ~0) · "
       f"docentes con educación 'ninguna' = {doc} (esperado 0)")
 if AVISOS:
     print("avisos: " + " | ".join(AVISOS[:6]) + (" ..." if len(AVISOS) > 6 else ""))
+
+# ── Cobertura GEIH: en dptos amazónicos la GEIH solo encuesta cabeceras.
+# Imputamos la cuota rural del marginal DANE (urbano_pct) reasignando clase
+# determinista, priorizando perfiles plausiblemente rurales.
+_RURALES = ("agricultor", "agropec", "peón", "peon", "pesca", "minería", "mineria",
+            "oficios del hogar", "inactivo", "buscando")
+from collections import defaultdict as _dd
+_por = _dd(list)
+for _r in RES:
+    _por[_r["dpto"]].append(_r)
+for _cod, _grupo in _por.items():
+    _upct = (M.get(_cod) or {}).get("urbano_pct")
+    if _upct is None:
+        continue
+    _urb = [x for x in _grupo if x.get("clase") == "cabecera"]
+    _obs = 100.0 * len(_urb) / len(_grupo)
+    if _obs - _upct <= 6.0:
+        continue
+    _n = int(round((_obs - _upct) / 100.0 * len(_grupo)))
+    def _prio(x):
+        o = (x.get("ocupacion") or "").lower()
+        h = 0
+        for c in x["id"]:
+            h = (h * 31 + ord(c)) & 0xFFFFFFFF
+        return (0 if any(k in o for k in _RURALES) else 1, h)
+    for x in sorted(_urb, key=_prio)[:_n]:
+        x["clase"] = "resto"
 
 out = DASH / "residents_v2.json"
 json.dump(RES, out.open("w", encoding="utf-8"), ensure_ascii=False)
