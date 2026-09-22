@@ -38,11 +38,11 @@ function extraer(nombre) {
 
 const NOMBRES = ["TEMPERAMENTOS", "LEAN", "FRANQUEZA", "ARRANQUES", "estiloDe",
   "FUNDAMENTOS", "marcoDe", "GUSTOS", "FASTIDIOS", "momentoDe", "COMPROMISO_TXT",
-  "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "ESTILOS_RESP", "estiloRespuesta", "persona", "sondeoInstr"];
+  "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "ESTILOS_RESP", "estiloRespuesta", "persona", "sondeoInstr", "INSTITUCIONES", "anclaDe"];
 /* LIBRETO=0: sin la postura asignada por hash. Es lo que decide si la
    dispersión es del método o fabricada por el prompt. Por defecto, la del sitio. */
 const LIBRETO = (process.env.LIBRETO ?? "1") !== "0";
-const mod = new Function("OPC", "LIBRETO", NOMBRES.map(extraer).join("\n") + "\nreturn {persona, sondeoInstr};")(null, LIBRETO);
+const mod = new Function("OPC", "LIBRETO", NOMBRES.map(extraer).join("\n") + "\nreturn {persona, sondeoInstr, anclaDe};")(null, LIBRETO);
 
 const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "web/residents_v2.json"), "utf8"));
 const residentes = (RES.residentes || RES).filter(r => r.edad >= 18);   // universo ECP
@@ -107,12 +107,17 @@ const FLOTA = (process.env.ENJAMBRE || "deepseek").toLowerCase();
 /* "sitio": el mismo modelo y la misma ruta que usa producción (api/opina.js):
    DeepSeek por OpenRouter, razonamiento apagado. Es lo que hay que medir cuando
    la pregunta es "qué ve la gente en el sitio". */
+const _MV = process.env.MODELO_VOZ || "deepseek/deepseek-v4.1-flash";
+/* razonamiento por modelo (docs/OPENROUTER.md): DeepSeek se apaga, GLM no deja
+   y va en "low"; al resto no se le manda, y entonces tampoco se exige que el
+   proveedor lo soporte, o no habría a quién enrutar */
+const _RZ = _MV.includes("glm") ? { effort: "low" } : _MV.includes("deepseek") ? { enabled: false } : null;
 const MOTOR = FLOTA === "sitio"
-  ? { modelo: process.env.MODELO_VOZ || "deepseek/deepseek-v4.1-flash",
+  ? { modelo: _MV,
       url: "https://openrouter.ai/api/v1/chat/completions",
       key: env.OPENROUTER_API_KEY,
-      extra: { reasoning: { enabled: false },
-               provider: { require_parameters: true, data_collection: "deny" } } }
+      extra: { ...(_RZ ? { reasoning: _RZ } : {}),
+               provider: { require_parameters: !!_RZ, data_collection: "deny" } } }
   : FLOTA === "glm"
   ? { modelo: process.env.MODELO_VOZ || "z-ai/glm-5.3-flash",
       url: "https://openrouter.ai/api/v1/chat/completions",
@@ -187,6 +192,66 @@ const INSTR_LIB = "\nTe está encuestando el DANE en la puerta de tu casa. NO te
    del sondeo (extraída del sitio, no copiada) y la etiqueta [POSTURA: …] al
    final. Da a la vez el texto (para SSR) y la etiqueta (lo que cuenta hoy el
    sitio), de la MISMA voz: es lo que permite medir la mezcla de los dos. */
+/* VARIANTE (solo modo sitio): para aislar de dónde sale un sesgo.
+     sitio   la persona completa del sitio (por defecto)
+     minima  solo datos demográficos, sin la maquinaria de personaje
+     nula    "eres un colombiano adulto": lo que el modelo trae de fábrica
+     podada  la persona del sitio con los reemplazos de PODA=<archivo.json>
+             ([[texto, reemplazo], ...]) aplicados sobre el prompt final */
+const VARIANTE = (process.env.VARIANTE || "sitio").toLowerCase();
+const _ACTS = ["anclada", "anclada_min", "hermanas", "hermanas_min"].includes(VARIANTE)
+  ? JSON.parse(fs.readFileSync(path.join(ROOT, "web/actitudes.json"), "utf8")) : { por_id: {}, hermanas: {} };
+const ACT = _ACTS.por_id, HERM = _ACTS.hermanas || {};
+/* Las respuestas reales del donante a preguntas hermanas (mismas baterías de la
+   ECP, disjuntas de las que se miden). Etiquetas fieles al cuestionario. */
+const HERM_TXT = [
+  ["en Colombia", "a todos los ciudadanos se les respeta el derecho a elegir y ser elegido"],
+  ["en Colombia", "existe la libertad de expresar y difundir el pensamiento"],
+  ["en Colombia", "se garantiza la libertad de conformar y pertenecer a partidos o movimientos políticos"],
+  ["en Colombia", "se le facilita a los ciudadanos el acceso a la información pública"],
+  ["en Colombia", "se protegen y garantizan los derechos a la recreación y la cultura"],
+  ["en Colombia", "se protegen y garantizan los derechos de las minorías étnicas y sociales"],
+  ["en Colombia", "se protegen y garantizan los derechos del campesinado"],
+  ["para que un país sea democrático", "debe haber partidos o movimientos políticos"],
+  ["para que un país sea democrático", "debe haber jueces, juzgados, tribunales y cortes"],
+  ["para que un país sea democrático", "debe haber autoridades locales, municipales y departamentales"],
+  ["para que un país sea democrático", "debe existir el derecho a elegir y ser elegido"],
+];
+function hermanasDe(v) {
+  if (!Array.isArray(v)) return "";
+  const si = [], no = [];
+  v.forEach((x, i) => { if (x === 1) si.push(HERM_TXT[i]); else if (x === 2) no.push(HERM_TXT[i]); });
+  const fr = l => l.map(([m, p]) => `${m}, ${p}`).join("; ");
+  return "\nLO QUE LE RESPONDISTE AL DANE (es tuyo: una persona real como tú lo contestó así): " +
+    (si.length ? "crees que SÍ: " + fr(si) + ". " : "") +
+    (no.length ? "crees que NO: " + fr(no) + ". " : "") +
+    "Tus demás respuestas salen de esa misma forma de ver el país.\n";
+}
+const CIERRE = "\nResponde la encuesta en 1-2 frases, como hablarías de verdad. Cierra SIEMPRE con " +
+  "[POSTURA: a_favor|en_contra|depende|ni_ni]. a_favor significa SÍ a la pregunta literal.";
+const PODA = process.env.PODA ? JSON.parse(fs.readFileSync(process.env.PODA, "utf8")) : [];
+let PODA_APLICADA = 0;
+function sistemaSitio(r) {
+  if (VARIANTE === "nula") return "Eres un colombiano adulto." + CIERRE;
+  if (VARIANTE.startsWith("minima") || VARIANTE.endsWith("_min")) {
+    const zona = r.clase === "cabecera" ? "en la ciudad o el casco urbano" : "en zona rural";
+    const ficha = `Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, vives en ${r.dpto_nombre} ${zona}. ` +
+      `Educación: ${r.educacion}. Oficio: ${r.ocupacion}.`;
+    const extra = VARIANTE === "anclada_min" ? mod.anclaDe(ACT[r.id])
+      : VARIANTE === "hermanas_min" ? mod.anclaDe(ACT[r.id]) + hermanasDe(HERM[r.id]) : "";
+    return ficha + extra + CIERRE;
+  }
+  /* anclada: persona + la postura real de su donante de la ECP + instrucción */
+  if (VARIANTE === "anclada")
+    return mod.persona(r, DOS[r.dpto] || {}) + mod.anclaDe(ACT[r.id]) + mod.sondeoInstr(r);
+  if (VARIANTE === "hermanas")
+    return mod.persona(r, DOS[r.dpto] || {}) + mod.anclaDe(ACT[r.id]) + hermanasDe(HERM[r.id]) + mod.sondeoInstr(r);
+  let s = mod.persona(r, DOS[r.dpto] || {}) + mod.sondeoInstr(r);
+  if (VARIANTE === "podada") for (const [de, a] of PODA) {
+    if (s.includes(de)) { s = s.split(de).join(a); PODA_APLICADA++; }
+  }
+  return s;
+}
 const INSTR = MODO === "continuo" ? INSTR_CON : MODO === "libre" ? INSTR_LIB : MODO === "sitio" ? "" : INSTR_CAT;
 
 const out = [];
@@ -195,7 +260,7 @@ await Promise.all(Array.from({ length: 8 }, async () => {
   while (cola.length) {
     const r = cola.shift();
     const txt = await flash([
-      { role: "system", content: mod.persona(r, DOS[r.dpto] || {}) + (MODO === "sitio" ? mod.sondeoInstr(r) : INSTR) },
+      { role: "system", content: MODO === "sitio" ? sistemaSitio(r) : mod.persona(r, DOS[r.dpto] || {}) + INSTR },
       { role: "user", content: MODO === "libre" ? TEXTO_LIBRE : MODO === "sitio"
           ? TEXTO_LIBRE + "\n\nRecuerda: cierra tu respuesta con la etiqueta [POSTURA: a_favor|en_contra|depende|ni_ni]."
           : TEXTO },
@@ -227,7 +292,8 @@ await Promise.all(Array.from({ length: 8 }, async () => {
 /* La flota queda grabada en el archivo: un resultado sin saber qué modelo lo
    produjo no se puede comparar con nada dentro de un mes. */
 fs.writeFileSync(SALIDA, JSON.stringify({ codigo: CODIGO, pregunta: TEXTO, pregunta_libre: TEXTO_LIBRE, modo: MODO, n: out.length,
-  flota: FLOTA, modelo: MOTOR.modelo, temperatura: TEMP, libreto: LIBRETO, vacias: VACIAS,
+  flota: FLOTA, modelo: MOTOR.modelo, temperatura: TEMP, libreto: LIBRETO, variante: VARIANTE,
+  poda_aplicada: PODA_APLICADA, vacias: VACIAS,
   fecha: new Date().toISOString(), respuestas: out }, null, 1));
 console.error(`\nOK — ${out.length} respuestas de ${MOTOR.modelo} → ${SALIDA}`);
 if (VACIAS) console.error(`   ⚠ ${VACIAS} respuesta(s) vacías reintentadas`);

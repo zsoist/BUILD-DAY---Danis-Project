@@ -1109,6 +1109,27 @@ const TEMPERAMENTOS=[
    antídoto del evento contra el colapso a "depende": dispersión fabricada, no
    medida. false = cada voz opina desde su perfil real. */
 const LIBRETO=true;
+/* ANCLA: la postura real de un colombiano como esta persona frente a las
+   instituciones: las respuestas de un donante de la ECP 2023 emparejado por
+   región, sexo, edad y educación (simcolombia/pipeline/donantes_ecp.py →
+   actitudes.json). El modelo trae de fábrica la creencia de que en Colombia
+   nada funciona: sin persona responde "no" al 100% donde los colombianos dicen
+   sí 41-58%. Apagado hasta pasar la prueba (docs/METODO.md). */
+const ANCLA=false;
+const INSTITUCIONES=["la Procuraduría","la alcaldía de tu municipio","las Fuerzas Militares","el Congreso","los jueces y magistrados","la Asamblea departamental","la Contraloría","el Concejo municipal","la Policía","los partidos políticos","la Defensoría del Pueblo","la Gobernación","la Fiscalía","la Registraduría","la Presidencia"];
+function anclaDe(v){
+  if(!Array.isArray(v))return "";
+  const g={alta:[],media:[],baja:[]};
+  INSTITUCIONES.forEach((n,i)=>{const x=v[i];if(x==null)return;(x>=4?g.alta:x===3?g.media:g.baja).push(n);});
+  const d=v[15];
+  const dem=d==null?"":d>=4?"En general estás satisfecho(a) con cómo funciona la democracia en Colombia. ":
+    d===3?"Con cómo funciona la democracia en Colombia no estás ni satisfecho(a) ni insatisfecho(a). ":
+    "Estás insatisfecho(a) con cómo funciona la democracia en Colombia. ";
+  return "\nTU POSTURA FRENTE A LAS INSTITUCIONES (es tuya: sale de lo que le respondió al DANE una persona real como tú): "+
+    (g.alta.length?"confías en "+g.alta.join(", ")+". ":"")+
+    (g.media.length?"Ni mucho ni poco en "+g.media.join(", ")+". ":"")+
+    (g.baja.length?"Confías poco o nada en "+g.baja.join(", ")+". ":"")+dem+"Opinas desde esa postura.\n";
+}
 const LEAN=["estás A FAVOR por algo concreto que viviste, y lo defiendes",
  "estás A FAVOR por algo concreto que viviste, y lo defiendes",
  "estás EN CONTRA por algo concreto que viviste, y lo defiendes",
