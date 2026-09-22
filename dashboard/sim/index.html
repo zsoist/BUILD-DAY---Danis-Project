@@ -227,9 +227,9 @@ body{min-height:100vh;min-height:100dvh}
 #logo{width:28px;height:28px;margin-right:-4px}
 #title{font-size:15px;flex:1 1 auto;min-width:0}
 #title small{font-size:15px}
-#lema{font-size:8px;letter-spacing:.08em;margin-top:0}
+#lema{font-size:10px;letter-spacing:.08em;margin-top:0}
 #dptosel{order:3;flex:1 1 100%;width:100%;min-width:0;min-height:44px;font-size:16px;padding:10px 12px}
-a.back{order:4;font-size:12px;min-height:44px;display:flex;align-items:center;padding:0}
+a.back{order:4;font-size:12px;min-height:44px;display:flex;align-items:center;padding:0;min-width:0;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #gear{order:5;margin-left:auto;min-height:44px;padding:10px 12px}
 /* 3 · iOS: inputs 16px (sin zoom), targets >=44px, sin overflow-x */
 select,input{font-size:16px;min-height:44px}
@@ -329,17 +329,17 @@ button,.pxbtn{min-height:44px;touch-action:manipulation}
 .resp .say{font-size:15.5px;line-height:1.68}
 /* 2 · modos de pregunta: 3 columnas iguales, full-width, ≥44px */
 #modo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;flex:1 1 100%;width:100%}
-#modo button{width:100%;min-height:44px;padding:8px 4px;font-size:10px;line-height:1.3;display:flex;align-items:center;justify-content:center;text-align:center}
+#modo button{width:100%;min-height:44px;padding:8px 4px;font-size:12px;line-height:1.3;display:flex;align-items:center;justify-content:center;text-align:center;letter-spacing:0}
 /* 3 · recuento: fila compacta legible */
-#tally{gap:6px;padding:8px 10px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+#tally{gap:6px;padding:8px 10px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
 .tal{flex:0 0 auto;min-width:86px;padding:8px 8px 7px}
 .tal b{font-size:18px}
-.tal span{font-size:10.5px}
+.tal span{font-size:12px}
 /* 5 · chips activos: fila con scroll horizontal */
 #selinfo{padding:8px 12px;white-space:nowrap;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
 #selinfo .chip{margin:0 6px 0 0;padding:7px 4px 7px 10px;font-size:13px;vertical-align:middle}
 #selinfo .chip .chip-x{padding:0 8px;font-size:14px;min-height:0}
-#selinfo>button{position:static;margin-left:0;min-height:32px;padding:6px 10px;vertical-align:middle}
+#selinfo>button{position:static;margin-left:0;min-height:44px;padding:6px 10px;vertical-align:middle}
 /* 6 · sugerencias: objetivos táctiles ≥44px */
 #sugg{gap:8px;padding:2px 12px 14px}
 #sugg button{min-height:44px;padding:9px 13px;font-size:13.5px;display:inline-flex;align-items:center}
@@ -420,9 +420,7 @@ button,.pxbtn{min-height:44px;touch-action:manipulation}
     <div class="panel"><h2>residentes de muestra</h2><div id="muestra" aria-busy="true"><div class="fuente">cargando censo DANE…</div></div></div>
   </aside>
 
-  <div id="banner">⚠ SIMULACIÓN — residentes sintéticos generados de marginales reales
-  (DANE / datos.gov.co). Las opiniones son de personajes verosímiles, no de personas.
-  Reporte de fidelidad: <a href="validacion.json" style="color:var(--dim)">validacion.json</a></div>
+  <div id="banner">⚠ SIMULACIÓN — residentes sintéticos: sus variables socioeconómicas se muestrean de personas reales encuestadas por el DANE (GEIH 2025–2026) y se ponderan a los totales oficiales; el nombre, la personalidad y las opiniones son generados. NO es una encuesta: ninguno de estos existe. Reporte de fidelidad: <a href="validacion_v2.json">validacion.json</a></div>
 </div>
 
 <div id="rmask"><div id="rcard">
@@ -641,7 +639,7 @@ let SEL=new Set(["11"]);   // territorios elegidos para la muestra (vacío = tod
 let DECIDIDO={};  // cod → postura concluida (pinta ambos mapas)
 
 const MODOTXT={
-  sondeo:"SONDEO · Todos contestan a la vez. Rápido: cuántos dirían sí, no o depende.",
+  sondeo:"SONDEO · Todos contestan a la vez. Rápido: cuántos dirían sí, no o depende. No es una encuesta: son respuestas generadas, sin margen de error.",
   tertulia:"TERTULIA · Conversan de a uno, se responden y se contradicen. Hasta 3 minutos o hasta ponerse de acuerdo.",
   pais:"EL PAÍS · Escribes una pregunta y tocas el mapa: cada territorio delibera, concluye y se pinta."};
 function selInfo(){
@@ -946,7 +944,7 @@ function render(){
     h+=`</div><div class="leyenda"><span><i style="background:var(--hom)"></i>hombres</span>
         <span><i style="background:var(--muj)"></i>mujeres</span>
         <span><i style="background:var(--text);width:2px"></i>censo real</span></div>
-        <div class="fuente">muestra sintética: n=${PIRCACHE.n||0} residentes (pesos → ${Math.round(PIRCACHE.tot||0).toLocaleString("es-CO")} hab.)${(PIRCACHE.n||0)<200?" · bandas de 10 años (muestra pequeña)":""}</div>`;
+        <div class="fuente">muestra sintética: n=${(PIRCACHE.n||0).toLocaleString("es-CO")} residentes, ponderados a ${((PIRCACHE.tot||0)/1e6).toLocaleString("es-CO",{maximumFractionDigits:1})} millones (proyección DANE 2026)${(PIRCACHE.n||0)<200?" · bandas de 10 años (muestra pequeña)":""}</div>`;
   } else {
     h+=`<h3>PIRÁMIDE</h3><div class="fuente">⚠ sexo/edad provisionales — a la espera del
         archivo de proyecciones DANE (el resto de bloques ya es real)</div>`;
@@ -1168,10 +1166,14 @@ REGLAS DURAS:
 - No eres un encuestado educado: si te da lo mismo, dilo ("me da igual la democracia si hay comida"). Si no sabes, dilo: inventar postura está prohibido.
 - No eres más demócrata, más confiado en las FFAA ni más optimista que la gente de tu barrio. No suavices por quedar bien.
 - El vocativo regional (sumercé/parce/mijo/ombe/oís/camarita) NO es adorno obligatorio: la mayoría de tus frases van SIN él (en la última mesa salió en 15 de 20 voces, eso es de robot). PROHIBIDO el símil de molde ('eso es como cuando uno…'): si metes una comparación, que salga de tu oficio real. Si un nombre viene mal escrito en la pregunta, tú lo dices bien, como lo pronuncia la gente. Y el arranque es el TUYO: si no te tocó pregunta retórica, NO arranques con '¿Y…?'.
+- SI LO QUE SE DISCUTE PASÓ EN TU DEPARTAMENTO, te toca a ti primero: nómbralo con lo concreto de tu vida (tu casa, tu barrio, tu familia, si tuviste que salir o si conociste a alguien). Una mujer del Chocó a la que le preguntan por un terremoto en el Chocó NO puede hablar del tema como si le pasara a otros. Si el hecho es de otra región, dilo desde fuera, sin fingir que lo viviste.
+- PROHIBIDO fingir ignorancia y luego demostrar que sabías: si dices "no sé de qué me hablan", tu respuesta NO puede después dar detalles del asunto. O no sabes y opinas desde tu principio general, o sabes y hablas del hecho.
+- PROHIBIDO afirmar QUIÉN es alguien o qué cargo tiene si no viene en las noticias que te dieron (no digas "ese es el gobernador de X"): si no te consta, di "ese señor", "ese político" y sigue. Tampoco te inventes un operativo, una cifra o un hecho específico como si lo hubieras presenciado; tu experiencia propia sí, los hechos públicos no.
 - PROHIBIDAS las frases de manada (en la última mesa se repitieron en 6+ voces): 'no me quita el sueño', 'puro show', 'pa' la foto', 'prometen y no cumplen', 'pan para hoy y hambre para mañana'. Tu crítica dila con palabras que solo TÚ firmarías: tu oficio, tu plata, tu barrio, tu edad.
 - EN TEMAS DE GOBIERNO Y POLÍTICOS: si el protagonista es de tu orilla política, tu reflejo es defenderlo o matizarle como hincha de su equipo; si es de la orilla contraria, le caes con ganas y con argumentos. El cinismo parejo ('todos son iguales') es EXCLUSIVO de desencantados e indiferentes: si no es tu caso, toma bando.
 - PROHIBIDO el cliché de encuesta: la prima/vecina/sobrina que "casi se muere" en un procedimiento clandestino, "mi mamá parió once y enterró N", el familiar moribundo de plantilla. Si el drama no es TUYO y de tu casa, no lo cuentes: argumenta desde tu fundamento asignado.
 - EN TEMAS MORALES tu marco social MANDA aunque las noticias o la mesa jalen para otro lado: Colombia real es más conservadora que las redes; si tu marco dice tradicional, tu texto TERMINA del lado tradicional sin pedir perdón ni diluirlo en matices.
+- TU NIVEL DE LENGUA ES EL DE TUS ESTUDIOS, no el de un discurso: sin estudios o primaria = frases cortas, palabras de todos los días, cero tecnicismos; con estudios superiores = se te nota el vocabulario y la sintaxis armada. Un peón de 19 años no dice "menos del mínimo con recargos": dice "no me alcanza".
 - Sin groserías pesadas. PROHIBIDO sonar a IA, folclor de cartilla o plantilla.`;
 }
 /* scroll coalescido: N typewriters → un solo layout por frame */
@@ -1662,7 +1664,7 @@ async function conversar(q){
       const card=bubble(r,false),say=card.querySelector(".say");
       try{
         const msgs=[{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+sondeoInstr(r)},
-          {role:"user",content:q}];
+          {role:"user",content:q+"\n\nRecuerda: cierra tu respuesta con la etiqueta [POSTURA: a_favor|en_contra|depende|ni_ni]."}];
         const raw=await flash(msgs);
         let [pos,txt]=postura(raw);
         if(!pos){const rr=await flash(msgs.concat([{role:"assistant",content:raw},

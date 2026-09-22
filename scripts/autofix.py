@@ -25,6 +25,8 @@ ARCHIVO_POR_TAREA = {  # de qué archivo habla cada tarea de hallazgos
     "r5_visor2": "dashboard/index.html",
     "r5_gen2": "simcolombia/pipeline/generate_population.py",
     "c_infancia": "simcolombia/pipeline/generate_population_v2.py",
+    "p_jev": "scripts/autofix.py",
+    "p_datos": "dashboard/sim/dossiers.json",
     # nota: los parches se validan por match-único contra el archivo destino,
     # así que un mapeo errado se rechaza solo — pero mejor acertar:
 }
@@ -50,7 +52,8 @@ JEV_APAGADA = os.environ.get("JEV_GATE", "1") == "0"   # JEV_GATE=0 => compuerta
 JEV_LOG = ROOT / "orchestrator" / "jev_gate.jsonl"
 
 
-def jev_gate_parche(hallazgo: dict, buscar: str, reemplazar: str) -> dict:
+def jev_gate_parche(hallazgo: dict, buscar: str, reemplazar: str,
+                    idx: int = 0, total: int = 1, lote_txt: str = "") -> dict:
     """Compuerta semántica: ¿este parche RESUELVE el hallazgo SIN romper la lógica?
     (compilar != ser correcto: flags de stop invertidos, guardas desactivadas,
     comparaciones giradas, estado mutado, orden de efectos, excepciones tragadas).
@@ -74,17 +77,21 @@ def jev_gate_parche(hallazgo: dict, buscar: str, reemplazar: str) -> dict:
         "model": JEV_MODEL,
         "state": (
             f"HALLAZGO: {json.dumps(hallazgo, ensure_ascii=False)}\n\n"
-            f"BUSCAR (código actual, literal):\n{buscar}\n\n"
-            f"REEMPLAZAR (parche propuesto, literal):\n{reemplazar}"
+            f"EL ARREGLO COMPLETO SON {total} PARCHE(S). Este es el número {idx + 1}.\n"
+            + (f"LOTE COMPLETO (contexto, no lo juzgues suelto):\n{lote_txt}\n\n" if total > 1 else "")
+            + f"PARCHE A JUZGAR — BUSCAR (código actual, literal):\n{buscar}\n\n"
+            f"REEMPLAZAR (propuesto, literal):\n{reemplazar}"
         ),
         "questions": {
             "resuelve": {
                 "type": "noul",
                 "instructions": (
-                    "REEMPLAZAR resuelve exactamente el problema descrito en HALLAZGO. "
-                    "Juzga semántica, no sintaxis: si invierte flags/stop, desactiva guardas, "
-                    "gira condiciones (>= vs >), muta estado de más, cambia orden de efectos "
-                    "o traga excepciones, la afirmación es FALSA."
+                    "Este parche es una PARTE del arreglo: la afirmación es que CONTRIBUYE "
+                    "correctamente a resolver el HALLAZGO y no lo contradice. NO exijas que este "
+                    "parche solo resuelva todo el hallazgo: juzga el lote completo como arreglo y "
+                    "este parche como su pieza. Juzga semántica, no sintaxis: si invierte flags/stop, "
+                    "desactiva guardas, gira condiciones (>= vs >), muta estado de más, cambia orden "
+                    "de efectos o traga excepciones, la afirmación es FALSA."
                 ),
             },
             "riesgo": {
@@ -104,7 +111,10 @@ def jev_gate_parche(hallazgo: dict, buscar: str, reemplazar: str) -> dict:
                 "type": "noul",
                 "instructions": (
                     "Aplicar REEMPLAZAR NO cambia el comportamiento de ninguna otra ruta, "
-                    "llamador, flag o contrato fuera del hallazgo."
+                    "llamador, flag o contrato fuera del hallazgo. Si el HALLAZGO pide "
+                    "explícitamente un cambio de alcance amplio (por ejemplo modificar un "
+                    "prompt o una regla que usan todas las voces), ese alcance ES el hallazgo "
+                    "y NO cuenta como efecto colateral."
                 ),
             },
         },
@@ -120,7 +130,8 @@ def jev_gate_parche(hallazgo: dict, buscar: str, reemplazar: str) -> dict:
         with urllib.request.urlopen(req, timeout=JEV_TIMEOUT) as r:
             data = json.loads(r.read().decode("utf-8"))
     except Exception as e:                      # red, 4xx/5xx, timeout, JSON roto
-        res["motivo"] = f"Jev inaccesible ({type(e).__name__}: {e}) — fail-closed"
+        pista = " (¿SSL? córrelo con: uv run --project orchestrator python scripts/autofix.py)" if "SSL" in str(e) or "CERTIFICATE" in str(e).upper() else ""
+        res["motivo"] = f"Jev inaccesible ({type(e).__name__}: {e}){pista} — fail-closed"
         return res
 
     ans = data.get("answers") or (data.get("data") or {}).get("answers") or {}
@@ -170,8 +181,12 @@ def jev_gate_lote(hallazgo: dict, pares: list) -> list:
     pares = [(buscar, reemplazar), ...] -> lista de veredictos en el MISMO orden."""
     if not pares:
         return []
+    lote_txt = "\n".join(f"--- parche {i + 1}/{len(pares)} ---\nBUSCAR:\n{b}\nREEMPLAZAR:\n{r}"
+                         for i, (b, r) in enumerate(pares))
     with ThreadPoolExecutor(max_workers=min(4, len(pares))) as ex:
-        return list(ex.map(lambda br: jev_gate_parche(hallazgo, br[0], br[1]), pares))
+        return list(ex.map(lambda ib: jev_gate_parche(hallazgo, ib[1][0], ib[1][1],
+                                                      ib[0], len(pares), lote_txt),
+                           enumerate(pares)))
 
 
 def clean(t):
