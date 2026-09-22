@@ -29,6 +29,7 @@ uvx --from git+https://github.com/zsoist/SWARMS enjambre-visor        # localhos
 cd web && python3 -m http.server 8377               # sitio local
 uv run python simcolombia/pipeline/validar_v2.py    # Python 3.12, entorno en la raíz
 node --test seguridad/filtro.test.mjs               # antes de tocar el filtro
+node --test scripts/experimento/anclas.test.mjs     # antes de tocar la estimación del sondeo
 ./seguridad/barrer.sh                               # antes de CADA commit
 ```
 
@@ -52,6 +53,10 @@ node --test seguridad/filtro.test.mjs               # antes de tocar el filtro
   manda el mismo cuerpo a ambos. Detalle: `docs/OPENROUTER.md`.
 - **Nunca copies el enjambre de vuelta aquí.** Dos copias a mano rompieron
   SWARMS dos veces en un día.
+- **Nada que cambie lo que ve la gente sin medirlo contra la ECP.** Regla de
+  despliegue fijada antes de ver datos y probada en ítems que no se usaron
+  para calibrar (ver `docs/METODO.md`, mezcla). SSR solo parecía mejor y
+  habría dicho "30% apoya invadir propiedad" (real: 11%).
 - **Docs cortos.** Tabla antes que párrafo. Si no cambia lo que alguien haría, fuera.
 
 ## Modelos (medidos, no por marca)

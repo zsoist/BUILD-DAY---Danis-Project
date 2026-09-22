@@ -170,9 +170,32 @@ Métrica: error en puntos del % de "sí" entre quienes deciden.
   modelo lo ignora en temas de consenso; en los disputados empuja hacia 50/50.
   En la escala 1-5 (P5301), SSR da lo mismo con y sin él (W1 0.045 vs 0.050).
 
-Decisión: SSR no se despliega en el sitio con esta evidencia. Siguiente prueba
-necesaria: mezclar la etiqueta de postura de la propia voz con la distribución
-SSR, medido en ítems nuevos.
+Decisión: SSR solo no se despliega. Se probó la mezcla (abajo).
+
+## Mezcla etiqueta + SSR (22 sep 2026) — desplegada en el sondeo
+
+Cada voz del sitio da texto y etiqueta [POSTURA]. Mezcla por voz:
+0.75·etiqueta + 0.25·SSR del texto. Voces en "modo sitio" (el prompt real del
+sondeo), 120 por ítem. Regla fijada antes de ver datos y endurecida por una
+auditoría adversarial del enjambre (bootstrap, guarda del ítem de 4% de sí,
+decididos, repetir sin el ítem ya visto).
+
+| Error en % de "sí" | Etiqueta sola (antes) | Mezcla α=0.75 |
+|---|---|---|
+| calibración, P5261 (8) | 9.2 | 7.5 |
+| **prueba ciega**, 8 ítems nuevos (29%-91% de sí) | 26.9 | **21.8** |
+
+- α elegido en calibración entre {0, .25, .5, .75, 1}. Gana en 7 de 8 ítems
+  ciegos (signos p≈0.07); IC bootstrap de la mejora [+4.7, +5.7], que solo
+  re-muestrea voces, no ítems. Decididos: 89% → 78%.
+- Alcance: preguntas con ≥29% de sí; la prueba ciega no tiene "no" unánimes.
+- **Hallazgo mayor: sesgo pesimista sobre instituciones.** Las etiquetas dan
+  ~0% de sí donde los colombianos dan 40-58% (igualdad ante la ley 41%,
+  educación y salud garantizadas 51%, centralización 58%). La mezcla lo
+  atenúa (en producción: 0% → 16% con 41% real); no lo arregla.
+
+Reproducir: `ENJAMBRE=sitio node scripts/experimento/careo_ecp.mjs 120 <ítem>
+cal_<ítem>.json sitio` y `uv run python scripts/experimento/mezcla.py <carpeta>`.
 
 Reproducir: `ENJAMBRE=sitio LIBRETO=1 node scripts/experimento/careo_ecp.mjs
 120 P5261S1 x.json libre` y `uv run python scripts/experimento/postura.py x.json`.

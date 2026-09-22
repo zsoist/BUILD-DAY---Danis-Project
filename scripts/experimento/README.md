@@ -70,5 +70,8 @@ Este repo no es una encuesta, no tiene margen de error, no se usa para campañas
 | `ENJAMBRE=sitio` | misma ruta que producción: `deepseek/deepseek-v4.1-flash` por OpenRouter |
 | `LIBRETO=0` | sin la postura sorteada 40/40/20 (por defecto 1, como el sitio) |
 | `postura.py` | % de "sí" de las voces contra la ECP (P5261S1-S8), categórico y SSR |
+| modo `sitio` | el prompt real del sondeo: texto + etiqueta de la misma voz |
+| `mezcla.py` | mezcla etiqueta+SSR con la regla de despliegue fijada |
+| `anclas.test.mjs` | falla si anclas, T o α del sitio se apartan de lo medido |
 
-Resultado y decisión (SSR no se despliega todavía): `docs/METODO.md`, sección "Sí/no".
+Resultado: la mezcla se desplegó en el sondeo; `docs/METODO.md`, sección "Mezcla".

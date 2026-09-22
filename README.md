@@ -47,7 +47,8 @@ DeepSeek gana 3 de 5 preguntas y empata 2 contra la ECP. Detalle: `docs/OPENROUT
 | Fallo | Estado |
 |---|---|
 | Sub-dispersión (voces demasiado parecidas) | en escalas 1-5, SSR la corrige (desviación 0.77 → 0.98; igual sin libreto). **Aún no está en el sitio** |
-| SSR en preguntas de sí/no | mejora modesta (error 9.6 vs 12.0 pts, 8 ítems) pero infla el "sí" ~20 pts en rechazos casi unánimes: no se despliega |
+| Conteo del sondeo | mezcla 0.75 etiqueta + 0.25 SSR: error en % de "sí" 26.9 → 21.8 pts en 8 preguntas ciegas. Desplegada |
+| **Sesgo pesimista** | sobre instituciones las voces dan ~0% de "sí" donde los colombianos dan 40-58%. El problema abierto más grande |
 | Postura asignada por hash (libreto 40/40/20) | efecto pequeño: el modelo la ignora en temas de consenso |
 | Termómetro 0-100 en vez de escala | descartado: empeoró el W1 de 0.084 a 0.154 |
 | IRTree | descartado: holdout W1 0.272, peor que el azar |
