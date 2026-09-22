@@ -27,6 +27,7 @@ ARCHIVO_POR_TAREA = {  # de qué archivo habla cada tarea de hallazgos
     "c_infancia": "simcolombia/pipeline/generate_population_v2.py",
     "p_jev": "scripts/autofix.py",
     "p_datos": "dashboard/sim/dossiers.json",
+    "u_datos": "dashboard/sim/dossiers.json",
     # nota: los parches se validan por match-único contra el archivo destino,
     # así que un mapeo errado se rechaza solo — pero mejor acertar:
 }
