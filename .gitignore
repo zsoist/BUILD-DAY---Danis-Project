@@ -10,3 +10,4 @@ node_modules/
 dashboard/assets/local_keys.json
 simcolombia/data/raw/
 simcolombia/data/raw_v2/
+simcolombia/data/ecp2023_docs/

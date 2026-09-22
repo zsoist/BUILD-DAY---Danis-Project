@@ -71,11 +71,87 @@ Resultado (n=28, subsidio a jóvenes que ni estudian ni trabajan):
 | Variación de largo (CV) | **0.333** | 0.179 |
 | Señal de educación (r) | **+0.32** | +0.07 |
 | Índice de manada (4-gramas propios) | **0.49** | 0.61 |
-| **Caricatura: identidad→opinión (V de Cramér)** | **0.23** | 0.312 |
 
-La última fila es la que más importa y viene de la crítica más dura a este campo:
-los modelos **sobredeterminan** la opinión a partir de la identidad demográfica.
-Nuestro andamiaje caricaturiza **menos** que el prompt desnudo, no más.
+### La prueba de caricatura, contra colombianos de verdad
+
+La crítica más dura a este campo es que los modelos **sobredeterminan**: tratan la
+identidad demográfica como mucho más predictiva de la opinión de lo que es. Para
+saber si nos pasa, hace falta un patrón humano. Lo sacamos de la **Encuesta de
+Cultura Política del DANE** (`scripts/experimento/baseline_ecp.py`), la misma casa
+que produce la GEIH:
+
+**Colombianos reales — ECP 2023, n=46.392 adultos, 68 preguntas actitudinales**
+(V de Cramér, mediana): edad **0.048** · educación **0.071** · sexo **0.021**.
+Es decir: en la gente real, saber tu edad casi no permite adivinar tu opinión.
+
+**Nuestras voces vs. el control desnudo** (n=160 residentes, misma pregunta, con
+prueba de permutación de 1.500 barajadas para descartar el azar):
+
+| Atributo | A · andamiaje | B · control desnudo |
+|---|---|---|
+| edad → postura | 0.104 (p=0.86, **azar**) | 0.256 (p=0.002, **señal real**) |
+| educación → postura | 0.093 (p=0.71, azar) | 0.133 (p=0.26, azar) |
+| sexo → postura | 0.016 (p=1.00, azar) | 0.224 (p=0.023, **señal real**) |
+
+**El prompt desnudo sí caricaturiza** — inventa una relación entre edad/sexo y
+opinión que en Colombia no existe. Con el andamiaje completo, ninguna asociación
+se distingue del azar, y los valores caen en el rango de los humanos reales.
+
+> **Corrección honesta**: una versión anterior de este documento reportaba
+> "0.23 vs 0.312" a favor del andamiaje con n=28. Al correr la prueba de
+> permutación, ese n daba una V de azar de 0.275 — la cifra medía ruido, no
+> señal. Se repitió con n=160 y control de azar. El resultado de arriba es el
+> bueno; el anterior no debió publicarse sin el test.
+
+**Lo que todavía falla**: el 19% de las respuestas pierde la etiqueta de postura,
+y en este tema la distribución quedó muy de un lado (65% en contra, 5% a favor)
+frente a un control mucho más repartido. Que la demografía no mande no garantiza
+que la distribución global sea la del país.
+
+---
+
+## 4. El careo: la misma pregunta del DANE, a sintéticos y a humanos
+
+Esta es la prueba que la literatura pide y que, hasta donde alcanza nuestra
+revisión, **nadie había hecho con microdatos colombianos**. Tomamos la pregunta
+**literal** de la Encuesta de Cultura Política 2023 sobre satisfacción con la
+democracia (escala 1-5), se la hicimos a 200 residentes sintéticos, y comparamos
+contra las respuestas humanas reales ponderadas con el factor de expansión
+oficial del DANE (`scripts/experimento/careo_ecp.mjs` + `.py`).
+
+**El resultado fue un suspenso, y es el hallazgo más importante del proyecto:**
+
+| Opción | Colombianos reales | Sintéticos (antes) | Sintéticos (después) |
+|---|---|---|---|
+| 1 muy insatisfecho | 18.1% | 42.7% | 3.0% |
+| 2 insatisfecho | 17.0% | 51.3% | 60.3% |
+| **3 ni una ni otra** | **46.0%** | **6.0%** | **36.7%** |
+| 4 satisfecho | 14.0% | 0.0% | 0.0% |
+| 5 muy satisfecho | 4.8% | 0.0% | 0.0% |
+| media de la escala | 2.70 | 1.63 | 2.34 |
+| **W1 normalizado** | — | **0.268 (lejos)** | **0.168 (aceptable)** |
+
+**Diagnóstico**: nuestros colombianos sintéticos estaban mucho más furiosos que
+los de carne y hueso. La respuesta más común del país — el punto medio, el "ahí
+vamos" — casi no existía, porque el prompt empujaba a todo el mundo a tomar
+partido y a quejarse. Corregido con una regla explícita: *en una escala de
+encuesta el punto medio es legítimo y mayoritario*. La media pasó de 1.63 a 2.34
+(real: 2.70) y el punto medio de 6% a 36.7%.
+
+**Lo que sigue roto, y hay que decirlo**:
+- **Sub-dispersión**: la desviación estándar sintética es la mitad de la humana
+  (razón 0.50; el objetivo es 1.0). Nuestras voces opinan más parecido entre sí
+  que los colombianos. Es el fallo que Bisbee et al. documentan como central, y
+  la literatura sobre colapso de modo sugiere que vive en los pesos del modelo,
+  no en el prompt.
+- **Nadie está satisfecho**: 0% elige 4 o 5, cuando el 18.8% de los colombianos
+  sí lo hace.
+- **Nadie dice "no sé"**: 0% frente al 4.2% real.
+
+Por eso la app no reporta marginales de opinión como si fueran una medición, y
+por eso este documento existe: **los chequeos demográficos pasan 9/9 mientras las
+actitudes todavía fallan**. Una demo que solo muestre pirámides cuadradas no
+prueba nada — exactamente la advertencia de Bisbee et al.
 
 Dos defectos que el experimento encontró y que ya se corrigieron:
 - La señal de educación estaba **invertida** (−0.148): el prompt aplanaba el

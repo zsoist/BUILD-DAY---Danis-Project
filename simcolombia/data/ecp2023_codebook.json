@@ -1,0 +1,3494 @@
+{
+ "fuente": "DDI oficial DANE, catalogo ANDA 822 (metadata/export/822/ddi)",
+ "validacion": "categorias cotejadas 1:1 contra los microdatos .sav locales",
+ "universo": "Poblacion civil no institucional de 18 anios y mas, residente habitual de hogares, todo el territorio nacional (cabecera + centros poblados y rural disperso). Verificado empiricamente: edad min=18, max=114.",
+ "llaves": [
+  "DIRECTORIO",
+  "NRO_ENCUESTA",
+  "HOGAR_NUMERO",
+  "PERSONA_NUMERO"
+ ],
+ "factor_expansion": {
+  "variable": "FEX_P",
+  "archivo": "Tabla de viviendas (F15, download id 23361)",
+  "nivel": "vivienda; se une por DIRECTORIO solamente",
+  "suma_sobre_personas_democracia": 37076519
+ },
+ "archivos": {
+  "Tabla de viviendas": {
+   "ddi_id": "F15",
+   "n_vars": 15,
+   "variables": [
+    {
+     "codigo": "DIRECTORIO",
+     "etiqueta": "Consecutivo por vivienda, es único",
+     "texto_literal": "Consecutivo por vivienda, es único",
+     "universo": "",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "REGION",
+     "etiqueta": "Region a la que corresponde la vivienda",
+     "texto_literal": "Region a la que corresponde la vivienda 1.Bogotá 2.Caribe 3.Oriental 4.Central 5.Pacífica",
+     "universo": "",
+     "categorias": {
+      "1": "Bogotá",
+      "2": "Caribe",
+      "3": "Oriental",
+      "4": "Central",
+      "5": "Pacífica"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "DPTO_CAUCA",
+     "etiqueta": "1. Cauca",
+     "texto_literal": "1. Cauca",
+     "universo": "",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P3",
+     "etiqueta": "Clase",
+     "texto_literal": "Clase 1. Cabeceras 2. Centros poblados y rural disperso",
+     "universo": "",
+     "categorias": {
+      "1": "Cabeceras",
+      "2": "Centros poblados y rural disperso"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P4090",
+     "etiqueta": "RESPONDE EL ENCUESTADOR: Condición de la vivienda a entrevistar:",
+     "texto_literal": "RESPONDE EL ENCUESTADOR: Condición de la vivienda a entrevistar: 1 Ocupada 2 Vacante / Desocupada 3 Otra",
+     "universo": "",
+     "categorias": {
+      "1": "Ocupada",
+      "2": "Vacante / Desocupada",
+      "3": "Otra"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P4000",
+     "etiqueta": "1. Tipo de vivienda",
+     "texto_literal": "1. Tipo de vivienda 1 Casa 2 Apartamento 3 Cuarto(s) 4 Vivienda indígena 5 Otra vivienda (carpa, vagón, embarcación, cueva,refugio natural, etc.)",
+     "universo": "Todas la viviendas",
+     "categorias": {
+      "1": "Casa",
+      "2": "Apartamento",
+      "3": "Cuarto(s)",
+      "4": "Vivienda indígena",
+      "5": "Otra vivienda (carpa, vagón, embarcación, cueva, refugio natural, etc.)"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P4031S1",
+     "etiqueta": "2. ¿Con cuáles de los Síguientes servicios cuenta la vivienda? Energía eléctrica",
+     "texto_literal": "2. ¿Con cuáles de los siguientes servicios cuenta la vivienda? a. Energía eléctrica 1 Sí 2 No",
+     "universo": "Todas la viviendas",
+     "categorias": {
+      "1": "si",
+      "2": "no"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P4031S1A1",
+     "etiqueta": "2. ¿Con cuáles de los Síguientes servicios cuenta la vivienda? Estrato para tarifa",
+     "texto_literal": "2. ¿Con cuáles de los siguientes servicios cuenta la vivienda? a. Energía eléctrica 0. (conexión ilegal - pirata) 1 .Estrato 1 2.Estrato 2 3.Estrato 3 4.Estrato 4 5.Estrato 5 6.Estrato 6 9. (planta eléctrica o no se puede establecer el estrato)",
+     "universo": "Todas la viviendas",
+     "categorias": {
+      "0": "(conexión ilegal - pirata)",
+      "1": "Estrato 1",
+      "2": "Estrato 2",
+      "3": "Estrato 3",
+      "4": ".Estrato 4",
+      "5": "Estrato 5",
+      "6": "Estrato 6"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P4031S2",
+     "etiqueta": "2. ¿Con cuáles de los Síguientes servicios cuenta la vivienda? Gas natural conectado a red pública",
+     "texto_literal": "2. ¿Con cuáles de los siguientes servicios cuenta la vivienda? b. Gas natural conectado a red pública 1 Sí 2 No",
+     "universo": "Todas la viviendas",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P4031S3",
+     "etiqueta": "2. ¿Con cuáles de los Síguientes servicios cuenta la vivienda? Alcantarillado",
+     "texto_literal": "2. ¿Con cuáles de los siguientes servicios cuenta la vivienda? c. Alcantarillado 1 Sí 2 No",
+     "universo": "Todas la viviendas",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P4031S4",
+     "etiqueta": "2. ¿Con cuáles de los Síguientes servicios cuenta la vivienda? Recolección de basuras.",
+     "texto_literal": "2. ¿Con cuáles de los siguientes servicios cuenta la vivienda? d. Recolección de basuras 1 Sí 2 No",
+     "universo": "Todas la viviendas",
+     "categorias": {
+      "1": "SI",
+      "2": "NO"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P4031S4A1",
+     "etiqueta": "2. ¿Con cuáles de los Síguientes servicios cuenta la vivienda? Recolección de basuras",
+     "texto_literal": "2. ¿Con cuáles de los siguientes servicios cuenta la vivienda? d. Recolección de basuras Veces por semana",
+     "universo": "Todas la viviendas",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P4031S5",
+     "etiqueta": "2. ¿Con cuáles de los Síguientes servicios cuenta la vivienda? Acueducto",
+     "texto_literal": "2. ¿Con cuáles de los siguientes servicios cuenta la vivienda? e. Acueducto 1 Sí 2 No",
+     "universo": "Todas la viviendas",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P70",
+     "etiqueta": "Total hogares en la vivienda",
+     "texto_literal": "Total de hogares en la vivienda",
+     "universo": "Todas la viviendas",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "FEX_P",
+     "etiqueta": "Factor de Expansión",
+     "texto_literal": "",
+     "universo": "",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    }
+   ]
+  },
+  "Caracteristicas generales": {
+   "ddi_id": "F16",
+   "n_vars": 18,
+   "variables": [
+    {
+     "codigo": "DIRECTORIO",
+     "etiqueta": "Consecutivo por vivienda, es único",
+     "texto_literal": "Consecutivo por vivienda, es único",
+     "universo": "",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "NRO_ENCUESTA",
+     "etiqueta": "Corresponde a la tabla en que se cargo la informacion",
+     "texto_literal": "Corresponde a la tabla en que se cargo la informacion",
+     "universo": "",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "HOGAR_NUMERO",
+     "etiqueta": "Número del Hogar",
+     "texto_literal": "Número del Hogar",
+     "universo": "",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "PERSONA_NUMERO",
+     "etiqueta": "Número de la persona dentro del hogar",
+     "texto_literal": "Número de la persona dentro del hogar",
+     "universo": "",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P6008",
+     "etiqueta": "2. Total de personas en el hogar:",
+     "texto_literal": "2. Total de personas en el hogar:",
+     "universo": "Todos los hogares",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P6001",
+     "etiqueta": "LA INFORMACION DE….. VA A SER SUMINISTRADA EN ESTE MOMENTO ?",
+     "texto_literal": "LA INFORMACION DE….. VA A SER SUMINISTRADA EN ESTE MOMENTO ? 1.Si 2.No",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P220",
+     "etiqueta": "1. Sexo",
+     "texto_literal": "1. Sexo: 1 Hombre 2 Mujer",
+     "universo": "Todas las personas del hogar",
+     "categorias": {
+      "1": "Hombre",
+      "2": "Mujer"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P1069",
+     "etiqueta": "2.¿Cuál es la fecha de nacimiento de <…> ?",
+     "texto_literal": "2 .¿Cuál es la fecha de nacimiento de <…> ? 1.Digite Fecha 2.No sabe",
+     "universo": "",
+     "categorias": {
+      "1": "Digite Fecha",
+      "2": "No sabe"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P1069S1",
+     "etiqueta": "2a.Fecha",
+     "texto_literal": "2.a.Fecha",
+     "universo": "",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P5785",
+     "etiqueta": "2.b. ¿Cuántos años cumplidos tiene <...>?",
+     "texto_literal": "2.b ¿Cuántos años cumplidos tiene … ?",
+     "universo": "Todas las personas del hogar",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P5465",
+     "etiqueta": "3. De acuerdo con su cultura, pueblo o rasgos fíSícos usted se reconoce como:",
+     "texto_literal": "3. De acuerdo con su cultura, pueblo o rasgos físicos, usted se reconoce como: 1 ¿Indigena? 2 ¿Gitano (a), rom? 3 ¿Raizal del archipielago de San And´res, Provediencia y Santa Catalina? 4 ¿Palenquero(a) de San Basilio o descendiente? 5 ¿Negro(a), mulato(a), afrocolombiano(a) o afrodescendiente? 6 Ninguna de las anteriores",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "¿Indígena?",
+      "2": "¿Gitano (a), rom?",
+      "3": "¿Raizal del Archipiélago de San Andrés, Providencia y Santa Catalina?",
+      "4": "¿Palenquero(a) de San Basilio o descendiente?",
+      "5": "¿Negro(a), mulato(a), afrocolombiano(a) o afrodescendiente?",
+      "6": "Ninguna de las anteriores"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P6050",
+     "etiqueta": "4. ¿Cuál es el parentesco de <...> con el(a) jefe(a) del hogar?",
+     "texto_literal": "4. ¿Cuál es el parentesco de … con el (la) jefe(a) del hogar? 1 Jefe(a) del hogar 2 Pareja, esposo(a), cónyuge, compañero(a) 3 Hijo(a) o hijastro(a) 4 Nieto(a) 5 Otro pariente 6 Empleado(a) del servicio doméstico y sus parientes 7 Pensionista, compañero(a) del pensionista 8 Trabajador 9 Otro no pariente",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Jefe(a) del hogar",
+      "2": "Pareja, esposo(a), cónyuge, compañero(a)",
+      "3": "Hijo(a) o hijastro(a)",
+      "4": "Nieto(a)",
+      "5": "Otro pariente",
+      "6": "Empleado(a) del servicio doméstico y sus parientes",
+      "7": "Pensionista, compañero(a) del pensionista",
+      "8": "Trabajador",
+      "9": "Otro no pariente"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P605",
+     "etiqueta": "5. Actualmente:",
+     "texto_literal": "5. Actualmente: 1 No está casado(a) y vive en pareja hace menos de dos años 2 No está casado(a) y vive en pareja hace dos años o más 3 Está casado(a) 4 Está separado(a) o divorciado(a) 5 Está viudo(a) 6 Está soltero(a)",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No está casado(a) y vive en pareja hace menos de dos años",
+      "2": "No está casado(a) y vive en pareja hace dos años o más",
+      "3": "Está casado(a)",
+      "4": "Está separado(a) o divorciado(a)",
+      "5": "Está viudo(a)",
+      "6": "Está soltero(a)"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P6160",
+     "etiqueta": "6. ¿Sabe leer y escribir?",
+     "texto_literal": "6. ¿Sabe leer y escribir? 1 Sí 2 No",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P8586",
+     "etiqueta": "7. ¿Actualmente <...> aSíste al preescolar, escuela, colegio o univerSídad?",
+     "texto_literal": "7. ¿Actualmente ... asiste al preescolar, escuela, colegio o universidad? 1 Sí 2 No",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P6210",
+     "etiqueta": "8. ¿Cuál es el nivel educativo más alto alcanzado por <...>",
+     "texto_literal": "8. ¿Cuál es el nivel educativo más alto alcanzado por <...> 1 Ninguno 2 Preescolar 3 Básica primaria (1° a 5°) 4 Básica secundaria (6° a 9°) 5 Media (10° a 13°) 6 Superior (técnica, tecnológica, universitaria-pregrado) 7 Posgrado(especialización, maestria, doctorado) 99 No sabe, no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Ninguno",
+      "2": "Preescolar",
+      "3": "Básica primaria (1° a 5°)",
+      "4": "Básica secundaria (6° a 9°)",
+      "5": "Media (10° a 13°)",
+      "6": "Superior (técnica, tecnológica, universitaria-pregrado)",
+      "7": "Posgrado(especialización, maestria, doctorado)",
+      "99": "No sabe, no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P6210S1",
+     "etiqueta": "8.a. ¿Último año o grado aprobado en ….?",
+     "texto_literal": "8.a. ¿Último año o grado aprobado en ….? 2 Presscolar 3 Básica Primaria (1°-5°) 4 Básica Secundaria (6°-9°) 5 Media (10°-13°) 6 Superior (Técnica, Tecnológica, Universitaria - pregrado) 7 Posgrado (especialización, maestría, doctorado) 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "2": "Presscolar",
+      "3": "Básica Primaria (1°-5°)",
+      "4": "Básica Secundaria (6°-9°)",
+      "5": "Media (10°-13°)",
+      "6": "Superior (Técnica, Tecnológica, Universitaria - pregrado)",
+      "7": "Posgrado (especialización, maestría, doctorado)",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P6945",
+     "etiqueta": "9. Si usted es de alguna religión, ¿puede decirme cuál es su religión?",
+     "texto_literal": "9.Si usted es de alguna religión, ¿puede decirme cuál es su religión? 1 Católico 2 Protestante, Protestante Tradicional o Protestante no Evangélico 3 Religiones Orientales no Cristianas 4 Ninguna 5 Evangélica y Pentecostal 6 Iglesia de los Santos de los Últimos Días 7 Religiones Tradicionales 8 Judío 9 Agnóstico o Ateo 10 Testigo de Jehová 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Católico",
+      "2": "Protestante, Protestante Tradicional o Protestante no Evangélico",
+      "3": "Religiones Orientales no Cristianas",
+      "4": "Ninguna",
+      "5": "Evangélica y Pentecostal",
+      "6": "Iglesia de los Santos de los Últimos Días",
+      "7": "Religiones Tradicionales",
+      "8": "Judío",
+      "9": "Agnóstico o Ateo",
+      "10": "Testigo de Jehová",
+      "11": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": null
+    }
+   ]
+  },
+  "Democracia": {
+   "ddi_id": "F20",
+   "n_vars": 172,
+   "variables": [
+    {
+     "codigo": "DIRECTORIO",
+     "etiqueta": "Consecutivo por vivienda, es único",
+     "texto_literal": "Consecutivo por vivienda, es único",
+     "universo": "",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "NRO_ENCUESTA",
+     "etiqueta": "Corresponde a la tabla en que se cargo la informacion",
+     "texto_literal": "Corresponde a la tabla en que se cargo la informacion",
+     "universo": "",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "HOGAR_NUMERO",
+     "etiqueta": "Número del Hogar",
+     "texto_literal": "Número del Hogar",
+     "universo": "",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "PERSONA_NUMERO",
+     "etiqueta": "Número de la persona dentro del hogar",
+     "texto_literal": "Número de la persona dentro del hogar",
+     "universo": "",
+     "categorias": {},
+     "notas": [],
+     "frecuencias_datos": null
+    },
+    {
+     "codigo": "P5314S2",
+     "etiqueta": "1. Cuando escucha el término democracia, usted lo relaciona con:",
+     "texto_literal": "1. Cuando usted escucha el término democracia, ¿con cuál de las siguientes opciones lo relaciona más?: a.Voto/elecciones/representación 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 35363,
+      "2": 8557,
+      "99": 2472
+     }
+    },
+    {
+     "codigo": "P5314S3",
+     "etiqueta": "1. Cuando escucha el término democracia, usted lo relaciona con:",
+     "texto_literal": "1. Cuando escucha el término democracia, usted lo relaciona con: b. Una forma de gobierno 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 33500,
+      "2": 10026,
+      "99": 2866
+     }
+    },
+    {
+     "codigo": "P5314S4",
+     "etiqueta": "1. Cuando escucha el término democracia, usted lo relaciona con:",
+     "texto_literal": "1. Cuando escucha el término democracia, usted lo relaciona con: c. Libertades 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 31666,
+      "2": 11251,
+      "99": 3475
+     }
+    },
+    {
+     "codigo": "P5314S5",
+     "etiqueta": "1. Cuando escucha el término democracia, usted lo relaciona con:",
+     "texto_literal": "1. Cuando escucha el término democracia, usted lo relaciona con: d. Participación de las comunidades en las decisiones que les afectan a todos 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 32087,
+      "2": 11004,
+      "99": 3301
+     }
+    },
+    {
+     "codigo": "P5314S6",
+     "etiqueta": "1. Cuando escucha el término democracia, usted lo relaciona con:",
+     "texto_literal": "1. Cuando escucha el término democracia, usted lo relaciona con: e. Igualdad y justicia para la ciudadanía 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 32654,
+      "2": 10712,
+      "99": 3026
+     }
+    },
+    {
+     "codigo": "P5314S7",
+     "etiqueta": "1. Cuando escucha el término democracia, usted lo relaciona con:",
+     "texto_literal": "1. Cuando escucha el término democracia, usted lo relaciona con: f. Desarrollo/progreso /crecimiento económico 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 28218,
+      "2": 14522,
+      "99": 3652
+     }
+    },
+    {
+     "codigo": "P5317S1",
+     "etiqueta": "2. ¿Usted considera que para que un país sea democrático debe existir:",
+     "texto_literal": "2.¿Usted considera que para que un país sea democrático debe existir: a. Partidos o movimientos políticos? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 31060,
+      "2": 11979,
+      "99": 3353
+     }
+    },
+    {
+     "codigo": "P5317S2",
+     "etiqueta": "2. ¿Usted considera que para que un país sea democrático debe existir:",
+     "texto_literal": "2.¿Usted considera que para que un país sea democrático debe existir: b. Congreso? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 31188,
+      "2": 11467,
+      "99": 3737
+     }
+    },
+    {
+     "codigo": "P5317S3",
+     "etiqueta": "2. ¿Usted considera que para que un país sea democrático debe existir:",
+     "texto_literal": "2.¿Usted considera que para que un país sea democrático debe existir: c. Jueces, juzgados, tribunales, cortes? (sistema judicial) 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 34922,
+      "2": 7908,
+      "99": 3562
+     }
+    },
+    {
+     "codigo": "P5317S4",
+     "etiqueta": "2. ¿Usted considera que para que un país sea democrático debe existir:",
+     "texto_literal": "2. ¿Usted considera que para que un país sea democrático debe existir: d. Autoridades locales, municipales, departamentales y nacionales elegidas por voto popular 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 36860,
+      "2": 6346,
+      "99": 3186
+     }
+    },
+    {
+     "codigo": "P5317S5",
+     "etiqueta": "2. ¿Usted considera que para que un país sea democrático debe existir:",
+     "texto_literal": "2.¿Usted considera que para que un país sea democrático debe existir: e. Elecciones periódicas de los gobernantes? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 36804,
+      "2": 6549,
+      "99": 3039
+     }
+    },
+    {
+     "codigo": "P5317S6",
+     "etiqueta": "2. ¿Usted considera que para que un país sea democrático debe existir:",
+     "texto_literal": "2.¿Usted considera que para que un país sea democrático debe existir: f. Mecanismos para que los ciudadanos participen en la gestión pública? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 35536,
+      "2": 6847,
+      "99": 4009
+     }
+    },
+    {
+     "codigo": "P5317S7",
+     "etiqueta": "2. ¿Usted considera que para que un país sea democrático debe existir:",
+     "texto_literal": "¿Usted considera que para que un país sea democrático debe existir: g. Centralización del poder en el gobierno nacional? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 23228,
+      "2": 17618,
+      "99": 5546
+     }
+    },
+    {
+     "codigo": "P5317S8",
+     "etiqueta": "2. ¿Usted considera que para que un país sea democrático debe existir:",
+     "texto_literal": "3.¿Usted considera que para que un país sea democrático debe existir: h. El equilibrio entre los poderes ejecutivo, legislativo y judicial, órganos de control y electorales? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 34268,
+      "2": 7229,
+      "99": 4895
+     }
+    },
+    {
+     "codigo": "P5317S9",
+     "etiqueta": "2. Usted considera que para que un país sea democrático debe existir:",
+     "texto_literal": "2. Usted considera que para que un país sea democrático debe existir: i. Representación igualitaria entre hombres y mujeres en todas las corporaciones que se elijan por voto popular 1 Si 2 No 99 No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 36859,
+      "2": 5991,
+      "99": 3542
+     }
+    },
+    {
+     "codigo": "P5317S10",
+     "etiqueta": "2. Usted considera que para que un país sea democrático debe existir:",
+     "texto_literal": "2. Usted considera que para que un país sea democrático debe existir: j. El derecho a elegir y ser elegido 1 Si 2 No 99 No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 39787,
+      "2": 3968,
+      "99": 2637
+     }
+    },
+    {
+     "codigo": "P5317S11",
+     "etiqueta": "2. Usted considera que para que un país sea democrático debe existir:",
+     "texto_literal": "2. Usted considera que para que un país sea democrático debe existir: k. Otros espacios de organización participativa y representación ciudadana 1.si 2.no 99 No sabe/No informa",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 32862,
+      "2": 9067,
+      "99": 4463
+     }
+    },
+    {
+     "codigo": "P2011",
+     "etiqueta": "3. En una escala de 1 a 5, en la que 1 significa nada importante y 5 muy importante, ¿qué tan importante considera usted que es vivir en un país democrático?",
+     "texto_literal": "3. En una escala de 1 a 5, en la que 1 significa nada importante y 5 muy importante, ¿qué tan importante considera usted que es vivir en un país democrático? 1 Nada importante 2 Poco importante 3 Indiferente 4 Importante 5 Muy importante 99 No sabe / No informa",
+     "universo": "",
+     "categorias": {
+      "1": "Nada importante",
+      "2": "Poco importante",
+      "3": "Indiferente",
+      "4": "Importante",
+      "5": "Muy importante",
+      "99": "No sabe / No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 931,
+      "2": 1242,
+      "3": 7238,
+      "4": 7579,
+      "5": 27685,
+      "99": 1717
+     }
+    },
+    {
+     "codigo": "P5319",
+     "etiqueta": "4. ¿Considera usted que Colombia es un país:",
+     "texto_literal": "4.¿Considera usted que Colombia es un país: 1- Democrático? 2- Medianamente democrático? 3- No democrático?",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Democrático",
+      "2": "Medianamente democrático",
+      "3": "No democrático"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 15336,
+      "2": 27153,
+      "3": 3903
+     }
+    },
+    {
+     "codigo": "P5301",
+     "etiqueta": "5. En una escala de 1 a 5 donde, 1 significa muy insatisfecho y 5 muy satisfecho ¿Qué tan satisfecho se siente con la forma en que la democracia funciona en Colombia?:",
+     "texto_literal": "5. En una escala de 1 a 5, en la que 1 significa muy insatisfecho(a) y 5 muy satisfecho(a), ¿qué tan satisfecho(a) se siente con la forma en que la democracia funciona en Colombia? 1 Muy insatisfecho(a) 2 Insatisfecho(a) 3 Ni satisfecho(a) ni insatisfecho(a) 4 Satisfecho(a) 5 Muy satisfecho(a) 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Muy insatisfecho(a)",
+      "2": "Insatisfecho(a)",
+      "3": "Ni satisfecho(a) ni insatisfecho(a)",
+      "4": "Satisfecho(a)",
+      "5": "Muy satisfecho(a)",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 8437,
+      "2": 7788,
+      "3": 20119,
+      "4": 5960,
+      "5": 2157,
+      "99": 1931
+     }
+    },
+    {
+     "codigo": "P5302",
+     "etiqueta": "6. ¿Usted considera que el Congreso de la República representa las diferentes tendencias políticas de los colombianos?",
+     "texto_literal": "6. ¿Usted considera que el Congreso de la República representa las diferentes tendencias políticas de los colombianos? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/ no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 11763,
+      "2": 28664,
+      "99": 5965
+     }
+    },
+    {
+     "codigo": "P5304S1",
+     "etiqueta": "7. Usted cree que en Colombia:",
+     "texto_literal": "7. Usted cree que en Colombia: a. A todas y todos los ciudadanos se les respeta el derecho a elegir y ser elegido 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 27032,
+      "2": 17240,
+      "99": 2120
+     }
+    },
+    {
+     "codigo": "P5304S2",
+     "etiqueta": "7. Usted cree que en Colombia:",
+     "texto_literal": "7. Usted cree que en Colombia: b. A los(as) ciudadanos(as) se les garantiza el derecho a participar 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 26430,
+      "2": 17706,
+      "99": 2256
+     }
+    },
+    {
+     "codigo": "P5304S3",
+     "etiqueta": "7. Usted cree que en Colombia:",
+     "texto_literal": "7. Usted cree que en Colombia: c. Existe la libertad de expresar y difundir su pensamiento? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 21877,
+      "2": 21971,
+      "99": 2544
+     }
+    },
+    {
+     "codigo": "P5304S4",
+     "etiqueta": "7. Usted cree que en Colombia:",
+     "texto_literal": "7. Usted cree que en Colombia: d. Se garantiza la libertad de conformar y pertenecer a partidos o movimientos políticos? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 25327,
+      "2": 18208,
+      "99": 2857
+     }
+    },
+    {
+     "codigo": "P5304S5",
+     "etiqueta": "7. Usted cree que en Colombia:",
+     "texto_literal": "7. Usted cree que en Colombia: e. Se dan garantías para manifestarse públicamente? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 18254,
+      "2": 25266,
+      "99": 2872
+     }
+    },
+    {
+     "codigo": "P5304S6",
+     "etiqueta": "7. Usted cree que en Colombia:",
+     "texto_literal": "7. Usted cree que en Colombia: f. Se garantiza el derecho a la igualdad ante la ley? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 17337,
+      "2": 26158,
+      "99": 2897
+     }
+    },
+    {
+     "codigo": "P5304S9",
+     "etiqueta": "7. Usted cree que en Colombia:",
+     "texto_literal": "7. ¿Usted cree que en Colombia: g. Se le facilita a los ciudadanos el acceso a la información pública? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 17030,
+      "2": 25833,
+      "99": 3529
+     }
+    },
+    {
+     "codigo": "P5304S10",
+     "etiqueta": "7. Usted cree que en Colombia:",
+     "texto_literal": "7. Usted cree que en Colombia: h. Se promueve y se permite que los(as) ciudadanos(as) hagan control social a la gestión del Estado 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 15269,
+      "2": 27098,
+      "99": 4025
+     }
+    },
+    {
+     "codigo": "P3573",
+     "etiqueta": "8. ¿Hasta qué punto diría que el sistema político en Colombia, permite que personas como usted tengan voz y voto en lo que hace el gobierno? (ODS 16.7.2)",
+     "texto_literal": "8. ¿Hasta qué punto diría que el sistema político en Colombia, permite que personas como usted tengan voz y voto en lo que hace el gobierno? (ODS 16.7.2) 1. Nada 2. Poco 3. Ni mucho ni poco (moderadamente) 4. Mucho 5. Totalmente 98.No Sabe 99. No Informa",
+     "universo": "",
+     "categorias": {
+      "1": "Nada",
+      "2": "Poco",
+      "3": "Ni mucho ni poco (moderadamente)",
+      "4": "Mucho",
+      "5": "Totalmente",
+      "98": "No Sabe",
+      "99": "No Informa"
+     },
+     "notas": [
+      "codigo 98 recuperado del texto literal (DDI catgry lo lista mal)",
+      "codigo 99 recuperado del texto literal (DDI catgry lo lista mal)",
+      "codigos ['6', '7'] listados en el DDI pero SIN casos en los microdatos: eliminados"
+     ],
+     "frecuencias_datos": {
+      "1": 14467,
+      "2": 16545,
+      "3": 11345,
+      "4": 1510,
+      "5": 244,
+      "98": 1849,
+      "99": 432
+     }
+    },
+    {
+     "codigo": "P3574",
+     "etiqueta": "9. ¿Y cuánto diría que el sistema político en Colombia, permite que personas como usted tengan influencia en la política ? (ODS 16.7.2)",
+     "texto_literal": "9. ¿Y cuánto diría que el sistema político en Colombia, permite que personas como usted tengan influencia en la política ? (ODS 16.7.2) 1. Nada 2. Poco 3. Ni mucho ni poco (moderadamente) 4. Mucho 5. Totalmente 98.No Sabe 99. No Informa",
+     "universo": "",
+     "categorias": {
+      "1": "Nada",
+      "2": "Poco",
+      "3": "Ni mucho ni poco (moderadamente)",
+      "4": "Mucho",
+      "5": "Totalmente",
+      "98": "No Sabe",
+      "99": "No Informa"
+     },
+     "notas": [
+      "codigo 98 recuperado del texto literal (DDI catgry lo lista mal)",
+      "codigo 99 recuperado del texto literal (DDI catgry lo lista mal)",
+      "codigos ['6', '7'] listados en el DDI pero SIN casos en los microdatos: eliminados"
+     ],
+     "frecuencias_datos": {
+      "1": 16204,
+      "2": 15683,
+      "3": 10701,
+      "4": 1307,
+      "5": 189,
+      "98": 1920,
+      "99": 388
+     }
+    },
+    {
+     "codigo": "P5306S1",
+     "etiqueta": "10. Usted considera que en Colombia se protegen y garantizan:",
+     "texto_literal": "10. Usted considera que en Colombia se protegen y garantizan: a. Los derechos a la vida, la libertad, la integridad y la seguridad? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 20854,
+      "2": 23697,
+      "99": 1841
+     }
+    },
+    {
+     "codigo": "P5306S2",
+     "etiqueta": "10. Usted considera que en Colombia se protegen y garantizan:",
+     "texto_literal": "10. Usted considera que en Colombia se protegen y garantizan: b. Los derechos a la educación, la salud, la seguridad social , el trabajo y la vivienda? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 21422,
+      "2": 23171,
+      "99": 1799
+     }
+    },
+    {
+     "codigo": "P5306S3",
+     "etiqueta": "10. Usted considera que en Colombia se protegen y garantizan:",
+     "texto_literal": "10. Usted considera que en Colombia se protegen y garantizan: c. Los derechos a la libertad de expresión, conciencia, difusión y divulgación de información? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 19390,
+      "2": 24581,
+      "99": 2421
+     }
+    },
+    {
+     "codigo": "P5306S4",
+     "etiqueta": "10. Usted considera que en Colombia se protegen y garantizan:",
+     "texto_literal": "10. Usted considera que en Colombia se protegen y garantizan: d. Los derechos a la recreación y la cultura? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 25892,
+      "2": 18077,
+      "99": 2423
+     }
+    },
+    {
+     "codigo": "P5306S5",
+     "etiqueta": "10. Usted considera que en Colombia se protegen y garantizan:",
+     "texto_literal": "10. Usted considera que en Colombia se protegen y garantizan: e. Los derechos de las minorías(étnicas y sociales) 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 16130,
+      "2": 27123,
+      "99": 3139
+     }
+    },
+    {
+     "codigo": "P5306S6",
+     "etiqueta": "10. Usted considera que en Colombia se protegen y garantizan:",
+     "texto_literal": "10. Usted considera que en Colombia se protegen y garantizan: f. Los derechos del campesinado 1 Si 2 No 99 No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 14451,
+      "2": 29390,
+      "99": 2551
+     }
+    },
+    {
+     "codigo": "P5306S7",
+     "etiqueta": "10. Usted considera que en Colombia se protegen y garantizan:",
+     "texto_literal": "10. Usted considera que en Colombia se protegen y garantizan: g. Los derechos de las mujeres 1 Si 2 No 99 No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 18161,
+      "2": 26071,
+      "99": 2160
+     }
+    },
+    {
+     "codigo": "P5307S1",
+     "etiqueta": "11. Todas las personas contamos con unas herramientas para hacer valer nuestros derechos cuando estos han sido vulnerados o amenazados. De la siguiente lista de instrumentos de protección de derechos, usted cuáles conoce o de cuáles ha oído hablar:",
+     "texto_literal": "11. Todas las personas contamos con unas herramientas para hacer valer nuestros derechos cuando estos han sido vulnerados o amenazados. De la siguiente lista de instrumentos de protección de derechos, usted cuáles conoce o de cuáles ha oído hablar: a. Acción de cumplimiento 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 9872,
+      "2": 36520
+     }
+    },
+    {
+     "codigo": "P5307S2",
+     "etiqueta": "11. Todas las personas contamos con unas herramientas para hacer valer nuestros derechos cuando estos han sido vulnerados o amenazados. De la siguiente lista de instrumentos de protección de derechos, usted cuáles conoce o de cuáles ha oído hablar:",
+     "texto_literal": "11. Todas las personas contamos con unas herramientas para hacer valer nuestros derechos cuando estos han sido vulnerados o amenazados. De la siguiente lista de instrumentos de protección de derechos, usted cuáles conoce o de cuáles ha oído hablar: b. Acción popular 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 14107,
+      "2": 32285
+     }
+    },
+    {
+     "codigo": "P5307S3",
+     "etiqueta": "11. Todas las personas contamos con unas herramientas para hacer valer nuestros derechos cuando estos han sido vulnerados o amenazados. De la siguiente lista de instrumentos de protección de derechos, usted cuáles conoce o de cuáles ha oído hablar:",
+     "texto_literal": "11. Todas las personas contamos con unas herramientas para hacer valer nuestros derechos cuando estos han sido vulnerados o amenazados. De la siguiente lista de instrumentos de protección de derechos, usted cuáles conoce o de cuáles ha oído hablar: c. Acción de tutela 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 36462,
+      "2": 9930
+     }
+    },
+    {
+     "codigo": "P5307S4",
+     "etiqueta": "11. Todas las personas contamos con unas herramientas para hacer valer nuestros derechos cuando estos han sido vulnerados o amenazados. De la siguiente lista de instrumentos de protección de derechos, usted cuáles conoce o de cuáles ha oído hablar:",
+     "texto_literal": "11. Todas las personas contamos con unas herramientas para hacer valer nuestros derechos cuando estos han sido vulnerados o amenazados. De la siguiente lista de instrumentos de protección de derechos, usted cuáles conoce o de cuáles ha oído hablar: d. Derecho de petición 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 34142,
+      "2": 12250
+     }
+    },
+    {
+     "codigo": "P5307S5",
+     "etiqueta": "11. Todas las personas contamos con unas herramientas para hacer valer nuestros derechos cuando estos han sido vulnerados o amenazados. De la siguiente lista de instrumentos de protección de derechos, usted cuáles conoce o de cuáles ha oído hablar:",
+     "texto_literal": "11. Todas las personas contamos con unas herramientas para hacer valer nuestros derechos cuando estos han sido vulnerados o amenazados. De la siguiente lista de instrumentos de protección de derechos, usted cuáles conoce o de cuáles ha oído hablar: e. Acciones de grupo 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 8346,
+      "2": 38046
+     }
+    },
+    {
+     "codigo": "P5308",
+     "etiqueta": "12 ¿Ha utilizado alguno de los anteriores instrumentos de protección de derechos?",
+     "texto_literal": "12.¿Ha utilizado alguno de los anteriores instrumentos de protección de derechos? 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí por lo menos una de las opciones de la a. a la e. de la pregunta 9.",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 6816,
+      "2": 31871,
+      "NaN": 7705
+     }
+    },
+    {
+     "codigo": "P5309",
+     "etiqueta": "13. En una escala de 1 a 5, donde 1 significa nada efectivos y 5 muy efectivos ¿Qué tan efectivos le parecen los instrumentos de protección de derechos?:",
+     "texto_literal": "13. En una escala de 1 a 5, donde 1 significa nada efectivos y 5 muy efectivos ¿Qué tan efectivos le parecen los instrumentos de protección de derechos?: 1 Nada efectivos 2 Poco efectivos 3 Neutral:Ni efectivos ni inefectivos 4 Efectivos 5 Muy efectivos 99 No sabe / No informa",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí por lo menos una de las opciones de la a. a la e. de la pregunta 9.",
+     "categorias": {
+      "1": "Nada efectivos",
+      "2": "Poco efectivos",
+      "3": "Neutral:Ni efectivos ni inefectivos",
+      "4": "Efectivos",
+      "5": "Muy efectivos",
+      "99": "No sabe / No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 3684,
+      "2": 4557,
+      "3": 15680,
+      "4": 7732,
+      "5": 4462,
+      "99": 2572,
+      "NaN": 7705
+     }
+    },
+    {
+     "codigo": "P5261S1",
+     "etiqueta": "14. Usted está de acuerdo con:",
+     "texto_literal": "14. Usted está de acuerdo con: a. Que las personas participen en manifestaciones autorizadas por la ley? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 35414,
+      "2": 9148,
+      "99": 1830
+     }
+    },
+    {
+     "codigo": "P5261S2",
+     "etiqueta": "14. Usted está de acuerdo con:",
+     "texto_literal": "14. Usted está de acuerdo con: b. Que las personas invadan propiedad privada como forma de protesta? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 4764,
+      "2": 39982,
+      "99": 1646
+     }
+    },
+    {
+     "codigo": "P5261S3",
+     "etiqueta": "14. Usted está de acuerdo con:",
+     "texto_literal": "14. Usted está de acuerdo con: c. Que las personas participen en la toma de espacios públicos como forma de protesta? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 16052,
+      "2": 28581,
+      "99": 1759
+     }
+    },
+    {
+     "codigo": "P5261S4",
+     "etiqueta": "14. Usted está de acuerdo con:",
+     "texto_literal": "14. Usted está de acuerdo con: d. Que las personas utilicen la violencia para solucionar problemas? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1923,
+      "2": 42916,
+      "99": 1553
+     }
+    },
+    {
+     "codigo": "P5261S5",
+     "etiqueta": "14. Usted está de acuerdo con:",
+     "texto_literal": "14. Usted está de acuerdo con: e. Que el Estado garantice la participación de las minorías y de los campesinos en política 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 34432,
+      "2": 9933,
+      "99": 2027
+     }
+    },
+    {
+     "codigo": "P5261S6",
+     "etiqueta": "14. Usted está de acuerdo con:",
+     "texto_literal": "14. Usted está de acuerdo con: f. Que cualquier persona pueda acceder a cargos de elección popular? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 28821,
+      "2": 15228,
+      "99": 2343
+     }
+    },
+    {
+     "codigo": "P5261S7",
+     "etiqueta": "14. Usted está de acuerdo con:",
+     "texto_literal": "14. Usted está de acuerdo con: g. Que se controle la labor de los medios de comunicación? 1 Si 2 No 99 No sabe/no informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 24270,
+      "2": 18908,
+      "99": 3214
+     }
+    },
+    {
+     "codigo": "P5261S8",
+     "etiqueta": "14. Usted está de acuerdo con:",
+     "texto_literal": "14. Usted está de acuerdo con: h. Que las mujeres participen en igualdad de condiciones y oportunidades 1 Si 2 No 99 No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 38303,
+      "2": 6357,
+      "99": 1732
+     }
+    },
+    {
+     "codigo": "P6934S1",
+     "etiqueta": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar:",
+     "texto_literal": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar: a. Planes de prevención de violaciones a los derechos vida, libertad, integridad y seguridad personal. 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 14137,
+      "2": 32255
+     }
+    },
+    {
+     "codigo": "P6934S2",
+     "etiqueta": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar:",
+     "texto_literal": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar: b. Programas de Protección a personas amenazadas o en riesgo 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 16015,
+      "2": 30377
+     }
+    },
+    {
+     "codigo": "P6934S3",
+     "etiqueta": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar:",
+     "texto_literal": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar: c. Rutas o instrumentos de Protección de bienes patrimoniales urbanos o rurales 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 8079,
+      "2": 38313
+     }
+    },
+    {
+     "codigo": "P6934S4",
+     "etiqueta": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar:",
+     "texto_literal": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar: d. Rutas de prevención o atención de accidentes con minas antipersonal. 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 10646,
+      "2": 35746
+     }
+    },
+    {
+     "codigo": "P6934S5",
+     "etiqueta": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar:",
+     "texto_literal": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar: e. Rutas o instrumentos de Prevención del Reclutamiento, la Utilización y la Violencio Sexual contra Niños, Niñas y Adolescentes 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 14139,
+      "2": 32253
+     }
+    },
+    {
+     "codigo": "P6934S6",
+     "etiqueta": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar:",
+     "texto_literal": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar: f. Campañas pedagogicas para el respeto a los derechos vida, libertad, integridad y seguridad personal 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 14188,
+      "2": 32204
+     }
+    },
+    {
+     "codigo": "P6934S7",
+     "etiqueta": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar:",
+     "texto_literal": "15. Cuáles de las siguientes acciones que realiza el Estado Colombiano para prevenir violaciones a los derechos a la vida, libertad integridad y seguridad personal conoce o de cuáles ha escuchado hablar: g. Sistema o Comisión de alertas Tempranas 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 9944,
+      "2": 36448
+     }
+    },
+    {
+     "codigo": "P6936S1",
+     "etiqueta": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como:",
+     "texto_literal": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como: a. Desplazamiento Forzado 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 2656,
+      "2": 43736
+     }
+    },
+    {
+     "codigo": "P6936S2",
+     "etiqueta": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como:",
+     "texto_literal": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como: b. Amenazas 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 4285,
+      "2": 42107
+     }
+    },
+    {
+     "codigo": "P6936S3",
+     "etiqueta": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como:",
+     "texto_literal": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como: c. Reclutamiento 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1409,
+      "2": 44983
+     }
+    },
+    {
+     "codigo": "P6936S4",
+     "etiqueta": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como:",
+     "texto_literal": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como: d. Despojo y abandono de tierras 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1924,
+      "2": 44468
+     }
+    },
+    {
+     "codigo": "P6936S5",
+     "etiqueta": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como:",
+     "texto_literal": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como: e. Accidentes por minas antipersonal 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 781,
+      "2": 45611
+     }
+    },
+    {
+     "codigo": "P6936S6",
+     "etiqueta": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como:",
+     "texto_literal": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como: f. Estigmatización o discriminación 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 2904,
+      "2": 43488
+     }
+    },
+    {
+     "codigo": "P6936S8",
+     "etiqueta": "16. Considera usted que en el transcurso del último año su comunidad se ha visto enfrentada al surgimiento de riesgos contra los derechos a la vida, libertad, integridad y seguridad personal, tales como:",
+     "texto_literal": "16. Considera usted que en el transcurso del último año su comunidad se ha visto enfrentada al surgimiento de riesgos contra los derechos a la vida, libertad, integridad y seguridad personal, tales como: g. Asesinato selectivo o muertes violentas 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 5075,
+      "2": 41317
+     }
+    },
+    {
+     "codigo": "P6936S9",
+     "etiqueta": "16. Considera usted que en el transcurso del último año su comunidad se ha visto enfrentada al surgimiento de riesgos contra los derechos a la vida, libertad, integridad y seguridad personal, tales como:",
+     "texto_literal": "16. Considera usted que en el transcurso del último año su comunidad se ha visto enfrentada al surgimiento de riesgos contra los derechos a la vida, libertad, integridad y seguridad personal, tales como: h. Violencia sexual 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 2360,
+      "2": 44032
+     }
+    },
+    {
+     "codigo": "P6936S7",
+     "etiqueta": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como:",
+     "texto_literal": "16. Considera Usted que en el transcurso del último año su comunidad se h visto enfrentada al surgimiento de riesgos, contra los derechos a la vida, libertad, integridad y seguridad personal, tales como: g. Otro 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 80,
+      "2": 46312
+     }
+    },
+    {
+     "codigo": "P5263S1",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores: a. Procuraduría General de la Nación 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 8776,
+      "2": 8283,
+      "3": 18190,
+      "4": 4543,
+      "5": 1655,
+      "99": 4945
+     }
+    },
+    {
+     "codigo": "P5263S2",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores: b.Alcaldía Municipal/Distrital 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 9858,
+      "2": 9247,
+      "3": 18166,
+      "4": 4640,
+      "5": 1390,
+      "99": 3091
+     }
+    },
+    {
+     "codigo": "P5263S3",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 sgnifica que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores: c. Fuerzas Militares (Ejército, Armada y Fuerza Aérea) 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 6571,
+      "2": 6706,
+      "3": 18864,
+      "4": 8123,
+      "5": 3255,
+      "99": 2873
+     }
+    },
+    {
+     "codigo": "P5263S4",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores: d. Congreso de la República 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 12573,
+      "2": 9976,
+      "3": 15705,
+      "4": 3554,
+      "5": 1025,
+      "99": 3559
+     }
+    },
+    {
+     "codigo": "P5263S5",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores: e. Jueces y magistrados 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 9399,
+      "2": 9218,
+      "3": 18422,
+      "4": 4334,
+      "5": 1265,
+      "99": 3754
+     }
+    },
+    {
+     "codigo": "P5263S6",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores:",
+     "texto_literal": "15. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores: f. Asamblea departamental 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 8557,
+      "2": 8661,
+      "3": 16055,
+      "4": 3086,
+      "5": 784,
+      "99": 4472,
+      "NaN": 4777
+     }
+    },
+    {
+     "codigo": "P5263S7",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores: g. Contraloría (nacional, departamental y municipal) 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 8610,
+      "2": 8578,
+      "3": 18567,
+      "4": 4563,
+      "5": 1306,
+      "99": 4768
+     }
+    },
+    {
+     "codigo": "P5263S8",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores: h. Concejos municipales/distritales 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 9792,
+      "2": 9822,
+      "3": 18250,
+      "4": 3656,
+      "5": 879,
+      "99": 3993
+     }
+    },
+    {
+     "codigo": "P5263S9",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores: i. Policía 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 8828,
+      "2": 8273,
+      "3": 17857,
+      "4": 6716,
+      "5": 2204,
+      "99": 2514
+     }
+    },
+    {
+     "codigo": "P5263S10",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores: j. Partidos o movimientos políticos 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 14883,
+      "2": 11066,
+      "3": 14570,
+      "4": 2363,
+      "5": 584,
+      "99": 2926
+     }
+    },
+    {
+     "codigo": "P5263S11",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores: k. Defensoría del Pueblo 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 6538,
+      "2": 6662,
+      "3": 19492,
+      "4": 7753,
+      "5": 2210,
+      "99": 3737
+     }
+    },
+    {
+     "codigo": "P5263S12",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores: l. Gobernación 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 8477,
+      "2": 8276,
+      "3": 16451,
+      "4": 3887,
+      "5": 1112,
+      "99": 3412,
+      "NaN": 4777
+     }
+    },
+    {
+     "codigo": "P5263S13",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores: m. Fiscalía General de la Nación 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 8513,
+      "2": 7874,
+      "3": 18742,
+      "4": 5836,
+      "5": 1838,
+      "99": 3589
+     }
+    },
+    {
+     "codigo": "P5263S14",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores: n. Registraduría Nacional del Estado Civil 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 6720,
+      "2": 6910,
+      "3": 18807,
+      "4": 8035,
+      "5": 2628,
+      "99": 3292
+     }
+    },
+    {
+     "codigo": "P5263S15",
+     "etiqueta": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones y/o actores:",
+     "texto_literal": "17. En una escala de 1 a 5, donde 1 significa que no confía y 5 que confía mucho. Qué tanto confía usted en las siguientes instituciones o actores: o. Presidencia de la República 1 No confía 2 Confia poco 3 Ni mucho ni poco 4 Confía 5 Confia mucho 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "No confía",
+      "2": "Confia poco",
+      "3": "Ni mucho ni poco",
+      "4": "Confía",
+      "5": "Confia mucho",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 10709,
+      "2": 8768,
+      "3": 17082,
+      "4": 5140,
+      "5": 1865,
+      "99": 2828
+     }
+    },
+    {
+     "codigo": "P517",
+     "etiqueta": "18. ¿Usted se informa sobre la actualidad política del país?",
+     "texto_literal": "18. ¿Usted se informa sobre la actualidad política del país? 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 29436,
+      "2": 16956
+     }
+    },
+    {
+     "codigo": "P5264S1",
+     "etiqueta": "18a. ¿A través de que medios se informa?:",
+     "texto_literal": "18a. ¿A través de que medios se informa?: a. Televisión 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 14 del Módulo I. Democracia",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 25623,
+      "2": 3813,
+      "NaN": 16956
+     }
+    },
+    {
+     "codigo": "P5264S2",
+     "etiqueta": "18a. ¿A través de que medios se informa?:",
+     "texto_literal": "18a. ¿A través de que medios se informa?: b. Radio 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 14 del Módulo I. Democracia",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 14510,
+      "2": 14926,
+      "NaN": 16956
+     }
+    },
+    {
+     "codigo": "P5264S3",
+     "etiqueta": "18a. ¿A través de que medios se informa?:",
+     "texto_literal": "18c. ¿A través de que medios se informa?: c. Revistas o periódicos 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 14 del Módulo I. Democracia",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 6297,
+      "2": 23139,
+      "NaN": 16956
+     }
+    },
+    {
+     "codigo": "P5264S4",
+     "etiqueta": "18a. ¿A través de que medios se informa?:",
+     "texto_literal": "18a. ¿A través de que medios se informa?: d. Redes sociales (facebook, twitter, instagram) 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 14 del Módulo I. Democracia",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 17347,
+      "2": 12089,
+      "NaN": 16956
+     }
+    },
+    {
+     "codigo": "P5264S5",
+     "etiqueta": "18a. ¿A través de que medios se informa?:",
+     "texto_literal": "18a. ¿A través de que medios se informa?: e. Conversaciones con otras personas 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 14 del Módulo I. Democracia",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 13777,
+      "2": 15659,
+      "NaN": 16956
+     }
+    },
+    {
+     "codigo": "P5264S6",
+     "etiqueta": "18a. ¿A través de que medios se informa?:",
+     "texto_literal": "16a. ¿A través de que medios se informa?: f. Internet (blogs, artículos especializados, portales) 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 14 del Módulo I. Democracia",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 8851,
+      "2": 20585,
+      "NaN": 16956
+     }
+    },
+    {
+     "codigo": "P5264S7",
+     "etiqueta": "18a. ¿A través de que medios se informa?:",
+     "texto_literal": "18a. ¿A través de que medios se informa?: g. Promoción de mensajes en espacios públicos como parques, plazas y mediante perifoneo 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 14 del Módulo I. Democracia",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 3155,
+      "2": 26281,
+      "NaN": 16956
+     }
+    },
+    {
+     "codigo": "P5264S8",
+     "etiqueta": "18.a.A través de qué medios se informa:",
+     "texto_literal": "18.a.A través de qué medios se informa: h. Libros 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1916,
+      "2": 27520,
+      "NaN": 16956
+     }
+    },
+    {
+     "codigo": "P3328S1",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: a. Sexo: corresponde al sexo biológico con el que se nació (ser mujer u hombre). 1.si 2.no 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 345,
+      "2": 45241,
+      "99": 806
+     }
+    },
+    {
+     "codigo": "P3328S2",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: b. Edad: como ser percibido(a) como demasiado joven o demasiado viejo(a). 1.si 2.no 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1669,
+      "2": 43941,
+      "99": 782
+     }
+    },
+    {
+     "codigo": "P3328S3",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: c. Discapacidad: como tener dificultades para ver, oír, caminar o moverse, concentrarse o comunicarse. 1.si 2.no 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 668,
+      "2": 44940,
+      "99": 784
+     }
+    },
+    {
+     "codigo": "P3328S4",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: d. Estado de salud: tiene una enfermedad u otras afecciones de salud. 1.si 2.no 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 794,
+      "2": 44835,
+      "99": 763
+     }
+    },
+    {
+     "codigo": "P3328S5",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: e Origen étnico, color o lenguaje: como el color de la piel, la vestimenta, la cultura, las tradiciones, el idioma nativo, así como autorreconocerse como indígena o afrodescendiente. 1.si 2.no 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 645,
+      "2": 44980,
+      "99": 767
+     }
+    },
+    {
+     "codigo": "P3328S6",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: f. Rasgos físicos de su cuerpo (aparte del color de la piel): por ejemplo, tener sobrepeso o bajo peso, tener un tatuaje, una cicatriz o una marca de nacimiento, o que su cuerpo no tenga el aspecto que normalmente se espera de las personas. 1.si 2.no 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 475,
+      "2": 45154,
+      "99": 763
+     }
+    },
+    {
+     "codigo": "P3328S7",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: g. Estado de migración: como nacionalidad, país de nacimiento, refugiados, solicitantes de asilo, estatus migratorio, inmigrantes indocumentados.",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 692,
+      "2": 44924,
+      "99": 776
+     }
+    },
+    {
+     "codigo": "P3328S8",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: h. Condición socioeconómica: como la situación o el estatus de una persona teniendo en cuenta sus ingresos, trabajo, nivel educativo o propiedad de la tierra, terreno o casa. 1.si 2.no 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1459,
+      "2": 44155,
+      "99": 778
+     }
+    },
+    {
+     "codigo": "P3328S9",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: i. Lugar de residencia: como vivir en zonas urbanas o rurales, establecidas de manera formal (con los servicios básicos) o informal (invasión). 1.si 2.no 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 957,
+      "2": 44664,
+      "99": 771
+     }
+    },
+    {
+     "codigo": "P3328S10",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: j. Religión: como tener o no una religión o creencias religiosas o considerarse ateo. 1.si 2.no 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 357,
+      "2": 45256,
+      "99": 779
+     }
+    },
+    {
+     "codigo": "P3328S11",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: k. Estado civil o condición familiar: ser soltero(a), casado(a), divorciado(a), viudo(a), o a la condición de tener o no hijos(as), estar embarazada, ser huérfano(a), adoptado(a) o nacido(a) de padres solteros. 1.si 2.no 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 240,
+      "2": 45380,
+      "99": 772
+     }
+    },
+    {
+     "codigo": "P3328S12",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: l. Orientación sexual o identidad de género: como sentirse atraído por una persona del mismo sexo (por ejemplo: ser lesbiana, gay) o de ambos sexos (bisexual), entre otros, o identificarse con un sexo diferente al que nació o no identificarse con ningún sexo. 1.si 2.no 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 158,
+      "2": 45461,
+      "99": 773
+     }
+    },
+    {
+     "codigo": "P3328S13",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: m. Opinión política: como expresar opiniones relacionadas con su ideología política, pertenencia a partidos o movimientos políticos o defender los derechos de los demás. 1.si 2.no 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 740,
+      "2": 44859,
+      "99": 793
+     }
+    },
+    {
+     "codigo": "P3328S15",
+     "etiqueta": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos:",
+     "texto_literal": "19. Durante los últimos 12 meses, usted ha sentido que lo han discriminado (tratado diferente, rechazado, maltratado, etc.) por alguno de los siguientes motivos: o. Otros motivos 1.si 2.no 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "\"Sí",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 116,
+      "2": 45365,
+      "99": 911
+     }
+    },
+    {
+     "codigo": "P5265",
+     "etiqueta": "20. En el último año, ¿usted realizó algún trámite, solicitud de información, reclamación, renovación o actualización de documentos en alguna entidad pública para usted o para terceros?",
+     "texto_literal": "20. En el último año, ¿usted realizó algún trámite, solicitud de información, reclamación, renovación o actualización de documentos en alguna entidad pública para usted o para terceros? 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 9602,
+      "2": 36790
+     }
+    },
+    {
+     "codigo": "P2013S1",
+     "etiqueta": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública:",
+     "texto_literal": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública: a. Identificación (cédula de ciudadanía, pase/licencia de conducción, pasaporte, libreta militar, registro civil, entre otros) 1 Si 2 No",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 3496,
+      "2": 6106,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P2013S2",
+     "etiqueta": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública:",
+     "texto_literal": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública: b. Impuestos (predial, industria y comercio, Registro Único Tributario - RUT, renta, entre otros) 1 Si 2 No",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1484,
+      "2": 8118,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P2013S3",
+     "etiqueta": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública:",
+     "texto_literal": "21 A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública: c. Vivienda (compra, venta, registro, certificado catastral, certificado de libertad y tradición, entre otros) 1 Si 2 No",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 619,
+      "2": 8983,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P2013S4",
+     "etiqueta": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública:",
+     "texto_literal": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública: d. Víctimas o desmovilizados (subsidios, beneficios económicos, registro de tierras despojadas y abandonadas forzosamente, entre otros) 1 Si 2 No",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 666,
+      "2": 8936,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P2013S5",
+     "etiqueta": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública:",
+     "texto_literal": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública: e. Seguridad Social (reconocimiento de pensión, citas médicas, acceso a salud, entre otros) 1 Si 2 No",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 5485,
+      "2": 4117,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P2013S6",
+     "etiqueta": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública:",
+     "texto_literal": "19. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública: f. Educación (matrículas en colegios públicos, entre otros) 1 Si 2 No",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 2243,
+      "2": 7359,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P2013S8",
+     "etiqueta": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública:",
+     "texto_literal": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública: g. Servicios públicos (quejas, reclamos o solicitudes ante servicios públicos) 1-Sí 2-No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1577,
+      "2": 8025,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P2013S7",
+     "etiqueta": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública:",
+     "texto_literal": "21. A continuación se clasifican los trámites según diferentes categorías, a cuál o cuáles categorías pertenecen los trámites que realizó en el último año para usted o para terceros, personalmente o por cualquier otro medio en alguna entidad pública: h. Otro tipo de trámite 1 Si 2 No",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 77,
+      "2": 9525,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P2014",
+     "etiqueta": "22. Teniendo en cuenta el/los trámite(s) que afirma haber realizado en el último año en una entidad pública, ¿a usted se le presentó algún tipo de dificultad al llevarlos a cabo?",
+     "texto_literal": "22. Teniendo en cuenta el/los trámite(s) que afirma haber realizado en el último año en una entidad pública, ¿a usted se le presentó algún tipo de dificultad al llevarlos a cabo? 1 Si 2 No",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 2085,
+      "2": 7517,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P2014S1",
+     "etiqueta": "22a. ¿En cuál de las siguientes categorías se le presentaron mas dificultades?",
+     "texto_literal": "20a. ¿En cuál de las siguientes categorías se le presentaron mas dificultades? 1 Identificación 2 Impuestos 3 Vivienda 4 Víctimas o desmovilizados 5 Seguridad Social 6 Educación 7 Servicios públicos 8 Otro tipo de trámite",
+     "universo": "",
+     "categorias": {
+      "1": "Identificación",
+      "2": "Impuestos",
+      "3": "Vivienda",
+      "4": "Víctimas o desmovilizados",
+      "5": "Seguridad Social",
+      "6": "Educación",
+      "7": "Servicios públicos",
+      "8": "Otro tipo de trámite"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 355,
+      "2": 145,
+      "3": 76,
+      "4": 172,
+      "5": 1022,
+      "6": 48,
+      "7": 241,
+      "8": 26,
+      "NaN": 44307
+     }
+    },
+    {
+     "codigo": "P2015S1",
+     "etiqueta": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite:",
+     "texto_literal": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite: a. Necesidad de recurrir a un tramitador 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 267,
+      "2": 1818,
+      "NaN": 44307
+     }
+    },
+    {
+     "codigo": "P2015S2",
+     "etiqueta": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite:",
+     "texto_literal": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite: b. Solicitud de dinero adicional 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 186,
+      "2": 1899,
+      "NaN": 44307
+     }
+    },
+    {
+     "codigo": "P2015S3",
+     "etiqueta": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite:",
+     "texto_literal": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite: c. Descoordinación o desarticulación entre entidades del Estado 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 928,
+      "2": 1157,
+      "NaN": 44307
+     }
+    },
+    {
+     "codigo": "P2015S4",
+     "etiqueta": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite:",
+     "texto_literal": "20. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite: d. Dificultad para comunicarse telefónicamente o por Internet 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1086,
+      "2": 999,
+      "NaN": 44307
+     }
+    },
+    {
+     "codigo": "P2015S5",
+     "etiqueta": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite:",
+     "texto_literal": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite: e. Excesivos requisitos o muchas interacciones 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1118,
+      "2": 967,
+      "NaN": 44307
+     }
+    },
+    {
+     "codigo": "P2015S6",
+     "etiqueta": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite:",
+     "texto_literal": "20. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite: f. Costos muy altos 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 438,
+      "2": 1647,
+      "NaN": 44307
+     }
+    },
+    {
+     "codigo": "P2015S7",
+     "etiqueta": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite:",
+     "texto_literal": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite: g. Filas y congestiones 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1211,
+      "2": 874,
+      "NaN": 44307
+     }
+    },
+    {
+     "codigo": "P2015S8",
+     "etiqueta": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite:",
+     "texto_literal": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite: h. Información insuficiente o poco clara 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1230,
+      "2": 855,
+      "NaN": 44307
+     }
+    },
+    {
+     "codigo": "P2015S9",
+     "etiqueta": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite:",
+     "texto_literal": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite: i. Tiempos excesivos 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1451,
+      "2": 634,
+      "NaN": 44307
+     }
+    },
+    {
+     "codigo": "P2015S10",
+     "etiqueta": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite:",
+     "texto_literal": "23. Cuáles fueron las principales dificultades a las que se enfrentó al realizar el trámite: j. Otra dificultad 1. Sí 2. No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 18,
+      "2": 2067,
+      "NaN": 44307
+     }
+    },
+    {
+     "codigo": "P5266S1",
+     "etiqueta": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?:",
+     "texto_literal": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?: a. Llamó por teléfono (fijo-Celular) 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 15.",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 3354,
+      "2": 6248,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P5266S2",
+     "etiqueta": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?:",
+     "texto_literal": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?: b. Consultó la página web de la entidad pública 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 15.",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 2712,
+      "2": 6890,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P5266S3",
+     "etiqueta": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?:",
+     "texto_literal": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?: c. Se desplazó hasta la sede física de la entidad pública 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 15.",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 8218,
+      "2": 1384,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P5266S4",
+     "etiqueta": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?:",
+     "texto_literal": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?: d. Envió sus solicitudes vía correo físico 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 15.",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 610,
+      "2": 8992,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P5266S5",
+     "etiqueta": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?:",
+     "texto_literal": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?: e. Escribió correos electrónicos 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 15.",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1072,
+      "2": 8530,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P5266S6",
+     "etiqueta": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?:",
+     "texto_literal": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?: f. Aprovechó el favor de un familiar, amigo o tercero que visitó la entidad pública y le hizo su diligencia 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 15.",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 745,
+      "2": 8857,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P5266S7",
+     "etiqueta": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?:",
+     "texto_literal": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?: g. Asistió a un centro integrado de servicios (Súper CADE, por ejemplo) 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 15.",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 683,
+      "2": 8919,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P5266S8",
+     "etiqueta": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?:",
+     "texto_literal": "24. Al efectuar sus trámites, solicitudes de información, reclamaciones, renovación o actualización de documentos, ¿qué canales utilizó?: h. Otros canales 1. Sí 2. No",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 15.",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 91,
+      "2": 9511,
+      "NaN": 36790
+     }
+    },
+    {
+     "codigo": "P3329S1",
+     "etiqueta": "25. ¿Cuál o cuáles fueron las razones para escoger un canal presencial:",
+     "texto_literal": "25. ¿Cuál o cuáles fueron las razones para escoger un canal presencial: a. Los procedimientos para gestionar un trámite por un canal virtual son complejos y confusos 1.si 2.no",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 2908,
+      "2": 5550,
+      "NaN": 37934
+     }
+    },
+    {
+     "codigo": "P3329S2",
+     "etiqueta": "25. ¿Cuál o cuáles fueron las razones para escoger un canal presencial:",
+     "texto_literal": "25. ¿Cuál o cuáles fueron las razones para escoger un canal presencial: b. Logra el resultado en forma confiable 1-Sí 2.No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 5886,
+      "2": 2572,
+      "NaN": 37934
+     }
+    },
+    {
+     "codigo": "P3329S3",
+     "etiqueta": "25. ¿Cuál o cuáles fueron las razones para escoger un canal presencial:",
+     "texto_literal": "25. ¿Cuál o cuáles fueron las razones para escoger un canal presencial: c. Considera que la atención personal resuelve las dudas de inmediato 1-Sí 2.No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 6062,
+      "2": 2396,
+      "NaN": 37934
+     }
+    },
+    {
+     "codigo": "P3329S4",
+     "etiqueta": "25. ¿Cuál o cuáles fueron las razones para escoger un canal presencial:",
+     "texto_literal": "25. ¿Cuál o cuáles fueron las razones para escoger un canal presencial: d. Costumbre 1.Sí 2.No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 3973,
+      "2": 4485,
+      "NaN": 37934
+     }
+    },
+    {
+     "codigo": "P3329S5",
+     "etiqueta": "25. ¿Cuál o cuáles fueron las razones para escoger un canal presencial:",
+     "texto_literal": "23. ¿Cuál o cuáles fueron las razones para escoger un canal presencial: e. No existen otros canales habilitados para gestionar algunos trámites o servicios 1.Sí 2.No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 2276,
+      "2": 6182,
+      "NaN": 37934
+     }
+    },
+    {
+     "codigo": "P3329S6",
+     "etiqueta": "25. ¿Cuál o cuáles fueron las razones para escoger un canal presencial:",
+     "texto_literal": "25. ¿Cuál o cuáles fueron las razones para escoger un canal presencial: f. Otra razón 1.Sí 2.No",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 13,
+      "2": 8445,
+      "NaN": 37934
+     }
+    },
+    {
+     "codigo": "P5268",
+     "etiqueta": "26. En una escala de 1 a 5, en la que 1 significa muy malo y 5 muy bueno, teniendo en cuenta su experiencia personal o la de sus conocidos (amigos, familiares, etc.), ¿usted cómo considera el servicio que prestan las entidades públicas a la ciudadanía?",
+     "texto_literal": "26. En una escala de 1 a 5, en la que 1 significa muy malo y 5 muy bueno, teniendo en cuenta su experiencia personal o la de sus conocidos (amigos, familiares, etc.), ¿usted cómo considera el servicio que prestan las entidades públicas a la ciudadanía? 1 Muy malo 2 Malo 3 Ni bueno / Ni malo 4 Bueno 5 Muy bueno 99 No sabe/No informa",
+     "universo": "Todas las personas de 18 años y más que contestaron con un Sí la pregunta 15.",
+     "categorias": {
+      "1": "Muy malo",
+      "2": "Malo",
+      "3": "Ni bueno / Ni malo",
+      "4": "Bueno",
+      "5": "Muy bueno",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 3636,
+      "2": 5523,
+      "3": 23536,
+      "4": 8295,
+      "5": 2218,
+      "99": 3184
+     }
+    },
+    {
+     "codigo": "P2016S1",
+     "etiqueta": "27. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores:",
+     "texto_literal": "25. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores: a. Gobierno nacional (Presidencia de la República, ministerios, departamentos administrativos, superintendencias, unidades administrativas especiales, entre otros) 1 Nada corrupto 2 No es corrupto 3 Neutral: Ni en alta ni baja medida 4 Es corrupto 5 Muy corrupto 99 No sabe / No informa",
+     "universo": "",
+     "categorias": {
+      "1": "Nada corrupto",
+      "2": "No es corrupto",
+      "3": "Neutral: Ni en alta ni baja medida",
+      "4": "Es corrupto",
+      "5": "Muy corrupto",
+      "99": "No sabe / No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 975,
+      "2": 3612,
+      "3": 17014,
+      "4": 10542,
+      "5": 11159,
+      "99": 3090
+     }
+    },
+    {
+     "codigo": "P2016S2",
+     "etiqueta": "27. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores:",
+     "texto_literal": "27. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores: b. Gobierno departamental (gobernaciones, asambleas, secretarías, entre otros) 1 Nada corrupto 2 No es corrupto 3 Neutral: Ni en alta ni baja medida 4 Es corrupto 5 Muy corrupto 99 No sabe / No informa",
+     "universo": "",
+     "categorias": {
+      "1": "Nada corrupto",
+      "2": "No es corrupto",
+      "3": "Neutral: Ni en alta ni baja medida",
+      "4": "Es corrupto",
+      "5": "Muy corrupto",
+      "99": "No sabe / No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 545,
+      "2": 2845,
+      "3": 17373,
+      "4": 11827,
+      "5": 10278,
+      "99": 3524
+     }
+    },
+    {
+     "codigo": "P2016S3",
+     "etiqueta": "27. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores:",
+     "texto_literal": "27. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores: c. Gobierno municipal (alcaldías, concejos, secretarías, entre otros) 1 Nada corrupto 2 No es corrupto 3 Neutral: Ni en alta ni baja medida 4 Es corrupto 5 Muy corrupto 99 No sabe / No informa",
+     "universo": "",
+     "categorias": {
+      "1": "Nada corrupto",
+      "2": "No es corrupto",
+      "3": "Neutral: Ni en alta ni baja medida",
+      "4": "Es corrupto",
+      "5": "Muy corrupto",
+      "99": "No sabe / No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 507,
+      "2": 2451,
+      "3": 16333,
+      "4": 12440,
+      "5": 11381,
+      "99": 3280
+     }
+    },
+    {
+     "codigo": "P2016S4",
+     "etiqueta": "27. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores:",
+     "texto_literal": "27. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores: d. Gremios, empresas u organizaciones privadas 1 Nada corrupto 2 No es corrupto 3 Neutral: Ni en alta ni baja medida 4 Es corrupto 5 Muy corrupto 99 No sabe / No informa",
+     "universo": "",
+     "categorias": {
+      "1": "Nada corrupto",
+      "2": "No es corrupto",
+      "3": "Neutral: Ni en alta ni baja medida",
+      "4": "Es corrupto",
+      "5": "Muy corrupto",
+      "99": "No sabe / No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1643,
+      "2": 5281,
+      "3": 17866,
+      "4": 8925,
+      "5": 7476,
+      "99": 5201
+     }
+    },
+    {
+     "codigo": "P2016S5",
+     "etiqueta": "27. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores:",
+     "texto_literal": "27. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores: e. Órganos de control (Procuraduría General de la Nación, Contraloría General de la República, Defensoría del Pueblo y Auditoría General de la República) 1 Nada corrupto 2 No es corrupto 3 Neutral: Ni en alta ni baja medida 4 Es corrupto 5 Muy corrupto 99 No sabe / No informa",
+     "universo": "",
+     "categorias": {
+      "1": "Nada corrupto",
+      "2": "No es corrupto",
+      "3": "Neutral: Ni en alta ni baja medida",
+      "4": "Es corrupto",
+      "5": "Muy corrupto",
+      "99": "No sabe / No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 1235,
+      "2": 5175,
+      "3": 18862,
+      "4": 9141,
+      "5": 7892,
+      "99": 4087
+     }
+    },
+    {
+     "codigo": "P2016S6",
+     "etiqueta": "27. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores:",
+     "texto_literal": "27. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores: f. Congreso de la República (Cámara y Senado) 1 Nada corrupto 2 No es corrupto 3 Neutral: Ni en alta ni baja medida 4 Es corrupto 5 Muy corrupto 99 No sabe / No informa",
+     "universo": "",
+     "categorias": {
+      "1": "Nada corrupto",
+      "2": "No es corrupto",
+      "3": "Neutral: Ni en alta ni baja medida",
+      "4": "Es corrupto",
+      "5": "Muy corrupto",
+      "99": "No sabe / No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 533,
+      "2": 2022,
+      "3": 13289,
+      "4": 12529,
+      "5": 14436,
+      "99": 3583
+     }
+    },
+    {
+     "codigo": "P2016S7",
+     "etiqueta": "27. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores:",
+     "texto_literal": "27. En una escala de 1 a 5, en la que 1 significa nada corrupto y 5 muy corrupto, cuál considera usted es el nivel de corrupción de los siguientes grupos o actores: g. Rama judicial (cortes, Fiscalía General de la Nación, juzgados, entre otros) 1 Nada corrupto 2 No es corrupto 3 Neutral: Ni en alta ni baja medida 4 Es corrupto 5 Muy corrupto 99 No sabe / No informa",
+     "universo": "",
+     "categorias": {
+      "1": "Nada corrupto",
+      "2": "No es corrupto",
+      "3": "Neutral: Ni en alta ni baja medida",
+      "4": "Es corrupto",
+      "5": "Muy corrupto",
+      "99": "No sabe / No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 751,
+      "2": 3195,
+      "3": 18528,
+      "4": 10912,
+      "5": 9261,
+      "99": 3745
+     }
+    },
+    {
+     "codigo": "P2016S8",
+     "etiqueta": "h. Fuerzas Militares (Ejército, Armada y Fuerza Aérea)",
+     "texto_literal": "h. Fuerzas Militares (Ejército, Armada y Fuerza Aérea) 1. Nada corrupto 2. No es corrupto 3. Neutral: Ni en alta ni baja medida 4. Es corrupto 5 Muy corrupto 99. No Sabe/No Informa",
+     "universo": "",
+     "categorias": {
+      "1": "Nada corrupto",
+      "2": "No es corrupto",
+      "3": "Neutral: Ni en alta ni baja medida",
+      "4": "Es corrupto",
+      "5": "Muy corrupto",
+      "99": "No Sabe/No Informa"
+     },
+     "notas": [
+      "codigo 99 recuperado del texto literal (DDI catgry lo lista mal)",
+      "codigos ['6'] listados en el DDI pero SIN casos en los microdatos: eliminados"
+     ],
+     "frecuencias_datos": {
+      "1": 1523,
+      "2": 5513,
+      "3": 18952,
+      "4": 9733,
+      "5": 7487,
+      "99": 3184
+     }
+    },
+    {
+     "codigo": "P2016S9",
+     "etiqueta": "i. Policía",
+     "texto_literal": "i. Policía 1. Nada corrupto 2. No es corrupto 3. Neutral: Ni en alta ni baja medida 4. Es corrupto 5 Muy corrupto 99. No Sabe/No Informa",
+     "universo": "",
+     "categorias": {
+      "1": "Nada corrupto",
+      "2": "No es corrupto",
+      "3": "Neutral: Ni en alta ni baja medida",
+      "4": "Es corrupto",
+      "5": "Muy corrupto",
+      "99": "No Sabe/No Informa"
+     },
+     "notas": [
+      "codigo 99 recuperado del texto literal (DDI catgry lo lista mal)",
+      "codigos ['7'] listados en el DDI pero SIN casos en los microdatos: eliminados"
+     ],
+     "frecuencias_datos": {
+      "1": 1027,
+      "2": 3939,
+      "3": 17027,
+      "4": 11224,
+      "5": 10201,
+      "99": 2974
+     }
+    },
+    {
+     "codigo": "P2017S1",
+     "etiqueta": "28. Según su opinión, de los siguientes factores cuál o cuáles pueden motivar o inducir a que se presenten actos de corrupción:",
+     "texto_literal": "28. Según su opinión, de los siguientes factores cuál o cuáles pueden motivar o inducir a que se presenten actos de corrupción: a. Falta de sanción a los corruptos 1 Si 2 No 99 No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 41986,
+      "2": 2640,
+      "99": 1766
+     }
+    },
+    {
+     "codigo": "P2017S2",
+     "etiqueta": "28. Según su opinión, de los siguientes factores cuál o cuáles pueden motivar o inducir a que se presenten actos de corrupción:",
+     "texto_literal": "28. Según su opinión, de los siguientes factores cuál o cuáles pueden motivar o inducir a que se presenten actos de corrupción: b. Vacíos o falta de claridad en la legislación 1 Si 2 No 99 No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "Nosabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 32462,
+      "2": 10354,
+      "99": 3576
+     }
+    },
+    {
+     "codigo": "P2017S3",
+     "etiqueta": "28. Según su opinión, de los siguientes factores cuál o cuáles pueden motivar o inducir a que se presenten actos de corrupción:",
+     "texto_literal": "28. Según su opinión, de los siguientes factores cuál o cuáles pueden motivar o inducir a que se presenten actos de corrupción: c. Ausencia de valores éticos 1 Si 2 No 99 No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 37733,
+      "2": 6187,
+      "99": 2472
+     }
+    },
+    {
+     "codigo": "P2017S4",
+     "etiqueta": "28. Según su opinión, de los siguientes factores cuál o cuáles pueden motivar o inducir a que se presenten actos de corrupción:",
+     "texto_literal": "28. Según su opinión, de los siguientes factores cuál o cuáles pueden motivar o inducir a que se presenten actos de corrupción: d. Presión de particulares sobre las entidades públicas 1 Si 2 No 99 No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 26862,
+      "2": 15051,
+      "99": 4479
+     }
+    },
+    {
+     "codigo": "P2017S5",
+     "etiqueta": "28. Según su opinión, de los siguientes factores cuál o cuáles pueden motivar o inducir a que se presenten actos de corrupción:",
+     "texto_literal": "28. Según su opinión, de los siguientes factores cuál o cuáles pueden motivar o inducir a que se presenten actos de corrupción: e. Presión de organizaciones criminales o grupos armados 1 Si 2 No 99 No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 27360,
+      "2": 14268,
+      "99": 4764
+     }
+    },
+    {
+     "codigo": "P2017S6",
+     "etiqueta": "28. Según su opinión, de los siguientes factores cuál o cuáles pueden motivar o inducir a que se presenten actos de corrupción:",
+     "texto_literal": "28. Según su opinión, de los siguientes factores cuál o cuáles pueden motivar o inducir a que se presenten actos de corrupción: f. Presión de actores políticos sobre las entidades públicas 1 Si 2 No 99 No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 28056,
+      "2": 13894,
+      "99": 4442
+     }
+    },
+    {
+     "codigo": "P2017S7",
+     "etiqueta": "g. Limitado acceso a la información para el control de los ciudadanos",
+     "texto_literal": "g. Limitado acceso a la información para el control de los ciudadanos 1. Sí 2. No 99. NS/NI",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No",
+      "99": "(SIN ETIQUETA EN DDI - probable No sabe/No informa)"
+     },
+     "notas": [
+      "valor 99 presente en datos, ausente del DDI",
+      "codigos ['3'] listados en el DDI pero SIN casos en los microdatos: eliminados"
+     ],
+     "frecuencias_datos": {
+      "1": 27046,
+      "2": 14837,
+      "99": 4509
+     }
+    },
+    {
+     "codigo": "P2019",
+     "etiqueta": "29. De las siguientes áreas o asuntos, en cuál considera usted que se presentan los casos más graves de corrupción en el sector público en general:",
+     "texto_literal": "29. De las siguientes áreas o asuntos, en cuál considera usted que se presentan los casos más graves de corrupción en el sector público en general: 1 Salud 2 Educación 3 Infraestructura 4 Justicia 5 Vivienda 6 Titulación de tierras",
+     "universo": "",
+     "categorias": {
+      "1": "Salud",
+      "2": "Educación",
+      "3": "Infraestructura",
+      "4": "Justicia",
+      "5": "Vivienda",
+      "6": "Titulación de tierras"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 20439,
+      "2": 3344,
+      "3": 6849,
+      "4": 12575,
+      "5": 1464,
+      "6": 1721
+     }
+    },
+    {
+     "codigo": "P2021",
+     "etiqueta": "30. En una escala de 1 a 5, en la que 1 significa nada efectivas y 5 muy efectivas, ¿qué tan efectivas cree usted que han sido las acciones o políticas del gobierno nacional para reducir o combatir la corrupción?",
+     "texto_literal": "30. En una escala de 1 a 5, en la que 1 significa nada efectivas y 5 muy efectivas, ¿qué tan efectivas cree usted que han sido las acciones o políticas del gobierno nacional para reducir o combatir la corrupción? 1 Nada efectivas 2 Poco efectivas 3 Neutral: Ni efectivas ni inefectivas 4 Efectivas 5 Muy efectivas 99 No sabe/No informa",
+     "universo": "",
+     "categorias": {
+      "1": "Nada efectivas",
+      "2": "Poco efectivas",
+      "3": "Neutral: Ni efectivas ni inefectivas",
+      "4": "Efectivas",
+      "5": "Muy efectivas",
+      "99": "No sabe/No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 14271,
+      "2": 10295,
+      "3": 15965,
+      "4": 2809,
+      "5": 729,
+      "99": 2323
+     }
+    },
+    {
+     "codigo": "P1754",
+     "etiqueta": "31. En su opinión, en el último año la corrupción ha:",
+     "texto_literal": "31. En su opinión, en el último año la corrupción ha: 1.Aumentado 2.Permanecido igual 3.Disminuido 99.No sabe/no informa",
+     "universo": "",
+     "categorias": {
+      "1": "Aumentado",
+      "2": "Permanecido igual",
+      "3": "Disminuido",
+      "99": "No sabe/no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 22789,
+      "2": 18404,
+      "3": 3288,
+      "99": 1911
+     }
+    },
+    {
+     "codigo": "P3330",
+     "etiqueta": "32. ¿Podría indicarme si durante los últimos 12 meses, usted ha tenido contacto directo con personal de alguna institución del gobierno, para realizar algún trámite administrativo, solicitar algún servicio o para pedir información?",
+     "texto_literal": "32. ¿Podría indicarme si durante los últimos 12 meses, usted ha tenido contacto directo con personal de alguna institución del gobierno, para realizar algún trámite administrativo, solicitar algún servicio o para pedir información? 1.Si 2.No 99.No informa",
+     "universo": "",
+     "categorias": {
+      "1": "Si",
+      "2": "No",
+      "99": "No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 4396,
+      "2": 40790,
+      "99": 1206
+     }
+    },
+    {
+     "codigo": "P3331",
+     "etiqueta": "33. Y durante los últimos 12 meses, ¿alguna persona de estas instituciones de gobierno con las que tuvo contacto, le pidió de manera directa o indirecta algún incentivo, como un regalo o dinero extra para facilitar el trámite o servicio?",
+     "texto_literal": "33. Y durante los últimos 12 meses, ¿alguna persona de estas instituciones de gobierno con las que tuvo contacto, le pidió de manera directa o indirecta algún incentivo, como un regalo o dinero extra para facilitar el trámite o servicio? 1.si 2.no 99.no informa",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No",
+      "99": "No informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 252,
+      "2": 4098,
+      "99": 46,
+      "NaN": 41996
+     }
+    },
+    {
+     "codigo": "P3332",
+     "etiqueta": "34. ¿Usted dio al funcionario el regalo o el dinero extra solicitado?",
+     "texto_literal": "34. ¿Usted dio al funcionario el regalo o el dinero extra solicitado? 1.si 2.no 99.no informa",
+     "universo": "",
+     "categorias": {
+      "1": "SI",
+      "2": "NO",
+      "99": "no informa"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 51,
+      "2": 197,
+      "99": 4,
+      "NaN": 46140
+     }
+    },
+    {
+     "codigo": "P5375",
+     "etiqueta": "35. En caso de conocer un acto de corrupción, ¿está usted informado(a) ante quien podría denunciarlo?",
+     "texto_literal": "35. En caso de conocer un acto de corrupción, ¿está usted informado(a) ante quien podría denunciarlo? 1. Sí 2. No 99. No informa",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No",
+      "99": "No informa"
+     },
+     "notas": [
+      "codigo 99 recuperado del texto literal (DDI catgry lo lista mal)",
+      "codigos ['3'] listados en el DDI pero SIN casos en los microdatos: eliminados"
+     ],
+     "frecuencias_datos": {
+      "1": 13586,
+      "2": 30914,
+      "99": 1892
+     }
+    },
+    {
+     "codigo": "P5376",
+     "etiqueta": "36. ¿En el último año denunció usted un acto de corrupción ante una autoridad competente?",
+     "texto_literal": "36. ¿En el último año denunció usted un acto de corrupción ante una autoridad competente? 1. Sí 2. No tuvo conocimiento de estos hechos 99. No informa",
+     "universo": "",
+     "categorias": {
+      "1": "Sí",
+      "2": "No tuvo conocimiento de estos hechos",
+      "99": "No informa"
+     },
+     "notas": [
+      "codigo 99 recuperado del texto literal (DDI catgry lo lista mal)",
+      "codigos ['3'] listados en el DDI pero SIN casos en los microdatos: eliminados"
+     ],
+     "frecuencias_datos": {
+      "1": 390,
+      "2": 12457,
+      "99": 739,
+      "NaN": 32806
+     }
+    },
+    {
+     "codigo": "P5378",
+     "etiqueta": "37. Si usted conoce un acto de corrupción, ¿cuál de las siguientes considera es la principal razón que le impediría llevar a cabo la respectiva denuncia?",
+     "texto_literal": "37. Si usted conoce un acto de corrupción, ¿cuál de las siguientes considera es la principal razón que le impediría llevar a cabo la respectiva denuncia? 1. Desconoce el procedimiento para hacer la denuncia 2. Los trámites de la denuncia son complicados 3. Los casos denunciados no se investigan ni castigan 4. Teme ser objeto de represalias laborales 5. Teme ser víctima de represalias contra su integridad o su vida 6. Ausencia de mecanismos de denuncia que garanticen la protección del denunciante 7. Ninguna de las anteriores razones le impediría llevar a cabo la denuncia",
+     "universo": "",
+     "categorias": {
+      "1": "Desconoce el procedimiento para hacer la denuncia",
+      "2": "Los trámites de la denuncia son complicados",
+      "3": "Los casos denunciados no se investigan ni castigan",
+      "4": "Teme ser objeto de represalias laborales",
+      "5": "Teme ser víctima de represalias contra su integridad o su vida",
+      "6": "Ausencia de mecanismos de denuncia que garanticen la protección del denunciante",
+      "7": "Ninguna de las anteriores razones le impediría llevar a cabo la denuncia"
+     },
+     "notas": [],
+     "frecuencias_datos": {
+      "1": 19531,
+      "2": 3426,
+      "3": 9298,
+      "4": 670,
+      "5": 8023,
+      "6": 2655,
+      "7": 2789
+     }
+    }
+   ]
+  }
+ }
+}
