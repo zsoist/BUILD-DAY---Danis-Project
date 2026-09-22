@@ -76,18 +76,49 @@ while (muestra.length < N && g++ < N * 400) {
 const env = Object.fromEntries(fs.readFileSync(path.join(ROOT, ".env"), "utf8")
   .split("\n").filter(l => l.includes("=") && !l.trim().startsWith("#"))
   .map(l => [l.slice(0, l.indexOf("=")).trim(), l.slice(l.indexOf("=") + 1).trim().replace(/^["']|["']$/g, "")]));
-const KEY = env.DEEPSEEK_API_KEY || env.DEEPSEEK_KEY;
+/* Dos flotas, un solo experimento. Para que la comparación signifique algo, lo
+   ÚNICO que puede cambiar es el modelo: mismo prompt, misma muestra, misma
+   semilla, mismo código de medición. Si escribiera un script aparte para GLM,
+   cualquier diferencia podría venir del script y no del modelo.
 
+     ENJAMBRE=deepseek  node careo_ecp.mjs ...   (por defecto)
+     ENJAMBRE=glm       node careo_ecp.mjs ...
+
+   GLM no deja apagar el razonamiento —devuelve 400 "Reasoning is mandatory"—
+   pero con effort "low" no gasta un solo token de razonamiento. Medido. */
+const FLOTA = (process.env.ENJAMBRE || "deepseek").toLowerCase();
+const MOTOR = FLOTA === "glm"
+  ? { modelo: process.env.MODELO_VOZ || "z-ai/glm-5.3-flash",
+      url: "https://openrouter.ai/api/v1/chat/completions",
+      key: env.OPENROUTER_API_KEY,
+      extra: { reasoning: { effort: "low" },
+               /* sin esto el gateway puede enrutarte a un proveedor que
+                  descarta en silencio los parámetros que pediste */
+               provider: { require_parameters: true } } }
+  : { modelo: process.env.MODELO_VOZ || "deepseek-flash",
+      url: "https://api.deepseek.com/chat/completions",
+      key: env.DEEPSEEK_API_KEY || env.DEEPSEEK_KEY,
+      extra: { reasoning_effort: "none" } };
+const KEY = MOTOR.key;
+if (!KEY) { console.error(`⛔ falta la llave para la flota "${FLOTA}"`); process.exit(1); }
+
+let VACIAS = 0;
 async function flash(messages, max_tokens = 120) {
   for (let i = 0; i < 3; i++) {
     try {
-      const r = await fetch("https://api.deepseek.com/chat/completions", {
+      const r = await fetch(MOTOR.url, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${KEY}` },
-        body: JSON.stringify({ model: "deepseek-flash", messages, max_tokens,
-          temperature: 1.0, reasoning_effort: "none" }),
+        body: JSON.stringify({ model: MOTOR.modelo, messages, max_tokens,
+          temperature: 1.0, ...MOTOR.extra }),
       });
-      if (r.ok) return (await r.json()).choices?.[0]?.message?.content || "";
+      if (r.ok) {
+        const txt = (await r.json()).choices?.[0]?.message?.content || "";
+        if (txt.trim()) return txt;
+        /* respuesta vacía: casi siempre el razonamiento se comió el presupuesto
+           de salida. Se cuenta, porque es una diferencia real entre flotas. */
+        VACIAS++;
+      }
     } catch (e) { /* reintenta */ }
     await new Promise(s => setTimeout(s, 1200 * (i + 1)));
   }
@@ -136,6 +167,10 @@ await Promise.all(Array.from({ length: 8 }, async () => {
     process.stderr.write(".");
   }
 }));
+/* La flota queda grabada en el archivo: un resultado sin saber qué modelo lo
+   produjo no se puede comparar con nada dentro de un mes. */
 fs.writeFileSync(SALIDA, JSON.stringify({ codigo: CODIGO, pregunta: TEXTO, modo: MODO, n: out.length,
+  flota: FLOTA, modelo: MOTOR.modelo, vacias: VACIAS,
   fecha: new Date().toISOString(), respuestas: out }, null, 1));
-console.error(`\nOK — ${out.length} respuestas → ${SALIDA}`);
+console.error(`\nOK — ${out.length} respuestas de ${MOTOR.modelo} → ${SALIDA}`);
+if (VACIAS) console.error(`   ⚠ ${VACIAS} respuesta(s) vacías reintentadas`);
