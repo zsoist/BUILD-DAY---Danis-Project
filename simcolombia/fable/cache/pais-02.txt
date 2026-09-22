@@ -1,0 +1,50 @@
+PREGUNTA: Te acabas de leer un país entero: 6.600 personas, 33 territorios, todas sus deliberaciones de hoy. Preséntate y di tres cosas que viste que nosotros no.
+
+**Presentación.** Soy el científico jefe de Sim Colombia. Leí las 33 fichas de marginales, los 33 dossiers, las 6.600 filas de residentes y los 43 guiones de hoy. Mi trabajo no es celebrar el país sintético sino auditarlo: ver dónde los datos reales del DANE se convierten en personas creíbles y dónde la tubería se rompe. Tres cosas que vi y que ustedes, por estar construyéndolo, probablemente no:
+
+---
+
+### 1. Sim Colombia está pesado al revés: es un país de 33 tribus iguales, no de 53 millones de personas
+
+Cada territorio tiene exactamente 200 residentes (ids `XX-000` a `XX-199`), o sea 3,03 % del padrón cada uno. Sumando las celdas `poblacion` de las 33 fichas obtengo ≈53,47 millones. Contra eso:
+
+- **Bogotá (11)**: 7.935.754 hab. = 14,8 % del país real → 3,03 % de Sim Colombia. Subponderada ×4,9.
+- **Vaupés (97)**: 50.322 hab. = 0,094 % → 3,03 %. Sobreponderada ×32.
+- Los cinco amazónicos (91, 94, 95, 97, 99) suman 434.529 hab. = 0,8 % del país, pero son 1.000 residentes = 15,2 % del padrón.
+- Bogotá + Antioquia + Valle + Cundinamarca = 23,34 M = 43,6 % del país real, pero solo 800 residentes = 12,1 %.
+
+Esto no es un defecto si cada sondeo se queda dentro de su departamento. Pero los guiones muestran que no: el sondeo #8 sobre paros mezcla `76-158, 05-043, 05-147, 11-043, 11-061, 05-011, 85-080, 73-008`; el #11 sobre aborto mezcla `25, 23, 05, 76, 85`. En esos cruces, un residente de Puerto Carreño vale lo mismo que uno de Suba, y la "opinión del país" que sale es la opinión de una federación de 33 cantones de igual tamaño. Cualquier lectura de "qué piensa Colombia" que salga de estos sondeos está estructuralmente sesgada hacia periferia rural y amazónica. Hay que decidirlo explícitamente: o se pondera por `poblacion` al agregar, o se avisa que el padrón es estratificado uniforme.
+
+---
+
+### 2. Los marginales se respetan uno a uno, pero no se hablan entre sí: la tubería PIB→ocupación y edad/educación→ocupación está desacoplada
+
+Los marginales individuales cuadran (verifiqué, por ejemplo, que los 17 residentes de La Guajira con educación "ninguna" —`44-006, 44-022, 44-052…44-197`— dan ≈13 % de adultos, coherente con `educacion_pct.ninguna: 13.9`). El problema es la independencia entre variables:
+
+**a) Edad vs. ocupación.** Existe la categoría `pensionado(a)`, pero la ocupación se sortea sin condicionar en edad avanzada. Resultado: `05-173` Alba Martínez Gómez, 91 años, *Albañil o maestro de obra*; `63-091` Reinaldo Hernández Paz, 92, *maestro de obra*; `27-053` Gilberto Molina Pérez, 90, *oficial de construcción*; `08-012` Marco Barrios Torres, 94, *cocinero*; `41-071` Gloria Acosta Perdomo, 88, *Conductor de transporte intermunicipal y de carga*; `85-177` Luis Reinaldo Córdoba, 89, *repuestero y mecánico de moto*; `73-039` Óscar Rincón Valencia, 92, *agricultor*.
+
+**b) Educación vs. ocupación.** Docentes con educación "ninguna": `11-124` (24 años), `13-076`, `13-154`, `50-068`, `50-172`, `85-174`, `19-034`, `70-028`, `70-102`, `85-163`. Funcionarios públicos con "ninguna": `05-072, 17-057, 18-039, 44-195, 54-014, 63-065, 66-062, 94-063, 94-123, 97-087`. Enfermeros con "ninguna": `18-086, 27-169, 27-187, 54-027`. El CNPV cuadro 17PD se muestrea como marginal puro, sin la correlación obvia con el oficio.
+
+**c) Sector PIB → oficio, con traducción literal errónea.** "Explotación de minas y canteras" se convierte en `operador(a) petrolero(a)` en todas partes: en Chocó (`27-127, 27-142, 27-150, 27-185`), donde el 17,8 % de minas es oro aluvial; en Cesar (`20-056, 20-132, 20-139, 20-147, 20-155`) y La Guajira (`44-055, 44-099, 44-170, 44-183, 44-196, 44-199`), donde el 41,8 % y 45,7 % es carbón (La Loma, Cerrejón, que sus propios dossiers describen); en Guainía (`94-041, 94-043, 94-116, 94-165, 94-166`), donde es coltán y oro de caño. Y "Actividades inmobiliarias" —que en cuentas nacionales es mayormente alquiler imputado de vivienda propia, no empleo— produce `administrador(a) de finca raíz` en Mitú (`97-121` Fanny Cárdenas, 86 años; `97-130, 97-152, 97-164, 97-190`), Inírida y Puerto Carreño. El PIB mide valor agregado, no puestos de trabajo; usarlo como distribución ocupacional infla oficios de capital intensivo en las periferias.
+
+**d) Un dato duro adicional.** Valle (76) es el único territorio con `salud_pct` (fuente MinSalud 23gb-dhmd): 53,7 contributivo / 44,8 subsidiado. En sus 200 residentes conté 68 subsidiados y 132 contributivos (66 %). Contra el esperado normalizado de 54,5 %, eso son ≈3,3 errores estándar (n=200): un desvío que no debería ocurrir por azar y sugiere un bug en el sorteo o un redondeo de porcentajes que no suman 100 (98,5). Los otros 32 territorios llevan "sin dato" en esa columna: el país solo tiene sistema de salud en un departamento.
+
+*Nota menor del mismo tipo:* los nombres de niños sí están condicionados por cohorte (Alaia, Thiago, Liam, Maité), pero el prefijo femenino compuesto no: "Ingrid" y "Leidy" aparecen en mujeres de 71–91 años (`05-035` Leidy Mercedes, 91; `15-010` Leidy Mercedes, 88; `17-058` Ingrid Edilma, 81; `44-118` Leidy Carmen, 72), y apellidos costeños (De la Hoz, Fontalvo, Cantillo) se reparten uniformemente hasta Boyacá (`15-000`) y Vaupés (`97-038`), pese a que los dossiers traen listas regionales de apellidos.
+
+---
+
+### 3. Las deliberaciones no son lo que el log dice que son: el registro y el guion narrado se desacoplaron
+
+Esto es lo más grave, porque es la capa que ustedes muestran.
+
+**a) El campo `dpto` está pegado.** En 14 de 43 deliberaciones ningún participante pertenece al departamento etiquetado: #5, #6, #7 (dice "08", cero residentes de Atlántico), #9 y #11 (dice "11", cero bogotanos), y las nueve de #35 a #43 (dicen "94" Guainía: cero residentes `94-`). En otras 5 (#8, #13, #14, #15, #31) la coincidencia es parcial (1 a 4 de 8). Es decir, 19 de 43 etiquetas territoriales son falsas; parece un selector de UI que conserva el último valor.
+
+**b) Participan bebés.** Hay 9 apariciones de menores de 6 años, cuatro de ellos con **0 años**: `11-138` Martín Silva Rojas (0) opinando "Millos o Santa Fe" (#18); `11-165` Gael Camacho Córdoba (0) en la tertulia de la flota (#34); `99-166` Violeta Contreras Cardona (0) en la mesa de la JEP de Vichada (#25); `68-091` Benjamín Parra Valencia (0) sobre Abelardo de la Espriella (#26). Más `11-055` (3) y `11-060` (10) en la tertulia del metro (#1), `11-004` (3) sobre IA (#2), `76-119` (5) y `76-160` (8) sobre pico y placa (#10), `91-188` (4) sobre la JEP (#24), `73-008` (7) sobre paros (#8). El filtro `rol=estudiante/niño de casa` no se aplica al sortear participantes.
+
+**c) Los nombres del resumen no son los del log.** De las 20 deliberaciones con `resumen` o `conclusion`, solo dos casan completamente con los ids registrados: #22 (Andrés, Ingrid, Javier = `05-050, 05-052, 05-071`) y #29 (Luis, Nelson, Norbey, Sandra = `05-061, 05-016, 05-037, 05-057`), ambas de Antioquia. En el resto, los nombres son ajenos: #21 (Casanare) narra a "Juan, Esperanza, Misael y Sebastián" pero los ids son `85-014` Leidy Marcela, `85-125` Luis Alejandro (16), `85-047` Leidy Viviana, `85-054` Gustavo; #28 (Nariño) narra "Stella, Ricardo, Zoraida y María" con ids `52-100` Miguel Gonzalo, `52-171` Diana, `52-054` Isabella, `52-099` Yolanda; #16 (Millos/Santa Fe) narra "Aura, Duván, Óscar, Aníbal, Efraín, Liliana, Jhon" con ocho ids de los que solo `11-065` Luis Esteban aparece. En #1 solo coincide "Ingrid" (`11-084`) de seis nombres. Hipótesis: el motor sortea y registra unos ids pero inyecta al LLM otras fichas (o ninguna, y el modelo inventa nombres desde `nombres_frecuentes`). Sea cual sea la causa, la trazabilidad "este residente dijo esto" hoy no existe.
+
+**d) Metadatos contradictorios con el texto.** `acordo: true` mientras el resumen abre con "No hubo acuerdo": #16, #40, #41, #42, #43. En #43 (Palestina) `posturas` marca 8 a favor y 0 en contra, pero el texto describe al grupo "partido" entre dos orillas. En modo `pais`, #26 registra `postura: a_favor` cuando la conclusión dice que tres de cuatro rechazan la mano dura; #28 y #25 igual. #13 quedó con 8 participantes y `0/0/0` posturas: una corrida vacía guardada como resultado. Y en #27 el texto hace hablar a "Yadira, mototaxista" cuando ningún id de esa mesa (`47-060, 47-124, 47-159, 47-193`) es mototaxista.
+
+---
+
+**En síntesis:** los marginales están bien citados y bien muestreados uno por uno; el problema es de *articulación*. El padrón necesita ponderación poblacional al agregar, condicionamiento conjunto (edad×ocupación, educación×ocupación, sector×oficio por tipo de mina) y salud para 32 territorios más. Y la capa de deliberación necesita, antes que nada, que los ids que se registran sean exactamente las fichas que se inyectan, con filtro de mayoría de edad y `dpto` derivado de los participantes y no del selector. Sin eso, el país existe, pero no se puede citar.

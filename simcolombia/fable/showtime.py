@@ -119,6 +119,8 @@ async def fable(system_blocks, user, max_tokens=4000, effort=None, titulo=""):
             await asyncio.sleep(3)
     print("\n" + "─" * 60)
     marcador(final.usage)
+    if final.stop_reason == "max_tokens":
+        print("⚠️ cortado por max_tokens (el thinking cuenta como output) — sube el tope de este acto.")
     if final.stop_reason == "refusal":
         print("⚠️ stop=refusal: reformula la pregunta (nota del system card).")
     return "".join(texto)
@@ -254,7 +256,7 @@ def replay(patron=""):
 async def pais_ask(pregunta, slug="pais"):
     if not CORPUS.exists():
         serializar_pais()
-    out = await fable(system_pais(), pregunta, max_tokens=3000, effort="high",
+    out = await fable(system_pais(), pregunta, max_tokens=20000, effort="high",
                       titulo="se leyó a Colombia entera")
     grabar(slug, f"PREGUNTA: {pregunta}\n\n{out}")
 
@@ -315,7 +317,7 @@ async def auditor(n_por_celda=6):
               "impopular). Devuelve SOLO JSON: {\"<id_persona>\":{\"<id_pregunta>\":\"si|no\"}}",
               "cache_control": {"type": "ephemeral"}}],
             f"PERSONAS:\n{fichas}\n\nPREGUNTAS:\n{preguntas}",
-            max_tokens=min(400 + len(lote) * len(verdad["items"]) * 30, 4000),
+            max_tokens=min(2000 + len(lote) * len(verdad["items"]) * 30, 10000),
             effort="medium", titulo=f"encuestando lote {i//LOTE+1}")
         try:
             import re
@@ -350,7 +352,7 @@ async def auditor(n_por_celda=6):
         "Escribe el veredicto del sesgo de Sim Colombia (máx 400 palabras): qué "
         "sobre/subestima y la hipótesis del porqué (sesgos LLM documentados: "
         "deseabilidad social, WEIRD, aplanamiento). Datos:\n" + "\n".join(lineas),
-        max_tokens=1200, effort="max", titulo="veredicto del auditor")
+        max_tokens=20000, effort="high", titulo="veredicto del auditor")
 
 
 # ── FORENSE: las tertulias de hoy bajo el microscopio ───────────────────────
@@ -365,7 +367,7 @@ async def forense():
         "modesta y asimétrica)?; (3) detecta anclaje (Hidden Anchors) y "
         "plantillas repetidas; (4) nota 0-10 de realismo deliberativo con "
         "desglose. Máx 500 palabras, con evidencia.",
-        max_tokens=2000, effort="max", titulo="forense de deliberaciones")
+        max_tokens=20000, effort="high", titulo="forense de deliberaciones")
 
 
 # ── DUELO CIEGO: enjambre vs Fable, juez ciego ──────────────────────────────
@@ -405,7 +407,7 @@ async def duelo():
     for rid, p in RETOS:
         lado_b[rid] = await fable(
             [{"type": "text", "text": "Responde directo y completo. Español."}],
-            p, max_tokens=900, effort="high" if rid.startswith("duro") else "low",
+            p, max_tokens=8000, effort="high" if rid.startswith("duro") else "low",
             titulo=f"duelo · {rid}")
     # juez ciego: Jev, orden aleatorio, longitud normalizada
     rng = random.Random()
