@@ -381,10 +381,19 @@ animation:blink 1.2s steps(2) infinite}
 <script src="detalle.js"></script>
 <script>
 /* ═══ config ═══ */
-const DEF={src:"supabase",url:"https://pwcvskguqyhbhlwnsmmy.supabase.co",
-  key:"sb_publishable_1S4AdKr4TJqGWt9LNL_XaQ_OWrCusLw",poll:3,scale:3,orkey:""};
+/* Arranca contra tu propio disco: el servidor local arma /feed.json desde
+   runs/ al vuelo. Ninguna credencial viaja en este archivo. Si quieres ver
+   el tablero desde otra máquina, pon tu Supabase en Ajustes: queda en el
+   navegador, no en el repo. */
+const DEF={v:2,src:"local",url:"",key:"",poll:3,scale:3,orkey:""};
 let cfg={...DEF};
 try{cfg={...DEF,...JSON.parse(localStorage.getItem("ag-cfg")||"{}")}}catch(e){}
+/* La configuración vive en el navegador, así que una instalación vieja seguiría
+   apuntando —con credencial incluida— a la base de datos que este archivo ya no
+   trae. La versión marca el corte: lo guardado antes vuelve a leer de tu disco.
+   Si quieres telemetría remota, la vuelves a poner en Ajustes. */
+if(cfg.v!==DEF.v){cfg={...DEF};
+  try{localStorage.setItem("ag-cfg",JSON.stringify(cfg))}catch(e){}}
 const save=()=>{try{localStorage.setItem("ag-cfg",JSON.stringify(cfg))}catch(e){}};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));

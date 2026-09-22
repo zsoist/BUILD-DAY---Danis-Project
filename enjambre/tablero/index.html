@@ -384,9 +384,15 @@ animation:blink 1.2s steps(2) infinite}
 /* El paquete arranca contra TU disco, no contra la nube de nadie. Si quieres
    telemetría remota, pon tu propio Supabase en Ajustes: queda en el
    navegador, nunca en el repo. */
-const DEF={src:"local",url:"",key:"",poll:3,scale:3,orkey:""};
+const DEF={v:2,src:"local",url:"",key:"",poll:3,scale:3,orkey:""};
 let cfg={...DEF};
 try{cfg={...DEF,...JSON.parse(localStorage.getItem("ag-cfg")||"{}")}}catch(e){}
+/* La configuración vive en el navegador, así que una instalación vieja seguiría
+   apuntando —con credencial incluida— a la base de datos que este archivo ya no
+   trae. La versión marca el corte: lo guardado antes vuelve a leer de tu disco.
+   Si quieres telemetría remota, la vuelves a poner en Ajustes. */
+if(cfg.v!==DEF.v){cfg={...DEF};
+  try{localStorage.setItem("ag-cfg",JSON.stringify(cfg))}catch(e){}}
 const save=()=>{try{localStorage.setItem("ag-cfg",JSON.stringify(cfg))}catch(e){}};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
