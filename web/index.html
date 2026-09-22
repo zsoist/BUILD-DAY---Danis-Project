@@ -1356,7 +1356,6 @@ function etiquetaPostura(v){
   v=(typeof v==="string")?v.trim().toLowerCase():null;
   return POSTURAS.indexOf(v)>=0?v:null;   // fail-closed: etiqueta fuera del set -> null
 }
-function esNiNi(p){return p==="ni_ni";}
 function payloadPostura(){
   return {postura:{type:"choice",
     instructions:"Postura que expresa ESTA respuesta sobre el tema de la pregunta",
@@ -1378,73 +1377,7 @@ async function selloHumano(q,transcript,host){
   if(!a)return;
   const h=Math.round((a.humana?.noul||0)*100),s=a.sustancia?.score;
   (host||$("#resps")).insertAdjacentHTML("beforeend",
-    `<div class="ronda" style="letter-spacing:.08em">SELLO HUMANO · humanidad ${h}% · sustancia ${s?.toFixed(1)??"—"}/4</div>`);
-}
-/* ── AUDITORÍA UNIFICADA: 1 sola llamada Jev por cada 5 respuestas ──
-   postura + fidelidad al personaje (compromiso político) + deseabilidad social.
-   Muestreo del 20% determinista por hash del texto: la misma respuesta cae siempre
-   en la misma muestra, así que nunca se paga dos veces la misma auditoría.
-   Por ahora solo loguea a consola; una etiqueta fuera de su set deja el campo en
-   null y ok:false, de modo que un fallo nunca se pinta como dato bueno. */
-const MUESTREO=20; // % de respuestas auditadas
-function hash32(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
-function enMuestra(txt){return (hash32(String(txt))%100)<MUESTREO;} // determinista: misma respuesta, misma decisión, un solo cobro
-const COMPROMISOS=["indiferente","desencantado","opinador","militante"];
-const LEANS_TERR=["izquierda","centro","derecha","no_aplica"];
-const CRIT_FID={
-  respeta:"coherente con el compromiso asignado",
-  rompe:"contradice el compromiso asignado",
-  neutra:"la respuesta es puro dato o trámite y no revela compromiso: no se puede juzgar"
-};
-const CRIT_LEAN={
-  respeta:"el encuadre territorial (a quién culpa, a quién beneficia, qué zona nombra) coincide con el lean",
-  rompe:"el encuadre territorial contradice el lean",
-  no_aplica:"la respuesta no toca nada territorial, o el lean asignado es no_aplica"
-};
-const CRIT_DESEAB=["nada: opinión cruda, con interés propio y sin edulcorar","poco","algo","bastante","mucho: discurso de manual, institucionalista y sin aristas"];
-function payloadFidelidad(persona){
-  const comp=(persona&&COMPROMISOS.indexOf(persona.compromiso)>=0)?persona.compromiso:"no_declarado";
-  const lean=(persona&&LEANS_TERR.indexOf(persona.lean)>=0)?persona.lean:"no_aplica";
-  return {
-    fidelidad:{type:"choice",
-      instructions:"El personaje tiene asignado el compromiso político "+comp+". Responde si la RESPUESTA habla como alguien con ese compromiso: indiferente = no le interesa el tema y no lo tiene en el radar; desencantado = habla con desgana y desconfianza hacia la política; opinador = opina de todo con seguridad, incluso sin datos; militante = defiende activamente una causa o un partido con su vocabulario.",
-      criteria:CRIT_FID},
-    lean:{type:"choice",
-      instructions:"Lean territorial asignado: "+lean+". Responde si el encuadre territorial de la RESPUESTA lo respeta.",
-      criteria:CRIT_LEAN},
-    guion:{type:"noul",
-      instructions:"Devuelve 1 si la respuesta RECITA la ficha del personaje (muletillas del compromiso puestas a la fuerza) y 0 si suena orgánica"}
-  };
-}
-function payloadDeseabilidad(){
-  return {deseabilidad:{type:"score",
-    instructions:"0 = dice lo que piensa aunque suene mal o le perjudique; 4 = suena a ciudadano de manual (demócrata churchilliano: institucionalista, equilibrado, todos tienen parte de razón, cero tripas, cero interés propio). Puntúa SOLO el tono de corrección, nunca la veracidad.",
-    criteria:CRIT_DESEAB}};
-}
-/* UNA sola llamada facturable: postura + fidelidad_personaje + deseabilidad (0-4) */
-async function auditarRespuesta(q,txt,persona){
-  txt=String(txt||"");
-  if(!txt.trim())return null;                  // sin texto no se gasta llamada
-  if(!enMuestra(txt))return null;              // 80% restante: cero llamadas
-  const questions=Object.assign({},payloadPostura(),payloadFidelidad(persona),payloadDeseabilidad());
-  const a=await jevDecide(`Compromiso asignado: ${(persona&&persona.compromiso)||"?"}\nLean territorial: ${(persona&&persona.lean)||"?"}\nPregunta: ${q||""}\nRespuesta: ${txt}`,questions);
-  if(!a)return null;
-  const p=etiquetaPostura(a.postura?.choice);                      // fail-closed
-  const cF=a.fidelidad?.choice,cL=a.lean?.choice,d=a.deseabilidad?.score;
-  const f=["respeta","rompe","neutra"].indexOf(cF)>=0?cF:null;    // fail-closed
-  const l=["respeta","rompe","no_aplica"].indexOf(cL)>=0?cL:null; // fail-closed
-  const out={q:q||"",postura:p,fidelidad:f,lean:l,
-    recita:Number(a.guion?.noul)===1,
-    deseabilidad:(typeof d==="number"&&d>=0&&d<=4)?d:null};
-  out.alertas=[];
-  if(f==="rompe")out.alertas.push("rompe personaje");
-  if(l==="rompe")out.alertas.push("rompe lean territorial");
-  if(out.recita)out.alertas.push("recita la ficha");
-  if(out.deseabilidad>=3)out.alertas.push("deseabilidad social "+out.deseabilidad+"/4");
-  if(p==="ni_ni")out.alertas.push("ni_ni");
-  out.ok=(p!==null&&f!==null&&l!==null);        // si falta algo no se pinta como válido
-  console.log("🔎 auditoría"+(out.ok?"":" (incompleta)"),out);
-  return out;
+    `<div class="ronda" style="letter-spacing:.08em">SELLO HUMANO · humanidad ${h}% · sustancia ${typeof s==="number"?s.toFixed(1):null??"—"}/4</div>`);
 }
 /* ── CONTEXTO REAL: una búsqueda web por pregunta; las voces reaccionan a hechos ── */
 let CTX={q:null,txt:null,ok:false};  // fail-closed: sin verificación tipada de Jev, el contexto NUNCA se rotula como real
