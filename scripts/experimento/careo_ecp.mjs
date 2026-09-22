@@ -36,7 +36,7 @@ function extraer(nombre) {
 
 const NOMBRES = ["TEMPERAMENTOS", "LEAN", "FRANQUEZA", "ARRANQUES", "estiloDe",
   "FUNDAMENTOS", "marcoDe", "GUSTOS", "FASTIDIOS", "momentoDe", "COMPROMISO_TXT",
-  "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "persona"];
+  "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "ESTILOS_RESP", "estiloRespuesta", "persona"];
 const mod = new Function("OPC", NOMBRES.map(extraer).join("\n") + "\nreturn {persona};")(null);
 
 const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "dashboard/sim/residents_v2.json"), "utf8"));

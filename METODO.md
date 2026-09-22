@@ -138,12 +138,52 @@ partido y a quejarse. Corregido con una regla explícita: *en una escala de
 encuesta el punto medio es legítimo y mayoritario*. La media pasó de 1.63 a 2.34
 (real: 2.70) y el punto medio de 6% a 36.7%.
 
-**Lo que sigue roto, y hay que decirlo**:
-- **Sub-dispersión**: la desviación estándar sintética es la mitad de la humana
-  (razón 0.50; el objetivo es 1.0). Nuestras voces opinan más parecido entre sí
-  que los colombianos. Es el fallo que Bisbee et al. documentan como central, y
-  la literatura sobre colapso de modo sugiere que vive en los pesos del modelo,
-  no en el prompt.
+### La sub-dispersión, atacada con psicometría
+
+La sub-dispersión (razón de desviación 0.50 cuando el objetivo es 1.0) es el
+fallo que Bisbee et al. documentan como central: las voces sintéticas opinan más
+parecido entre sí que la gente real. La hipótesis que probamos no viene de la
+literatura de IA sino de la **psicometría clásica**: las personas reales no usan
+una escala de la misma manera. Existe el *estilo de respuesta extremo*, el que
+evita los extremos, el benévolo y el que se refugia en el "no sé". Si todos
+nuestros residentes usan la escala igual, la dispersión colapsa por construcción.
+
+Se le dio a cada residente un estilo de respuesta determinista por hash
+(`estiloRespuesta()`), sin decirle nunca al modelo cuál es la distribución
+objetivo — eso habría sido enseñarle al examen e invalidado la medición.
+
+| | W1 normalizado | razón de SD | punto medio |
+|---|---|---|---|
+| antes de todo | 0.268 (lejos) | 0.50 | 6.0% |
+| con la regla de tibieza | 0.168 | 0.50 | 36.7% |
+| **+ estilo de respuesta** | **0.099 (cerca)** | **0.79** | **49.0%** (real: 46.0%) |
+
+**Y generaliza**: validado en una pregunta *que nunca se tocó* — eficacia
+política (`P3573`, "¿hasta qué punto el sistema político permite que personas
+como usted tengan voz y voto?"): **W1 = 0.056**, razón de SD **0.83**, media
+2.23 frente a 2.05 real. Mejor aún que en la pregunta contra la que se afinó,
+que es exactamente lo que uno quiere ver para descartar sobreajuste.
+
+**Lo que sigue roto**: casi nadie elige el extremo positivo (2% dice
+"satisfecho" frente al 14% real) y nadie dice "no sé" (0% frente a 4.2%). La
+resistencia del modelo al lado amable es profunda y el prompt no la mueve; la
+literatura sobre colapso de modo sugiere que vive en los pesos.
+
+### ¿Le gana a no hacer nada? El control que casi nadie reporta
+
+Un W1 bajo no significa nada por sí solo: hay que saber qué saca alguien que no
+simula nada. El medidor ahora imprime dos baselines triviales — "todos contestan
+al azar" y "todos contestan lo más común":
+
+| Pregunta | Simulador | Azar | Lo más común | ¿Gana? |
+|---|---|---|---|---|
+| Satisfacción con la democracia (afinada) | **0.099** | 0.108 | 0.192 | sí, **por poco** |
+| Eficacia política (sin tocar) | **0.056** | 0.238 | 0.166 | sí, **con holgura** |
+
+Dicho sin adornos: en la pregunta contra la que afinamos, el simulador apenas le
+gana al azar; en la que nunca tocamos, le gana con claridad. Esa asimetría es
+información honesta sobre dónde estamos, y es el tipo de control que la
+literatura exige y que la mayoría de los trabajos del sector omite.
 - **Nadie está satisfecho**: 0% elige 4 o 5, cuando el 18.8% de los colombianos
   sí lo hace.
 - **Nadie dice "no sé"**: 0% frente al 4.2% real.

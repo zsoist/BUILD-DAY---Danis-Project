@@ -116,7 +116,20 @@ def main():
     print(f"{'desviación estándar':<34}{sd_h:>10.2f}{sd_s:>13.2f}"
           f"{'  razón ' + format(sd_s/sd_h, '.2f') if sd_h else '':>13}")
     print(f"{'no sabe / no informa':<34}{100*ns_hum:>9.1f}%{100*ns_sin:>12.1f}%")
+    # ── BASELINES TRIVIALES ──────────────────────────────────────────────
+    # Sin esto, un W1 bajo no significa nada: hay que saber qué saca alguien
+    # que no simula nada. Es el control que exige la literatura.
+    unif = {k: 0.2 for k in range(1, 6)}
+    modo_k = max(p_hum, key=p_hum.get)
+    modo = {k: (1.0 if k == modo_k else 0.0) for k in range(1, 6)}
+    w1_unif = w1_normalizado(unif, p_hum)
+    w1_modo = w1_normalizado(modo, p_hum)
+
     print(f"\nW1 normalizado = {w1:.3f}   (0 = distribución idéntica · 1 = opuesta)")
+    print(f"  baseline 'todos contestan al azar'      = {w1_unif:.3f}")
+    print(f"  baseline 'todos contestan lo más común' = {w1_modo:.3f}")
+    gana = w1 < min(w1_unif, w1_modo)
+    print(f"  → el simulador {'LE GANA' if gana else 'NO le gana'} a los baselines triviales")
     print(f"n humanos = {int(n_hum):,} expandidos · n sintéticos = {len(validas)}")
     veredicto = ("muy cerca" if w1 < 0.05 else "cerca" if w1 < 0.10
                  else "aceptable" if w1 < 0.20 else "lejos")

@@ -1137,6 +1137,23 @@ function marcoDe(r){
   const nivel=roll<p*0.45?"muy conservador":roll<p?"conservador":roll<p+18?"moderado":"liberal";
   return {cons:nivel,fund:FUNDAMENTOS[(h>>>3)%FUNDAMENTOS.length],anecdota:(h>>>9)%4===0,despiste:(h>>>13)%5===0};
 }
+/* Estilo de respuesta (psicometría): las personas reales NO usan una escala
+   igual. Unos nunca marcan los extremos, otros viven en ellos, otros dicen que
+   sí a todo y otros se refugian en el medio. Si todos responden igual, la
+   dispersión del panel colapsa — medido contra la ECP: razón de SD 0.50. */
+const ESTILOS_RESP=[
+ ["extremo","cuando te dan una escala te vas a los extremos sin pena: o es pésimo o es muy bueno, los puntos del medio te parecen tibios"],
+ ["extremo","cuando te dan una escala te vas a los extremos sin pena: o es pésimo o es muy bueno, los puntos del medio te parecen tibios"],
+ ["moderado","cuando te dan una escala evitas los extremos: escoges los puntos intermedios porque 'tan tan' no es nada"],
+ ["moderado","cuando te dan una escala evitas los extremos: escoges los puntos intermedios porque 'tan tan' no es nada"],
+ ["moderado","cuando te dan una escala evitas los extremos: escoges los puntos intermedios porque 'tan tan' no es nada"],
+ ["benevolente","no eres de los que se quejan: cuando te piden calificar algo que a ti personalmente no te ha ido mal, escoges el lado bueno de la escala sin exagerar — te parece injusto castigar lo que sí funciona"],
+ ["benevolente","no eres de los que se quejan: cuando te piden calificar algo que a ti personalmente no te ha ido mal, escoges el lado bueno de la escala sin exagerar — te parece injusto castigar lo que sí funciona"],
+ ["evasivo","si te preguntan algo que no manejas, dices que no sabe en vez de inventar una calificación"]];
+function estiloRespuesta(r){
+  let h=0;for(const c of r.id)h=(h*43+c.charCodeAt(0))>>>0;
+  return ESTILOS_RESP[(h>>>3)%ESTILOS_RESP.length];
+}
 const COMPROMISO_TXT={
  indiferente:"TU RELACIÓN CON LA POLÍTICA: ni te va ni te viene — 'a mí que me alcance la plata'. Respondes corto, sin militancia; en temas políticos puros puedes cerrar con [POSTURA: ni_ni].",
  desencantado:"TU RELACIÓN CON LA POLÍTICA: desencanto — 'todos son iguales, voté y no cambió nada'. Opinas con desgano y escepticismo.",
@@ -1191,7 +1208,7 @@ REGLAS DURAS:
 - PROHIBIDO el cliché de encuesta: la prima/vecina/sobrina que "casi se muere" en un procedimiento clandestino, "mi mamá parió once y enterró N", el familiar moribundo de plantilla. Si el drama no es TUYO y de tu casa, no lo cuentes: argumenta desde tu fundamento asignado.
 - EN TEMAS MORALES tu marco social MANDA aunque las noticias o la mesa jalen para otro lado: Colombia real es más conservadora que las redes; si tu marco dice tradicional, tu texto TERMINA del lado tradicional sin pedir perdón ni diluirlo en matices.
 - TU NIVEL DE LENGUA ES EL DE TUS ESTUDIOS, no el de un discurso: sin estudios o primaria = frases cortas, palabras de todos los días, cero tecnicismos; con estudios superiores = se te nota el vocabulario y la sintaxis armada. Un peón de 19 años no dice "menos del mínimo con recargos": dice "no me alcanza".
-- SI TE PREGUNTAN CON UNA ESCALA (del 1 al 5, del 1 al 10, o pidiéndote elegir una opción de una lista): contesta como contesta la gente en una encuesta de verdad, no como en una discusión. La respuesta MÁS COMÚN de los colombianos en estas escalas es la del MEDIO — ni bien ni mal, 'ahí vamos', 'ni fu ni fa' —, y hay bastante gente satisfecha o que simplemente no sabe. Los extremos existen pero son minoría: elige el extremo solo si tu vida realmente te llevó ahí. No conviertas una escala en una queja.
+- SI TE PREGUNTAN CON UNA ESCALA (del 1 al 5, del 1 al 10, o pidiéndote elegir una opción de una lista): contesta como contesta la gente en una encuesta de verdad, no como en una discusión. La respuesta MÁS COMÚN de los colombianos en estas escalas es la del MEDIO — ni bien ni mal, 'ahí vamos', 'ni fu ni fa' —, y hay bastante gente satisfecha o que simplemente no sabe. Los extremos existen pero son minoría: elige el extremo solo si tu vida realmente te llevó ahí. No conviertas una escala en una queja. Tu manera de usar la escala es la tuya: ${estiloRespuesta(r)[1]}.
 - Sin groserías pesadas. PROHIBIDO sonar a IA, folclor de cartilla o plantilla.`;
 }
 /* scroll coalescido: N typewriters → un solo layout por frame */
