@@ -354,6 +354,20 @@ button,.pxbtn{min-height:44px;touch-action:manipulation}
 #sugg{gap:8px;padding:2px 12px 14px}
 #sugg button{min-height:44px;padding:9px 13px;font-size:13.5px;display:inline-flex;align-items:center}
 }
+  /* ── La Tierra · briefing curado ───────────────────── */
+  #dossier{line-height:1.55;text-align:left}
+  #dossier>b:first-child{display:block;margin:0 0 2px;font-size:13px;letter-spacing:.01em}
+  .mh{display:block;font-family:Silkscreen,monospace;font-size:8px;color:var(--faint);
+      letter-spacing:.12em;margin:14px 0 6px;text-transform:uppercase;line-height:1.2}
+  #dossier .dsec{margin:0 0 8px}
+  #dossier .clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  #dossier .tag{margin:0 4px 4px 0}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:2px 0 4px}
+.stat{border:2px solid var(--grid);background:var(--panel2);padding:8px 10px;box-shadow:2px 2px 0 #0008}
+.stat b{font-family:"Silkscreen";font-size:13px;color:var(--work);display:block;font-weight:400}
+.stat span{font-size:11px;color:var(--dim);line-height:1.3;display:block;margin-top:2px}
+.stat .tren{font-style:normal;color:var(--ok);font-size:10px}
+@media(max-width:1000px){.stats{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -815,6 +829,7 @@ async function boot(){
   const trasPaint=cb=>typeof requestAnimationFrame==="function"
     ? requestAnimationFrame(()=>requestAnimationFrame(cb)):setTimeout(cb,0);
   trasPaint(()=>jfetch("dossiers.json").catch(()=>({})).then(d=>{DOS=d||{};render();}));
+  trasPaint(()=>jfetch("hechos_dpto.json").catch(()=>({})).then(h=>{window.HECHOS=h||{};render();}));
   const sel=$("#dptosel");
   sel.innerHTML=`<option value="CO">★ Toda Colombia (panel nacional)</option>`+
     Object.entries(MARG).sort((a,b)=>a[1].nombre.localeCompare(b[1].nombre))
@@ -876,7 +891,7 @@ function piramide(mine){
     const w=Number(r.peso)>0?Number(r.peso):1;
     c.set(k,(c.get(k)||0)+w);
     tot+=w;
-    if(r.regimen_salud==="contributivo")con++;
+    if(r.regimen_salud==="contributivo")con+=(r.peso||1);
   }
   return {c,tot,con,n:mine.length};
 }
@@ -931,7 +946,7 @@ function render(){
   }
   const sal=d.salud_pct;
   if(sal){
-    const got=PIRCACHE.con/(mine.length||1)*100;
+    const got=PIRCACHE.con/(PIRCACHE.tot||1)*100;
     h+=`<h3>RÉGIMEN DE SALUD</h3>
     <div class="hbar"><div class="t"><span>contributivo real</span><b>${sal.contributivo}%</b></div>
       <div class="g"><i style="width:${sal.contributivo}%"></i></div></div>
@@ -953,17 +968,35 @@ function render(){
   if(nac){
     $("#dossier").innerHTML=`<b>Colombia entera en la mesa.</b><br><br>
       ${(d.poblacion/1e6).toFixed(1)} millones de personas proyectadas por el DANE
-      para 2026, 33 territorios, 6.600 residentes sintéticos. En el panel nacional
+      para 2026, 33 territorios, ${RES.length.toLocaleString('es-CO')} residentes sintéticos. En el panel nacional
       cada departamento entra a la muestra según su población REAL: pesa más un
       bogotano que un vaupense, como en el país de verdad.<br><br>
       <span class="tag" style="border-color:var(--ok)">muestreo proporcional DANE</span>
       <span class="tag" style="border-color:var(--ok)">33 voces regionales</span>`;
   } else
-  $("#dossier").innerHTML= dos.vida_cotidiana?
-    `<b>${esc(dos.apodo_gentilicio||d.nombre)}</b> · ${esc(dos.como_hablan||"")}<br><br>
-     ${esc(dos.vida_cotidiana)}<br><br><i style="color:var(--faint)">${esc(dos.economia_vivida||"")}</i><br><br>
-     ${(dos.orgullos||[]).map(o=>`<span class="tag" style="border-color:var(--ok)">${esc(o)}</span>`).join("")}
-     ${(dos.dolores||[]).map(o=>`<span class="tag" style="border-color:var(--fail)">${esc(o)}</span>`).join("")}`
+  /* La Tierra · briefing del territorio (no muro de texto) */
+  $("#dossier").innerHTML= dos.vida_cotidiana?(function(){
+    const L=v=>{if(Array.isArray(v))return v;if(!v)return[];try{const a=JSON.parse(String(v));return Array.isArray(a)?a:[]}catch(e){return[String(v)]}};
+    let x=`<b>${esc(dos.apodo_gentilicio||d.nombre)}</b>`;
+    const H=(typeof HECHOS!=="undefined"&&HECHOS[cur])||null;
+    if(H){
+      const fmt=n=>Number(n).toLocaleString("es-CO");
+      let chips="";
+      if(H.pobreza)chips+=`<div class="stat"><b>${H.pobreza.v.toFixed(1).replace(".",",")}%</b><span>pobreza monetaria 2025${H.pobreza.antes?` <i class="tren">▾ desde ${String(H.pobreza.antes).replace(".",",")}% en 2021</i>`:""}</span></div>`;
+      if(H.ingreso_mediano)chips+=`<div class="stat"><b>$${fmt(H.ingreso_mediano.v)}</b><span>ingreso laboral mediano/mes</span></div>`;
+      if(H.gini)chips+=`<div class="stat"><b>${String(H.gini.v).replace(".",",")}</b><span>desigualdad (Gini 2025)</span></div>`;
+      if(H.urbano)chips+=`<div class="stat"><b>${String(H.urbano.v).replace(".",",")}%</b><span>vive en cabecera urbana</span></div>`;
+      if(chips)x+=`<span class="mh">ASÍ SE VIVE HOY · CIFRAS OFICIALES</span><div class="stats">${chips}</div>`;
+    }
+    if(dos.como_hablan) x+=`<span class="mh">CÓMO SE HABLA</span><div class="clamp">${esc(dos.como_hablan)}</div>`;
+    if(dos.vida_cotidiana) x+=`<span class="mh">EL DÍA A DÍA</span><div class="dsec">${esc(dos.vida_cotidiana)}</div>`;
+    if(dos.economia_vivida) x+=`<span class="mh">DE QUÉ VIVE LA GENTE</span><div class="dsec">${esc(dos.economia_vivida)}</div>`;
+    const og=L(dos.orgullos), pes=L(dos.dolores);
+    if(og.length) x+=`<span class="mh">LO BUENO</span><div class="dsec">${og.map(o=>`<span class="tag" style="border-color:var(--ok)">${esc(o)}</span>`).join("")}</div>`;
+    if(pes.length) x+=`<span class="mh">LO QUE PESA</span><div class="dsec">${pes.map(o=>`<span class="tag" style="border-color:var(--fail)">${esc(o)}</span>`).join("")}</div>`;
+    x+=`<div class="fuente">cifras: DANE pobreza dptal 2025 + microdatos GEIH · narrativa: enjambre, gate Jev</div>`;
+    return x;
+  })()
     :`<i style="color:var(--faint)">dossier en camino — lo está escribiendo el enjambre</i>`;
   const mu=$("#muestra");mu.innerHTML="";
   mine.slice(0,10).forEach(r=>{

@@ -4,17 +4,18 @@
   "05": {
    "nombre": "Antioquia",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.8,
-    "Industrias manufactureras": 13.4,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 11.2,
-    "Impuestos": 9.4,
-    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 8.7,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 7.7
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 20.8,
+    "Industrias manufactureras": 14.8,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 12.4,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 9.6,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 8.5,
+    "Actividades inmobiliarias": 8.1,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 6.4
    },
    "educacion_pct": {
     "ninguna": 4.0,
@@ -94,17 +95,18 @@
   "08": {
    "nombre": "Atlántico",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 21.9,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 15.2,
-    "Industrias manufactureras": 15.1,
-    "Impuestos": 10.3,
-    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 9.6,
-    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 6.8
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 24.4,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 16.9,
+    "Industrias manufactureras": 16.8,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 10.7,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 7.6,
+    "Actividades inmobiliarias": 6.6,
+    "Actividades artísticas, de entretenimiento y recreación y otras actividades de servicios; actividades de los hogares individuales en calidad de empleadores; actividades no diferenciadas de los hogares individuales como productores de bienes y servicios para uso propio": 4.6
    },
    "educacion_pct": {
     "ninguna": 3.2,
@@ -184,17 +186,18 @@
   "11": {
    "nombre": "Bogotá D.C.",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 22.7,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 14.6,
-    "Impuestos": 12.1,
-    "Actividades inmobiliarias": 11.1,
-    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 8.6,
-    "Actividades financieras y de seguros": 7.9
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 25.8,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 16.6,
+    "Actividades inmobiliarias": 12.6,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 9.8,
+    "Actividades financieras y de seguros": 9.0,
+    "Industrias manufactureras": 8.4,
+    "Actividades artísticas, de entretenimiento y recreación y otras actividades de servicios; actividades de los hogares individuales en calidad de empleadores; actividades no diferenciadas de los hogares individuales como productores de bienes y servicios para uso propio": 6.6
    },
    "educacion_pct": {
     "ninguna": 1.6,
@@ -274,17 +277,18 @@
   "13": {
    "nombre": "Bolívar",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Industrias manufactureras": 18.1,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 17.3,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 16.6,
-    "Impuestos": 11.3,
-    "Construcción": 7.1,
-    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 6.6
+    "Industrias manufactureras": 20.5,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 19.5,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 18.7,
+    "Construcción": 8.0,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 7.4,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 6.6,
+    "Actividades inmobiliarias": 5.8
    },
    "educacion_pct": {
     "ninguna": 6.2,
@@ -364,17 +368,18 @@
   "15": {
    "nombre": "Boyacá",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.1,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 14.5,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 12.8,
-    "Industrias manufactureras": 10.3,
-    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 8.5,
-    "Impuestos": 7.7
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 19.6,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 15.7,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 13.8,
+    "Industrias manufactureras": 11.2,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 9.2,
+    "Explotación de minas y canteras": 8.2,
+    "Construcción": 7.4
    },
    "educacion_pct": {
     "ninguna": 4.7,
@@ -454,17 +459,18 @@
   "17": {
    "nombre": "Caldas",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.3,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 14.9,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 14.5,
-    "Industrias manufactureras": 10.5,
-    "Impuestos": 8.1,
-    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 6.9
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 20.0,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 16.2,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 15.8,
+    "Industrias manufactureras": 11.4,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 7.5,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 7.3,
+    "Actividades inmobiliarias": 5.6
    },
    "educacion_pct": {
     "ninguna": 4.1,
@@ -544,17 +550,18 @@
   "18": {
    "nombre": "Caquetá",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 31.2,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 19.1,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.6,
-    "Actividades inmobiliarias": 6.0,
-    "Impuestos": 6.0,
-    "Construcción": 5.2
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 33.2,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 20.4,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 19.8,
+    "Actividades inmobiliarias": 6.4,
+    "Construcción": 5.6,
+    "Industrias manufactureras": 3.1,
+    "Actividades artísticas, de entretenimiento y recreación y otras actividades de servicios; actividades de los hogares individuales en calidad de empleadores; actividades no diferenciadas de los hogares individuales como productores de bienes y servicios para uso propio": 3.1
    },
    "educacion_pct": {
     "ninguna": 5.4,
@@ -634,17 +641,18 @@
   "19": {
    "nombre": "Cauca",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 19.8,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 17.1,
-    "Industrias manufactureras": 15.1,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 12.5,
-    "Impuestos": 9.8,
-    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 6.7
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 22.0,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 18.9,
+    "Industrias manufactureras": 16.7,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 13.8,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 7.4,
+    "Construcción": 7.0,
+    "Actividades inmobiliarias": 4.2
    },
    "educacion_pct": {
     "ninguna": 4.9,
@@ -724,17 +732,18 @@
   "20": {
    "nombre": "Cesar",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Explotación de minas y canteras": 41.8,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 14.3,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 10.8,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 10.2,
-    "Construcción": 3.8,
-    "Actividades inmobiliarias": 3.6
+    "Explotación de minas y canteras": 43.3,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 14.8,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 11.2,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 10.5,
+    "Construcción": 3.9,
+    "Actividades inmobiliarias": 3.7,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 3.3
    },
    "educacion_pct": {
     "ninguna": 7.3,
@@ -814,17 +823,18 @@
   "23": {
    "nombre": "Córdoba",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 24.9,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 14.9,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 13.9,
-    "Industrias manufactureras": 10.6,
-    "Impuestos": 6.6,
-    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 6.2
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 26.7,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 15.9,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 14.9,
+    "Industrias manufactureras": 11.4,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 6.6,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 5.7,
+    "Construcción": 4.6
    },
    "educacion_pct": {
     "ninguna": 9.0,
@@ -904,17 +914,18 @@
   "25": {
    "nombre": "Cundinamarca",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Industrias manufactureras": 19.0,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 16.5,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 16.3,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 10.8,
-    "Impuestos": 10.8,
-    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 7.9
+    "Industrias manufactureras": 21.3,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 18.5,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.3,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 12.1,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 8.9,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 5.9,
+    "Construcción": 4.7
    },
    "educacion_pct": {
     "ninguna": 2.9,
@@ -994,17 +1005,18 @@
   "27": {
    "nombre": "Chocó",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 32.2,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 23.2,
-    "Explotación de minas y canteras": 17.8,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 12.7,
-    "Impuestos": 3.5,
-    "Construcción": 3.3
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 33.4,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 24.1,
+    "Explotación de minas y canteras": 18.4,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 13.1,
+    "Construcción": 3.4,
+    "Actividades financieras y de seguros": 1.6,
+    "Actividades inmobiliarias": 1.6
    },
    "educacion_pct": {
     "ninguna": 8.7,
@@ -1084,17 +1096,18 @@
   "41": {
    "nombre": "Huila",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Agricultura, ganadería, caza, silvicultura y pesca": 22.7,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 17.7,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 17.6,
-    "Construcción": 6.1,
-    "Impuestos": 6.1,
-    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 5.6
+    "Agricultura, ganadería, caza, silvicultura y pesca": 24.2,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.9,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 18.8,
+    "Construcción": 6.5,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 5.9,
+    "Explotación de minas y canteras": 5.7,
+    "Actividades inmobiliarias": 4.4
    },
    "educacion_pct": {
     "ninguna": 4.3,
@@ -1174,17 +1187,18 @@
   "44": {
    "nombre": "La Guajira",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Explotación de minas y canteras": 45.7,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 17.6,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 11.7,
-    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 5.8,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 4.6,
-    "Construcción": 4.2
+    "Explotación de minas y canteras": 47.3,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 18.2,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 12.1,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 6.0,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 4.7,
+    "Construcción": 4.4,
+    "Actividades inmobiliarias": 3.0
    },
    "educacion_pct": {
     "ninguna": 13.9,
@@ -1264,17 +1278,18 @@
   "47": {
    "nombre": "Magdalena",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 26.4,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 21.4,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 20.3,
-    "Impuestos": 5.4,
-    "Construcción": 5.2,
-    "Actividades inmobiliarias": 4.8
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 27.9,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 22.6,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 21.4,
+    "Construcción": 5.5,
+    "Actividades inmobiliarias": 5.1,
+    "Industrias manufactureras": 3.8,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 3.2
    },
    "educacion_pct": {
     "ninguna": 7.2,
@@ -1354,17 +1369,18 @@
   "50": {
    "nombre": "Meta",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Explotación de minas y canteras": 46.1,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 15.8,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 11.5,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 8.2,
-    "Impuestos": 4.0,
-    "Industrias manufactureras": 2.6
+    "Explotación de minas y canteras": 48.1,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 16.5,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 12.0,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 8.6,
+    "Construcción": 2.8,
+    "Industrias manufactureras": 2.7,
+    "Actividades inmobiliarias": 2.6
    },
    "educacion_pct": {
     "ninguna": 4.0,
@@ -1444,17 +1460,18 @@
   "52": {
    "nombre": "Nariño",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 27.0,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 21.4,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 19.0,
-    "Actividades inmobiliarias": 6.6,
-    "Impuestos": 5.9,
-    "Construcción": 4.8
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 28.6,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 22.8,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 20.2,
+    "Actividades inmobiliarias": 7.0,
+    "Construcción": 5.2,
+    "Actividades artísticas, de entretenimiento y recreación y otras actividades de servicios; actividades de los hogares individuales en calidad de empleadores; actividades no diferenciadas de los hogares individuales como productores de bienes y servicios para uso propio": 3.8,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 3.2
    },
    "educacion_pct": {
     "ninguna": 5.8,
@@ -1534,17 +1551,18 @@
   "54": {
    "nombre": "Norte de Santander",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 23.3,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 19.6,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 12.5,
-    "Actividades inmobiliarias": 7.0,
-    "Construcción": 6.2,
-    "Impuestos": 5.8
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 24.8,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 20.8,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 13.3,
+    "Actividades inmobiliarias": 7.5,
+    "Construcción": 6.6,
+    "Actividades artísticas, de entretenimiento y recreación y otras actividades de servicios; actividades de los hogares individuales en calidad de empleadores; actividades no diferenciadas de los hogares individuales como productores de bienes y servicios para uso propio": 6.1,
+    "Industrias manufactureras": 5.3
    },
    "educacion_pct": {
     "ninguna": 5.7,
@@ -1624,17 +1642,18 @@
   "63": {
    "nombre": "Quindío",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 22.3,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 21.7,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 16.9,
-    "Actividades inmobiliarias": 8.4,
-    "Impuestos": 6.0,
-    "Construcción": 5.2
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 23.7,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 23.1,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 18.0,
+    "Actividades inmobiliarias": 8.9,
+    "Construcción": 5.5,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 5.0,
+    "Industrias manufactureras": 4.6
    },
    "educacion_pct": {
     "ninguna": 4.0,
@@ -1714,17 +1733,18 @@
   "66": {
    "nombre": "Risaralda",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 22.2,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 15.7,
-    "Industrias manufactureras": 12.4,
-    "Impuestos": 9.3,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 9.1,
-    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 7.5
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 24.5,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 17.3,
+    "Industrias manufactureras": 13.7,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 10.1,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 8.2,
+    "Construcción": 6.3,
+    "Actividades inmobiliarias": 5.8
    },
    "educacion_pct": {
     "ninguna": 3.9,
@@ -1804,17 +1824,18 @@
   "68": {
    "nombre": "Santander",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Industrias manufactureras": 19.7,
-    "Impuestos": 16.6,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 14.6,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 12.4,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 9.7,
-    "Actividades inmobiliarias": 6.6
+    "Industrias manufactureras": 23.6,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 17.5,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 14.9,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 11.6,
+    "Actividades inmobiliarias": 7.9,
+    "Construcción": 4.9,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 4.9
    },
    "educacion_pct": {
     "ninguna": 3.8,
@@ -1894,17 +1915,18 @@
   "70": {
    "nombre": "Sucre",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 31.9,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.7,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 11.3,
-    "Construcción": 7.1,
-    "Industrias manufactureras": 6.5,
-    "Impuestos": 6.1
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 34.0,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 19.9,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 12.1,
+    "Construcción": 7.6,
+    "Industrias manufactureras": 7.0,
+    "Actividades inmobiliarias": 5.1,
+    "Actividades artísticas, de entretenimiento y recreación y otras actividades de servicios; actividades de los hogares individuales en calidad de empleadores; actividades no diferenciadas de los hogares individuales como productores de bienes y servicios para uso propio": 4.3
    },
    "educacion_pct": {
     "ninguna": 9.5,
@@ -1984,17 +2006,18 @@
   "73": {
    "nombre": "Tolima",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Agricultura, ganadería, caza, silvicultura y pesca": 21.4,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.1,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 16.6,
-    "Industrias manufactureras": 8.7,
-    "Impuestos": 7.5,
-    "Construcción": 5.0
+    "Agricultura, ganadería, caza, silvicultura y pesca": 23.1,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 19.6,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 18.0,
+    "Industrias manufactureras": 9.4,
+    "Construcción": 5.4,
+    "Actividades inmobiliarias": 5.0,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 4.9
    },
    "educacion_pct": {
     "ninguna": 5.1,
@@ -2074,18 +2097,19 @@
   "76": {
    "nombre": "Valle del Cauca",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "salud": "MinSalud cobertura 2023 (datos.gov.co 23gb-dhmd)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.7,
-    "Industrias manufactureras": 15.0,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 12.4,
-    "Impuestos": 10.5,
-    "Actividades inmobiliarias": 10.1,
-    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 8.8
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 20.9,
+    "Industrias manufactureras": 16.8,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 13.9,
+    "Actividades inmobiliarias": 11.3,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 9.9,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 9.7,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 4.7
    },
    "salud_pct": {
     "contributivo": 53.7,
@@ -2169,17 +2193,18 @@
   "81": {
    "nombre": "Arauca",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Explotación de minas y canteras": 37.5,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 24.8,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 14.4,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 9.9,
+    "Explotación de minas y canteras": 38.4,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 25.4,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 14.7,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 10.2,
     "Construcción": 2.8,
-    "Actividades inmobiliarias": 2.7
+    "Actividades inmobiliarias": 2.8,
+    "Industrias manufactureras": 1.9
    },
    "educacion_pct": {
     "ninguna": 6.0,
@@ -2259,17 +2284,18 @@
   "85": {
    "nombre": "Casanare",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Explotación de minas y canteras": 41.0,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 17.7,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 15.5,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 8.1,
-    "Impuestos": 3.9,
-    "Industrias manufactureras": 3.2
+    "Explotación de minas y canteras": 42.6,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.4,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 16.2,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 8.5,
+    "Industrias manufactureras": 3.4,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 2.8,
+    "Actividades inmobiliarias": 2.6
    },
    "educacion_pct": {
     "ninguna": 4.2,
@@ -2349,17 +2375,18 @@
   "86": {
    "nombre": "Putumayo",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Explotación de minas y canteras": 29.3,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 26.2,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 16.6,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 7.7,
-    "Construcción": 5.2,
-    "Actividades inmobiliarias": 3.8
+    "Explotación de minas y canteras": 30.5,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 27.3,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 17.2,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 8.0,
+    "Construcción": 5.4,
+    "Actividades inmobiliarias": 4.0,
+    "Actividades artísticas, de entretenimiento y recreación y otras actividades de servicios; actividades de los hogares individuales en calidad de empleadores; actividades no diferenciadas de los hogares individuales como productores de bienes y servicios para uso propio": 2.6
    },
    "educacion_pct": {
     "ninguna": 4.2,
@@ -2439,17 +2466,18 @@
   "88": {
    "nombre": "San Andrés y Providencia",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 57.4,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 15.1,
-    "Impuestos": 8.4,
-    "Actividades inmobiliarias": 3.7,
-    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 3.4,
-    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 2.6
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 62.6,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 16.5,
+    "Actividades inmobiliarias": 4.1,
+    "Actividades profesionales, científicas y técnicas; actividades de servicios administrativos y de apoyo": 3.7,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 2.8,
+    "Actividades financieras y de seguros": 2.8,
+    "Construcción": 2.2
    },
    "educacion_pct": {
     "ninguna": 1.1,
@@ -2529,17 +2557,18 @@
   "91": {
    "nombre": "Amazonas",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 30.7,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 26.9,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 22.3,
-    "Impuestos": 4.8,
-    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 3.7,
-    "Actividades inmobiliarias": 2.8
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 32.2,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 28.3,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 23.4,
+    "Suministro de electricidad, gas, vapor y aire acondicionado; distribución de agua; evacuación y tratamiento de aguas residuales, gestión de desechos y actividades de saneamiento ambiental": 3.9,
+    "Actividades inmobiliarias": 2.9,
+    "Construcción": 2.8,
+    "Actividades financieras y de seguros": 2.1
    },
    "educacion_pct": {
     "ninguna": 3.5,
@@ -2619,17 +2648,18 @@
   "94": {
    "nombre": "Guainía",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 43.4,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 16.3,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 10.6,
-    "Construcción": 9.5,
-    "Explotación de minas y canteras": 7.4,
-    "Impuestos": 3.5
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 45.0,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 16.9,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 11.0,
+    "Construcción": 9.9,
+    "Explotación de minas y canteras": 7.7,
+    "Industrias manufactureras": 2.8,
+    "Actividades inmobiliarias": 2.6
    },
    "educacion_pct": {
     "ninguna": 6.3,
@@ -2709,17 +2739,18 @@
   "95": {
    "nombre": "Guaviare",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 36.8,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 25.2,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 17.6,
-    "Construcción": 5.3,
-    "Actividades inmobiliarias": 4.0,
-    "Impuestos": 3.7
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 38.2,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 26.1,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 18.3,
+    "Construcción": 5.5,
+    "Actividades inmobiliarias": 4.1,
+    "Industrias manufactureras": 1.9,
+    "Actividades financieras y de seguros": 1.9
    },
    "educacion_pct": {
     "ninguna": 5.1,
@@ -2799,17 +2830,18 @@
   "97": {
    "nombre": "Vaupés",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 50.9,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 23.4,
-    "Agricultura, ganadería, caza, silvicultura y pesca": 7.7,
-    "Construcción": 7.5,
-    "Actividades inmobiliarias": 3.4,
-    "Impuestos": 3.2
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 52.6,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 24.2,
+    "Agricultura, ganadería, caza, silvicultura y pesca": 7.9,
+    "Construcción": 7.7,
+    "Actividades inmobiliarias": 3.5,
+    "Actividades artísticas, de entretenimiento y recreación y otras actividades de servicios; actividades de los hogares individuales en calidad de empleadores; actividades no diferenciadas de los hogares individuales como productores de bienes y servicios para uso propio": 1.4,
+    "Actividades financieras y de seguros": 1.1
    },
    "educacion_pct": {
     "ninguna": 5.4,
@@ -2889,17 +2921,18 @@
   "99": {
    "nombre": "Vichada",
    "fuentes": {
-    "pib": "DANE PIB dptal 2023 (datos.gov.co kgyi-qc7j)",
+    "pib": "DANE PIB dptal 2023 (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)",
     "educacion": "CNPV 2018 cuadro 17PD (nivel alcanzado, 5+ años)",
     "poblacion": "DANE proyecciones CNPV2018 post-COVID, año 2026, edades simples"
    },
    "pib_sectores_pct": {
-    "Agricultura, ganadería, caza, silvicultura y pesca": 38.7,
-    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 33.5,
-    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 9.6,
-    "Construcción": 7.1,
-    "Actividades inmobiliarias": 3.4,
-    "Impuestos": 2.6
+    "Agricultura, ganadería, caza, silvicultura y pesca": 39.8,
+    "Administración pública y defensa; planes de seguridad social de afiliación obligatoria; educación; actividades de atención de la salud humana y de servicios sociales": 34.4,
+    "Comercio al por mayor y al por menor; reparación de vehículos automotores y motocicletas; transporte y almacenamiento; alojamiento y servicios de comida": 9.8,
+    "Construcción": 7.3,
+    "Actividades inmobiliarias": 3.5,
+    "Actividades financieras y de seguros": 1.4,
+    "Actividades artísticas, de entretenimiento y recreación y otras actividades de servicios; actividades de los hogares individuales en calidad de empleadores; actividades no diferenciadas de los hogares individuales como productores de bienes y servicios para uso propio": 1.2
    },
    "educacion_pct": {
     "ninguna": 10.2,

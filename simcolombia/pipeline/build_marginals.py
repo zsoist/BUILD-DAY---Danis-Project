@@ -53,16 +53,21 @@ acc = defaultdict(lambda: defaultdict(float))
 for r in pib:
     if r.get("a_o") != last or "corrientes" not in (r.get("tipo_de_precios") or ""):
         continue
+    act = r.get("actividad","?")
+    # 'Impuestos' (impuestos menos subvenciones) NO es actividad: se excluye para
+    # que las participaciones se calculen sobre VALOR AGREGADO.
+    if "impuestos" in act.lower():
+        continue
     d = dep(r.get("c_digo_departamento_divipola") or r.get("departamento"))
     if d:
-        try: acc[d][r.get("actividad","?")] += float(r.get("valor_miles_de_millones_de") or 0)
+        try: acc[d][act] += float(r.get("valor_miles_de_millones_de") or 0)
         except ValueError: pass
 for d, sect in acc.items():
     tot = sum(sect.values()) or 1
     top = dict(sorted(((k, round(v/tot*100,1)) for k,v in sect.items()),
-                      key=lambda x:-x[1])[:6])
+                      key=lambda x:-x[1])[:7])
     M[d]["pib_sectores_pct"] = top
-    M[d]["fuentes"]["pib"] = f"DANE PIB dptal {last} (datos.gov.co kgyi-qc7j)"
+    M[d]["fuentes"]["pib"] = f"DANE PIB dptal {last} (participación % en valor agregado, precios corrientes · datos.gov.co kgyi-qc7j)"
 
 # ── Salud (23gb-dhmd, municipal → dpto por DIVIPOLA) ──
 sal = json.loads((RAW / "salud_municipios.json").read_text())
