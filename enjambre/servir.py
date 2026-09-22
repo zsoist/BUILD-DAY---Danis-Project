@@ -11,6 +11,7 @@ import argparse
 import http.server
 import json
 import socketserver
+import sys
 import threading
 import webbrowser
 from pathlib import Path
@@ -68,6 +69,20 @@ def resumen(d):
 class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         # índice de corridas, para que el tablero pueda ofrecerlas en un menú
+        if self.path == "/salud.json":
+            # el visor pregunta al arrancar: ¿está todo conectado?
+            try:
+                import salud as _s
+                datos = _s.estado()
+            except Exception as e:
+                datos = {"error": f"no pude chequear: {e}"}
+            cuerpo = json.dumps(datos, ensure_ascii=False, default=str).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(cuerpo)))
+            self.end_headers()
+            self.wfile.write(cuerpo)
+            return
         if self.path == "/corridas.json":
             datos = [{**resumen(d), "ruta": f"/runs/{d.name}/swarm.jsonl"}
                      for d in corridas()]
