@@ -818,7 +818,7 @@ async function boot(){
   try{
     // ORDEN: residents.json (el pesado, 1.3MB) primero y solo — es el que bloquea el
     // render; marginals/validacion (livianos) van después, en paralelo entre sí
-    try{RES=await jfetch("residents_v2.json");}
+    try{RES=await jfetch("residents_v2.json?v=23");}
     catch(e){RES=await jfetch("residents.json");}
     [MARG,VAL]=await Promise.all([
       jfetch("marginals.json").then(m=>m.departamentos),
@@ -1136,7 +1136,7 @@ function marcoDe(r){
   p=Math.max(5,Math.min(92,p));
   const roll=(h>>>5)%100;
   const nivel=roll<p*0.45?"muy conservador":roll<p?"conservador":roll<p+18?"moderado":"liberal";
-  return {cons:nivel,fund:FUNDAMENTOS[(h>>>3)%FUNDAMENTOS.length],anecdota:(h>>>9)%4===0};
+  return {cons:nivel,fund:FUNDAMENTOS[(h>>>3)%FUNDAMENTOS.length],anecdota:(h>>>9)%4===0,despiste:(h>>>13)%5===0};
 }
 const COMPROMISO_TXT={
  indiferente:"TU RELACIÓN CON LA POLÍTICA: ni te va ni te viene — 'a mí que me alcance la plata'. Respondes corto, sin militancia; en temas políticos puros puedes cerrar con [POSTURA: ni_ni].",
@@ -1167,6 +1167,9 @@ REGLAS DURAS:
 - OBEDECE tu inclinación asignada: el texto debe terminar del lado que te tocó, y la etiqueta final debe COINCIDIR con lo que dijiste.
 - No eres un encuestado educado: si te da lo mismo, dilo ("me da igual la democracia si hay comida"). Si no sabes, dilo: inventar postura está prohibido.
 - No eres más demócrata, más confiado en las FFAA ni más optimista que la gente de tu barrio. No suavices por quedar bien.
+- El vocativo regional (sumercé/parce/mijo/ombe/oís/camarita) NO es adorno obligatorio: la mayoría de tus frases van SIN él (en la última mesa salió en 15 de 20 voces, eso es de robot). PROHIBIDO el símil de molde ('eso es como cuando uno…'): si metes una comparación, que salga de tu oficio real. Si un nombre viene mal escrito en la pregunta, tú lo dices bien, como lo pronuncia la gente. Y el arranque es el TUYO: si no te tocó pregunta retórica, NO arranques con '¿Y…?'.
+- PROHIBIDAS las frases de manada (en la última mesa se repitieron en 6+ voces): 'no me quita el sueño', 'puro show', 'pa' la foto', 'prometen y no cumplen', 'pan para hoy y hambre para mañana'. Tu crítica dila con palabras que solo TÚ firmarías: tu oficio, tu plata, tu barrio, tu edad.
+- EN TEMAS DE GOBIERNO Y POLÍTICOS: si el protagonista es de tu orilla política, tu reflejo es defenderlo o matizarle como hincha de su equipo; si es de la orilla contraria, le caes con ganas y con argumentos. El cinismo parejo ('todos son iguales') es EXCLUSIVO de desencantados e indiferentes: si no es tu caso, toma bando.
 - PROHIBIDO el cliché de encuesta: la prima/vecina/sobrina que "casi se muere" en un procedimiento clandestino, "mi mamá parió once y enterró N", el familiar moribundo de plantilla. Si el drama no es TUYO y de tu casa, no lo cuentes: argumenta desde tu fundamento asignado.
 - EN TEMAS MORALES tu marco social MANDA aunque las noticias o la mesa jalen para otro lado: Colombia real es más conservadora que las redes; si tu marco dice tradicional, tu texto TERMINA del lado tradicional sin pedir perdón ni diluirlo en matices.
 - Sin groserías pesadas. PROHIBIDO sonar a IA, folclor de cartilla o plantilla.`;
@@ -1259,11 +1262,16 @@ function opcionesDe(q){
 function etiquetas(){
   return OPC?[OPC.a,OPC.b,"ni uno ni otro"]:["a favor","en contra","depende"];
 }
+function sondeoInstr(r){
+  const M=marcoDe(r);
+  return "\nResponde la encuesta en 1-2 frases. La gente real opina de TODO: aunque la pregunta venga enredada o mal escrita, interprétala como buenamente se entienda (ayúdate del contexto de noticias) y TOMA PARTIDO sobre eso. El largo obedece tu temperamento: el seco despacha en una línea de 5-8 palabras, el parlanchín se extiende; que no midan todas las respuestas lo mismo. "+(M.despiste?"Puedes confesar que la pregunta te llegó enredada, pero igual opinas. ":"PROHIBIDO decir que no entendiste la pregunta, que no sabes de qué te hablan o que eso 'no te quita el sueño': interpreta y opina como haría la gente de verdad. ")+"Cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende|ni_ni]. ni_ni SOLO si tu personaje es de los que la política ni le va ni le viene; depende solo si tu vida te parte genuinamente en dos; si tienes postura, dila clara. a_favor significa SÍ A LA PREGUNTA LITERAL tal como la entendiste (no al debate de las noticias). Tu marco social y tu inclinación asignada fijan tu lado: PROHIBIDO correrte al lado 'simpático' del debate.";
+}
 function tallyHTML(c,extra){
   const [la,lb,ld]=etiquetas();
   const cel=(n,l,cls)=>`<div class="tal ${cls}"><b>${n}</b><span>${esc(l)}</span></div>`;
   const nini=c.ni_ni?`<div class="tal" style="color:var(--faint)"><b>${c.ni_ni}</b><span>ni me va ni me viene</span></div>`:"";
-  return cel(c.a_favor,la,"fav")+cel(c.en_contra,lb,"con")+cel(c.depende,ld,"dep")+nini+(extra||"");
+  const sinp=c.sin_postura?`<div class="tal" style="color:var(--dim)"><b>${c.sin_postura}</b><span>sin postura clara</span></div>`:"";
+  return cel(c.a_favor,la,"fav")+cel(c.en_contra,lb,"con")+cel(c.depende,ld,"dep")+nini+sinp+(extra||"");
 }
 function postura(txt){
   const m=txt.match(/\[POSTURA:?\s*(a_favor|en_contra|depende|ni_ni)/i);
@@ -1621,7 +1629,7 @@ async function conversar(q){
     <b class="pxf" style="font-size:10px;color:var(--work)">${MODO==="tertulia"?"TEMA EN LA MESA":"PREGUNTA"}</b>
     ${esc(q)} — ${n} residentes de ${esc(d.nombre)}</div>`;
   $("#tally").innerHTML="";
-  const p={a_favor:0,en_contra:0,depende:0};
+  const p={a_favor:0,en_contra:0,depende:0,ni_ni:0,sin_postura:0};
   const dosOf=r=>DOS[r.dpto]||{};
 
   /* LA MESA SE ARMA: llegan los vecinos + ticker vivo mientras busca contexto */
@@ -1653,10 +1661,13 @@ async function conversar(q){
     await Promise.all(sample.map(async r=>{
       const card=bubble(r,false),say=card.querySelector(".say");
       try{
-        const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+
-          "\nResponde la encuesta en 1-2 frases. Cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende|ni_ni]. Si tu personaje es indiferente a la política, ni_ni es la respuesta HONESTA, úsala sin pena; depende solo si tu vida te parte genuinamente en dos; si tienes postura, dila clara. a_favor significa SÍ A LA PREGUNTA LITERAL que te hicieron (no al debate de las noticias). Tu marco social y tu inclinación asignada fijan tu lado: PROHIBIDO correrte al lado 'simpático' del debate."},
-          {role:"user",content:q}]);
+        const msgs=[{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+sondeoInstr(r)},
+          {role:"user",content:q}];
+        const raw=await flash(msgs);
         let [pos,txt]=postura(raw);
+        if(!pos){const rr=await flash(msgs.concat([{role:"assistant",content:raw},
+          {role:"user",content:"Te faltó la etiqueta final. Responde SOLO la etiqueta [POSTURA: a_favor|en_contra|depende|ni_ni] que corresponde a lo que acabas de decir."}]),16);
+          pos=postura(rr||"")[0];}
         if(!pos)pos=await clasificarPostura(q,txt);
         if(!['a_favor','en_contra','depende','ni_ni'].includes(pos)){pos='sin_postura';p.sin_postura=(p.sin_postura||0)+1;}else p[pos]++;
         const gl=estiloDe(r).lean;
