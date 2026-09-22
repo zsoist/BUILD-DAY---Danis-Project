@@ -335,16 +335,6 @@ button,.pxbtn{min-height:44px;touch-action:manipulation}
 .tal{flex:0 0 auto;min-width:86px;padding:8px 8px 7px}
 .tal b{font-size:18px}
 .tal span{font-size:10.5px}
-/* 4 · ficha del residente: hoja a pantalla completa con scroll interno */
-#rmask{padding:0;align-items:stretch}
-#rcard{width:100%;max-width:none;height:100%;max-height:100%;display:flex;flex-direction:column;border:0;box-shadow:none;overflow:hidden;animation:none}
-#rcard header{flex:0 0 auto;flex-wrap:wrap;padding:14px 12px;gap:12px}
-#rcard header canvas{width:64px;height:64px;flex:0 0 auto}
-#rcard header .nm{flex:1 1 auto;min-width:0;font-size:12px}
-#rcard .cerrar{width:44px;height:44px;min-width:44px;padding:0;font-size:18px;display:flex;align-items:center;justify-content:center;border-color:var(--work);color:var(--work)}
-#rcard .rkv{grid-template-columns:1fr;gap:4px 0;padding:14px 16px 22px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;font-size:15px}
-#rcard .rkv b{padding-top:10px}
-#rcard footer{flex:0 0 auto;padding:12px 16px calc(14px + env(safe-area-inset-bottom))}
 /* 5 · chips activos: fila con scroll horizontal */
 #selinfo{padding:8px 12px;white-space:nowrap;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
 #selinfo .chip{margin:0 6px 0 0;padding:7px 4px 7px 10px;font-size:13px;vertical-align:middle}
@@ -368,6 +358,18 @@ button,.pxbtn{min-height:44px;touch-action:manipulation}
 .stat span{font-size:11px;color:var(--dim);line-height:1.3;display:block;margin-top:2px}
 .stat .tren{font-style:normal;color:var(--ok);font-size:10px}
 @media(max-width:1000px){.stats{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){
+/* 4 · ficha del residente: hoja a pantalla completa con scroll interno */
+#rmask{padding:0;align-items:stretch}
+#rcard{width:100%;max-width:none;height:100%;max-height:100%;display:flex;flex-direction:column;border:0;box-shadow:none;overflow:hidden;animation:none}
+#rcard header{flex:0 0 auto;flex-wrap:wrap;padding:14px 12px;gap:12px}
+#rcard header canvas{width:64px;height:64px;flex:0 0 auto}
+#rcard header .nm{flex:1 1 auto;min-width:0;font-size:12px}
+#rcard .cerrar{width:44px;height:44px;min-width:44px;padding:0;font-size:18px;display:flex;align-items:center;justify-content:center;border-color:var(--work);color:var(--work)}
+#rcard .rkv{grid-template-columns:1fr;gap:4px 0;padding:14px 16px 22px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;font-size:15px}
+#rcard .rkv b{padding-top:10px}
+#rcard footer{flex:0 0 auto;padding:12px 16px calc(14px + env(safe-area-inset-bottom))}
+}
 </style>
 </head>
 <body>
@@ -1178,7 +1180,7 @@ function verResidente(r){
   const filas=[
     ["edad y sexo",`${r.edad} años, ${r.sexo} (grupo ${r.grupo_edad})`,f.poblacion||"proyecciones DANE 2026"],
     ["territorio",r.dpto_nombre,"DIVIPOLA "+r.dpto],
-    ["ocupación",r.ocupacion,"estructura PIB sectorial del dpto (DANE) + dossier regional"],
+    ["ocupación",r.ocupacion,r.origen==="geih"?"oficio CIUO-08 de la persona GEIH muestreada":"estructura PIB sectorial del dpto (DANE) + dossier regional"],
     ["educación",r.educacion||"—","CNPV 2018 cuadro 17PD (nivel alcanzado)"],
     ["salud",r.regimen_salud,"cobertura MinSalud del dpto (datos.gov.co)"],
     ["temperamento",e.temp.split(":")[0],"motor de personas: asignación determinista"],
