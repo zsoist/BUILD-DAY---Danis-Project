@@ -438,6 +438,12 @@ background:var(--panel);border:var(--px) solid var(--grid);padding:14px;box-shad
 
 <script>
 const $=s=>document.querySelector(s);
+/* La fecha la pone el reloj, no el código: antes estaba congelada en el 21 de
+   septiembre y el juez marcaba como vieja cualquier noticia de después. */
+const hoyCO=()=>new Date().toLocaleDateString("es-CO",{timeZone:"America/Bogota",day:"numeric",month:"long",year:"numeric"});
+const mesCO=()=>new Date().toLocaleDateString("es-CO",{timeZone:"America/Bogota",month:"long",year:"numeric"});
+/* ok de la verificación: true, false, o null si no se pudo revisar */
+const triestado=v=>v===true?true:v===false?false:null;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let cfg={orkey:""};
 try{cfg={...cfg,...JSON.parse(localStorage.getItem("sim-cfg")||"{}")};
@@ -449,13 +455,11 @@ $("#gear").onclick=e=>{e.stopPropagation();const c=$("#cfg");c.style.display=c.s
 document.addEventListener("click",e=>{if(!$("#cfg").contains(e.target)&&e.target.id!=="gear")$("#cfg").style.display="none"});
 $("#c-orkey").onchange=e=>{cfg.orkey=e.target.value.trim();try{localStorage.setItem("sim-cfg",JSON.stringify(cfg))}catch(_){}};
 
-/* ── PACER de /api/opina: los 30 asistentes del evento salen por el MISMO IP ──
-   una tertulia de 8 voces dispara ~12 requests en ráfaga (contexto ×2 + Jev +
-   8 voces + conclusión) y el rate limit de 30/min devuelve 429 a todos: la demo
-   se cae completa. Reglas: UNA sola petición en vuelo por navegador, separación
-   mínima con JITTER (los 30 navegadores no salen sincronizados) y reintento con
-   backoff exponencial + Retry-After cuando el backend ya contestó 429. */
-/* semáforo de 3 en vuelo (5 búsquedas paralelas caben; 30 usuarios no revientan el IP) */
+/* ── Cola hacia /api/opina ──
+   Una tertulia dispara ~12 peticiones en ráfaga y el servidor limita por IP.
+   Máximo 3 en vuelo, separación con jitter, y reintento con backoff SOLO
+   cuando el 429 es de ritmo. Un 429 de presupuesto no se recupera
+   esperando: reintentarlo hacía esperar ~40 s para un fallo seguro. */
 let EN_VUELO=0,T_OPINA=0,GAP=200;const ESPERAN=[];
 const dormir=ms=>new Promise(r=>setTimeout(r,ms));
 async function encolar(fn){
@@ -475,6 +479,8 @@ window.fetch=function(u,o){
       r=await _fetch(u,o);
       T_OPINA=Date.now();
       if(r.status!==429){GAP=Math.max(180,Math.round(GAP*0.85));return r;}
+      let motivo="";try{motivo=(await r.clone().json()).error||"";}catch(e){}
+      if(/presupuesto|cupo/i.test(motivo))return r;
       const ra=Number(r.headers.get("Retry-After"))*1000||0;
       GAP=Math.min(8000,Math.max(GAP*3,ra));   // el IP está saturado: espaciar de más
       await dormir(GAP+Math.random()*GAP);
@@ -578,7 +584,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   try{
     const raw=await flash([{role:"system",content:
       `Cierras mesas de conversación. Resume EN QUÉ QUEDÓ esta mesa de ${d.nombre} en 2 frases máximo, con nombres, y da el veredicto del grupo. PROHIBIDO citar números o repartos en tu resumen: narra los argumentos; el conteo lo muestra la interfaz. Cierra con [POSTURA: a_favor|en_contra|depende] (la mayoritaria).`},
-      {role:"user",content:`Tema: ${q}\nConteo registrado: ${transcript.filter(t=>t.p==='a_favor').length} a favor, ${transcript.filter(t=>t.p==='en_contra').length} en contra, ${transcript.filter(t=>t.p==='depende'||t.p==='ni_ni').length} depende/ni_ni.\n`+transcript.map(t=>`${t.n} (${t.p}): ${t.t}`).join("\n")}],130,0.5);
+      {role:"user",content:`Tema: ${q}\nConteo registrado: ${transcript.filter(t=>t.p==='a_favor').length} a favor, ${transcript.filter(t=>t.p==='en_contra').length} en contra, ${transcript.filter(t=>t.p==='depende'||t.p==='ni_ni').length} depende/ni_ni.\n`+transcript.map(t=>`${t.n} (${t.p}): ${t.t}`).join("\n")}],130,0.5,"cierre");
     if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
     const conPost=transcript.filter(t=>['a_favor','en_contra','depende'].includes(t.p));
     [pos,concl]=[postura(raw)[0]||mayoria(conPost),postura(raw)[1]];
@@ -1454,13 +1460,13 @@ function cargarCtxStatic(){
 function ctxStatic(q){
   const k=String(q||"").trim().slice(0,400);if(!k)return null;
   const v=CTX_ESTATICO[k];if(v==null)return null;
-  return typeof v==="string"?{txt:v||null,ok:true}:{txt:v.txt||null,ok:v.ok!==false};
+  return typeof v==="string"?{txt:v||null,ok:null}:{txt:v.txt||null,ok:triestado(v.ok)};
 }
 function ctxLS(q){
   const k=String(q||"").trim().slice(0,400);if(!k)return null;
   try{
     const v=JSON.parse(localStorage.getItem(CTX_LS)||"{}")[k];
-    if(v&&Date.now()-(v.t||0)<CTX_TTL)return {txt:v.txt||null,ok:v.ok!==false};
+    if(v&&Date.now()-(v.t||0)<CTX_TTL)return {txt:v.txt||null,ok:triestado(v.ok)};
   }catch(e){}
   return null;
 }
@@ -1530,7 +1536,7 @@ async function contexto1(q){
   // real ni con texto desmedido — el cupo se cobra al recibir, no al responder el 400
   if(typeof q!=="string"||!q.trim()||q.length>400){CTX={q:null,txt:null,ok:null};return null;}
   try{
-    const SIS="HOY es 21 de septiembre de 2026. Interpreta el TEMA como lo entendería un colombiano de a pie (ej: 'Millonarios o Santa Fe' es la rivalidad futbolera de siempre, principalmente fútbol masculino, no solo la noticia del día). Busca noticias recientes de Colombia y devuelve SOLO 2-3 viñetas ULTRA CORTAS (máx 16 palabras) con hechos EXPLÍCITOS de fuentes, cada una cerrando con el medio entre paréntesis, ej (El Tiempo) — JAMÁS URLs. Si un dato no cuadra con la fecha, exclúyelo. Empieza directo con '- '. PROHIBIDO opinar o presentarte. Sin nada: SIN_NOVEDADES.";
+    const SIS="HOY es "+hoyCO()+". Interpreta el TEMA como lo entendería un colombiano de a pie (ej: 'Millonarios o Santa Fe' es la rivalidad futbolera de siempre, principalmente fútbol masculino, no solo la noticia del día). Busca noticias recientes de Colombia y devuelve SOLO 2-3 viñetas ULTRA CORTAS (máx 16 palabras) con hechos EXPLÍCITOS de fuentes, cada una cerrando con el medio entre paréntesis, ej (El Tiempo) — JAMÁS URLs. Si un dato no cuadra con la fecha, exclúyelo. Empieza directo con '- '. PROHIBIDO opinar o presentarte. Sin nada: SIN_NOVEDADES.";
     const pide=u=>fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({online:true,max_tokens:260,messages:[
           {role:"system",content:SIS},{role:"user",content:u}]})})
@@ -1538,7 +1544,7 @@ async function contexto1(q){
     // CINCO búsquedas en paralelo, cada una con su lente
     const terr=SEL.size&&SEL.size<=4?[...SEL].map(c=>MARG[c]?.nombre).filter(Boolean).join(", "):null;
     const brotes=await Promise.all([
-      pide("TEMA: "+q+" — la noticia del momento (Colombia, septiembre 2026)"),
+      pide("TEMA: "+q+" — la noticia del momento (Colombia, "+mesCO()+")"),
       pide("TEMA: cifras y datos duros sobre: "+q+" (Colombia: precios, porcentajes, fechas)"),
       pide("TEMA: qué dice la gente de a pie y las redes sobre: "+q+" (Colombia: quejas, memes, sentir popular)"),
       pide("TEMA: el fondo: qué ha pasado antes en Colombia con: "+q+" (historia corta, antecedentes)"),
@@ -1560,7 +1566,7 @@ async function contexto1(q){
       try{
         const v=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
           body:JSON.stringify({decide:true,
-            state:"HOY: 21 septiembre 2026. Resumen noticioso a verificar:\n"+CTX.txt,
+            state:"HOY: "+hoyCO()+". Resumen noticioso a verificar:\n"+CTX.txt,
             questions:{fiable:{type:"noul",instructions:
               "Las viñetas son internamente consistentes, coherentes con la fecha de hoy (sin cargos o mandatos vencidos presentados como vigentes, sin fechas imposibles) y suenan a hechos citados, no a invención"}}})});
         if(v.ok){const j=await v.json();
@@ -1579,15 +1585,19 @@ function limpiaCtx(s){
 }
 function ctxBox(txt,host){
   if(txt)txt=limpiaCtx(txt);
-  const dudas=CTX.ok===false;
+  const dudas=CTX.ok===false, sinRevisar=CTX.ok!==true&&!dudas;
   (host||$("#resps")).insertAdjacentHTML("beforeend",
-    txt?`<div class="ctx${dudas?" off":""}" style="${dudas?"border-color:var(--fail)":""}"><b style="${dudas?"color:var(--fail)":""}">${dudas?"⚠ CONTEXTO SIN VERIFICAR — con pinzas":"📰 LO QUE ESTÁ PASANDO (búsqueda verificada)"}</b><span class="cbody">${esc(txt)}</span></div>`
+    txt?`<div class="ctx${dudas?" off":""}" style="${dudas?"border-color:var(--fail)":""}"><b style="${dudas?"color:var(--fail)":""}">${dudas?"⚠ CONTEXTO SIN VERIFICAR — con pinzas":(sinRevisar?"📰 LO QUE ESTÁ PASANDO (sin verificar)":"📰 LO QUE ESTÁ PASANDO (búsqueda verificada)")}</b><span class="cbody">${esc(txt)}</span></div>`
        :`<div class="ctx off"><b>📰 SIN NOTICIAS FRESCAS</b><span class="cbody">opinan desde su experiencia, no desde la prensa</span></div>`);
 }
-const ctxPara=txt=>(txt&&CTX.ok!==false)?`\nNOTICIAS RECIENTES (por si tu personaje anda enterado — NO estás obligado a citarlas: la mayoría opina desde su vida. Si el tema es de siempre —fútbol, comida, política de fondo— habla de lo de SIEMPRE, no solo de la noticia del día):\n${txt}\n`:"";
+/* solo lo que el juez verificó entra a los prompts: sin revisar no es lo mismo que bien */
+const ctxPara=txt=>(txt&&CTX.ok===true)?`\nNOTICIAS RECIENTES (por si tu personaje anda enterado — NO estás obligado a citarlas: la mayoría opina desde su vida. Si el tema es de siempre —fútbol, comida, política de fondo— habla de lo de SIEMPRE, no solo de la noticia del día):\n${txt}\n`:"";
 
 let API_OK=null;  // ¿existe /api/opina? (en Vercel sí; en local http.server no)
-async function flash(messages,max=170,temp=0.95){
+/* rol: "voz" (una persona opina) o "cierre" (resumir una mesa o tertulia).
+   El servidor pone su propio marco según el rol; sin esto el resumidor recibía
+   la orden de hablar como una persona colombiana. */
+async function flash(messages,max=170,temp=0.95,rol="voz"){
   // validar ANTES de cualquier fetch facturable: el cupo del backend se carga al
   // RECIBIR la petición, así que un `messages` vacío/malformado (o desmedido, p.ej.
   // 41 turnos) quema reserva y luego responde 400 sin coste real
@@ -1598,13 +1608,15 @@ async function flash(messages,max=170,temp=0.95){
     try{
       const r=await fetch("/api/opina",{method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({messages,max_tokens:max,temperature:temp})});
+        body:JSON.stringify({messages,max_tokens:max,temperature:temp,rol})});
       if(r.ok){API_OK=true;return (await r.json()).content||"";}
       // el backend EXISTE y contestó con error (400/5xx/timeout): su reserva de cupo ya
       // se cargó, así que NO se reintenta contra OpenRouter (pagaríamos dos veces el intento)
       if(r.status===404||r.status===405||r.status===501){API_OK=false;}  // 501: http.server local sin POST
       else{API_OK=true;throw new Error("api "+r.status);}
-    }catch(e){if(API_OK)throw e;API_OK=false;}
+    /* un fallo de red es temporal, no prueba que falte el servidor: marcarlo
+       como ausente dejaba toda la sesión pidiendo "pega tu key" */
+    }catch(e){throw e;}
   }
   // respaldo local: key del navegador (ajustes o local_keys)
   if(!cfg.orkey)throw new Error("sin backend ni key");
@@ -1799,7 +1811,7 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
     try{
       const resumen=await flash([{role:"system",content:
         "Cierras tertulias. En máximo 2 frases: di si HUBO ACUERDO o no, quién quedó en qué orilla (nombres), y el porqué en una pincelada. Español colombiano vivo, neutral."},
-        {role:"user",content:`Tema: ${q}\n`+transcript.map(t=>`${t.n}: ${t.t}`).join("\n")}],120,0.5);
+        {role:"user",content:`Tema: ${q}\n`+transcript.map(t=>`${t.n}: ${t.t}`).join("\n")}],120,0.5,"cierre");
       /* mientras el veredicto viajaba pudo entrar otra pregunta: la corrida vieja no pinta ni guarda nada */
       if(run!==RUN)return;
       const acordo=Math.max(p.a_favor,p.en_contra,p.depende)>=Math.ceil(sample.length*0.8);
