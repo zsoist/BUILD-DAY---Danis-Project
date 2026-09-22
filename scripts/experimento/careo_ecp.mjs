@@ -38,11 +38,11 @@ function extraer(nombre) {
 
 const NOMBRES = ["TEMPERAMENTOS", "LEAN", "FRANQUEZA", "ARRANQUES", "estiloDe",
   "FUNDAMENTOS", "marcoDe", "GUSTOS", "FASTIDIOS", "momentoDe", "COMPROMISO_TXT",
-  "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "ESTILOS_RESP", "estiloRespuesta", "persona", "sondeoInstr", "INSTITUCIONES", "anclaDe", "anclaItemDe"];
+  "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "ESTILOS_RESP", "estiloRespuesta", "persona", "sondeoInstr", "INSTITUCIONES", "anclaDe", "anclaItemDe", "REGION_ECP", "votoCelda"];
 /* LIBRETO=0: sin la postura asignada por hash. Es lo que decide si la
    dispersión es del método o fabricada por el prompt. Por defecto, la del sitio. */
 const LIBRETO = (process.env.LIBRETO ?? "1") !== "0";
-const mod = new Function("OPC", "LIBRETO", NOMBRES.map(extraer).join("\n") + "\nreturn {persona, sondeoInstr, anclaDe, anclaItemDe};")(null, LIBRETO);
+const mod = new Function("OPC", "LIBRETO", NOMBRES.map(extraer).join("\n") + "\nreturn {persona, sondeoInstr, anclaDe, anclaItemDe, votoCelda};")(null, LIBRETO);
 
 const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "web/residents_v2.json"), "utf8"));
 const residentes = (RES.residentes || RES).filter(r => r.edad >= 18);   // universo ECP
@@ -213,8 +213,16 @@ const ANCLA_ITEM = process.env.ANCLA_ITEM || "";
 const RESP = VARIANTE === "recuperada" && ANCLA_ITEM
   ? JSON.parse(fs.readFileSync(process.env.RESP_FILE || path.join(ROOT, "web/respuestas_ecp.json"), "utf8")) : null;
 const BANCO_ECP = RESP ? JSON.parse(fs.readFileSync(process.env.BANCO_FILE || path.join(ROOT, "web/banco_ecp.json"), "utf8")) : [];
+/* CELDAS=1: LAPOP/LB como en producción, sorteando de los agregados publicados
+   en web/opinion/ (votoCelda del sitio) en vez del donante local. */
+const CELDAS = RESP && process.env.CELDAS === "1"
+  ? JSON.parse(fs.readFileSync(path.join(ROOT, "web/opinion", ANCLA_ITEM.replace(":", "_") + ".json"), "utf8")) : null;
 function anclaItemDe(r) {
   if (!RESP) return "";
+  if (CELDAS) {
+    const b = BANCO_ECP.find(x => x.codigo === ANCLA_ITEM), v = mod.votoCelda(r, CELDAS, ANCLA_ITEM);
+    return b && v !== undefined ? mod.anclaItemDe(b, v) : "";
+  }
   const k = RESP.items.indexOf(ANCLA_ITEM), b = BANCO_ECP.find(x => x.codigo === ANCLA_ITEM);
   if (k < 0 || !b) return "";
   return mod.anclaItemDe(b, (RESP.por_id[r.id] || [])[k]);   // la frase vive en el sitio

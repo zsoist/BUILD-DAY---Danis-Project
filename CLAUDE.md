@@ -70,8 +70,11 @@ node --test scripts/experimento/anclas.test.mjs     # antes de tocar la estimaci
 
 Los LLM (todos los probados) creen que en Colombia nada funciona y no se corrigen
 infiriendo; sí adoptan una postura dicha. Por eso el sondeo ancla en la respuesta
-real de un donante de la ECP cuando el DANE ya hizo la pregunta. Si cambias
-`donantes_ecp.py` o `banco_ecp.py`, regenera y vuelve a medir.
+real de un donante de la ECP cuando el DANE ya hizo la pregunta, o sorteando
+de los agregados de LAPOP/Latinobarómetro (`web/opinion/`). Si cambias
+`donantes_ecp.py`, `banco_ecp.py` o `fuentes_opinion.py`, regenera y vuelve a medir.
+**LAPOP/LB: a `web/` y a git solo agregados** (celdas ≥10); los microdatos y lo
+que sale por persona se quedan en `simcolombia/data/raw_v2/`.
 
 ## Seguridad del proxy: lo que aguanta y lo que no
 

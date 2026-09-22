@@ -1,0 +1,5885 @@
+[
+{
+"codigo": "LAPOP:a4n",
+"fuente": "LAPOP 2023",
+"texto": "¿Cuál cree que es el problema más grave del país?",
+"opciones": {
+"1": "Problemas económicos",
+"2": "Problemas de seguridad",
+"3": "Problemas de servicios básicos",
+"4": "Problemas políticos",
+"5": "Desempleo, falta de empleo",
+"6": "Corrupción",
+"7": "Covid-19/ vacunas de coronavirus/la compra de vacunas/no hay suficientes vacunas",
+"8": "Falta de alimentos, inseguridad alimentaria, desnutrición",
+"77": "Otros problemas",
+"862": "La guerrilla",
+"863": "Las BACRIM/Paramilitares",
+"864": "La paz, proceso de paz, acuerdos de paz",
+"865": "Política agraria/campesina",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"77",
+"862",
+"863",
+"864",
+"865"
+]
+},
+{
+"codigo": "LAPOP:soct2",
+"fuente": "LAPOP 2023",
+"texto": "¿Diría usted que la situación económica actual del país es mejor, igual o peor que hace 12 meses?",
+"opciones": {
+"1": "Mejor",
+"2": "Igual",
+"3": "Peor",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LAPOP:idio2",
+"fuente": "LAPOP 2023",
+"texto": "¿Diría usted que su situación económica personal es mejor, igual o peor que hace 12 meses?",
+"opciones": {
+"1": "Mejor",
+"2": "Igual",
+"3": "Peor",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LAPOP:mesfut1",
+"fuente": "LAPOP 2023",
+"texto": "¿Cuánta esperanza tiene usted en el futuro?",
+"opciones": {
+"1": "Mucho",
+"2": "Algo",
+"3": "Poco",
+"4": "Nada",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:it1",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan confiable es la gente de su comunidad?",
+"opciones": {
+"1": "Muy confiable",
+"2": "Algo confiable",
+"3": "Poco confiable",
+"4": "Nada confiable",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:colit1jov1",
+"fuente": "LAPOP 2023",
+"texto": "¿Los jóvenes entre 14 y 29 años son muy confiables, algo confiables, poco confiables o nada confiables?",
+"opciones": {
+"1": "Muy confiables",
+"2": "Algo confiables",
+"3": "Poco confiables",
+"4": "Nada confiables",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:l1n",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 10, donde 1 es izquierda y 10 es derecha, ¿cuál es su posición política?",
+"opciones": {
+"1": "Izquierda",
+"10": "Derecha",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"escala": [
+1,
+10
+]
+},
+{
+"codigo": "LAPOP:jc10",
+"fuente": "LAPOP 2023",
+"texto": "¿Se justificaría que los militares tomen el poder por un golpe de Estado cuando hay mucha delincuencia?",
+"opciones": {
+"1": "Se justificaría que los militares tomen el poder por un golpe de Estado",
+"2": "No se justificaría que los militares tomen el poder por un golpe de Estado",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:jc13",
+"fuente": "LAPOP 2023",
+"texto": "¿Se justificaría que los militares tomen el poder por un golpe de Estado cuando hay mucha corrupción?",
+"opciones": {
+"1": "Se justificaría que los militares tomen el poder por un golpe de Estado",
+"2": "No se justificaría que los militares tomen el poder por un golpe de Estado",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:jc15a",
+"fuente": "LAPOP 2023",
+"texto": "¿Se justifica que el presidente cierre el congreso en tiempos difíciles?",
+"opciones": {
+"1": "Sí se justifica",
+"2": "No se justifica",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:jc16a",
+"fuente": "LAPOP 2023",
+"texto": "¿Se justifica que el presidente disuelva la corte suprema en tiempos difíciles?",
+"opciones": {
+"1": "Sí se justifica",
+"2": "No se justifica",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:aoj11",
+"fuente": "LAPOP 2023",
+"texto": "¿Se siente usted muy seguro, algo seguro, algo inseguro o muy inseguro en su vecindario?",
+"opciones": {
+"1": "Muy seguro(a)",
+"2": "Algo seguro(a)",
+"3": "Algo inseguro(a)",
+"4": "Muy inseguro(a)",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:aoj12",
+"fuente": "LAPOP 2023",
+"texto": "Si usted fuera víctima de un crimen, ¿cuánta fe tiene en que el sistema de justicia le daría una respuesta?",
+"opciones": {
+"1": "Mucho",
+"2": "Algo",
+"3": "Poco",
+"4": "Nada",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:countfair1",
+"fuente": "LAPOP 2023",
+"texto": "¿Los votos/papeletas se cuentan siempre de manera imparcial en las elecciones?",
+"opciones": {
+"1": "Siempre",
+"2": "Algunas veces",
+"3": "Nunca",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LAPOP:countfair3",
+"fuente": "LAPOP 2023",
+"texto": "¿En las elecciones la votación siempre es secreta?",
+"opciones": {
+"1": "Siempre",
+"2": "Algunas veces",
+"3": "Nunca",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LAPOP:chm1bn",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué prefiere: un sistema que garantice acceso a un ingreso básico y servicios para todos los ciudadanos aunque no se pueda elegir a las autoridades, o poder votar para elegir las autoridades aunque algunas personas no tengan acceso a un ingreso básico y servicios?",
+"opciones": {
+"1": "Un sistema que garantice acceso a un ingreso básico y servicios para todos los ciudadanos, aunque no se pueda elegir a",
+"2": "Poder votar para elegir las autoridades, aunque algunas personas no tengan acceso a un ingreso básico y servicios",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:chm2bn",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué prefiere: un sistema que garantice acceso a un ingreso básico y servicios para todos los ciudadanos aunque no se pueda expresar libremente, o un sistema en el que todos puedan expresar sus opiniones políticas sin miedo o censura aunque algunas personas no tengan acceso a un ingreso básico y servicios?",
+"opciones": {
+"1": "Un sistema que garantice acceso a un ingreso básico y servicios para todos los ciudadanos, aunque no se pueda expresar",
+"2": "Un sistema en el que todos puedan expresar sus opiniones políticas sin miedo o censura, aunque algunas personas no teng",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:colpaz1a",
+"fuente": "LAPOP 2023",
+"texto": "¿Cuál es la mejor opción para resolver los conflictos con los guerrilleros: negociación, uso de la fuerza militar o ambas?",
+"opciones": {
+"1": "Negociación",
+"2": "Uso de la fuerza militar",
+"3": "Ambas",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LAPOP:colpaz1c",
+"fuente": "LAPOP 2023",
+"texto": "¿Cuál es la mejor solución para las BACRIM: negociación, uso de la fuerza militar o ambas?",
+"opciones": {
+"1": "Negociación",
+"2": "Uso de la fuerza militar",
+"3": "Ambas",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LAPOP:colpaz2bn",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan posible considera que exista una solución negociada con el ELN dentro de 1 año?",
+"opciones": {
+"1": "Muy posible",
+"2": "Posible",
+"3": "Poco posible",
+"4": "Nada posible",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:b1",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿hasta qué punto cree que las cortes garantizan un juicio justo?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:b2",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿hasta qué punto respeta las instituciones políticas de Colombia?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:b3",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿hasta qué punto cree que los derechos básicos están protegidos en Colombia?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:b4",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánto orgullo siente por el sistema político de Colombia?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:b6",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿hasta qué punto se debería apoyar al sistema político de Colombia?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:b12",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánta confianza tiene usted en las fuerzas armadas?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:b13",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánta confianza tiene usted en la legislatura (el Congreso)?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:b18",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánta confianza tiene usted en la policía nacional?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:b21",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánta confianza tiene usted en los partidos políticos?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:b21a",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánta confianza tiene usted en el presidente?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:b31",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánta confianza tiene usted en el tribunal supremo (la Corte Suprema de Justicia)?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:b32",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánta confianza tiene usted en su municipalidad (alcaldía)?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:b37",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánta confianza tiene usted en los medios de comunicación?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:b47a",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánta confianza tiene usted en las elecciones?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colb60n",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánta confianza tiene usted en la Fuerza Alternativa Revolucionaria Común (FARC)?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colbcmj",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánta confianza tiene usted en los Consejos Municipales de la Juventud?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colbjov2",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánta confianza tiene usted en los jóvenes entre 14 y 29 años en Colombia?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colrecon19b",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿hasta qué punto está de acuerdo con que los delincuentes deben pedir disculpas a las víctimas?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colrecon19c",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿hasta qué punto está de acuerdo con que el Estado debe indemnizar a las víctimas?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colrecon20b",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿hasta qué punto está de acuerdo con que la verdad sobre los conflictos armados debe ser establecida?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colrecon20c",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿hasta qué punto está de acuerdo con que los perpetradores deben indemnizar a las víctimas?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:coljepaa2",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿cuánta confianza tiene usted en la JEP (Jurisdicción Especial para la Paz)?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:coljepaa4",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿hasta qué punto considera que la JEP ha alcanzado sus objetivos?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:coljepaa1",
+"fuente": "LAPOP 2023",
+"texto": "En una escala de 1 a 7, ¿hasta qué punto apoya la decisión?",
+"opciones": {
+"1": "Nada",
+"7": "Mucho",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:m1",
+"fuente": "LAPOP 2023",
+"texto": "¿Cómo evalúa el trabajo que está haciendo el presidente: muy bueno, bueno, ni bueno ni malo (regular), malo o muy malo?",
+"opciones": {
+"1": "Muy bueno",
+"2": "Bueno",
+"3": "Ni bueno, ni malo (regular)",
+"4": "Malo",
+"5": "Muy malo (pésimo)",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LAPOP:sd2new2",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan satisfecho(a) está con el estado de las calles, carreteras y autopistas?",
+"opciones": {
+"1": "Muy satisfecho(a)",
+"2": "Satisfecho(a)",
+"3": "Insatisfecho(a)",
+"4": "Muy insatisfecho(a)",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:sd3new2",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan satisfecho(a) está con la calidad de las escuelas públicas?",
+"opciones": {
+"1": "Muy satisfecho(a)",
+"2": "Satisfecho(a)",
+"3": "Insatisfecho(a)",
+"4": "Muy insatisfecho(a)",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:sd6new2",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan satisfecho(a) está con la calidad de los servicios médicos y de salud públicos?",
+"opciones": {
+"1": "Muy satisfecho(a)",
+"2": "Satisfecho(a)",
+"3": "Insatisfecho(a)",
+"4": "Muy insatisfecho(a)",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:sd5new2",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan satisfecho(a) está con la calidad de los servicios de agua?",
+"opciones": {
+"1": "Muy satisfecho(a)",
+"2": "Satisfecho(a)",
+"3": "Insatisfecho(a)",
+"4": "Muy insatisfecho(a)",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:colsd3",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan satisfecho(a) está con la calidad de los sistemas educativos?",
+"opciones": {
+"1": "Muy satisfecho(a)",
+"2": "Satisfecho(a)",
+"3": "Insatisfecho(a)",
+"4": "Muy insatisfecho(a)",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:pop101",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto está de acuerdo con que la limitación de la voz/voto de los partidos de la oposición es necesaria para el progreso del país?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:pop107",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto está de acuerdo con que el país se gobierne directamente por el pueblo en lugar de por representantes electos?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:ros4",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto apoya las políticas para reducir la desigualdad de ingresos?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:ing4",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto está de acuerdo con que la democracia puede tener problemas, pero es el mejor sistema de gobierno?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:eff1",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto está de acuerdo con que a los que gobiernan el país les importa la opinión de gente como usted?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:eff2",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto está de acuerdo con que personas como usted pueden entender los problemas políticos más importantes del país?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colpropaz13cp",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto está de acuerdo o en desacuerdo con que el acuerdo de paz fortaleció la democracia de Colombia?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colpropaz13jp",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto está de acuerdo o en desacuerdo con que el acuerdo de paz mejoró la seguridad?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colpact16ap",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto apoya al gobierno en el cumplimiento del acuerdo de paz firmado en La Habana?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colpropaz13kp",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto está de acuerdo o en desacuerdo con que el acuerdo de paz mejoró la economía?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colpropaz13mp",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto está de acuerdo o en desacuerdo con que el acuerdo de paz mejoró el acceso a la tierra?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colpact16bp",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto apoya a las FARC en el cumplimiento del acuerdo de paz firmado en La Habana?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colind1a",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto está de acuerdo con que los grupos indígenas ayudan a que nuestro país sea más desarrollado?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colcamp1a",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto está de acuerdo con que los agricultores ayudan a nuestro país a desarrollarse más?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:colafro1a",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto está de acuerdo con que las comunidades afrocolombianas ayudan a que nuestro país sea más desarrollado?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:coljepaa7",
+"fuente": "LAPOP 2023",
+"texto": "¿Hasta qué punto apoya las sanciones de la PEC (Jurisdicción Especial para la Paz)?",
+"opciones": {
+"1": "Muy en desacuerdo",
+"7": "Muy de acuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"5",
+"6",
+"7"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"5",
+"6",
+"7"
+],
+"escala": [
+1,
+7
+]
+},
+{
+"codigo": "LAPOP:vb21n",
+"fuente": "LAPOP 2023",
+"texto": "¿Cuál es la mejor manera de hacer un cambio en el país: votar para elegir a los que defienden su posición, postularse como candidato a cargos públicos, participar en protestas, participar en juntas, comisiones o asociaciones de la comunidad, influir de otras maneras, o no es posible influir para que las cosas cambien?",
+"opciones": {
+"1": "Votar para elegir a los que defienden su posición, o",
+"2": "Postularse como candidato a cargos públicos, o",
+"3": "Participar en protestas, o",
+"4": "Participar en juntas, comisiones o asociaciones de la comunidad, o",
+"5": "Influir de otras maneras, o",
+"6": "No es posible influir para que las cosas cambien",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6"
+]
+},
+{
+"codigo": "LAPOP:crg1",
+"fuente": "LAPOP 2023",
+"texto": "¿Está usted justificado para actuar fuera de la ley si la otra parte lo hace?",
+"opciones": {
+"1": "Sí, se justifica",
+"2": "No, no se justifica",
+"3": "No apoya a ningún partido o político",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LAPOP:crg2",
+"fuente": "LAPOP 2023",
+"texto": "¿Está usted justificado para actuar fuera de la ley para cumplir las promesas?",
+"opciones": {
+"1": "Sí, se justifica",
+"2": "No, no se justifica",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:env2b",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan serio cree usted que será el cambio climático en el futuro para Colombia?",
+"opciones": {
+"1": "Muy serio",
+"2": "Algo serio",
+"3": "Poco serio",
+"4": "Nada serio",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:anestg",
+"fuente": "LAPOP 2023",
+"texto": "¿Cuánta confianza tiene usted en el gobierno nacional de Colombia?",
+"opciones": {
+"1": "Mucho",
+"2": "Algo",
+"3": "Poco",
+"4": "Nada",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:pn4",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan satisfecho(a) está usted con la democracia en Colombia?",
+"opciones": {
+"1": "Muy satisfecho(a)",
+"2": "Satisfecho(a)",
+"3": "Insatisfecho(a)",
+"4": "Muy insatisfecho(a)",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:dem30",
+"fuente": "LAPOP 2023",
+"texto": "¿Cree usted que Colombia es una democracia?",
+"opciones": {
+"1": "Sí",
+"2": "No",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:e5",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan firme aprueba o desaprueba usted que las personas participen en manifestaciones legales?",
+"opciones": {
+"1": "Desaprueba firmemente",
+"10": "Aprueba firmemente",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"escala": [
+1,
+10
+]
+},
+{
+"codigo": "LAPOP:e17a",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan firme aprueba o desaprueba usted las protestas de grupos que defienden los derechos?",
+"opciones": {
+"1": "Desaprueba firmemente",
+"10": "Aprueba firmemente",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"escala": [
+1,
+10
+]
+},
+{
+"codigo": "LAPOP:e17b",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan firme aprueba o desaprueba usted las protestas por parte de grupos feministas?",
+"opciones": {
+"1": "Desaprueba firmemente",
+"10": "Aprueba firmemente",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"escala": [
+1,
+10
+]
+},
+{
+"codigo": "LAPOP:d3",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan firme aprueba o desaprueba usted el derecho de los críticos del gobierno a postularse para un cargo?",
+"opciones": {
+"1": "Desaprueba firmemente",
+"10": "Aprueba firmemente",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"escala": [
+1,
+10
+]
+},
+{
+"codigo": "LAPOP:d4",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan firme aprueba o desaprueba usted el derecho de los críticos del gobierno a dar discursos?",
+"opciones": {
+"1": "Desaprueba firmemente",
+"10": "Aprueba firmemente",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"escala": [
+1,
+10
+]
+},
+{
+"codigo": "LAPOP:d5",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan firme aprueba o desaprueba usted el derecho de los homosexuales a postularse para un cargo?",
+"opciones": {
+"1": "Desaprueba firmemente",
+"10": "Aprueba firmemente",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"escala": [
+1,
+10
+]
+},
+{
+"codigo": "LAPOP:d6",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan firme aprueba o desaprueba usted el matrimonio entre personas del mismo sexo?",
+"opciones": {
+"1": "Desaprueba firmemente",
+"10": "Aprueba firmemente",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"escala": [
+1,
+10
+]
+},
+{
+"codigo": "LAPOP:exc7",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan generalizada cree usted que es la corrupción de los funcionarios públicos en Colombia?",
+"opciones": {
+"1": "Muy generalizada",
+"2": "Algo generalizada",
+"3": "Poco generalizada",
+"4": "Nada generalizada",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:exc7new",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué cantidad de políticos cree usted que están involucrados en corrupción?",
+"opciones": {
+"1": "Ninguno",
+"2": "Menos de la mitad",
+"3": "La mitad de los políticos",
+"4": "Más de la mitad",
+"5": "Todos",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LAPOP:lib2c",
+"fuente": "LAPOP 2023",
+"texto": "¿Cuánta libertad de expresión política siente que hay en Colombia: muy poca, suficiente o demasiada?",
+"opciones": {
+"1": "Muy poca",
+"2": "Suficiente",
+"3": "Demasiada",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LAPOP:immig1xa",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan de acuerdo está usted con que los venezolanos reciban servicios sociales como asistencia sanitaria, educación y vivienda en Colombia?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "Algo de acuerdo",
+"3": "Ni de acuerdo ni en desacuerdo",
+"4": "Algo en desacuerdo",
+"5": "Muy en desacuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LAPOP:immig1xb",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan de acuerdo está usted con que los inmigrantes reciban servicios sociales como asistencia sanitaria, educación y vivienda en Colombia?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "Algo de acuerdo",
+"3": "Ni de acuerdo ni en desacuerdo",
+"4": "Algo en desacuerdo",
+"5": "Muy en desacuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LAPOP:immig1xc",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan de acuerdo está usted con que los españoles reciban servicios sociales como asistencia sanitaria, educación y vivienda en Colombia?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "Algo de acuerdo",
+"3": "Ni de acuerdo ni en desacuerdo",
+"4": "Algo en desacuerdo",
+"5": "Muy en desacuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LAPOP:comcon3xa",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan buena es su opinión del vecino venezolano?",
+"opciones": {
+"1": "Mucho",
+"2": "Algo",
+"3": "Poco",
+"4": "Nada",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:comcon3xb",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan buena es su opinión del vecino inmigrante?",
+"opciones": {
+"1": "Mucho",
+"2": "Algo",
+"3": "Poco",
+"4": "Nada",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:comcon3xc",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan buena es su opinión del vecino español?",
+"opciones": {
+"1": "Mucho",
+"2": "Algo",
+"3": "Poco",
+"4": "Nada",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:pol1",
+"fuente": "LAPOP 2023",
+"texto": "¿Cuánto interés tiene usted en la política?",
+"opciones": {
+"1": "Mucho",
+"2": "Algo",
+"3": "Poco",
+"4": "Nada",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:vb20",
+"fuente": "LAPOP 2023",
+"texto": "Si hubieran elecciones presidenciales mañana en Colombia, ¿qué haría: no votaría, votaría por el candidato o partido del actual presidente, votaría por algún candidato o partido diferente del actual gobierno, o iría a votar pero dejaría el tarjetón en blanco o lo anularía?",
+"opciones": {
+"1": "No votaría",
+"2": "Votaría por el candidato o partido del actual presidente",
+"3": "Votaría por algún candidato o partido diferente del actual gobierno",
+"4": "Iría a votar pero dejaría el tarjetón en blanco o la anularía",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:vb50",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan de acuerdo está usted con que los hombres son mejores líderes políticos que las mujeres?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:vb51",
+"fuente": "LAPOP 2023",
+"texto": "¿Quiénes cree usted que son más corruptos como políticos: un hombre, una mujer, o ambos por igual?",
+"opciones": {
+"1": "Un hombre",
+"2": "Una mujer",
+"3": "Ambos por igual",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LAPOP:vb52",
+"fuente": "LAPOP 2023",
+"texto": "¿Quiénes cree usted que son mejores en la gestión de la economía: un hombre, una mujer, o no importa?",
+"opciones": {
+"1": "Un hombre",
+"2": "Una mujer",
+"3": "No importa",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LAPOP:vb58",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan de acuerdo está usted con la madre que trabaja fuera de casa?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:vb58exp",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan de acuerdo está usted con el padre que trabaja fuera de la casa?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:w14a",
+"fuente": "LAPOP 2023",
+"texto": "¿Cree usted que el aborto se justifica o no se justifica?",
+"opciones": {
+"1": "Sí, se justifica",
+"2": "No, no se justifica",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:mil10a",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan confiable considera usted a China?",
+"opciones": {
+"1": "Muy confiable",
+"2": "Algo confiable",
+"3": "Poco confiable",
+"4": "Nada confiable",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:mil10b",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan confiable considera usted a Rusia?",
+"opciones": {
+"1": "Muy confiable",
+"2": "Algo confiable",
+"3": "Poco confiable",
+"4": "Nada confiable",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:mil10e",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan confiable considera usted a los Estados Unidos?",
+"opciones": {
+"1": "Muy confiable",
+"2": "Algo confiable",
+"3": "Poco confiable",
+"4": "Nada confiable",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:childm7",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan común cree usted que es en su municipio que las niñas se casen antes de los 18 años?",
+"opciones": {
+"1": "Muy común",
+"2": "Algo común",
+"3": "Poco común",
+"4": "Nada común",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LAPOP:childm8",
+"fuente": "LAPOP 2023",
+"texto": "¿Cree usted que el matrimonio infantil está justificado para escapar de un hogar violento?",
+"opciones": {
+"1": "Sí, se justifica",
+"2": "No, no se justifica",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:childm9",
+"fuente": "LAPOP 2023",
+"texto": "¿Cree usted que el matrimonio infantil está justificado para escapar de un hogar pobre?",
+"opciones": {
+"1": "Sí, se justifica",
+"2": "No, no se justifica",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:childm10",
+"fuente": "LAPOP 2023",
+"texto": "¿Cree usted que el matrimonio infantil está justificado por un embarazo?",
+"opciones": {
+"1": "Sí, se justifica",
+"2": "No, no se justifica",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:childm11",
+"fuente": "LAPOP 2023",
+"texto": "¿Cree usted que el matrimonio de los niños se justifica con el permiso de los padres?",
+"opciones": {
+"1": "Sí, se justifica",
+"2": "No, no se justifica",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:childm12",
+"fuente": "LAPOP 2023",
+"texto": "¿Cree usted que el matrimonio infantil está justificado si su religión lo permite?",
+"opciones": {
+"1": "Sí, se justifica",
+"2": "No, no se justifica",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:childm13",
+"fuente": "LAPOP 2023",
+"texto": "¿Cree usted que el matrimonio infantil se justifica si sus valores culturales lo permiten?",
+"opciones": {
+"1": "Sí, se justifica",
+"2": "No, no se justifica",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LAPOP:ddhcol2",
+"fuente": "LAPOP 2023",
+"texto": "¿Qué tan importante considera usted la labor de los líderes de derechos humanos en Colombia?",
+"opciones": {
+"1": "Muy importante",
+"2": "Algo importante",
+"3": "Poco importante",
+"4": "Nada importante",
+"888888": "DK",
+"988888": "NR",
+"999999": "N/A"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P1ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "En general, ¿qué tan satisfecho está con su vida?",
+"opciones": {
+"1": "Muy satisfecho",
+"2": "Bastante satisfecho",
+"3": "No muy satisfecho",
+"4": "Para nada satisfecho",
+"-5": "No sabe/No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P2ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Usted cree que Colombia está progresando, está estancado o está en retroceso?",
+"opciones": {
+"1": "Esta progresando",
+"2": "Esta estancado",
+"3": "Esta en retroceso",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LB:P3N",
+"fuente": "Latinobarómetro 2024",
+"texto": "En los últimos 10 años, ¿usted y su familia han progresado, han empeorado o están igual?",
+"opciones": {
+"1": "Ha progresado mucho",
+"2": "Ha progresado algo",
+"3": "Esta igual",
+"4": "Ha empeorado poco",
+"5": "Ha empeorado mucho",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LB:P4ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan necesaria es la mejora de la sociedad en que vivimos: está bien como está, puede mejorarse con pequeños cambios, necesita reformas profundas o debe cambiarse radicalmente?",
+"opciones": {
+"1": "Esta bien como esta",
+"2": "Puede mejorarse con pequenos cambios",
+"3": "Necesita reformas profundas",
+"4": "Debe cambiarse radicalmente",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P6STGBS",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría la situación económica actual de Colombia: muy buena, buena, regular, mala o muy mala?",
+"opciones": {
+"1": "Muy buena",
+"2": "Buena",
+"3": "Regular",
+"4": "Mala",
+"5": "Muy mala",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LB:P7STGBS",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿La situación económica actual de Colombia comparada con hace doce meses es mucho mejor, un poco mejor, igual, un poco peor o mucho peor?",
+"opciones": {
+"1": "Mucho mejor",
+"2": "Un poco mejor",
+"3": "Igual",
+"4": "Un poco peor",
+"5": "Mucho peor",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LB:P8ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo será la situación económica de Colombia dentro de doce meses: mucho mejor, un poco mejor, igual, un poco peor o mucho peor?",
+"opciones": {
+"1": "Mucho mejor",
+"2": "Un poco mejor",
+"3": "Igual",
+"4": "Un poco peor",
+"5": "Mucho peor",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LB:P9STGBS",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo será su situación económica y la de su familia dentro de doce meses: mucho mejor, un poco mejor, igual, un poco peor o mucho peor?",
+"opciones": {
+"1": "Mucho mejor",
+"2": "Un poco mejor",
+"3": "Igual",
+"4": "Un poco peor",
+"5": "Mucho peor",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LB:P10STGBS",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Se puede confiar en la mayoría de las personas, o uno nunca es lo suficientemente cuidadoso en el trato con los demás?",
+"opciones": {
+"1": "Se puede confiar en la mayoria de las personas",
+"2": "Uno nunca es lo suficientemente cuidadoso en el trato con los demas",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P11STGBS",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Con cuál de las siguientes frases está más de acuerdo: la democracia es preferible a cualquier otra forma de gobierno; en algunas circunstancias un gobierno autoritario puede ser preferible a uno democrático; o a la gente como uno le da lo mismo un régimen democrático que uno no democrático?",
+"opciones": {
+"1": "La democracia es preferible a cualquier otra forma de gobierno",
+"2": "En algunas circunstancias, un gobierno autoritario puede ser preferible a uno democratico",
+"3": "A la gente como uno, nos da lo mismo un regimen democratico que uno no democratico",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LB:P12STGBS.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan satisfecho está con la democracia en Colombia: muy satisfecho, más bien satisfecho, no muy satisfecho o nada satisfecho?",
+"opciones": {
+"1": "Muy satisfecho",
+"2": "Mas bien satisfecho",
+"3": "No muy satisfecho",
+"4": "Nada satisfecho",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P12STGBS.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan satisfecho está con el funcionamiento de la economía en Colombia: muy satisfecho, más bien satisfecho, no muy satisfecho o nada satisfecho?",
+"opciones": {
+"1": "Muy satisfecho",
+"2": "Mas bien satisfecho",
+"3": "No muy satisfecho",
+"4": "Nada satisfecho",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P13ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cree que Colombia está gobernado por unos cuantos grupos poderosos en su propio beneficio, o para el bien de todo el pueblo?",
+"opciones": {
+"1": "Grupos poderosos en su propio beneficio",
+"2": "Para el bien de todo el pueblo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P14STGBS.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en las Fuerzas Armadas: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta",
+"-4": "No preguntada"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"-4"
+]
+},
+{
+"codigo": "LB:P14STGBS.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en la Policía: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P14ST.C",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en la Iglesia: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P14ST.D",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en el Congreso/Parlamento: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P14ST.E",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en el Gobierno: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P14ST.F",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en el Poder Judicial: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P14ST.G",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en los partidos políticos: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P14ST.H",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en la institución electoral del país: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P14ST.I",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en el Presidente: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P14ST.J",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en la radio: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P14ST.K",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en la televisión: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P14ST.L",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en las redes sociales: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P14ST.M",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en los diarios: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P14ST.N",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta confianza tiene en los sindicatos: mucha, algo, poca o ninguna confianza?",
+"opciones": {
+"1": "Mucha confianza",
+"2": "Algo de confianza",
+"3": "Poca confianza",
+"4": "Ninguna confianza",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P15STGBS",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Aprueba o no aprueba la gestión del gobierno que encabeza el Presidente?",
+"opciones": {
+"1": "Aprueba",
+"2": "No aprueba",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P16ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "En política, la gente habla de izquierda y derecha. En una escala del 0 (izquierda) al 10 (derecha), ¿dónde se ubicaría usted?",
+"opciones": {
+"0": "0 Izquierda",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Derecha",
+"97": "Ninguno",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"97"
+]
+},
+{
+"codigo": "LB:P17ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuán justa considera la distribución del ingreso en Colombia: muy justa, justa, injusta o muy injusta?",
+"opciones": {
+"1": "Muy justa",
+"2": "Justa",
+"3": "Injusta",
+"4": "Muy injusta",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P18ST.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Está de acuerdo o en desacuerdo con que la democracia puede tener problemas, pero es el mejor sistema de gobierno?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P18ST.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Está de acuerdo o en desacuerdo con que no le importaría que un gobierno no democrático llegara al poder si resuelve los problemas?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P18ST.C",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Está de acuerdo o en desacuerdo con que está bien que el Presidente pase por encima de las leyes, el parlamento y/o las instituciones con el objeto de resolver los problemas?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P18ST.D",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Está de acuerdo o en desacuerdo con que deberíamos deshacernos de las elecciones y del parlamento y dejar que los expertos tomaran las decisiones por la gente?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P19ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 1 al 10, donde 1 quiere decir que Colombia no es democrático y 10 que es totalmente democrático, ¿cuán democrático es Colombia?",
+"opciones": {
+"1": "1 No es democratico",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Es totalmente democratico",
+"96": "Otras respuestas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P20ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuál está más cerca de su opinión: sin partidos políticos no puede haber democracia, o la democracia puede funcionar sin partidos?",
+"opciones": {
+"1": "Sin partidos politicos no puede haber democracia",
+"2": "La democracia puede funcionar sin partidos",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P21ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuál está más cerca de su opinión: sin Congreso Nacional no puede haber democracia, o la democracia puede funcionar sin Congreso Nacional?",
+"opciones": {
+"1": "Sin Congreso Nacional no puede haber democracia",
+"2": "La democracia puede funcionar sin Congreso Nacional",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P22N",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuál está más cerca de su opinión: sin oposición no puede haber democracia, o la democracia puede funcionar sin oposición?",
+"opciones": {
+"1": "Sin oposicion no puede haber democracia",
+"2": "La democracia puede funcionar sin oposicion",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P24STGBS",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Con cuál frase está usted más de acuerdo: la política es tan complicada que no se entiende, o la política no es tan complicada y se entiende?",
+"opciones": {
+"1": "La politica es tan complicada que no se entiende",
+"2": "La politica no es tan complicada y se entiende",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P25ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Se siente usted políticamente representado por el parlamento/Congreso de Colombia?",
+"opciones": {
+"1": "Si",
+"2": "No",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P26ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuál está más cerca de su manera de pensar: la manera como uno vota puede hacer que las cosas sean diferentes en el futuro, o no importa cómo uno vote, no hará que las cosas sean mejores en el futuro?",
+"opciones": {
+"1": "La manera como uno vota puede hacer que las cosas sean diferentes en el futuro",
+"2": "No importa como uno vote, no hara que las cosas sean mejor en el futuro",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P27ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "En su opinión, ¿las elecciones en Colombia son limpias o son fraudulentas?",
+"opciones": {
+"1": "Limpias",
+"2": "Fraudulentas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P28ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo ve usted el futuro para la generación que viene, comparado con hoy: será más, igual o menos próspero?",
+"opciones": {
+"1": "Mas",
+"2": "Igual",
+"3": "Menos",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LB:P28ST.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo cree que será el futuro para la generación que viene en cuanto a democracia, comparado con hoy: más, igual o menos democrático?",
+"opciones": {
+"1": "Mas",
+"2": "Igual",
+"3": "Menos",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LB:P28ST.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo cree que será el futuro para la generación que viene en cuanto a corrupción, comparado con hoy: más, igual o menos corrupto?",
+"opciones": {
+"1": "Mas",
+"2": "Igual",
+"3": "Menos",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LB:P28ST.C",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo cree que será el futuro para la generación que viene en cuanto a igualdad ante la ley, comparado con hoy: más, igual o menos igualdad ante la ley?",
+"opciones": {
+"1": "Mas",
+"2": "Igual",
+"3": "Menos",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LB:P28ST.D",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo cree que será el futuro para la generación que viene en cuanto a religión, comparado con hoy: más, igual o menos religioso?",
+"opciones": {
+"1": "Mas",
+"2": "Igual",
+"3": "Menos",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LB:P29ST.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuál es su opinión sobre Estados Unidos: muy favorable, algo favorable, algo desfavorable o muy desfavorable?",
+"opciones": {
+"1": "Muy favorable",
+"2": "Algo favorable",
+"3": "Algo desfavorable",
+"4": "Muy desfavorable",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P29ST.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuál es su opinión sobre Rusia: muy favorable, algo favorable, algo desfavorable o muy desfavorable?",
+"opciones": {
+"1": "Muy favorable",
+"2": "Algo favorable",
+"3": "Algo desfavorable",
+"4": "Muy desfavorable",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P29ST.C",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuál es su opinión sobre China: muy favorable, algo favorable, algo desfavorable o muy desfavorable?",
+"opciones": {
+"1": "Muy favorable",
+"2": "Algo favorable",
+"3": "Algo desfavorable",
+"4": "Muy desfavorable",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P29ST.D",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuál es su opinión sobre la Unión Europea: muy favorable, algo favorable, algo desfavorable o muy desfavorable?",
+"opciones": {
+"1": "Muy favorable",
+"2": "Algo favorable",
+"3": "Algo desfavorable",
+"4": "Muy desfavorable",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P29ST.E",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuál es su opinión sobre Ucrania: muy favorable, algo favorable, algo desfavorable o muy desfavorable?",
+"opciones": {
+"1": "Muy favorable",
+"2": "Algo favorable",
+"3": "Algo desfavorable",
+"4": "Muy desfavorable",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P29ST.F",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuál es su opinión sobre Venezuela: muy favorable, algo favorable, algo desfavorable o muy desfavorable?",
+"opciones": {
+"1": "Muy favorable",
+"2": "Algo favorable",
+"3": "Algo desfavorable",
+"4": "Muy desfavorable",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P29ST.G",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuál es su opinión sobre Israel: muy favorable, algo favorable, algo desfavorable o muy desfavorable?",
+"opciones": {
+"1": "Muy favorable",
+"2": "Algo favorable",
+"3": "Algo desfavorable",
+"4": "Muy desfavorable",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P29ST.H",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuál es su opinión sobre Palestina: muy favorable, algo favorable, algo desfavorable o muy desfavorable?",
+"opciones": {
+"1": "Muy favorable",
+"2": "Algo favorable",
+"3": "Algo desfavorable",
+"4": "Muy desfavorable",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P30ST.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría las relaciones entre Colombia y Estados Unidos: muy buenas, más bien buenas, más bien malas o muy malas?",
+"opciones": {
+"1": "Muy buenas",
+"2": "Mas bien buenas",
+"3": "Mas bien malas",
+"4": "Muy malas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P30ST.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría las relaciones entre Colombia y Rusia: muy buenas, más bien buenas, más bien malas o muy malas?",
+"opciones": {
+"1": "Muy buenas",
+"2": "Mas bien buenas",
+"3": "Mas bien malas",
+"4": "Muy malas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P30ST.C",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría las relaciones entre Colombia y China: muy buenas, más bien buenas, más bien malas o muy malas?",
+"opciones": {
+"1": "Muy buenas",
+"2": "Mas bien buenas",
+"3": "Mas bien malas",
+"4": "Muy malas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P30ST.D",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría las relaciones entre Colombia y la Unión Europea: muy buenas, más bien buenas, más bien malas o muy malas?",
+"opciones": {
+"1": "Muy buenas",
+"2": "Mas bien buenas",
+"3": "Mas bien malas",
+"4": "Muy malas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P30ST.E",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría las relaciones entre Colombia e Israel: muy buenas, más bien buenas, más bien malas o muy malas?",
+"opciones": {
+"1": "Muy buenas",
+"2": "Mas bien buenas",
+"3": "Mas bien malas",
+"4": "Muy malas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P1TE.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría las relaciones económicas entre Colombia y Estados Unidos: muy buenas, más bien buenas, más bien malas o muy malas?",
+"opciones": {
+"1": "Muy buenas",
+"2": "Mas bien buenas",
+"3": "Mas bien malas",
+"4": "Muy malas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P1TE.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría las relaciones económicas entre Colombia y Rusia: muy buenas, más bien buenas, más bien malas o muy malas?",
+"opciones": {
+"1": "Muy buenas",
+"2": "Mas bien buenas",
+"3": "Mas bien malas",
+"4": "Muy malas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P1TE.C",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría las relaciones económicas entre Colombia y China: muy buenas, más bien buenas, más bien malas o muy malas?",
+"opciones": {
+"1": "Muy buenas",
+"2": "Mas bien buenas",
+"3": "Mas bien malas",
+"4": "Muy malas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P1TE.D",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría las relaciones económicas entre Colombia y la Unión Europea: muy buenas, más bien buenas, más bien malas o muy malas?",
+"opciones": {
+"1": "Muy buenas",
+"2": "Mas bien buenas",
+"3": "Mas bien malas",
+"4": "Muy malas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P2TE.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría las relaciones en temas de seguridad entre Colombia y Estados Unidos: muy buenas, más bien buenas, más bien malas o muy malas?",
+"opciones": {
+"1": "Muy buenas",
+"2": "Mas bien buenas",
+"3": "Mas bien malas",
+"4": "Muy malas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P2TE.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría las relaciones en temas de seguridad entre Colombia y Rusia: muy buenas, más bien buenas, más bien malas o muy malas?",
+"opciones": {
+"1": "Muy buenas",
+"2": "Mas bien buenas",
+"3": "Mas bien malas",
+"4": "Muy malas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P2TE.C",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría las relaciones en temas de seguridad entre Colombia y China: muy buenas, más bien buenas, más bien malas o muy malas?",
+"opciones": {
+"1": "Muy buenas",
+"2": "Mas bien buenas",
+"3": "Mas bien malas",
+"4": "Muy malas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P2TE.D",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cómo calificaría las relaciones en temas de seguridad entre Colombia y la Unión Europea: muy buenas, más bien buenas, más bien malas o muy malas?",
+"opciones": {
+"1": "Muy buenas",
+"2": "Mas bien buenas",
+"3": "Mas bien malas",
+"4": "Muy malas",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P3TE",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Con qué país le gustaría que Colombia tuviera relaciones más estrechas: Estados Unidos, China, ambos o ninguno de los dos?",
+"opciones": {
+"1": "EEUU",
+"2": "China",
+"3": "Ambos",
+"4": "Ninguno de los dos",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P31ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "En los últimos 5 años, ¿la integración de Colombia con otros países de la región ha aumentado o ha disminuido?",
+"opciones": {
+"1": "Aumentado mucho",
+"2": "Aumentado algo",
+"3": "Disminuido algo",
+"4": "Disminuido mucho",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P32ST.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Está muy a favor, algo a favor, algo en contra o muy en contra de la integración de Colombia con los otros países de América Latina?",
+"opciones": {
+"1": "Muy a favor",
+"2": "Algo a favor",
+"3": "Algo en contra",
+"4": "Muy en contra",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P32ST.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Está muy a favor, algo a favor, algo en contra o muy en contra de la integración de Colombia con otros países fuera de América Latina?",
+"opciones": {
+"1": "Muy a favor",
+"2": "Algo a favor",
+"3": "Algo en contra",
+"4": "Muy en contra",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P33ST.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con que los inmigrantes ayudan al desarrollo económico de Colombia: muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P33ST.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con que los inmigrantes vienen a competir por nuestros puestos de trabajo: muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P33N.C",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con que los inmigrantes causan un aumento del crimen: muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P33ST.D",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con que la economía de mercado es el único sistema con el que Colombia puede llegar a ser desarrollado: muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P33N.E",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con que el sistema judicial en Colombia generalmente no es suficientemente duro con los delincuentes: muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P34ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "Desde su punto de vista y el de su familia, ¿la llegada de inmigrantes a Colombia lo beneficia o lo perjudica?",
+"opciones": {
+"1": "Lo beneficia",
+"2": "Lo perjudica",
+"3": "Ni beneficia ni perjudica",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LB:P35ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Con cuál frase está usted más de acuerdo: hay que darle prioridad a la lucha contra el cambio climático sin importar sus consecuencias negativas en el crecimiento económico, o hay que dar prioridad al crecimiento económico sin importar sus consecuencias negativas en la lucha contra el cambio climático?",
+"opciones": {
+"1": "Hay que darle prioridad a la lucha contra el cambio climatico, sin importar sus consecuencias negativas en el crecimiento economico",
+"2": "Hay que dar prioridad al crecimiento economico sin importar sus consecuencias negativas en la lucha contra el cambio climatico",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P1NCV",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Hace usted cosas expresamente para cuidar el medioambiente?",
+"opciones": {
+"1": "Hace cosas expresamente",
+"2": "No hace cosas expresamente",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P3NCV",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cree usted que hay cambio climático?",
+"opciones": {
+"1": "Si hay cambio climatico",
+"2": "No hay cambio climatico",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P7NCV.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con la frase 'me importa el medioambiente': muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P7NCV.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con la frase 'siento obligación de proteger el medioambiente': muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P7NCV.C",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con la frase 'me importa cómo el cambio climático afecta a otras personas': muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P7NCV.D",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con la frase 'protejo el medioambiente para las generaciones futuras': muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P7NCV.E",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con la frase 'estoy dispuesto a gastar menos electricidad para proteger el medioambiente': muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P7NCV.F",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con la frase 'estoy dispuesto a cambiar mi alimentación con tal de proteger el medioambiente': muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P7NCV.G",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con la frase 'las plantas y los animales tienen tanto derecho a existir como los seres humanos': muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P8NCV.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con la frase 'puedo colaborar con mi comunidad para proteger el medio ambiente': muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P8NCV.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con la frase 'puedo convencer a otros de cambiar su opinión o actitud hacia el medioambiente': muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P8NCV.C",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan de acuerdo está con la frase 'no importa cuán difícil es proteger el medio ambiente, creo que mis acciones pueden aportar a la solución': muy de acuerdo, de acuerdo, en desacuerdo o muy en desacuerdo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P8NCV.D",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánto está de acuerdo con la frase: puedo comunicar la importancia de proteger el medio ambiente a otras personas?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P36STGBS",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan interesado está usted en la política?",
+"opciones": {
+"1": "Muy interesado",
+"2": "Algo interesado",
+"3": "Poco interesado",
+"4": "Nada Interesado",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P38STGBS",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Hay algún partido político hacia el cual se sienta más cercano?",
+"opciones": {
+"1": "Si",
+"2": "No",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P41ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuál de estas frases está más cerca de su manera de pensar: se debe garantizar la libertad de expresión sin importar que circule información falsa, o hay que controlar la publicación de información falsa aunque eso limite la libertad de expresión?",
+"opciones": {
+"1": "Se debe garantizar la libertad de expresion sin importar que circule informacion falsa",
+"2": "Hay que controlar la publicacion de informacion falsa aunque eso limite la libertad de expresion",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P42ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿La mayoría de las personas normalmente dicen lo que piensan acerca de la política o no dicen lo que realmente piensan?",
+"opciones": {
+"1": "Normalmente dicen lo que piensan",
+"2": "No dicen lo que realmente piensan",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P43ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Expresar públicamente sus opiniones acerca de los problemas del país podría tener consecuencias negativas?",
+"opciones": {
+"1": "Si",
+"2": "No",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P44ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Dónde suele expresar sus opiniones sobre los problemas del país: en una manifestación o protesta, en redes sociales, entre amigos, en familia, o no suele hacerlo?",
+"opciones": {
+"1": "Manifestacion/protesta",
+"2": "Redes sociales",
+"3": "Entre amigos",
+"4": "En familia",
+"5": "No suelo hacerlo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LB:P45ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Las redes sociales mejoran la política, ni la mejoran ni la empeoran, o empeoran la política?",
+"opciones": {
+"1": "Mejoran la politica",
+"2": "Ni la mejoran ni la empeoran",
+"3": "Empeoran la politica",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2",
+"3"
+]
+},
+{
+"codigo": "LB:P46ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Lo que se dice en redes sociales representa bien lo que piensa el común de la gente o no lo representa bien?",
+"opciones": {
+"1": "Lo representa bien",
+"2": "No lo representa bien",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1"
+],
+"sustantivas": [
+"1",
+"2"
+]
+},
+{
+"codigo": "LB:P47ST.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta información falsa circula en la televisión: mucha, alguna, poca o ninguna?",
+"opciones": {
+"1": "Mucha",
+"2": "Alguna",
+"3": "Poca",
+"4": "Ninguna",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P47ST.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta información falsa circula en la radio: mucha, alguna, poca o ninguna?",
+"opciones": {
+"1": "Mucha",
+"2": "Alguna",
+"3": "Poca",
+"4": "Ninguna",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P47ST.C",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta información falsa circula en los diarios: mucha, alguna, poca o ninguna?",
+"opciones": {
+"1": "Mucha",
+"2": "Alguna",
+"3": "Poca",
+"4": "Ninguna",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P47ST.D",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánta información falsa circula en las redes sociales: mucha, alguna, poca o ninguna?",
+"opciones": {
+"1": "Mucha",
+"2": "Alguna",
+"3": "Poca",
+"4": "Ninguna",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P49ST.A",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Considera que la delincuencia ha aumentado mucho, aumentado algo, ha permanecido igual, ha disminuido algo o ha disminuido mucho?",
+"opciones": {
+"1": "Aumentado mucho",
+"2": "Aumentado algo",
+"3": "Permanecido igual",
+"4": "Disminuido algo",
+"5": "Disminuido mucho",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LB:P49ST.B",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Considera que la drogadicción ha aumentado mucho, aumentado algo, ha permanecido igual, ha disminuido algo o ha disminuido mucho?",
+"opciones": {
+"1": "Aumentado mucho",
+"2": "Aumentado algo",
+"3": "Permanecido igual",
+"4": "Disminuido algo",
+"5": "Disminuido mucho",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LB:P49ST.C",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Considera que la corrupción ha aumentado mucho, aumentado algo, ha permanecido igual, ha disminuido algo o ha disminuido mucho?",
+"opciones": {
+"1": "Aumentado mucho",
+"2": "Aumentado algo",
+"3": "Permanecido igual",
+"4": "Disminuido algo",
+"5": "Disminuido mucho",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5"
+]
+},
+{
+"codigo": "LB:P51ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Con qué frecuencia se preocupa de que pueda llegar a ser víctima de un delito con violencia: todo o casi todo el tiempo, algunas veces, ocasionalmente o nunca?",
+"opciones": {
+"1": "Todo o casi todo el tiempo",
+"2": "Algunas veces",
+"3": "Ocasionalmente",
+"4": "Nunca",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P52N",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Qué tan grave es el problema del narcotráfico y crimen organizado en Colombia: muy grave, bastante grave, poco grave o nada grave?",
+"opciones": {
+"1": "Muy grave",
+"2": "Bastante grave",
+"3": "Poco grave",
+"4": "Nada grave",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P54N",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es para nada corrupto y 10 es totalmente corrupto, ¿qué tan corrupta considera que es Colombia?",
+"opciones": {
+"0": "0 Para nada corrupto",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Totalmente corrupto",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10"
+]
+},
+{
+"codigo": "LB:P55ST",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánto progreso ha habido en la reducción de la corrupción en las instituciones del Estado en los últimos 2 años: mucho, algo, poco o nada?",
+"opciones": {
+"1": "Mucho",
+"2": "Algo",
+"3": "Poco",
+"4": "Nada",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P56N.1",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría a Gustavo Petro?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P56ST.2",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría a Luis Lacalle Pou?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P56N.3",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría a Javier Milei?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P56ST.4",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría a Nicolás Maduro?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P56ST.5",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría a Gabriel Boric?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P56ST.6",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría al Papa Francisco?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P56ST.7",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría a Xi Jinping?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P56ST.8",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría a Donald Trump?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P56ST.9",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría a Andrés Manuel López Obrador?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P56ST.10",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría a Nayib Bukele?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P56ST.11",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría a Vladimir Putin?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P56ST.12",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría a Pedro Sánchez?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P56N.13",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría a Luis Ignacio da Silva \"Lula\"?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P56ST.14",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es muy mala y 10 es muy buena, ¿cómo valoraría a Joe Biden?",
+"opciones": {
+"0": "0 Muy mala",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Muy buena",
+"96": "No lo conoce",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": [
+"6",
+"7",
+"8",
+"9",
+"10"
+],
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10",
+"96"
+]
+},
+{
+"codigo": "LB:P57N",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala del 0 al 10, donde 0 es hacer las cosas uno mismo de manera individual y 10 es hacer las cosas con otras personas o grupos, ¿qué prefiere usted?",
+"opciones": {
+"0": "0 Hacer las cosas uno mismo de manera individual",
+"1": "1",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Hacer las cosas con otras personas o grupos",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10"
+]
+},
+{
+"codigo": "LB:P5NOIJ",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánto está de acuerdo con que, cuando hay escasez de trabajos, los empleadores deben darle prioridad a los colombianos sobre los extranjeros?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P6NOIJ",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Cuánto está de acuerdo con la frase: hoy día es difícil traer hijos al mundo?",
+"opciones": {
+"1": "Muy de acuerdo",
+"2": "De acuerdo",
+"3": "En desacuerdo",
+"4": "Muy en desacuerdo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": [
+"1",
+"2"
+],
+"sustantivas": [
+"1",
+"2",
+"3",
+"4"
+]
+},
+{
+"codigo": "LB:P7NOIJ",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala de 1 a 10, ¿se justifica o no se justifica el aborto? (1 = nunca se justifica, 10 = siempre se justifica)",
+"opciones": {
+"1": "1 Nunca se justifica",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Siempre se justifica",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10"
+]
+},
+{
+"codigo": "LB:P8NOIJ",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala de 1 a 10, ¿se justifica o no se justifica la pena de muerte? (1 = nunca se justifica, 10 = siempre se justifica)",
+"opciones": {
+"1": "1 Nunca se justifica",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Siempre se justifica",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10"
+]
+},
+{
+"codigo": "LB:P9NOIJ",
+"fuente": "Latinobarómetro 2024",
+"texto": "En una escala de 1 a 10, ¿se justifica o no se justifica juzgar por un delito a un joven menor de 15 años como un adulto? (1 = nunca se justifica, 10 = siempre se justifica)",
+"opciones": {
+"1": "1 Nunca se justifica",
+"2": "2",
+"3": "3",
+"4": "4",
+"5": "5",
+"6": "6",
+"7": "7",
+"8": "8",
+"9": "9",
+"10": "10 Siempre se justifica",
+"-1": "No sabe",
+"-2": "No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2",
+"3",
+"4",
+"5",
+"6",
+"7",
+"8",
+"9",
+"10"
+]
+},
+{
+"codigo": "LB:S0N",
+"fuente": "Latinobarómetro 2024",
+"texto": "¿Prefiere trabajar solo o en equipo?",
+"opciones": {
+"1": "Solo",
+"2": "En equipo",
+"-5": "No sabe / No contesta"
+},
+"afirmativas": null,
+"sustantivas": [
+"1",
+"2"
+]
+}
+]

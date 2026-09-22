@@ -231,3 +231,35 @@ con noticias en el contexto.
 (166 en el banco), las voces responden con datos del DANE. Para lo demás no hay
 ancla y manda la creencia del modelo. Las paráfrasis de prueba las escribió un
 modelo, no usuarios reales.
+
+## LAPOP y Latinobarómetro: el ancla fuera de la ECP (22 sep 2026) — desplegada
+
+Mismo método, 240 preguntas más: economía, paz, corrupción, migración, Estados
+Unidos, aprobación del gobierno. Fuentes: LAPOP 2023 (1.493 colombianos) y
+Latinobarómetro 2024 (1.200). Microdatos solo en local (`raw_v2/`, ignorado).
+LAPOP permite publicar solo agregados, así que en el sitio no hay donante: cada
+voz sortea su respuesta de la distribución de su celda (región · sexo · edad ·
+educación, ≥10 encuestados; si no, la celda siguiente más gruesa), con un hash
+de su id. Para una sola pregunta equivale a un donante al azar de la celda.
+
+| Prueba ciega (8 ítems sorteados, paráfrasis del enjambre) | Error en % de sí |
+|---|---|
+| 1ª: sin ancla → con donante | 13.3 → 13.8 · **no pasa** |
+| 2ª: sin ancla → con donante | 21.2 → 8.1 |
+| 2ª: sin ancla → con agregados (lo desplegado) | 21.2 → **6.3** · mejora 8/8 |
+
+Regla fijada antes: mejora media ≥10 pts y ningún ítem empeora >10.
+
+**Qué falló en la primera y se arregló.** Mejoraron todas las preguntas con
+opciones etiquetadas; dos se escribieron mal. Una era casilla de opción
+múltiple ("no la marcó" se leyó como "está en contra", −30). La otra, una
+escala 1-7 sin etiquetas intermedias ("5" no dice nada, −18). Ahora el ancla
+dice la escala y la encuesta de origen.
+
+**Búsqueda con 406 preguntas.** 0 anclas falsas en 39 ajenas; 32/32
+paráfrasis a la misma pregunta (6 a la gemela de la otra encuesta, ej.
+confianza en el Congreso de LB para la de LAPOP).
+
+Archivos: `simcolombia/pipeline/fuentes_opinion.py` → `web/opinion/*.json`
+(agregados) y `web/banco.json` (búsqueda). Textos curados:
+`scripts/experimento/banco_fuentes.json`.

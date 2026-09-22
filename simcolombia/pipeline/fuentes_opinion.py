@@ -6,8 +6,9 @@ pregunta: economía, corrupción, migración, paz, cambio climático.
 
 LICENCIA — importa más que el código: LAPOP prohíbe "distribuir, compartir o
 publicar los datos en cualquier forma" y permite solo reportar agregados.
-Por eso TODO lo que sale de aquí por persona se escribe en data/raw_v2/, que
-está en .gitignore y no se despliega. Nada de estas fuentes va a web/.
+Por eso lo que sale de aquí por persona se escribe en data/raw_v2/ (gitignored,
+no se despliega). A web/ solo van agregados: la distribución de respuestas por
+celda de ≥10 encuestados (web/opinion/), de la que cada voz sortea la suya.
 
 Los microdatos se bajan a mano (ver docs/METODO.md):
   raw_v2/COL_2023_LAPOP_AmericasBarometer_v1.0_w.sav
@@ -125,10 +126,67 @@ def donantes(base, num, items, semilla_fuente):
     return por_id, nivel, len(ok)
 
 
+MIN_CELDA = 10     # agregado publicable: ninguna celda con menos de 10 encuestados
+# de la celda más fina a la más gruesa; el sitio recorre las mismas en votoCelda()
+NIVELES = [("region", "sexo", "ge", "edu"), ("region", "sexo", "ge"), ("region", "ge"),
+           ("region",), ("sexo", "ge", "edu"), ()]
+
+
+def celdas(base, num, codigos, prefijo):
+    """Distribución ponderada de respuestas por celda: lo único que se publica.
+
+    {codigo: {"reg|sexo|edad|edu": {"valor": p, "ns": p}}}, con "*" donde la
+    celda no distingue. "ns" = no sabe o no responde (el donante que no contestó).
+    """
+    ok = base.dropna(subset=["region", "sexo", "edad", "edu"]).copy()
+    ok["ge"] = ok["edad"].map(grupo_edad)
+    for c in ("region", "sexo", "edu"):
+        ok[c] = ok[c].astype(int)
+    grupos = []
+    for campos in NIVELES:
+        for clave, g in (ok.groupby(list(campos)) if campos else [((), ok)]):
+            if len(g) < MIN_CELDA:
+                continue
+            clave = clave if isinstance(clave, tuple) else (clave,)
+            k = "|".join(str(dict(zip(campos, clave)).get(c, "*")) for c in ("region", "sexo", "ge", "edu"))
+            grupos.append((k, g.index, g["peso"].fillna(0).to_numpy()))
+    out = {}
+    for cod in codigos:
+        col, d = num[cod.split(":", 1)[1]], {}
+        for k, idx, w in grupos:
+            v = col.loc[idx].to_numpy()
+            tot, acc = w.sum(), defaultdict(float)
+            for x, p in zip(v, w):
+                acc["ns" if x != x else str(int(x))] += p
+            if tot > 0:
+                d[k] = {x: round(p / tot, 3) for x, p in sorted(acc.items()) if p / tot >= 0.0005}
+        out[cod] = d
+    return out
+
+
+def publicar_celdas(fuentes):
+    """web/opinion/<fuente>_<codigo>.json: un archivo por pregunta, se baja solo
+    el que ancla. web/banco.json: el banco de la búsqueda (ECP + estas)."""
+    banco_f = json.loads((RAIZ / "scripts" / "experimento" / "banco_fuentes.json").read_text())
+    destino = RAIZ / "web" / "opinion"
+    destino.mkdir(exist_ok=True)
+    n = 0
+    for prefijo, (base, num) in fuentes.items():
+        cods = [b["codigo"] for b in banco_f if b["codigo"].startswith(prefijo + ":")]
+        for cod, d in celdas(base, num, cods, prefijo).items():
+            (destino / (cod.replace(":", "_") + ".json")).write_text(json.dumps(d, separators=(",", ":")))
+            n += 1
+    ecp = json.loads((RAIZ / "web" / "banco_ecp.json").read_text())
+    (RAIZ / "web" / "banco.json").write_text(json.dumps(ecp + banco_f, ensure_ascii=False, separators=(",", ":")))
+    print(f"web/opinion: {n} preguntas en agregados (celdas ≥{MIN_CELDA}) · web/banco.json: {len(ecp) + len(banco_f)}")
+
+
 def main():
-    for nombre, cargar, archivo in (("LAPOP 2023", lapop, "lapop"),
-                                    ("Latinobarómetro 2024", latinobarometro, "lb")):
+    fuentes = {}
+    for nombre, cargar, archivo, prefijo in (("LAPOP 2023", lapop, "lapop", "LAPOP"),
+                                             ("Latinobarómetro 2024", latinobarometro, "lb", "LB")):
         base, num, m = cargar()
+        fuentes[prefijo] = (base, num)
         items = [c for c in num.columns if c in m.variable_value_labels and num[c].notna().sum() >= 300]
         por_id, nivel, n_ok = donantes(base, num, items, archivo)
         (RAW / f"respuestas_{archivo}.json").write_text(json.dumps(
@@ -138,6 +196,7 @@ def main():
         for k, et in enumerate(["región·sexo·edad·educación", "sin educación", "solo región·edad", "solo región", "sin región"]):
             if nivel[k]:
                 print(f"    {et:<28} {nivel[k]:>5} ({100 * nivel[k] / n:.1f}%)")
+    publicar_celdas(fuentes)
 
 
 if __name__ == "__main__":

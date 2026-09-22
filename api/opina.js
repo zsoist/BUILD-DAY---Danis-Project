@@ -234,9 +234,10 @@ export default async function handler(req, res) {
   // ── RECUPERAR: ¿el DANE ya preguntó esto? ──────────────────────────────
   // Los LLM traen la creencia de que en Colombia nada funciona y no la corrigen
   // por inferencia; pero sí adoptan una postura dada (39/39). Si la pregunta de
-  // la persona es una que la ECP 2023 midió, se devuelve ese ítem y cada voz
-  // recibe lo que respondió su donante real. Medido en 8 preguntas escritas
-  // como las teclea la gente: error en % de sí de 23.8 a 5.0 pts.
+  // la persona es una que ya midió la ECP 2023, LAPOP 2023 o Latinobarómetro
+  // 2024 (web/banco.json), se devuelve ese ítem y cada voz parte de una
+  // respuesta real de su celda. Medido en preguntas escritas como las teclea
+  // la gente: error en % de sí de 23.8 a 5.0 (ECP) y de 21.2 a 6.3 (LAPOP/LB).
   // Embeddings proponen 3 candidatas; el juez decide si alguna pregunta LO
   // MISMO (0 anclas falsas en 39 preguntas ajenas). Mismo texto que se midió.
   if (body.recuperar === true) {
@@ -247,7 +248,7 @@ export default async function handler(req, res) {
     try {
       if (!globalThis.__banco) {
         const host = req.headers["x-forwarded-host"] || req.headers.host;
-        const r = await fetch(process.env.BANCO_URL || `https://${host}/banco_ecp.json`);
+        const r = await fetch(process.env.BANCO_URL || `https://${host}/banco.json`);
         globalThis.__banco = await r.json();
       }
       const banco = globalThis.__banco;
