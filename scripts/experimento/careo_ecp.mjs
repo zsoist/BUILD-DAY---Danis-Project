@@ -42,7 +42,9 @@ const NOMBRES = ["TEMPERAMENTOS", "LEAN", "FRANQUEZA", "ARRANQUES", "estiloDe",
 /* LIBRETO=0: sin la postura asignada por hash. Es lo que decide si la
    dispersión es del método o fabricada por el prompt. Por defecto, la del sitio. */
 const LIBRETO = (process.env.LIBRETO ?? "1") !== "0";
-const mod = new Function("OPC", "LIBRETO", NOMBRES.map(extraer).join("\n") + "\nreturn {persona, sondeoInstr, anclaDe, anclaItemDe, votoCelda};")(null, LIBRETO);
+/* ORDEN_CACHE=0: el prompt en el orden viejo (identidad primero). */
+const ORDEN_CACHE = (process.env.ORDEN_CACHE ?? "1") !== "0";
+const mod = new Function("OPC", "LIBRETO", "ORDEN_CACHE", NOMBRES.map(extraer).join("\n") + "\nreturn {persona, sondeoInstr, anclaDe, anclaItemDe, votoCelda};")(null, LIBRETO, ORDEN_CACHE);
 
 const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "web/residents_v2.json"), "utf8"));
 const residentes = (RES.residentes || RES).filter(r => r.edad >= 18);   // universo ECP
@@ -119,7 +121,9 @@ const MOTOR = FLOTA === "sitio"
       url: "https://openrouter.ai/api/v1/chat/completions",
       key: env.OPENROUTER_API_KEY,
       extra: { ...(_RZ ? { reasoning: _RZ } : {}),
-               provider: { require_parameters: !!_RZ, data_collection: "deny" } } }
+               /* RUTEO_VOZ: el provider de producción en JSON (api/opina.js) */
+               provider: process.env.RUTEO_VOZ ? JSON.parse(process.env.RUTEO_VOZ)
+                 : { require_parameters: !!_RZ, data_collection: "deny" } } }
   : FLOTA === "glm"
   ? { modelo: process.env.MODELO_VOZ || "z-ai/glm-5.3-flash",
       url: "https://openrouter.ai/api/v1/chat/completions",

@@ -57,13 +57,15 @@ node --test scripts/experimento/anclas.test.mjs     # antes de tocar la estimaci
   despliegue fijada antes de ver datos y probada en ítems que no se usaron
   para calibrar (ver `docs/METODO.md`, mezcla). SSR solo parecía mejor y
   habría dicho "30% apoya invadir propiedad" (real: 11%).
+- **El prompt de la voz empieza por lo que es igual para todas** (`ORDEN_CACHE`):
+  así el proveedor lo cachea. Texto propio de cada persona, después de las reglas.
 - **Docs cortos.** Tabla antes que párrafo. Si no cambia lo que alguien haría, fuera.
 
 ## Modelos (medidos, no por marca)
 
 | Uso | Modelo | Por qué |
 |---|---|---|
-| voces | `deepseek/deepseek-v4.1-flash` | gana 3/5 y empata 2 contra la ECP |
+| voces | `deepseek/deepseek-v4.1-flash` vía DeepInfra | gana 3/5 y empata 2 contra la ECP; ~$0.0003 por voz con caché |
 | respaldo de voces | `z-ai/glm-5.3-flash` | colapsa más (38% en una opción vs 18% real) |
 | enjambre | `z-ai/glm-5.3-flash` | 0% respuestas vacías vs 17% |
 | juez | `typesafe/jev-1.13` | ~$0.00002; prosa (8/8) y "¿preguntan lo mismo?" (0 anclas falsas), no datos (0/7) |

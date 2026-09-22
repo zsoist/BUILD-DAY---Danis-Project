@@ -90,11 +90,16 @@ function limpiarEnlaces(texto) {
 //     otro; sin techo esa diferencia solo se ve en la factura.
 //   require_parameters: si el proveedor no soporta lo que pedimos, OpenRouter
 //     lo descarta EN SILENCIO. Esto obliga a enrutar solo a quien lo acepta.
+//   order: con prompts largos (~3.600 tokens por voz) el router mandaba 6 de 8
+//     voces a Together ($0.30/M) pese a sort:"price". DeepInfra (fp8, $0.14/M)
+//     cachea el prefijo común (las reglas, 47% del prompt) a $0.0042/M: medido,
+//     $0.00047 → $0.000022 con el prefijo en caché. En 8 preguntas ciegas, el
+//     error no cambió (6.3 → 7.6 con ancla, 21.2 → 19.3 sin ancla).
 const RUTEO = {
+  order: (process.env.OR_ORDEN || "deepinfra,streamlake,alibaba").split(","),
   require_parameters: true,
   allow_fallbacks: true,
   data_collection: "deny",
-  sort: "price",
   max_price: {
     prompt: Number(process.env.OR_MAX_PROMPT) || 1.0,
     completion: Number(process.env.OR_MAX_COMPLETION) || 3.0,

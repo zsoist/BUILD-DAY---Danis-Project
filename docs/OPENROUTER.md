@@ -9,6 +9,9 @@
 | GLM 5.3 responde 400 `Reasoning is mandatory for this endpoint` al intentar apagar razonamiento | El endpoint exige razonamiento | `reasoning: {effort: 'low'}` → en la práctica 0 tokens de razonamiento |
 | DeepSeek Flash: 17% de respuestas vacías en banco de 4 tareas × 3 reps (GLM 5.3 Flash: 0%); las vacías se cobran igual | El razonamiento se come `max_tokens` | `reasoning` explícito por modelo y un intento por modelo (ver abajo) |
 | Fallback no actúa | IDs de modelo inválidos dan 400 **antes** de enrutar; el fallback solo cubre fallos en ruta | Validar slugs contra `/models` |
+| Voz del sitio (~3.600 tokens de prompt): 6 de 8 a Together ($0.30/M) con `sort: 'price'` | Con prompts largos el router no elige el más barato; con prompts cortos sí | `order: ["deepinfra", …]`: $0.0012 → $0.0003 por voz (fp8 + caché) |
+| Caché de prefijo en 0 | El prompt empezaba con lo propio de cada persona | Lo fijo primero (`ORDEN_CACHE` en `web/index.html`): 47% del prompt a $0.0042/M en DeepInfra |
+| Cada POST a `/api/opina` rebotaba con 308 (~240 ms) | `trailingSlash: true` en `vercel.json` | El cliente llama a `/api/opina/` |
 | Facturación por tokens estimados | Innecesario | `usage.cost` viene gratis en la respuesta; cobrar con eso |
 
 ## Opciones de enrutamiento
@@ -18,10 +21,10 @@
 | `require_parameters` | **Siempre true.** Sin él, perdes params en silencio según el proveedor |
 | `data_collection: 'deny'` | **Siempre.** Por nuestro proxy viajan preguntas de usuarios |
 | `max_price: {prompt, completion}` | Techo por petición en USD/millón de tokens; evita el 38% sorpresa |
-| `sort` | **No es palanca de precio**: medido n=7, los tres valores cuestan lo mismo ±3%. Mueve la COLA: latency p_max 1582ms · price 3378ms · throughput 14396ms. Usa `latency` cuando corras en paralelo |
+| `sort` | **No es palanca de precio** (con prompts largos ni siquiera elige el barato; usa `order`): medido n=7, los tres valores cuestan lo mismo ±3%. Mueve la COLA: latency p_max 1582ms · price 3378ms · throughput 14396ms. Usa `latency` cuando corras en paralelo |
 | `models` + `route: 'fallback'` | Solo entre modelos que acepten el MISMO `reasoning`. DeepSeek y GLM no (ver abajo) |
 | `only` / `ignore` | Restringir o excluir proveedores concretos |
-| `order` / `allow_fallbacks` | Orden de preferencia manual / permitir caída a otros |
+| `order` / `allow_fallbacks` | **El sitio usa `order`** (DeepInfra, StreamLake, Alibaba; `OR_ORDEN`) con caída permitida. La caché es por proveedor: fijarlo es lo que la hace funcionar |
 | `quantizations` | Fijar precisión aceptable (ej. no aceptar int8) |
 | `zdr` | Zero data retention si un cliente lo exige |
 

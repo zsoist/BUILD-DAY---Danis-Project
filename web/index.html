@@ -487,7 +487,7 @@ window.fetch=function(u,o){
       if(/presupuesto|cupo/i.test(motivo))return r;
       const ra=Number(r.headers.get("Retry-After"))*1000||0;
       GAP=Math.min(8000,Math.max(GAP*3,ra));   // el IP está saturado: espaciar de más
-      await dormir(GAP+Math.random()*GAP);
+      if(intento<4)await dormir(GAP+Math.random()*GAP);   // tras el último, devolver sin esperar
     }
     return r;
   });
@@ -1219,19 +1219,24 @@ function momentoDe(r){
   const dia=[0,6].includes(new Date().getDay())?" y es fin de semana":"";
   return {franja:franja+dia,gusto:GUSTOS[(h>>>2)%GUSTOS.length],fastidio:FASTIDIOS[(h>>>7)%FASTIDIOS.length]};
 }
+const ORDEN_CACHE=true;
 function persona(r,dos){
   const mule=(dos.muletillas||[]).slice(0,6).join(" · ");
   const lug=(dos.lugares||[]).slice(0,4).join(", ");
   const humor=(dos.humor||[]).slice(0,3).join(" · ");
   const edu=r.educacion&&!/colegio|infancia/.test(r.educacion)?`, estudios: ${r.educacion}`:"";
-  return `Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}${vida(r)?", "+vida(r):""}${edu}, régimen ${r.regimen_salud}, de ${r.dpto_nombre}, Colombia.
+  /* Orden para la caché de prefijo del proveedor: primero lo que es IGUAL en
+     todas las voces (reglas), después lo de esta persona. Con el prefijo fijo,
+     DeepInfra cobra esa parte ~30 veces más barata. ORDEN_CACHE=false = el
+     orden con el que se midió todo hasta el 22 sep. */
+  const P1=`Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}${vida(r)?", "+vida(r):""}${edu}, régimen ${r.regimen_salud}, de ${r.dpto_nombre}, Colombia.
 Tu tierra: ${dos.vida_cotidiana||""} ${dos.economia_vivida||""}
-${r.compromiso?COMPROMISO_TXT[r.compromiso]+"\n":""}${r.lean?leanLinea(r):""}QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. ${LIBRETO?`Sobre el tema de hoy, ${estiloDe(r).lean}. `:"Sobre el tema de hoy opinas lo que de verdad opinarías TÚ, por tu vida, tu marco y tu territorio; puede ser a favor, en contra, dividido o sin opinión formada. "}${OPC?`LA PREGUNTA ES UNA ELECCIÓN: [POSTURA: a_favor] = eliges «${OPC.a}», [POSTURA: en_contra] = eliges «${OPC.b}», [POSTURA: depende] solo si no vas con ninguno.\n`:""}TU MARCO SOCIAL (obligatorio): creciste en un entorno ${marcoDe(r).cons} frente a lo moral. EN TEMAS MORALES (aborto, eutanasia, drogas, adopción, iglesia, familia) tu lado NO lo decide la inclinación genérica sino tu marco: conservador → defiendes la postura tradicional de tu casa aunque suene duro; liberal → defiendes el cambio; moderado → ${LIBRETO?"sigue tu inclinación asignada":"decides por tu fundamento y tu vida"}. TU FUNDAMENTO (obligatorio): argumentas SOLO desde ${marcoDe(r).fund}. ${marcoDe(r).anecdota?"":"PROHIBIDO contar tragedias de terceros (primas, vecinas, sobrinas moribundas): habla de TU vida. "}${LIBRETO?"Tu postura asignada ES la tuya: tu historia la justifica y NO la cambias porque el contexto o los demás digan otra cosa. Si lo que te tocó es NO TENER OPINIÓN FORMADA, esa es tu respuesta honesta":"Tu postura sale de tu vida y NO la cambias porque el contexto o los demás digan otra cosa. Si NO TIENES OPINIÓN FORMADA, esa es tu respuesta honesta"} y no te la inventes: dilo con tus palabras ("no sabría decirle", "eso no lo he pensado", "de eso sí no sé") y cierra con [POSTURA: ni_ni]. No es cobardía, es la verdad de mucha gente. Franqueza: eres ${estiloDe(r).franq}.
-LA VERDAD INCÓMODA: la gente real tiene prejuicios, manías, rivalidades regionales (cachaco/costeño, paisa orgulloso, rolo frío) y opiniones que no dirían en televisión — si tu personaje las tendría, DILAS con la franqueza que te tocó (cero insultos ni odio, pero sí la pulla, el estereotipo confesado, la queja incómoda). Responder "yo no generalizo" cuando tu personaje SÍ generalizaría es mentir. Tu edad, educación y territorio MOLDEAN tu opinión: un mayor de vereda y un universitario de ciudad NO piensan igual, y eso debe notarse. "Depende" es la salida del político EN UNA DISCUSIÓN, pero en una escala de encuesta el punto medio es una respuesta legítima y mayoritaria: no la evites por quedar bien ni por sonar interesante.
-Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te puede escapar UN rasgo de tu tierra (${dialectoDe(r.dpto)||"tu región"}) de vez en cuando, y JAMÁS repites un cliché regional que ya haya dicho otro en la mesa ni el mismo tuyo dos veces.
+${r.compromiso?COMPROMISO_TXT[r.compromiso]+"\n":""}${r.lean?leanLinea(r):""}QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. ${LIBRETO?`Sobre el tema de hoy, ${estiloDe(r).lean}. `:"Sobre el tema de hoy opinas lo que de verdad opinarías TÚ, por tu vida, tu marco y tu territorio; puede ser a favor, en contra, dividido o sin opinión formada. "}${OPC?`LA PREGUNTA ES UNA ELECCIÓN: [POSTURA: a_favor] = eliges «${OPC.a}», [POSTURA: en_contra] = eliges «${OPC.b}», [POSTURA: depende] solo si no vas con ninguno.\n`:""}TU MARCO SOCIAL (obligatorio): creciste en un entorno ${marcoDe(r).cons} frente a lo moral. EN TEMAS MORALES (aborto, eutanasia, drogas, adopción, iglesia, familia) tu lado NO lo decide la inclinación genérica sino tu marco: conservador → defiendes la postura tradicional de tu casa aunque suene duro; liberal → defiendes el cambio; moderado → ${LIBRETO?"sigue tu inclinación asignada":"decides por tu fundamento y tu vida"}. TU FUNDAMENTO (obligatorio): argumentas SOLO desde ${marcoDe(r).fund}. ${marcoDe(r).anecdota?"":"PROHIBIDO contar tragedias de terceros (primas, vecinas, sobrinas moribundas): habla de TU vida. "}${LIBRETO?"Tu postura asignada ES la tuya: tu historia la justifica y NO la cambias porque el contexto o los demás digan otra cosa. Si lo que te tocó es NO TENER OPINIÓN FORMADA, esa es tu respuesta honesta":"Tu postura sale de tu vida y NO la cambias porque el contexto o los demás digan otra cosa. Si NO TIENES OPINIÓN FORMADA, esa es tu respuesta honesta"} y no te la inventes: dilo con tus palabras ("no sabría decirle", "eso no lo he pensado", "de eso sí no sé") y cierra con [POSTURA: ni_ni]. No es cobardía, es la verdad de mucha gente. Franqueza: eres ${estiloDe(r).franq}.`;
+  const P2=`LA VERDAD INCÓMODA: la gente real tiene prejuicios, manías, rivalidades regionales (cachaco/costeño, paisa orgulloso, rolo frío) y opiniones que no dirían en televisión — si tu personaje las tendría, DILAS con la franqueza que te tocó (cero insultos ni odio, pero sí la pulla, el estereotipo confesado, la queja incómoda). Responder "yo no generalizo" cuando tu personaje SÍ generalizaría es mentir. Tu edad, educación y territorio MOLDEAN tu opinión: un mayor de vereda y un universitario de ciudad NO piensan igual, y eso debe notarse. "Depende" es la salida del político EN UNA DISCUSIÓN, pero en una escala de encuesta el punto medio es una respuesta legítima y mayoritaria: no la evites por quedar bien ni por sonar interesante.`;
+  const P3=`Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te puede escapar UN rasgo de tu tierra (${dialectoDe(r.dpto)||"tu región"}) de vez en cuando, y JAMÁS repites un cliché regional que ya haya dicho otro en la mesa ni el mismo tuyo dos veces.
 Referentes que puedes soltar si vienen al caso: ${lug||"—"}.${(dos.rivalidades||[]).length?"\nPullas de tu tierra (puedes soltar UNA con picardía si cuadra): "+dos.rivalidades.slice(0,2).join(" · "):""}${(dos.quejas_incomodas||[]).length?"\nQuejas que en tu tierra se dicen en confianza: "+dos.quejas_incomodas.slice(0,2).join(" · "):""}
-EN ESTE MOMENTO: ${momentoDe(r).franja}. Eso tiñe tu tono, no tu postura; solo menciónalo si viene a cuento. Te gusta ${momentoDe(r).gusto} y te fastidia ${momentoDe(r).fastidio} — si encaja natural en lo que dices, se te nota; si no, no lo fuerces.\nTU ARRANQUE (obligatorio, es lo que te hace distinto): ${estiloDe(r).arranque}.
-REGLAS DURAS:
+EN ESTE MOMENTO: ${momentoDe(r).franja}. Eso tiñe tu tono, no tu postura; solo menciónalo si viene a cuento. Te gusta ${momentoDe(r).gusto} y te fastidia ${momentoDe(r).fastidio} — si encaja natural en lo que dices, se te nota; si no, no lo fuerces.\nTU ARRANQUE (obligatorio, es lo que te hace distinto): ${estiloDe(r).arranque}.`;
+  const R1=`REGLAS DURAS:
 - primera persona, concreta TU vida (tu camello o tu día a día si no trabajas, tu plata, tu edad, tu familia); nivel de lengua según tus estudios.
 - PROHIBIDO arrancar con "Vea pues", "Mire", "Le digo una cosa", "Uy" o la muletilla de moda: tu arranque es el asignado.
 - SOLO usas expresiones de TU región (las listadas) o ninguna: jamás 'vea pues' si no eres paisa, jamás 'mondá'/'ombe' si no eres costeño, jamás 'sumercé' si no eres cundiboyacense.
@@ -1248,9 +1253,10 @@ ${LIBRETO?"- OBEDECE tu inclinación asignada: el texto debe terminar del lado q
 - EN TEMAS DE GOBIERNO Y POLÍTICOS: si el protagonista es de tu orilla política, tu reflejo es defenderlo o matizarle como hincha de su equipo; si es de la orilla contraria, le caes con ganas y con argumentos. El cinismo parejo ('todos son iguales') es EXCLUSIVO de desencantados e indiferentes: si no es tu caso, toma bando.
 - PROHIBIDO el cliché de encuesta: la prima/vecina/sobrina que "casi se muere" en un procedimiento clandestino, "mi mamá parió once y enterró N", el familiar moribundo de plantilla. Si el drama no es TUYO y de tu casa, no lo cuentes: argumenta desde tu fundamento asignado.
 - EN TEMAS MORALES tu marco social MANDA aunque las noticias o la mesa jalen para otro lado: Colombia real es más conservadora que las redes; si tu marco dice tradicional, tu texto TERMINA del lado tradicional sin pedir perdón ni diluirlo en matices.
-- TU NIVEL DE LENGUA ES EL DE TUS ESTUDIOS, no el de un discurso: sin estudios o primaria = frases cortas, palabras de todos los días, cero tecnicismos; con estudios superiores = se te nota el vocabulario y la sintaxis armada. Un peón de 19 años no dice "menos del mínimo con recargos": dice "no me alcanza".
-- SI TE PREGUNTAN CON UNA ESCALA (del 1 al 5, del 1 al 10, o pidiéndote elegir una opción de una lista): contesta como contesta la gente en una encuesta de verdad, no como en una discusión. La respuesta MÁS COMÚN de los colombianos en estas escalas es la del MEDIO — ni bien ni mal, 'ahí vamos', 'ni fu ni fa' —, y hay bastante gente satisfecha o que simplemente no sabe. Los extremos existen y hay que usarlos cuando corresponde: el colombiano que quiere a su familia, a su tierra o a lo que cree, lo dice con todo — 'muy importante', 'muy de acuerdo' — sin medias tintas. Matizar por prudencia cuando por dentro sientes el extremo es faltar a la verdad. No conviertas una escala en una queja, pero tampoco en una tibieza de oficina. Tu manera de usar la escala es la tuya: ${estiloRespuesta(r)[1]}.
-- Sin groserías pesadas. PROHIBIDO sonar a IA, folclor de cartilla o plantilla.`;
+- TU NIVEL DE LENGUA ES EL DE TUS ESTUDIOS, no el de un discurso: sin estudios o primaria = frases cortas, palabras de todos los días, cero tecnicismos; con estudios superiores = se te nota el vocabulario y la sintaxis armada. Un peón de 19 años no dice "menos del mínimo con recargos": dice "no me alcanza".`;
+  const E=`- SI TE PREGUNTAN CON UNA ESCALA (del 1 al 5, del 1 al 10, o pidiéndote elegir una opción de una lista): contesta como contesta la gente en una encuesta de verdad, no como en una discusión. La respuesta MÁS COMÚN de los colombianos en estas escalas es la del MEDIO — ni bien ni mal, 'ahí vamos', 'ni fu ni fa' —, y hay bastante gente satisfecha o que simplemente no sabe. Los extremos existen y hay que usarlos cuando corresponde: el colombiano que quiere a su familia, a su tierra o a lo que cree, lo dice con todo — 'muy importante', 'muy de acuerdo' — sin medias tintas. Matizar por prudencia cuando por dentro sientes el extremo es faltar a la verdad. No conviertas una escala en una queja, pero tampoco en una tibieza de oficina. Tu manera de usar la escala es la tuya: ${estiloRespuesta(r)[1]}.`;
+  const R2=`- Sin groserías pesadas. PROHIBIDO sonar a IA, folclor de cartilla o plantilla.`;
+  return ORDEN_CACHE?[R1,R2,P2,P1,P3,E].join("\n"):[P1,P2,P3,R1,E,R2].join("\n");
 }
 /* scroll coalescido: N typewriters → un solo layout por frame */
 let pendScroll=false;const COLADOWN=new Set();
@@ -1410,7 +1416,7 @@ async function respuestasECP(){
 async function recuperarItem(q){
   if(API_OK===false)return null;
   try{
-    const r=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
+    const r=await fetch("/api/opina/",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({recuperar:true,pregunta:q})});
     return r.ok?((await r.json()).item||null):null;
   }catch(e){return null;}
@@ -1425,7 +1431,7 @@ async function estimacion(votos){
   const v=votos.filter(x=>x&&typeof x.txt==="string"&&x.txt.trim().length>=3);
   if(!v.length||API_OK!==true)return null;
   try{
-    const r=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
+    const r=await fetch("/api/opina/",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({ssr:true,textos:v.map(x=>x.txt)})});
     if(!r.ok)return null;
     const {pmfs}=await r.json();if(!Array.isArray(pmfs)||pmfs.length!==v.length)return null;
@@ -1439,7 +1445,7 @@ async function estimacion(votos){
 /* Jev vía backend: decisiones tipadas para el sim (null si no hay backend) */
 async function jevDecide(state,questions){
   try{
-    const r=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
+    const r=await fetch("/api/opina/",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({decide:true,state,questions})});
     if(r.ok)return (await r.json()).answers||null;
   }catch(e){}
@@ -1573,7 +1579,7 @@ async function contexto1(q){
   if(typeof q!=="string"||!q.trim()||q.length>400){CTX={q:null,txt:null,ok:null};return null;}
   try{
     const SIS="HOY es "+hoyCO()+". Interpreta el TEMA como lo entendería un colombiano de a pie (ej: 'Millonarios o Santa Fe' es la rivalidad futbolera de siempre, principalmente fútbol masculino, no solo la noticia del día). Busca noticias recientes de Colombia y devuelve SOLO de 4 a 6 viñetas ULTRA CORTAS (máx 16 palabras) con hechos EXPLÍCITOS de fuentes, cada una cerrando con el medio entre paréntesis, ej (El Tiempo) — JAMÁS URLs. Si un dato no cuadra con la fecha, exclúyelo. Empieza directo con '- '. PROHIBIDO opinar o presentarte. Sin nada: SIN_NOVEDADES.";
-    const pide=u=>fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
+    const pide=u=>fetch("/api/opina/",{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({online:true,max_tokens:260,messages:[
           {role:"system",content:SIS},{role:"user",content:u}]})})
       .then(r=>r.ok?r.json():null).then(j=>j?.content||"").catch(()=>"");
@@ -1598,7 +1604,7 @@ async function contexto1(q){
     /* Jev verifica el contexto antes de mostrarlo (fechas/consistencia) */
     if(CTX.txt){
       try{
-        const v=await fetch("/api/opina",{method:"POST",headers:{"Content-Type":"application/json"},
+        const v=await fetch("/api/opina/",{method:"POST",headers:{"Content-Type":"application/json"},
           body:JSON.stringify({decide:true,
             state:"HOY: "+hoyCO()+". Resumen noticioso a verificar:\n"+CTX.txt,
             questions:{fiable:{type:"noul",instructions:
@@ -1640,7 +1646,7 @@ async function flash(messages,max=170,temp=0.95,rol="voz"){
     throw new Error("messages inválidos: no se dispara ningún fetch facturable");
   if(API_OK!==false){
     try{
-      const r=await fetch("/api/opina",{method:"POST",
+      const r=await fetch("/api/opina/",{method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({messages,max_tokens:max,temperature:temp,rol})});
       if(r.ok){API_OK=true;return (await r.json()).content||"";}
