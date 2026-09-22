@@ -170,7 +170,10 @@ async def brain(prompt: str, rank: str = "general") -> str:
         u = r.usage
         budget.anthropic_in += u.input_tokens
         budget.anthropic_out += u.output_tokens
-        return r.content[0].text
+        # con thinking adaptativo el primer bloque puede ser ThinkingBlock:
+        # extraer SOLO los bloques de texto, jamás content[0] a ciegas
+        return "".join(b.text for b in r.content
+                       if getattr(b, "type", "") == "text") or ""
     return await llm(prompt, model="deepseek-v4-pro")
 
 

@@ -1,0 +1,1 @@
+{"task": "Chequeo pre-show del enjambre.", "tasks": [{"id": "chk_flash", "thinking": "none", "filename": "chk_flash.md", "prompt": "Escribe exactamente: ENJAMBRE OPERATIVO — deepseek-flash respondiendo. Nada más."}, {"id": "chk_think", "thinking": "low", "filename": "chk_think.md", "prompt": "¿Cuánto es 17×23? Responde solo: 'RAZONAMIENTO OK: <número>'."}]}
