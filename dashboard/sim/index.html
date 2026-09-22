@@ -15,7 +15,7 @@ FORM: continuación del arcade-mission-control del visor, pinneado por Daniel.
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ColombIA ¡Que Piensa!</title>
 <link rel="icon" type="image/png" href="../assets/quepiensa_48.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -209,8 +209,75 @@ transition:fill .25s}
 
 #banner{grid-area:banner;text-align:center;font-size:12.5px;color:var(--faint);
 padding:10px;border:1px dashed var(--grid)}
-@media(max-width:1000px){#app{grid-template-columns:1fr;
-grid-template-areas:"top" "censo" "encuesta" "ficha" "banner"}#kpis{display:none}}
+/* ═══ MÓVIL 375-430px · iOS Safari — todo el rediseño vive aquí ═══ */
+@media(max-width:1000px){
+/* 1 · ORDEN: top → conversación → censo+mapa → ficha → banner */
+#app{grid-template-columns:minmax(0,1fr);
+grid-template-areas:"top" "encuesta" "censo" "ficha" "banner";
+padding:calc(8px + env(safe-area-inset-top)) calc(8px + env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left));
+gap:10px;overflow-x:clip}
+#app>*{min-width:0}
+html,body{overflow-x:hidden;max-width:100%}
+body{min-height:100vh;min-height:100dvh}
+#kpis{display:none}
+/* 2 · header compacto: logo+título en una fila, selector full-width, enlaces pequeños */
+#top{gap:6px 8px;padding:8px 10px}
+#logo{width:28px;height:28px;margin-right:-4px}
+#title{font-size:15px;flex:1 1 auto;min-width:0}
+#title small{font-size:15px}
+#lema{font-size:8px;letter-spacing:.08em;margin-top:0}
+#dptosel{order:3;flex:1 1 100%;width:100%;min-width:0;min-height:44px;font-size:16px;padding:10px 12px}
+a.back{order:4;font-size:12px;min-height:44px;display:flex;align-items:center;padding:0}
+#gear{order:5;margin-left:auto;min-height:44px;padding:10px 12px}
+/* 3 · iOS: inputs 16px (sin zoom), targets >=44px, sin overflow-x */
+select,input{font-size:16px;min-height:44px}
+button,.pxbtn{min-height:44px;touch-action:manipulation}
+#selinfo .chip .chip-x{min-height:0;min-width:0;height:auto}
+/* 4 · la conversación manda: qbar static y prominente, sugerencias en carrusel */
+#encuesta{min-height:0}
+#encuesta>h2{padding:10px 12px 8px;gap:8px}
+#ctrl button{min-height:44px;padding:8px 10px}
+#modo{flex:1 1 100%}
+#modo button{flex:1 1 0;min-height:44px;font-size:10px;padding:8px 6px}
+#modohelp{font-size:12.5px;padding:8px 12px 0}
+#selinfo{font-size:13px;padding:6px 12px 8px}
+#qbar{position:static;display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border-top:2px solid var(--work);border-bottom:2px solid var(--work);background:var(--panel2)}
+#qin{flex:1 1 100%;width:100%;min-width:0;min-height:48px;font-size:16px !important;padding:12px 13px !important}
+#qbar select,#nsel{flex:1 1 auto;min-width:0;font-size:16px}
+#qbar .pxbtn,#qbar button[type="submit"]{flex:1 1 100%;min-height:48px;font-size:12px}
+#sugg{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scroll-padding:0 12px;gap:8px;padding:0 12px 12px}
+#sugg button{flex:0 0 auto;scroll-snap-align:start;white-space:nowrap;min-height:44px;padding:8px 12px;font-size:13px}
+#sugg::-webkit-scrollbar{display:none}
+#tally{gap:8px;padding:10px 12px}
+.tal{flex:1 1 calc(50% - 4px);min-width:0}
+#resps{max-height:50vh;max-height:50dvh;-webkit-overflow-scrolling:touch;padding:10px;gap:9px}
+.resp{max-width:100%;grid-template-columns:36px 1fr;gap:9px;padding:10px 11px}
+.resp.alt{grid-template-columns:1fr 34px}
+.resp .px{width:34px;height:34px}
+.resp .say{font-size:15px}
+.ctx,.mod{font-size:15px;padding:10px 12px}
+#ticker{font-size:13px}
+#seats{gap:6px;padding:4px 0 3px}
+/* 5 · censo: mapa contenido (~45dvh), centrado, mapbar visible, tooltip off en táctil */
+#navmap{padding:6px 8px 2px}
+#navmap svg{width:100%;height:auto;max-height:45vh;max-height:45dvh;display:block;margin:0 auto}
+#maplabel{padding:6px 0 3px}
+#maptip{display:none !important}
+#mapbar{padding:0 8px 10px}
+#mapa{grid-template-columns:minmax(0,1fr)}
+#mapa svg{max-height:45vh;max-height:45dvh}
+#mesa{max-height:50vh;max-height:50dvh}
+#censo .body{padding:12px 13px}
+/* ficha, modal, banner, ajustes */
+#ficha .body{padding:12px 13px;font-size:15px}
+#rmask{padding:calc(8px + env(safe-area-inset-top)) 8px calc(8px + env(safe-area-inset-bottom))}
+#rcard{max-height:88vh;max-height:88dvh;overflow-y:auto}
+#rcard header{gap:12px;padding:12px}
+#rcard header canvas{width:64px;height:64px}
+#rcard .rkv{grid-template-columns:92px 1fr;gap:8px 10px;font-size:14.5px}
+#banner{font-size:12px;padding:10px calc(10px + env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom))}
+#cfg{left:8px;right:8px;top:calc(8px + env(safe-area-inset-top));width:auto;max-width:none}
+}
 /* ═══ RONDA 8 · efectos pixel premium ═══ */
 .conclu{position:relative;animation:stamp .3s steps(4)}
 @keyframes stamp{0%{transform:translateY(-7px) scale(1.05);opacity:0}100%{transform:none;opacity:1}}
@@ -250,6 +317,41 @@ grid-template-areas:"top" "censo" "encuesta" "ficha" "banner"}#kpis{display:none
 @keyframes mapfull{50%{opacity:.55}}
 #navmap path.pacha{animation:pachablink .5s steps(1) 6}
 @keyframes pachablink{50%{opacity:.2}}
+/* ═══ RONDA 9 · pulido táctil móvil (todo ≤1000px, no toca desktop) ═══ */
+@media(max-width:1000px){
+/* 1 · respuestas: ancho completo y más aire */
+#resps{padding:10px;gap:12px}
+.resp,.resp.alt{width:100%;max-width:100%;margin-left:0;padding:13px 13px;gap:12px}
+.resp{grid-template-columns:40px 1fr}
+.resp.alt{grid-template-columns:1fr 40px}
+.resp .say{font-size:15.5px;line-height:1.68}
+/* 2 · modos de pregunta: 3 columnas iguales, full-width, ≥44px */
+#modo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;flex:1 1 100%;width:100%}
+#modo button{width:100%;min-height:44px;padding:8px 4px;font-size:10px;line-height:1.3;display:flex;align-items:center;justify-content:center;text-align:center}
+/* 3 · recuento: fila compacta legible */
+#tally{gap:6px;padding:8px 10px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tal{flex:0 0 auto;min-width:86px;padding:8px 8px 7px}
+.tal b{font-size:18px}
+.tal span{font-size:10.5px}
+/* 4 · ficha del residente: hoja a pantalla completa con scroll interno */
+#rmask{padding:0;align-items:stretch}
+#rcard{width:100%;max-width:none;height:100%;max-height:100%;display:flex;flex-direction:column;border:0;box-shadow:none;overflow:hidden;animation:none}
+#rcard header{flex:0 0 auto;flex-wrap:wrap;padding:14px 12px;gap:12px}
+#rcard header canvas{width:64px;height:64px;flex:0 0 auto}
+#rcard header .nm{flex:1 1 auto;min-width:0;font-size:12px}
+#rcard .cerrar{width:44px;height:44px;min-width:44px;padding:0;font-size:18px;display:flex;align-items:center;justify-content:center;border-color:var(--work);color:var(--work)}
+#rcard .rkv{grid-template-columns:1fr;gap:4px 0;padding:14px 16px 22px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;font-size:15px}
+#rcard .rkv b{padding-top:10px}
+#rcard footer{flex:0 0 auto;padding:12px 16px calc(14px + env(safe-area-inset-bottom))}
+/* 5 · chips activos: fila con scroll horizontal */
+#selinfo{padding:8px 12px;white-space:nowrap;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+#selinfo .chip{margin:0 6px 0 0;padding:7px 4px 7px 10px;font-size:13px;vertical-align:middle}
+#selinfo .chip .chip-x{padding:0 8px;font-size:14px;min-height:0}
+#selinfo>button{position:static;margin-left:0;min-height:32px;padding:6px 10px;vertical-align:middle}
+/* 6 · sugerencias: objetivos táctiles ≥44px */
+#sugg{gap:8px;padding:2px 12px 14px}
+#sugg button{min-height:44px;padding:9px 13px;font-size:13.5px;display:inline-flex;align-items:center}
+}
 </style>
 </head>
 <body>
