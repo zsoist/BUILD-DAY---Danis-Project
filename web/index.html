@@ -457,13 +457,15 @@ $("#c-orkey").onchange=e=>{cfg.orkey=e.target.value.trim();try{localStorage.setI
 
 /* ── Cola hacia /api/opina ──
    Una tertulia dispara ~12 peticiones en ráfaga y el servidor limita por IP.
-   Máximo 3 en vuelo, separación con jitter, y reintento con backoff SOLO
+   Máximo 6 en vuelo, separación con jitter, y reintento con backoff SOLO
    cuando el 429 es de ritmo. Un 429 de presupuesto no se recupera
    esperando: reintentarlo hacía esperar ~40 s para un fallo seguro. */
 let EN_VUELO=0,T_OPINA=0,GAP=200;const ESPERAN=[];
 const dormir=ms=>new Promise(r=>setTimeout(r,ms));
 async function encolar(fn){
-  while(EN_VUELO>=3)await new Promise(r=>ESPERAN.push(r));
+  /* 6 en vuelo: una pregunta hace ~18 llamadas y el servidor admite 40/min por
+     IP. Con 3, las 8 voces salían en tres tandas y la espera pasaba de 90 s. */
+  while(EN_VUELO>=6)await new Promise(r=>ESPERAN.push(r));
   EN_VUELO++;
   try{return await fn();}
   finally{EN_VUELO--;ESPERAN.shift()?.();}
