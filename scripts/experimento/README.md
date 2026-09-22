@@ -63,3 +63,12 @@ Sesgo que SSR no arregla: GLM pone 38% en «muy insatisfecho» donde los humanos
 - **Fable/Anthropic**: apagado para siempre.
 
 Este repo no es una encuesta, no tiene margen de error, no se usa para campañas ni segmentación de votantes. Contexto y resultados: `docs/METODO.md`.
+## Posturas sí/no (lo que hace el sitio)
+
+| Variable / script | Qué |
+|---|---|
+| `ENJAMBRE=sitio` | misma ruta que producción: `deepseek/deepseek-v4.1-flash` por OpenRouter |
+| `LIBRETO=0` | sin la postura sorteada 40/40/20 (por defecto 1, como el sitio) |
+| `postura.py` | % de "sí" de las voces contra la ECP (P5261S1-S8), categórico y SSR |
+
+Resultado y decisión (SSR no se despliega todavía): `docs/METODO.md`, sección "Sí/no".

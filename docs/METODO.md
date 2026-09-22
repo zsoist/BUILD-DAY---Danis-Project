@@ -145,3 +145,34 @@ Por eso la app no reporta marginales como si fueran una medición: **los chequeo
 **Prohibido explícitamente**: cualquier uso de targeting electoral o de campaña.
 
 **Dos reglas que no se tocan**: el aviso de SIMULACIÓN nunca se quita, y no se acepta uso electoral.
+## Sí/no: SSR contra categórico (22 sep 2026)
+
+El sitio pregunta posturas, no escalas. Se midió con los 8 ítems de acuerdo de
+la ECP (P5261S1-S8, Sí/No/No sabe; el "sí" real va del 4% al 86%), 120 voces por
+condición, `deepseek/deepseek-v4.1-flash` por OpenRouter como en producción.
+Métrica: error en puntos del % de "sí" entre quienes deciden.
+
+| Condición | Categórico | SSR (anclas genéricas, T=0.25) |
+|---|---|---|
+| con libreto, calibración (S3 S4 S7 S8) | 13.4 | 11.8 |
+| con libreto, prueba ciega (S1 S2 S5 S6) | 10.5 | 7.4 |
+| sin libreto, calibración | 18.7 | 14.0 |
+
+- SSR gana 5 de 8 ítems; no es significativo (signos, p≈0.7).
+- Fallo estructural de SSR: en rechazos casi unánimes infla el "sí" ~20 pts
+  (invadir propiedad: real 10.8%, SSR 30.4%, categórico 0%). Las negativas se
+  dicen con vocabulario positivo y el embedding las acerca al ancla del "sí".
+- Fallo del categórico: colapsa a 100% en consensos (mujeres: real 86%, 100%).
+- Anclas que nombran la proposición: error 31-34 pts. Descartadas (negación).
+- T se probó de 0.05 a 0.75 en la calibración: el óptimo es 0.25-0.35, el del
+  paper; no se ajustó nada sobre la prueba ciega.
+- **Libreto** (postura sorteada 40/40/20 por hash, igual para todo tema): el
+  modelo lo ignora en temas de consenso; en los disputados empuja hacia 50/50.
+  En la escala 1-5 (P5301), SSR da lo mismo con y sin él (W1 0.045 vs 0.050).
+
+Decisión: SSR no se despliega en el sitio con esta evidencia. Siguiente prueba
+necesaria: mezclar la etiqueta de postura de la propia voz con la distribución
+SSR, medido en ítems nuevos.
+
+Reproducir: `ENJAMBRE=sitio LIBRETO=1 node scripts/experimento/careo_ecp.mjs
+120 P5261S1 x.json libre` y `uv run python scripts/experimento/postura.py x.json`.

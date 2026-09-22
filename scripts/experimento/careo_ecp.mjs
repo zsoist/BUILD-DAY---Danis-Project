@@ -39,7 +39,10 @@ function extraer(nombre) {
 const NOMBRES = ["TEMPERAMENTOS", "LEAN", "FRANQUEZA", "ARRANQUES", "estiloDe",
   "FUNDAMENTOS", "marcoDe", "GUSTOS", "FASTIDIOS", "momentoDe", "COMPROMISO_TXT",
   "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "ESTILOS_RESP", "estiloRespuesta", "persona"];
-const mod = new Function("OPC", NOMBRES.map(extraer).join("\n") + "\nreturn {persona};")(null);
+/* LIBRETO=0: sin la postura asignada por hash. Es lo que decide si la
+   dispersión es del método o fabricada por el prompt. Por defecto, la del sitio. */
+const LIBRETO = (process.env.LIBRETO ?? "1") !== "0";
+const mod = new Function("OPC", "LIBRETO", NOMBRES.map(extraer).join("\n") + "\nreturn {persona};")(null, LIBRETO);
 
 const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "web/residents_v2.json"), "utf8"));
 const residentes = (RES.residentes || RES).filter(r => r.edad >= 18);   // universo ECP
@@ -63,6 +66,17 @@ let pregunta = null;
 if (!pregunta) throw new Error(`no encontré ${CODIGO} en el codebook`);
 const TEXTO = (pregunta.texto_literal || pregunta.etiqueta).trim();
 console.error(`Pregunta ECP ${CODIGO}: ${TEXTO.slice(0, 120)}…`);
+/* En modo libre la persona no debe ver opciones: el texto literal de la ECP
+   trae la tarjeta pegada ("1 Si 2 No 99 No sabe"), y así "libre" no era libre.
+   Se quita la numeración, el literal de la sub-pregunta y la cola de opciones. */
+const TEXTO_LIBRE = (() => {
+  let s = TEXTO.replace(/^\d+\.\s*/, "")
+               .replace(/:\s*[a-z]\.\s*Que\b/, " que")
+               .replace(/\s+1\s+S[ií]\s+2\s+No\b.*$/s, "");
+  if (!s.startsWith("¿")) s = "¿" + s;
+  if (!/\?\s*$/.test(s)) s += "?";
+  return s.replace(/\?\?$/, "?");
+})();
 
 const muestra = [], usados = new Set();
 const pesos = Object.keys(MARG).map(c => [c, MARG[c]?.poblacion || 1]);
@@ -89,7 +103,16 @@ const env = Object.fromEntries(fs.readFileSync(path.join(ROOT, ".env"), "utf8")
    GLM no deja apagar el razonamiento —devuelve 400 "Reasoning is mandatory"—
    pero con effort "low" no gasta un solo token de razonamiento. Medido. */
 const FLOTA = (process.env.ENJAMBRE || "deepseek").toLowerCase();
-const MOTOR = FLOTA === "glm"
+/* "sitio": el mismo modelo y la misma ruta que usa producción (api/opina.js):
+   DeepSeek por OpenRouter, razonamiento apagado. Es lo que hay que medir cuando
+   la pregunta es "qué ve la gente en el sitio". */
+const MOTOR = FLOTA === "sitio"
+  ? { modelo: process.env.MODELO_VOZ || "deepseek/deepseek-v4.1-flash",
+      url: "https://openrouter.ai/api/v1/chat/completions",
+      key: env.OPENROUTER_API_KEY,
+      extra: { reasoning: { enabled: false },
+               provider: { require_parameters: true, data_collection: "deny" } } }
+  : FLOTA === "glm"
   ? { modelo: process.env.MODELO_VOZ || "z-ai/glm-5.3-flash",
       url: "https://openrouter.ai/api/v1/chat/completions",
       key: env.OPENROUTER_API_KEY,
@@ -168,7 +191,7 @@ await Promise.all(Array.from({ length: 8 }, async () => {
     const r = cola.shift();
     const txt = await flash([
       { role: "system", content: mod.persona(r, DOS[r.dpto] || {}) + INSTR },
-      { role: "user", content: TEXTO },
+      { role: "user", content: MODO === "libre" ? TEXTO_LIBRE : TEXTO },
     ]);
     let valor = null;
     if (MODO === "libre") {
@@ -192,8 +215,8 @@ await Promise.all(Array.from({ length: 8 }, async () => {
 }));
 /* La flota queda grabada en el archivo: un resultado sin saber qué modelo lo
    produjo no se puede comparar con nada dentro de un mes. */
-fs.writeFileSync(SALIDA, JSON.stringify({ codigo: CODIGO, pregunta: TEXTO, modo: MODO, n: out.length,
-  flota: FLOTA, modelo: MOTOR.modelo, temperatura: TEMP, vacias: VACIAS,
+fs.writeFileSync(SALIDA, JSON.stringify({ codigo: CODIGO, pregunta: TEXTO, pregunta_libre: TEXTO_LIBRE, modo: MODO, n: out.length,
+  flota: FLOTA, modelo: MOTOR.modelo, temperatura: TEMP, libreto: LIBRETO, vacias: VACIAS,
   fecha: new Date().toISOString(), respuestas: out }, null, 1));
 console.error(`\nOK — ${out.length} respuestas de ${MOTOR.modelo} → ${SALIDA}`);
 if (VACIAS) console.error(`   ⚠ ${VACIAS} respuesta(s) vacías reintentadas`);

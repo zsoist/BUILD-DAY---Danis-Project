@@ -46,7 +46,9 @@ DeepSeek gana 3 de 5 preguntas y empata 2 contra la ECP. Detalle: `docs/OPENROUT
 
 | Fallo | Estado |
 |---|---|
-| Sub-dispersión (voces demasiado parecidas) | corregida con SSR: razón de desviación 0.77 → 0.98 (1.00 ideal) |
+| Sub-dispersión (voces demasiado parecidas) | en escalas 1-5, SSR la corrige (desviación 0.77 → 0.98; igual sin libreto). **Aún no está en el sitio** |
+| SSR en preguntas de sí/no | mejora modesta (error 9.6 vs 12.0 pts, 8 ítems) pero infla el "sí" ~20 pts en rechazos casi unánimes: no se despliega |
+| Postura asignada por hash (libreto 40/40/20) | efecto pequeño: el modelo la ignora en temas de consenso |
 | Termómetro 0-100 en vez de escala | descartado: empeoró el W1 de 0.084 a 0.154 |
 | IRTree | descartado: holdout W1 0.272, peor que el azar |
 | Sesgo de GLM | 38% en "muy insatisfecho" donde los humanos ponen 18%; por eso es respaldo |

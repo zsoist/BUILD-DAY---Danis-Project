@@ -30,7 +30,8 @@ Restricciones de diseño: una sesión dura segundos y cuesta poco por visita. To
 - **Fallos conocidos, medidos y visibles:**
   | Fallo | Qué es | Estado |
   |---|---|---|
-  | Sub-dispersión | Voces demasiado parecidas entre sí | Corregido con SSR: razón de desviación 0,77 → 0,98 (1,00 = ideal) |
+  | Sub-dispersión | Voces demasiado parecidas entre sí | Corregido en el experimento con SSR (0,77 → 0,98); pendiente en el sitio |
+  | Postura asignada | Cada voz llega con una postura sorteada 40/40/20, la misma para todo tema | Medido: efecto pequeño; se puede apagar (LIBRETO) |
   | Sesgo | GLM (el respaldo) ubica 38% en "muy insatisfecho" donde humanos ponen 18% | Medido; por eso GLM no es el principal |
   | Caricatura | La demografía predice opinión más de lo que predice en gente real | Medido, mitigable con contexto por voz |
 
