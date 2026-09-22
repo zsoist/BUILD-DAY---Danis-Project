@@ -28,6 +28,7 @@ ARCHIVO_POR_TAREA = {  # de qué archivo habla cada tarea de hallazgos
     "p_jev": "scripts/autofix.py",
     "p_datos": "dashboard/sim/dossiers.json",
     "u_datos": "dashboard/sim/dossiers.json",
+    "y_datos": "dashboard/sim/dossiers.json",
     # nota: los parches se validan por match-único contra el archivo destino,
     # así que un mapeo errado se rechaza solo — pero mejor acertar:
 }

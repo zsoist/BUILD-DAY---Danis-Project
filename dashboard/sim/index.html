@@ -1724,6 +1724,10 @@ async function conversar(q){
     $("#ctrl").style.display="flex";
     const LIMITE=180000;
     const postDe={};                 // id → última postura de cada quien
+    /* ROCES (mecánica tipo Némesis: la mesa RECUERDA quién contradijo a quién).
+       Se detecta sin gastar una llamada: si alguien nombra a otro que ya habló
+       y sus posturas difieren, queda el roce anotado para cobrárselo después. */
+    const ROCES={};
     const transcript=[];
     let ronda=0, tallyPrev="";
     while(!C.stop && Date.now()-C.start<LIMITE){
@@ -1742,13 +1746,19 @@ async function conversar(q){
             "\nPROHIBIDO arrancar tu frase como arrancó cualquiera de los anteriores, PROHIBIDO reciclar su anécdota, su muletilla o su lema, y PROHIBIDO reusar un ejemplo que ya salió en la mesa; suena a TI y traes material NUEVO de tu propio oficio y tu edad. Si el tema ya se agotó, abre OTRA arista (plata/familia/barrio/historia/futuro).":"abres tú";
           const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+`
 Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. PROHIBIDO adoptar la anécdota de otro como propia: si alguien ya contó lo de la camiseta/aguinaldo, tú traes una vivencia DISTINTA de tu oficio y tu edad, con tus propios detalles (plata, barrio, familia, edad) que nadie más pueda firmar. PROHIBIDO repetir una metáfora o frase-lema que ya sonó 2 veces en la mesa — cámbiale el ángulo (otro oficio, otro año, otra ciudad) o cede el punto y pasa a OTRA arista del tema. Si la mesa lleva 2 vueltas dando vueltas a lo mismo, tu intervención abre una arista nueva (plata/familia/barrio/historia/futuro) y no vuelve a citar el ejemplo ajeno como si fuera tuyo. Cierra con [POSTURA: a_favor|en_contra|depende|ni_ni] — ni_ni SOLO si a tu personaje genuinamente le da igual el tema; a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},
-            {role:"user",content:`Tema: ${q}\n${charla}\nVUELTA ${ronda+1}. TU ÚLTIMA POSTURA REGISTRADA: ${postDe[r.id]?postDe[r.id].replace("_"," ")+" — si cambias de lado, DILO explícito ('me convencieron', 'ya no estoy tan seguro')":"ninguna aún"}.${r.compromiso==="indiferente"?" Si de verdad no tienes nada nuevo, puedes pasar corto ('yo paso, eso ya está dicho').":""}\nTe toca, ${r.nombre.split(" ")[0]}. Cierra tu idea COMPLETA antes de la etiqueta — nada de frases a medias.`}],140);
+            {role:"user",content:`Tema: ${q}\n${charla}\nVUELTA ${ronda+1}. TU ÚLTIMA POSTURA REGISTRADA: ${postDe[r.id]?postDe[r.id].replace("_"," ")+" — si cambias de lado, DILO explícito ('me convencieron', 'ya no estoy tan seguro')":"ninguna aún"}.${r.compromiso==="indiferente"?" Si de verdad no tienes nada nuevo, puedes pasar corto ('yo paso, eso ya está dicho').":""}${ROCES[r.id]?`\n${ROCES[r.id].quien} te contradijo hace un rato; si viene al caso, cóbraselo con nombre propio — sin pelear, como se hace entre vecinos.`:""}\nTe toca, ${r.nombre.split(" ")[0]}. Cierra tu idea COMPLETA antes de la etiqueta — nada de frases a medias.`}],140);
           let [pos,txt]=postura(raw);
           if(!pos)pos=await clasificarPostura(q,txt);
           if(pos){const prev=postDe[r.id];postDe[r.id]=pos;tallyVivo(postDe,sample.length);if(prev&&prev!==pos)card.insertAdjacentHTML("beforeend",`<div style="font-size:9px;color:var(--work);margin-top:3px">↷ cambió: ${prev.replace("_"," ")} → ${pos.replace("_"," ")}</div>`);}
           typewriter(say,txt);
           card.style.setProperty("--pc",COLORES[pos]||"var(--grid)");
-          transcript.push({id:r.id,n:r.nombre.split(" ")[0],d:r.dpto_nombre,t:txt});
+          const mio=r.nombre.split(" ")[0];
+          for(const otro of transcript){
+            if(otro.id===r.id||!txt.includes(otro.n))continue;
+            const pa=postDe[r.id],pb=postDe[otro.id];
+            if(pa&&pb&&pa!==pb)ROCES[otro.id]={quien:mio,tema:txt.slice(0,70)};
+          }
+          transcript.push({id:r.id,n:mio,d:r.dpto_nombre,t:txt});
         }catch(e){say.classList.remove("thinking");say.textContent="(se quedó callado)";}
       }
       ronda++;
