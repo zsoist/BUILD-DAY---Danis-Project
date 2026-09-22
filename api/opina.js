@@ -280,9 +280,17 @@ export default async function handler(req, res) {
     "deepseek/deepseek-v4.1-flash,z-ai/glm-5.3-flash").split(",").map(s => s.trim());
   if (orKey) intentos.push({
     url: "https://openrouter.ai/api/v1/chat/completions", key: orKey,
+    // reasoning effort "low" y no {enabled:false}: con respaldo entre modelos,
+    // OpenRouter manda el MISMO cuerpo al modelo al que enrute, y GLM rechaza
+    // apagar el razonamiento con 400 "Reasoning is mandatory". Medido:
+    //   deepseek  enabled:false $0.0000050 · effort:low $0.0000124
+    //   glm       enabled:false 400        · effort:low $0.0000071
+    // Cuesta $0.0000074 más por llamada en DeepSeek y evita que el respaldo
+    // falle entero. Y omitirlo sale peor: GLM sin effort razona por defecto y
+    // cuesta 3 veces más que con "low".
     body: { model: MODELOS[0], models: MODELOS, route: "fallback",
             messages, max_tokens, temperature,
-            reasoning: { enabled: false }, provider: RUTEO,
+            reasoning: { effort: "low" }, provider: RUTEO,
             usage: { include: true } },
   });
   // DeepSeek nativo queda como último recurso solo si alguien todavía tiene esa
