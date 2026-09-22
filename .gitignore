@@ -8,7 +8,10 @@ __pycache__/
 .DS_Store
 node_modules/
 dashboard/assets/local_keys.json
+# el respaldo de llave para trabajar sin Vercel: nunca se versiona ni se despliega
+web/assets/local_keys.json
 simcolombia/data/raw/
 simcolombia/data/raw_v2/
 simcolombia/data/ecp2023_docs/
 __pycache__/
+dashboard/feed.json

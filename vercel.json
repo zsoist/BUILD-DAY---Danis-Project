@@ -1,5 +1,5 @@
 {
-  "outputDirectory": "dashboard",
+  "outputDirectory": "web",
   "buildCommand": "",
   "trailingSlash": true
 }

@@ -17,7 +17,7 @@ FORM: continuación del arcade-mission-control del visor, pinneado por Daniel.
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ColombIA ¡Que Piensa!</title>
-<link rel="icon" type="image/png" href="../assets/quepiensa_48.png">
+<link rel="icon" type="image/png" href="assets/quepiensa_48.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Saira:wdth,wght@75..100,300..700&display=swap" rel="stylesheet">
@@ -375,10 +375,9 @@ button,.pxbtn{min-height:44px;touch-action:manipulation}
 <body>
 <div id="app">
   <header id="top">
-    <img id="logo" src="../assets/quepiensa_96.png" alt="" width="38" height="38">
+    <img id="logo" src="assets/quepiensa_96.png" alt="" width="38" height="38">
     <span id="title">Colomb<small>IA</small><em id="lema">¡que piensa!</em></span>
     <select id="dptosel" aria-label="Departamento"></select>
-    <a class="back" href="../">◂ visor del enjambre</a>
     <div id="kpis"></div>
     <button id="gear" class="pxbtn">AJUSTES</button>
   </header>
@@ -444,7 +443,7 @@ let cfg={orkey:""};
 try{cfg={...cfg,...JSON.parse(localStorage.getItem("sim-cfg")||"{}")};
   if(!cfg.orkey){const ag=JSON.parse(localStorage.getItem("ag-cfg")||"{}");if(ag.orkey)cfg.orkey=ag.orkey;}}catch(e){}
 // clave local (solo existe en la máquina de Daniel; gitignoreada)
-if(!cfg.orkey)fetch("../assets/local_keys.json").then(r=>r.json())
+if(!cfg.orkey)fetch("assets/local_keys.json").then(r=>r.json())
   .then(d=>{if(d.openrouter)cfg.orkey=d.openrouter}).catch(()=>{});
 $("#gear").onclick=e=>{e.stopPropagation();const c=$("#cfg");c.style.display=c.style.display==="none"?"block":"none"};
 document.addEventListener("click",e=>{if(!$("#cfg").contains(e.target)&&e.target.id!=="gear")$("#cfg").style.display="none"});
