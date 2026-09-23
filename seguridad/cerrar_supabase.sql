@@ -98,3 +98,15 @@ from pg_class where relname in
 --     "$U/rest/v1/army_events?select=*&limit=1" -H "apikey: $K"
 --   curl -s -o /dev/null -w "borrar  %{http_code}\n" -X DELETE \
 --     "$U/rest/v1/army_events?id=eq.-999999999" -H "apikey: $K"
+
+-- Tope diario del sitio (2026-09-23): el proxy pregunta cuánto gastó HOY (UTC)
+-- sumando sim_calls. Devuelve UN número; anon sigue sin leer filas. Antes el tope
+-- miraba el usage_daily de la llave de OpenRouter, que también suma el enjambre y
+-- las imágenes, y cerró el sitio con $0,31 de gasto propio.
+create or replace function public.gasto_sitio_hoy()
+returns numeric language sql stable security definer set search_path = public as $$
+  select coalesce(sum(costo_usd), 0) from public.sim_calls
+  where ts >= (date_trunc('day', now() at time zone 'utc') at time zone 'utc');
+$$;
+revoke all on function public.gasto_sitio_hoy() from public;
+grant execute on function public.gasto_sitio_hoy() to anon;

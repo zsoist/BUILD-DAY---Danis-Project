@@ -100,8 +100,10 @@ que sale por persona se quedan en `simcolombia/data/raw_v2/`.
 Un endpoint público sin login no se cierra del todo: lo que el navegador tiene,
 lo tiene cualquiera. Capas vigentes: el servidor pone su propio `system` al
 principio y al final y degrada el del cliente; tope de 16 mensajes; filtro de
-salida; tope real de gasto leído de `/api/v1/key` de OpenRouter (el contador en
-memoria es por instancia). Última batería: 32/34 contenidos.
+salida; tope total de la llave leído de `/api/v1/key` de OpenRouter; tope diario
+de **$10 del sitio** (`gasto_sitio_hoy()` suma `sim_calls`, donde el proxy anota
+toda llamada paga): el `usage_daily` de la llave también cuenta enjambre e
+imágenes y cerró el sitio el 23 sep. Última batería: 32/34 contenidos.
 
 ## Pendiente de Daniel (panel de OpenRouter)
 
