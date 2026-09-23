@@ -312,3 +312,8 @@ Scripts: `scripts/experimento/tertulia.mjs`, `scripts/experimento/grupos.py`.
 **Cifra mostrada sin ancla.** En esas 16 preguntas, la estimación sola (17.3)
 le gana a lo que dicen las voces (25.1); el sondeo muestra la del analista,
 rotulada, y deja la mezcla etiqueta + SSR para las preguntas con ancla.
+
+**¿Más analistas?** Probados Gemini 3.5 Flash Lite, Qwen3 235B, Llama 3.3 70B y
+Mistral Small 3.2. Eligiendo la combinación en LAPOP+LB, la mejor baja de 13.2
+a 12.2 ahí, pero en la ECP (no vista) sube de 14.5 a 16.4. DeepSeek + GLM, lo
+desplegado, es lo que mejor generaliza: se queda.

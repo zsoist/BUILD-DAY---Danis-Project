@@ -97,10 +97,12 @@ def _llave():
 
 
 def estimar_una(q, modelo, key):
-    razona = {"effort": "low"} if "glm" in modelo else {"enabled": False}
+    # razonamiento explícito solo donde está medido (docs/OPENROUTER.md); a los
+    # demás no se les manda, y entonces tampoco se exige que lo soporten
+    razona = {"effort": "low"} if "glm" in modelo else {"enabled": False} if "deepseek" in modelo else None
     body = {"model": modelo, "max_tokens": 60, "temperature": 0,
-            "reasoning": razona, "usage": {"include": True},
-            "provider": {"require_parameters": True, "data_collection": "deny",
+            **({"reasoning": razona} if razona else {}), "usage": {"include": True},
+            "provider": {"require_parameters": bool(razona), "data_collection": "deny",
                          **({"order": ["deepinfra", "streamlake", "alibaba"]} if "deepseek" in modelo else {})},
             "messages": [{"role": "system", "content": INSTR_ESTIMAR}, {"role": "user", "content": q}]}
     for _ in range(3):
