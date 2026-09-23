@@ -430,6 +430,118 @@ const cielo = (() => {
 })();
 // si el primer lugar se pintó antes de saber qué cielos hay, se vuelve a poner (ya con su cielo)
 fetch("escenas/cielos.json").then(r => r.json()).then(d => { Object.assign(CIELOS, d); const k = lugarActual; if (k) { lugarActual = null; lugar(k); } }).catch(() => {});
+
+/* ── ambiente: la vida del lugar que no tiene nada que ver con la tertulia ──
+   Animales, vehículos y transeúntes coherentes con cada sitio (escenas/amb/*.webp,
+   hechos con GPT Image; ver scripts/escena/ambiente.py). Cada carril se define en
+   fracción de la IMAGEN (dónde está la calle, el río, la sabana pintados) y se
+   convierte a profundidad del piso 3D: la perspectiva escala sola.
+   [sprite, alto en metros, comportamiento, fy de la imagen (o [min,max]), cuántos, velocidad m/s] */
+const AMB = {
+  nacional: [["paloma", .26, "deambula", [.56, .78], 5, .35], ["llama", 1.55, "cruza", .5, 1, .45], ["turista", 1.7, "cruza", .53, 1, .9], ["vendedor", 1.75, "cruza", .6, 1, .7]],
+  bogota: [["perro", .55, "deambula", [.66, .8], 1, .8], ["turista", 1.7, "cruza", .58, 1, .9], ["gato", .32, "deambula", [.62, .72], 1, .5], ["paloma", .26, "deambula", [.6, .74], 2, .35]],
+  medellin: [["turista", 1.7, "cruza", .74, 2, .8], ["perro", .55, "deambula", [.76, .86], 1, .8], ["vendedor", 1.75, "cruza", .78, 1, .6]],
+  caribe: [["coche", 1.9, "cruza", .55, 1, 1.4], ["palenquera", 1.72, "cruza", .6, 1, .6], ["gato", .32, "deambula", [.62, .8], 1, .5], ["turista", 1.7, "cruza", .64, 1, .9]],
+  cafetero: [["willys", 1.8, "cruza", .74, 1, 2.6], ["mula", 1.5, "cruza", .76, 1, .7], ["gallina", .4, "deambula", [.8, .9], 2, .45], ["perro", .55, "deambula", [.78, .9], 1, .8]],
+  llanos: [["vaca", 1.4, "deambula", [.47, .53], 4, .25], ["llanero", 2.2, "cruza", .56, 1, 1.3], ["garza", .8, "deambula", [.58, .66], 2, .3], ["perro", .55, "deambula", [.65, .8], 1, .8]],
+  amazonia: [["canoa", 1.1, "cruza", .55, 1, 1.6], ["garza", .8, "deambula", [.72, .8], 1, .3], ["perro", .55, "deambula", [.78, .88], 1, .8]],
+  choco: [["canoa", 1.1, "cruza", .6, 1, 1.5], ["garza", .8, "deambula", [.74, .82], 1, .3], ["gallina", .4, "deambula", [.8, .9], 1, .45]],
+  santander: [["burro", 1.2, "cruza", .67, 1, .6], ["gallina", .4, "deambula", [.72, .9], 2, .45], ["perro", .55, "deambula", [.72, .88], 1, .8]],
+  narino: [["turista", 1.7, "cruza", .74, 1, .8], ["gallinazo", .6, "deambula", [.76, .84], 1, .2], ["perro", .55, "deambula", [.76, .88], 1, .8]],
+  popayan: [["bici", 1.6, "cruza", .7, 1, 2.2], ["perro", .55, "deambula", [.72, .88], 1, .8], ["turista", 1.7, "cruza", .72, 1, .9]],
+  cali: [["vendedor", 1.75, "cruza", .7, 1, .6], ["bici", 1.6, "cruza", .72, 1, 2.2], ["paloma", .26, "deambula", [.72, .86], 3, .35], ["perro", .55, "deambula", [.74, .88], 1, .8]],
+  guajira: [["chivo", .8, "deambula", [.58, .72], 3, .4], ["wayuu", 1.62, "cruza", .6, 1, .6], ["burro", 1.2, "cruza", .56, 1, .5]],
+  sanandres: [["carrito_golf", 1.7, "cruza", .63, 1, 2.2], ["turista", 1.7, "cruza", .66, 1, .8], ["perro", .55, "deambula", [.7, .86], 1, .8]],
+  boyaca: [["burro", 1.2, "cruza", .66, 1, .5], ["gallina", .4, "deambula", [.72, .88], 2, .45], ["bici", 1.6, "cruza", .7, 1, 2.2], ["perro", .55, "deambula", [.72, .88], 1, .8]],
+  tatacoa: [["chivo", .8, "deambula", [.7, .82], 3, .4], ["gallinazo", .6, "deambula", [.74, .84], 1, .2]],
+};
+const M = .88;                                     // unidades de escena por metro (la gente: 1,45 ≈ 1,65 m)
+const ambiente = (() => {
+  let lista = [], clave = null, gen = 0;
+  const ref = new THREE.PerspectiveCamera();
+  function camRef() {
+    ref.copy(camara); ref.position.copy(CAM_BASE); ref.lookAt(MIRA_BASE); ref.updateMatrixWorld(); ref.updateProjectionMatrix();
+    return ref;
+  }
+  const pant = (c, x, z) => { const p = new THREE.Vector3(x, 0, z).project(c); return [(p.x * .5 + .5), (-p.y * .5 + .5)]; };
+  /* fracción de la imagen → profundidad del piso donde cae ese punto (bisección) */
+  function zDe(fy) {
+    const c = camRef(), r = host.getBoundingClientRect(), obj = imgAPantalla(.5, fy).y / (r.height || 1);
+    let lo = -60, hi = 5;                          // más lejos = más arriba en pantalla
+    for (let i = 0; i < 30; i++) { const m = (lo + hi) / 2; if (pant(c, 0, m)[1] < obj) lo = m; else hi = m; }
+    return (lo + hi) / 2;
+  }
+  /* a esa profundidad, qué x queda en el borde izquierdo y derecho de la pantalla (lineal en x) */
+  function bordes(z) {
+    const c = camRef(), a = pant(c, 0, z)[0], b = pant(c, 1, z)[0], k = b - a;
+    return [(0 - a) / k, (1 - a) / k];
+  }
+  async function uno(def, i, g) {
+    const [spr, alto, modo, fy, , vel] = def;
+    const a = await actor("amb", `escenas/amb/${spr}.webp`, alto * M, 1);
+    if (g !== gen) { scene.remove(a); return; }
+    a.children[0].scale.set(1.25, 1, 1);           // la sombra de un animal es más larga que alta
+    const u = a.userData;
+    Object.assign(u, { amb: modo, vel: vel * M, fy, spr, espera: 0, meta: null });
+    if (modo === "cruza") {
+      u.espera = performance.now() + (i === 0 ? 1500 + Math.random() * 5000 : 6000 + Math.random() * 16000);
+      a.visible = false;
+    } else colocar(a, true);
+    lista.push(a);
+  }
+  function colocar(a, inicio) {
+    const u = a.userData;
+    if (u.amb === "cruza") {
+      const z = zDe(u.fy + (Math.random() - .5) * .015), [x0, x1] = bordes(z), dir = Math.random() < .5 ? 1 : -1, m = (x1 - x0) * .08 + 1.5;
+      a.position.set(dir > 0 ? x0 - m : x1 + m, 0, z);
+      u.meta = new THREE.Vector3(dir > 0 ? x1 + m : x0 - m, 0, z);
+      a.visible = true;
+    } else {
+      const [f0, f1] = u.fy, z = zDe(f0 + Math.random() * (f1 - f0)), [x0, x1] = bordes(z), w = x1 - x0;
+      a.position.set(x0 + w * (.12 + Math.random() * .76), 0, z);
+      u.casa = a.position.clone(); u.espera = performance.now() + (inicio ? Math.random() * 4000 : 2500 + Math.random() * 7000);
+    }
+  }
+  return {
+    async poner(k) {
+      if (k === clave) return;
+      clave = k; gen++;
+      for (const a of lista) scene.remove(a);
+      lista = [];
+      const defs = AMB[k] || [], g = gen;
+      await Promise.all(defs.flatMap(d => Array.from({ length: d[4] }, (_, i) => uno(d, i, g))));
+    },
+    recolocar() { const k = clave; clave = null; if (k) this.poner(k); },
+    cuadro(dt, t, ahora) {
+      for (const a of lista) {
+        const u = a.userData, c = u.cuerpo;
+        a.quaternion.copy(camara.quaternion); a.rotation.x = 0; a.rotation.z = 0;
+        if (u.amb === "cruza" && !a.visible) { if (ahora > u.espera) colocar(a); else continue; }
+        if (!u.meta && u.amb === "deambula" && ahora > u.espera && !QUIETO) {
+          // un paso corto cerca de su casa: picotear, olfatear, cambiar de lado
+          const q = u.casa.clone().add(new THREE.Vector3((Math.random() - .5) * 2.4, 0, (Math.random() - .5) * .8));
+          u.meta = q;
+        }
+        let anda = false;
+        if (u.meta && !QUIETO) {
+          tmp.subVectors(u.meta, a.position); const d = tmp.length();
+          if (d > .04) { a.position.addScaledVector(tmp.normalize(), Math.min(d, u.vel * dt)); anda = true;
+            if (Math.abs(tmp.x) > .05) c.scale.x = tmp.x < 0 ? -1 : 1; }
+          else {
+            u.meta = null;
+            if (u.amb === "cruza") { a.visible = false; u.espera = ahora + 9000 + Math.random() * 22000; }
+            else u.espera = ahora + 2000 + Math.random() * 7000;
+          }
+        }
+        // paso: un píxel de rebote al ritmo de las patas (o el motor)
+        const rueda = /taxi|willys|moto|bici|chiva|coche|carrito|canoa/.test(u.spr);
+        const b = anda ? (rueda ? Math.abs(Math.sin(t * 18 + u.fase)) * .012 : Math.abs(Math.sin(t * 8 + u.fase)) * .03 * u.alto) : 0;
+        c.position.y = u.alto / 2 + b;
+        if (u.spr === "canoa") { c.position.y = u.alto / 2 - .06 + Math.sin(t * 1.7 + u.fase) * .02; a.children[0].visible = false; }
+      }
+    },
+  };
+})();
 /* ── lugar ───────────────────────────────────────────────────────────── */
 let lugarActual = null, capa = 0;
 function lugar(k) {
@@ -444,6 +556,7 @@ function lugar(k) {
   };
   img.src = `escenas/${CIELOS[k] ? k + "_tierra" : k}.webp`;
   cielo.poner(k);
+  ambiente.poner(k);
   const [nom, sub, t] = LUGARES[k];
   const [fy, esc] = PISO[k] || [.84, 1]; pisoY = fy; ALTO = 1.45 * esc; encuadrar();
   tinte = new THREE.Color(t);
@@ -615,6 +728,7 @@ function medir() {
   CAM_BASE.z = camara.aspect < 1 ? 17.5 : camara.aspect < 1.4 ? 14.5 : 12.5;
   camara.updateProjectionMatrix();
   encuadrar(); ubicarTablero(); cielo.medir();
+  clearTimeout(medir.t); medir.t = setTimeout(() => ambiente.recolocar(), 400);
 }
 new ResizeObserver(medir).observe(host);
 medir();
@@ -658,6 +772,7 @@ function cuadroForzado() {
   if (!QUIETO) pasear(ahora);
   camara.lookAt(mira);
   cielo.cuadro(dt, t, ahora);
+  ambiente.cuadro(dt, t, ahora);
   for (const a of [...GENTE.values(), JUEZ, MESA]) {
     if (!a) continue;
     const u = a.userData, c = u.cuerpo;
