@@ -18,15 +18,17 @@ const LUGARES = {
   popayan: ["La ciudad blanca", "Popayán", "#fff8ee"], boyaca: ["Villa de Leyva", "Boyacá", "#fff6e8"],
   santander: ["Barichara", "Santander", "#ffeed8"], llanos: ["Los Llanos", "Meta y Casanare", "#ffdcb8"],
   amazonia: ["Leticia", "Amazonas", "#fff1d6"], tatacoa: ["Desierto de la Tatacoa", "Huila", "#d9d8ff"],
+  sucre: ["Plaza de Sincelejo", "Sucre", "#fff0dc"],
   estudio: ["¿Qué dicen los colombianos?", "estudio de televisión", "#ffffff"],
 };
 /* dónde está el piso pintado de cada fondo (fracción desde arriba) y qué tan
    grande se ve la gente ahí: medido a ojo sobre cada imagen */
 const PISO = { nacional: [.80, 1.0], bogota: [.87, .9], caribe: [.85, .95], sanandres: [.86, .95], guajira: [.84, 1.0],
   medellin: [.88, .9], cafetero: [.89, .92], cali: [.86, .95], choco: [.89, .95], narino: [.86, .9], popayan: [.87, .92],
-  boyaca: [.85, .95], santander: [.87, .9], llanos: [.86, 1.0], amazonia: [.87, .95], tatacoa: [.87, .95], estudio: [.79, .88] };
+  boyaca: [.85, .95], santander: [.87, .9], llanos: [.86, 1.0], amazonia: [.87, .95], tatacoa: [.87, .95], estudio: [.79, .88],
+  sucre: [.85, 1.0] };
 const DPTO_LUGAR = { "11": "bogota", "05": "medellin", "13": "caribe", "08": "caribe", "47": "caribe", "20": "caribe",
-  "23": "caribe", "70": "caribe", "88": "sanandres", "44": "guajira", "17": "cafetero", "63": "cafetero", "66": "cafetero",
+  "23": "caribe", "70": "sucre", "88": "sanandres", "44": "guajira", "17": "cafetero", "63": "cafetero", "66": "cafetero",
   "76": "cali", "27": "choco", "52": "narino", "19": "popayan", "15": "boyaca", "25": "boyaca", "68": "santander",
   "54": "santander", "50": "llanos", "85": "llanos", "81": "llanos", "99": "llanos", "91": "amazonia", "97": "amazonia",
   "95": "amazonia", "86": "amazonia", "18": "amazonia", "94": "amazonia", "41": "tatacoa", "73": "tatacoa" };
@@ -42,7 +44,7 @@ const canvas = host.querySelector("#esc3d");
    un fondo normal son iguales; con uno panorámico (más de 9 personas) el mundo es
    más ancho y la cámara 2D lo recorre */
 const PANOS = new Set(["nacional", "bogota", "medellin", "caribe", "cafetero", "llanos", "amazonia", "choco", "santander",
-  "narino", "popayan", "cali", "guajira", "sanandres", "boyaca", "tatacoa"]);
+  "narino", "popayan", "cali", "guajira", "sanandres", "boyaca", "tatacoa", "sucre"]);
 const PISO_PANO = { sanandres: [.88, 1.0], llanos: [.85, 1.0], guajira: [.86, 1.0] };
 let IMG = { w: 1376, h: 768 }, PANO = false;
 const MUNDO = { w: 16, h: 9 };
@@ -144,7 +146,7 @@ function quitarTodos() {
 /* la mesa y las cosas de cada región (web/gente/catalogo.json, "utileria") */
 const UTIL_DE = { nacional: "bogota", bogota: "bogota", medellin: "antioquia", caribe: "caribe", sanandres: "insular_guajira",
   guajira: "insular_guajira", cafetero: "cafetero", tatacoa: "cafetero", cali: "pacifico", choco: "pacifico", narino: "sur_andino",
-  popayan: "sur_andino", boyaca: "boyaca", santander: "santander", llanos: "llanos", amazonia: "amazonia" };
+  popayan: "sur_andino", boyaca: "boyaca", santander: "santander", llanos: "llanos", amazonia: "amazonia", sucre: "caribe_rural" };
 function utileriaDe(k) { return window.CATALOGO?.utileria?.[UTIL_DE[k]] || null; }
 const COSAS = [[-4.7, -1.7], [4.9, -2.0], [-5.8, 0.7], [5.9, 0.5]];
 /* cuánto cabe: el medio ancho visible del escenario (en z = -0,3) contra el de
@@ -286,6 +288,7 @@ const HORIZ = {
   cafetero_pano: [.55], llanos_pano: [.40], amazonia_pano: [.30], choco_pano: [.30],
   santander_pano: [.55], narino_pano: [.55], popayan_pano: [.60], cali_pano: [.58],
   guajira_pano: [.20], sanandres_pano: [.20], boyaca_pano: [.55], tatacoa_pano: [.50],
+  sucre: [.58, 1.66], sucre_pano: [.57, 1.6],   // Sincelejo: puerta del portal medida (2,4 m)
 };
 function encuadrar() {
   const W = MUNDO.w, H = MUNDO.h, hz = HORIZ[sueloK];
@@ -374,6 +377,8 @@ const SUELO = {
   sanandres_pano: [[0, .6], [.2, .55], [.8, .55], [1, .6]],
   boyaca_pano: [[0, .66], [.15, .6], [.4, .56], [.6, .56], [.85, .62], [1, .68]],
   tatacoa_pano: [[0, .62], [.3, .58], [.7, .58], [1, .62]],
+  sucre: [[0, .71], [.1, .69], [.12, .66], [.85, .68], [.88, .71], [1, .71]],
+  sucre_pano: [[0, .66], [.2, .66], [.5, .63], [.8, .66], [1, .66]],
 };
 const FRENTE = { choco_pano: .8 };
 let sueloK = null;                                  // la clave del fondo puesto (k o k_pano)
@@ -601,6 +606,9 @@ const AMB = {
   sanandres: [["carrito_golf", 1.7, "cruza", .63, 1, 2.2], ["turista", 1.7, "cruza", .66, 1, .8], ["perro", .55, "deambula", [.7, .86], 1, .8]],
   boyaca: [["burro", 1.2, "cruza", .66, 1, .5], ["gallina", .4, "deambula", [.72, .88], 2, .45], ["bici", 1.6, "cruza", .7, 1, 2.2], ["perro", .55, "deambula", [.72, .88], 1, .8]],
   tatacoa: [["chivo", .8, "deambula", [.7, .82], 3, .4], ["gallinazo", .6, "deambula", [.74, .84], 1, .2]],
+  // Plaza de Sincelejo (lo propuso el enjambre: mototaxi, perro a la sombra del portal, palomas, vendedor, bicicleta)
+  sucre: [["moto", 1.5, "cruza", .67, 1, 2.4], ["perro", .55, "deambula", [.72, .9], 1, .8], ["paloma", .26, "deambula", [.7, .86], 3, .35],
+          ["vendedor", 1.75, "cruza", .69, 1, .6], ["bici", 1.6, "cruza", .68, 1, 2.2]],
 };
 const M = .88;                                     // unidades de escena por metro (la gente: 1,45 ≈ 1,65 m)
 const ambiente = (() => {

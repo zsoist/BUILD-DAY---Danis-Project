@@ -89,6 +89,15 @@ def main():
     else:
         pesos, nota_peso = None, "SIN ponderar (no encontré el factor de expansión)"
 
+    # REGION=2: solo humanos de esa región (1 Bogotá, 2 Caribe, 3 Oriental, 4 Central,
+    # 5 Pacífica, igual que donantes_ecp.py). La ECP no publica departamento.
+    region = os.environ.get("REGION")
+    if region and viv is not None and "REGION" in viv.columns:
+        demo = demo.merge(viv[["DIRECTORIO", "REGION"]].drop_duplicates("DIRECTORIO"), on="DIRECTORIO", how="left")
+        keep = demo["REGION"] == float(region)
+        demo = demo[keep]
+        pesos = [p for p, k in zip(pesos, keep) if k] if pesos else None
+        nota_peso += f" · solo REGION={region} ({len(demo)} personas)"
     humanos = demo[codigo].tolist()
     p_hum, n_hum = distribucion(humanos, pesos)
     ns_hum = sum(1 for v in humanos if v == NS) / max(1, sum(1 for v in humanos if v == v))

@@ -11,6 +11,8 @@ OJO: la utilería que escribe esto es automática; la desplegada se curó a mano
 (una mesa por región, solo objetos que se sostienen solos) y vive en el
 catalogo.json publicado. Si regeneras, vuelve a curarla. Igual los personajes
 con un mueble pegado (carretilla, mostrador): "fijo":1, no se asignan.
+Los sucre__* (9, hechos a mano con GPT Image) llevan "dp":"70": se prefieren para
+los residentes de Sucre. Si regeneras, consérvalos.
 Modelo para lo nuevo: openai/gpt-image-2.5-flare, quality low, background
 transparent, input_references (≈$0.005 la hoja; ver banco_imagen.mjs).
 """

@@ -169,6 +169,9 @@ def _read_month(path):
                     "sexo": "hombre" if _clean(row.get("P3271")) == "1" else "mujer",
                     "educacion": EDU.get(edu) if edu else None,
                     "clase": "urbano" if _clean(row.get("CLASE")) == "1" else "rural",
+                    # AREA: la GEIH marca a las 23 ciudades principales (código = su dpto).
+                    # Vacío = otro municipio. Es dato real: dice quién vive en la capital.
+                    "area": _clean(row.get("AREA")) or None,
                     "fex": fex,
                     "oficio_ciuo": info[0] if info else None,
                     "rama2d": info[1] if info else None,

@@ -11,7 +11,8 @@ import path from "node:path";
 
 // la raíz del repo, calculada: una ruta de disco quemada solo servía en una máquina
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const html = fs.readFileSync(path.join(ROOT, "web/index.html"), "utf8");
+// CAREO_INDEX / CAREO_DOSSIERS: medir una versión anterior sin tocar el sitio (A/B pareado)
+const html = fs.readFileSync(process.env.CAREO_INDEX || path.join(ROOT, "web/index.html"), "utf8");
 const script = html.slice(html.indexOf("<script>") + 8, html.lastIndexOf("</script>"));
 
 function extraer(nombre) {
@@ -48,7 +49,7 @@ const mod = new Function("OPC", "LIBRETO", "ORDEN_CACHE", NOMBRES.map(extraer).j
 
 const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "web/residents_v2.json"), "utf8"));
 const residentes = (RES.residentes || RES).filter(r => r.edad >= 18);   // universo ECP
-const DOS = JSON.parse(fs.readFileSync(path.join(ROOT, "web/dossiers.json"), "utf8"));
+const DOS = JSON.parse(fs.readFileSync(process.env.CAREO_DOSSIERS || path.join(ROOT, "web/dossiers.json"), "utf8"));
 const MARG = JSON.parse(fs.readFileSync(path.join(ROOT, "web/marginals.json"), "utf8")).departamentos;
 
 let seed = 20260922;
@@ -84,7 +85,10 @@ const TEXTO_LIBRE = process.env.PREGUNTA ? process.env.PREGUNTA : (() => {
 })();
 
 const muestra = [], usados = new Set();
-const pesos = Object.keys(MARG).map(c => [c, MARG[c]?.poblacion || 1]);
+// DPTO=70: solo residentes de ese departamento (del otro lado, REGION=2 en careo_ecp.py:
+// la ECP no publica departamento, solo región)
+const DPTO = process.env.DPTO;
+const pesos = Object.keys(MARG).filter(c => !DPTO || c === DPTO).map(c => [c, MARG[c]?.poblacion || 1]);
 const tot = pesos.reduce((a, [, w]) => a + w, 0);
 let g = 0;
 while (muestra.length < N && g++ < N * 400) {
@@ -155,6 +159,10 @@ async function flash(messages, max_tokens = 120) {
              pueden comparar entre sí. */
           temperature: TEMP, ...MOTOR.extra }),
       });
+      if (r.status === 401 || r.status === 402) {
+        // sin saldo o sin llave: parar, no guardar respuestas vacías como si fueran datos
+        console.error(`\n⛔ ${MOTOR.url} respondió ${r.status}: ${(await r.text()).slice(0, 160)}`); process.exit(2);
+      }
       if (r.ok) {
         const txt = (await r.json()).choices?.[0]?.message?.content || "";
         if (txt.trim()) return txt;

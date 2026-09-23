@@ -55,6 +55,23 @@ SSR: la persona contesta con sus palabras, la escala se reconstruye por parecido
 
 Sesgo que SSR no arregla: GLM pone 38% en «muy insatisfecho» donde los humanos ponen 18%. El simulador se queda en DeepSeek.
 
+### Sucre v2 (2026-09-23): se despliega
+
+Dossier de Sucre rehecho (enjambre GLM + revisión: subregiones, habla sabanera, fiestas, nombres por
+generación), dialecto «sabanero» propio y la ciudad real (AREA de la GEIH: Sincelejo o no). Careo
+pareado por la ruta de producción (`ENJAMBRE=sitio DPTO=70`, los 127 adultos de Sucre) contra la
+región Caribe de la ECP (`REGION=2`; la ECP no publica departamento). 3 ítems × 2 corridas:
+
+| versión | P5301 | P3573 | P2011 | W1 medio |
+|---|---|---|---|---|
+| anterior | 0.170 / 0.176 | 0.067 / 0.039 | 0.090 / 0.100 | 0.107 |
+| **Sucre v2** | 0.168 / 0.182 | 0.037 / 0.043 | 0.060 / 0.088 | **0.096** |
+| solo dossier nuevo | 0.174 / 0.174 | 0.054 / 0.047 | 0.104 / 0.100 | 0.109 |
+
+Regla fijada antes de ver: se despliega si el W1 medio no empeora. Lección: el ejemplo del dialecto
+era una queja ("¿y el agua cuándo llega?") y volvía pesimistas a todas las voces (P5301 0.199–0.232);
+con un ejemplo neutro, no. El sesgo pesimista de P5301 (media 2.33 contra 3.03 real) sigue igual.
+
 ## Lo descartado y por qué
 
 - **Termómetro 0-100**: empeoró (W1 0.084 → 0.154). El colapso estaba en escoger casilla, no en el formato.

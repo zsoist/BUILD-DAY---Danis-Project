@@ -236,6 +236,16 @@ def asignar_n(pesos, total, piso):
     return n
 
 
+# AREA de la GEIH → la ciudad principal (o su área metropolitana) donde vive la
+# persona. Es dato real del registro; vacío = otro municipio del departamento.
+CIUDAD_GEIH = {"05": "Medellín", "08": "Barranquilla", "11": "Bogotá", "13": "Cartagena", "15": "Tunja",
+    "17": "Manizales", "18": "Florencia", "19": "Popayán", "20": "Valledupar", "23": "Montería", "27": "Quibdó",
+    "41": "Neiva", "44": "Riohacha", "47": "Santa Marta", "50": "Villavicencio", "52": "Pasto", "54": "Cúcuta",
+    "63": "Armenia", "66": "Pereira", "68": "Bucaramanga", "70": "Sincelejo", "73": "Ibagué", "76": "Cali",
+    "81": "Arauca", "85": "Yopal", "86": "Mocoa", "88": "San Andrés", "91": "Leticia", "94": "Inírida",
+    "95": "San José del Guaviare", "97": "Mitú", "99": "Puerto Carreño"}
+
+
 def _grupo(edad):
     if edad >= 85:
         return "85+"
@@ -576,6 +586,7 @@ for cod in sorted(DEP):
             "lean": elegir_lean(perfil, random.Random(_hash(rid, "lean"))),
             "ingreso_m": ingreso_m,
             "origen": "geih",
+            "ciudad_geih": CIUDAD_GEIH.get(cod_norm(_get(r, "area", "AREA", default="") or "")) if _get(r, "area", "AREA", default=None) else None,
         })
         CIUO_RES.append(cod2)
 
