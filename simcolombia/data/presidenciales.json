@@ -1,0 +1,1650 @@
+{
+ "2022_1v": {
+  "nacional": {
+   "GUSTAVO PETRO": 41.2,
+   "RODOLFO HERNÁNDEZ": 28.9,
+   "FEDERICO GUTIÉRREZ": 24.1,
+   "SERGIO FAJARDO": 4.2,
+   "JOHN MILTON RODRÍGUEZ": 1.3,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.1
+  },
+  "99": {
+   "RODOLFO HERNÁNDEZ": 40.3,
+   "GUSTAVO PETRO": 34.2,
+   "FEDERICO GUTIÉRREZ": 19.7,
+   "SERGIO FAJARDO": 3.3,
+   "JOHN MILTON RODRÍGUEZ": 1.6,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.5,
+   "INGRID BETANCOURT": 0.3,
+   "LUIS PÉREZ": 0.1
+  },
+  "97": {
+   "GUSTAVO PETRO": 68.6,
+   "RODOLFO HERNÁNDEZ": 15.4,
+   "FEDERICO GUTIÉRREZ": 11.0,
+   "SERGIO FAJARDO": 3.7,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.4,
+   "JOHN MILTON RODRÍGUEZ": 0.4,
+   "INGRID BETANCOURT": 0.4,
+   "LUIS PÉREZ": 0.1
+  },
+  "86": {
+   "GUSTAVO PETRO": 72.3,
+   "RODOLFO HERNÁNDEZ": 14.6,
+   "FEDERICO GUTIÉRREZ": 9.9,
+   "SERGIO FAJARDO": 1.7,
+   "JOHN MILTON RODRÍGUEZ": 1.2,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "91": {
+   "GUSTAVO PETRO": 47.8,
+   "FEDERICO GUTIÉRREZ": 26.5,
+   "RODOLFO HERNÁNDEZ": 20.7,
+   "SERGIO FAJARDO": 3.5,
+   "JOHN MILTON RODRÍGUEZ": 0.9,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.3,
+   "INGRID BETANCOURT": 0.2,
+   "LUIS PÉREZ": 0.1
+  },
+  "88": {
+   "GUSTAVO PETRO": 42.2,
+   "FEDERICO GUTIÉRREZ": 31.7,
+   "RODOLFO HERNÁNDEZ": 18.3,
+   "SERGIO FAJARDO": 4.0,
+   "JOHN MILTON RODRÍGUEZ": 3.6,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.1,
+   "LUIS PÉREZ": 0.1,
+   "INGRID BETANCOURT": 0.0
+  },
+  "95": {
+   "RODOLFO HERNÁNDEZ": 49.0,
+   "GUSTAVO PETRO": 37.2,
+   "FEDERICO GUTIÉRREZ": 9.8,
+   "SERGIO FAJARDO": 1.9,
+   "JOHN MILTON RODRÍGUEZ": 1.7,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.1
+  },
+  "50": {
+   "RODOLFO HERNÁNDEZ": 53.2,
+   "GUSTAVO PETRO": 28.3,
+   "FEDERICO GUTIÉRREZ": 14.6,
+   "SERGIO FAJARDO": 2.2,
+   "JOHN MILTON RODRÍGUEZ": 1.5,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "94": {
+   "GUSTAVO PETRO": 48.4,
+   "RODOLFO HERNÁNDEZ": 27.8,
+   "FEDERICO GUTIÉRREZ": 17.0,
+   "SERGIO FAJARDO": 5.1,
+   "JOHN MILTON RODRÍGUEZ": 1.0,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.4,
+   "INGRID BETANCOURT": 0.2,
+   "LUIS PÉREZ": 0.1
+  },
+  "44": {
+   "GUSTAVO PETRO": 55.7,
+   "FEDERICO GUTIÉRREZ": 22.5,
+   "RODOLFO HERNÁNDEZ": 18.4,
+   "SERGIO FAJARDO": 1.6,
+   "JOHN MILTON RODRÍGUEZ": 1.3,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.3,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "85": {
+   "RODOLFO HERNÁNDEZ": 65.2,
+   "GUSTAVO PETRO": 21.9,
+   "FEDERICO GUTIÉRREZ": 10.0,
+   "SERGIO FAJARDO": 1.5,
+   "JOHN MILTON RODRÍGUEZ": 1.2,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.0,
+   "LUIS PÉREZ": 0.0
+  },
+  "18": {
+   "RODOLFO HERNÁNDEZ": 47.2,
+   "GUSTAVO PETRO": 34.6,
+   "FEDERICO GUTIÉRREZ": 14.3,
+   "SERGIO FAJARDO": 2.0,
+   "JOHN MILTON RODRÍGUEZ": 1.6,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "81": {
+   "RODOLFO HERNÁNDEZ": 59.0,
+   "GUSTAVO PETRO": 24.3,
+   "FEDERICO GUTIÉRREZ": 13.3,
+   "SERGIO FAJARDO": 1.8,
+   "JOHN MILTON RODRÍGUEZ": 1.2,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "76": {
+   "GUSTAVO PETRO": 54.6,
+   "FEDERICO GUTIÉRREZ": 21.7,
+   "RODOLFO HERNÁNDEZ": 17.2,
+   "SERGIO FAJARDO": 4.0,
+   "JOHN MILTON RODRÍGUEZ": 2.1,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.1
+  },
+  "73": {
+   "RODOLFO HERNÁNDEZ": 40.0,
+   "GUSTAVO PETRO": 31.4,
+   "FEDERICO GUTIÉRREZ": 23.9,
+   "SERGIO FAJARDO": 3.0,
+   "JOHN MILTON RODRÍGUEZ": 1.3,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "70": {
+   "GUSTAVO PETRO": 55.3,
+   "FEDERICO GUTIÉRREZ": 28.9,
+   "RODOLFO HERNÁNDEZ": 11.2,
+   "JOHN MILTON RODRÍGUEZ": 2.6,
+   "SERGIO FAJARDO": 1.6,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "68": {
+   "RODOLFO HERNÁNDEZ": 67.5,
+   "GUSTAVO PETRO": 21.1,
+   "FEDERICO GUTIÉRREZ": 9.1,
+   "SERGIO FAJARDO": 1.2,
+   "JOHN MILTON RODRÍGUEZ": 1.0,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.1,
+   "INGRID BETANCOURT": 0.0,
+   "LUIS PÉREZ": 0.0
+  },
+  "63": {
+   "GUSTAVO PETRO": 31.9,
+   "FEDERICO GUTIÉRREZ": 31.0,
+   "RODOLFO HERNÁNDEZ": 30.4,
+   "SERGIO FAJARDO": 5.2,
+   "JOHN MILTON RODRÍGUEZ": 1.1,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.1
+  },
+  "54": {
+   "RODOLFO HERNÁNDEZ": 54.7,
+   "FEDERICO GUTIÉRREZ": 25.1,
+   "GUSTAVO PETRO": 16.0,
+   "SERGIO FAJARDO": 2.4,
+   "JOHN MILTON RODRÍGUEZ": 1.5,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "66": {
+   "GUSTAVO PETRO": 36.2,
+   "RODOLFO HERNÁNDEZ": 32.4,
+   "FEDERICO GUTIÉRREZ": 24.9,
+   "SERGIO FAJARDO": 5.0,
+   "JOHN MILTON RODRÍGUEZ": 1.1,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.1
+  },
+  "52": {
+   "GUSTAVO PETRO": 71.7,
+   "FEDERICO GUTIÉRREZ": 13.7,
+   "RODOLFO HERNÁNDEZ": 11.0,
+   "SERGIO FAJARDO": 2.4,
+   "JOHN MILTON RODRÍGUEZ": 0.8,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.3,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "47": {
+   "GUSTAVO PETRO": 50.3,
+   "FEDERICO GUTIÉRREZ": 28.5,
+   "RODOLFO HERNÁNDEZ": 17.4,
+   "SERGIO FAJARDO": 1.9,
+   "JOHN MILTON RODRÍGUEZ": 1.6,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "41": {
+   "RODOLFO HERNÁNDEZ": 45.6,
+   "GUSTAVO PETRO": 33.0,
+   "FEDERICO GUTIÉRREZ": 17.9,
+   "SERGIO FAJARDO": 1.9,
+   "JOHN MILTON RODRÍGUEZ": 1.4,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "27": {
+   "GUSTAVO PETRO": 73.8,
+   "FEDERICO GUTIÉRREZ": 14.4,
+   "RODOLFO HERNÁNDEZ": 7.5,
+   "SERGIO FAJARDO": 2.8,
+   "JOHN MILTON RODRÍGUEZ": 0.9,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.4,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.1
+  },
+  "11": {
+   "GUSTAVO PETRO": 48.0,
+   "RODOLFO HERNÁNDEZ": 22.6,
+   "FEDERICO GUTIÉRREZ": 19.7,
+   "SERGIO FAJARDO": 8.1,
+   "JOHN MILTON RODRÍGUEZ": 1.3,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.3,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.1
+  },
+  "25": {
+   "RODOLFO HERNÁNDEZ": 45.5,
+   "GUSTAVO PETRO": 34.8,
+   "FEDERICO GUTIÉRREZ": 14.3,
+   "SERGIO FAJARDO": 3.9,
+   "JOHN MILTON RODRÍGUEZ": 1.1,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.1
+  },
+  "23": {
+   "GUSTAVO PETRO": 52.6,
+   "FEDERICO GUTIÉRREZ": 28.6,
+   "RODOLFO HERNÁNDEZ": 15.7,
+   "SERGIO FAJARDO": 1.6,
+   "JOHN MILTON RODRÍGUEZ": 1.2,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.0,
+   "LUIS PÉREZ": 0.0
+  },
+  "20": {
+   "GUSTAVO PETRO": 44.6,
+   "RODOLFO HERNÁNDEZ": 32.9,
+   "FEDERICO GUTIÉRREZ": 18.9,
+   "JOHN MILTON RODRÍGUEZ": 1.8,
+   "SERGIO FAJARDO": 1.5,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.0,
+   "LUIS PÉREZ": 0.0
+  },
+  "19": {
+   "GUSTAVO PETRO": 71.2,
+   "FEDERICO GUTIÉRREZ": 13.6,
+   "RODOLFO HERNÁNDEZ": 10.4,
+   "SERGIO FAJARDO": 2.5,
+   "JOHN MILTON RODRÍGUEZ": 1.9,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.1
+  },
+  "17": {
+   "RODOLFO HERNÁNDEZ": 32.6,
+   "FEDERICO GUTIÉRREZ": 30.3,
+   "GUSTAVO PETRO": 29.1,
+   "SERGIO FAJARDO": 6.5,
+   "JOHN MILTON RODRÍGUEZ": 0.9,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.3,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.1
+  },
+  "15": {
+   "RODOLFO HERNÁNDEZ": 52.5,
+   "GUSTAVO PETRO": 31.7,
+   "FEDERICO GUTIÉRREZ": 10.8,
+   "SERGIO FAJARDO": 3.8,
+   "JOHN MILTON RODRÍGUEZ": 0.8,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.3,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "13": {
+   "GUSTAVO PETRO": 50.9,
+   "FEDERICO GUTIÉRREZ": 28.9,
+   "RODOLFO HERNÁNDEZ": 15.4,
+   "SERGIO FAJARDO": 2.6,
+   "JOHN MILTON RODRÍGUEZ": 1.9,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "08": {
+   "GUSTAVO PETRO": 55.7,
+   "FEDERICO GUTIÉRREZ": 27.1,
+   "RODOLFO HERNÁNDEZ": 13.1,
+   "SERGIO FAJARDO": 2.7,
+   "JOHN MILTON RODRÍGUEZ": 1.1,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.2,
+   "INGRID BETANCOURT": 0.1,
+   "LUIS PÉREZ": 0.0
+  },
+  "05": {
+   "FEDERICO GUTIÉRREZ": 49.9,
+   "GUSTAVO PETRO": 24.6,
+   "RODOLFO HERNÁNDEZ": 18.7,
+   "SERGIO FAJARDO": 5.5,
+   "JOHN MILTON RODRÍGUEZ": 0.8,
+   "ENRIQUE GÓMEZ MARTÍNEZ": 0.3,
+   "LUIS PÉREZ": 0.1,
+   "INGRID BETANCOURT": 0.1
+  }
+ },
+ "2022_2v": {
+  "nacional": {
+   "GUSTAVO PETRO": 51.8,
+   "RODOLFO HERNÁNDEZ": 48.2
+  },
+  "99": {
+   "RODOLFO HERNÁNDEZ": 60.0,
+   "GUSTAVO PETRO": 40.0
+  },
+  "97": {
+   "GUSTAVO PETRO": 75.2,
+   "RODOLFO HERNÁNDEZ": 24.8
+  },
+  "86": {
+   "GUSTAVO PETRO": 81.2,
+   "RODOLFO HERNÁNDEZ": 18.8
+  },
+  "91": {
+   "GUSTAVO PETRO": 55.8,
+   "RODOLFO HERNÁNDEZ": 44.2
+  },
+  "88": {
+   "GUSTAVO PETRO": 53.4,
+   "RODOLFO HERNÁNDEZ": 46.6
+  },
+  "95": {
+   "RODOLFO HERNÁNDEZ": 54.5,
+   "GUSTAVO PETRO": 45.5
+  },
+  "50": {
+   "RODOLFO HERNÁNDEZ": 62.9,
+   "GUSTAVO PETRO": 37.1
+  },
+  "94": {
+   "GUSTAVO PETRO": 53.3,
+   "RODOLFO HERNÁNDEZ": 46.7
+  },
+  "44": {
+   "GUSTAVO PETRO": 65.7,
+   "RODOLFO HERNÁNDEZ": 34.3
+  },
+  "85": {
+   "RODOLFO HERNÁNDEZ": 71.6,
+   "GUSTAVO PETRO": 28.4
+  },
+  "18": {
+   "RODOLFO HERNÁNDEZ": 55.1,
+   "GUSTAVO PETRO": 44.9
+  },
+  "81": {
+   "RODOLFO HERNÁNDEZ": 68.5,
+   "GUSTAVO PETRO": 31.5
+  },
+  "76": {
+   "GUSTAVO PETRO": 65.4,
+   "RODOLFO HERNÁNDEZ": 34.6
+  },
+  "73": {
+   "RODOLFO HERNÁNDEZ": 60.8,
+   "GUSTAVO PETRO": 39.2
+  },
+  "70": {
+   "GUSTAVO PETRO": 65.2,
+   "RODOLFO HERNÁNDEZ": 34.8
+  },
+  "68": {
+   "RODOLFO HERNÁNDEZ": 73.8,
+   "GUSTAVO PETRO": 26.2
+  },
+  "63": {
+   "RODOLFO HERNÁNDEZ": 57.4,
+   "GUSTAVO PETRO": 42.6
+  },
+  "54": {
+   "RODOLFO HERNÁNDEZ": 78.9,
+   "GUSTAVO PETRO": 21.1
+  },
+  "66": {
+   "RODOLFO HERNÁNDEZ": 52.7,
+   "GUSTAVO PETRO": 47.3
+  },
+  "52": {
+   "GUSTAVO PETRO": 82.6,
+   "RODOLFO HERNÁNDEZ": 17.4
+  },
+  "47": {
+   "GUSTAVO PETRO": 61.2,
+   "RODOLFO HERNÁNDEZ": 38.8
+  },
+  "41": {
+   "RODOLFO HERNÁNDEZ": 58.6,
+   "GUSTAVO PETRO": 41.4
+  },
+  "27": {
+   "GUSTAVO PETRO": 83.4,
+   "RODOLFO HERNÁNDEZ": 16.6
+  },
+  "11": {
+   "GUSTAVO PETRO": 60.3,
+   "RODOLFO HERNÁNDEZ": 39.7
+  },
+  "25": {
+   "RODOLFO HERNÁNDEZ": 54.8,
+   "GUSTAVO PETRO": 45.2
+  },
+  "23": {
+   "GUSTAVO PETRO": 62.1,
+   "RODOLFO HERNÁNDEZ": 37.9
+  },
+  "20": {
+   "GUSTAVO PETRO": 53.7,
+   "RODOLFO HERNÁNDEZ": 46.3
+  },
+  "19": {
+   "GUSTAVO PETRO": 80.9,
+   "RODOLFO HERNÁNDEZ": 19.1
+  },
+  "17": {
+   "RODOLFO HERNÁNDEZ": 59.1,
+   "GUSTAVO PETRO": 40.9
+  },
+  "15": {
+   "RODOLFO HERNÁNDEZ": 59.0,
+   "GUSTAVO PETRO": 41.0
+  },
+  "13": {
+   "GUSTAVO PETRO": 62.0,
+   "RODOLFO HERNÁNDEZ": 38.0
+  },
+  "08": {
+   "GUSTAVO PETRO": 68.2,
+   "RODOLFO HERNÁNDEZ": 31.8
+  },
+  "05": {
+   "RODOLFO HERNÁNDEZ": 66.1,
+   "GUSTAVO PETRO": 33.9
+  }
+ },
+ "2026_1v": {
+  "nacional": {
+   "ABELARDO DE LA ESPRIELLA": 44.3,
+   "IVÁN CEPEDA CASTRO": 42.0,
+   "PALOMA VALENCIA LASERNA": 7.0,
+   "SERGIO FAJARDO VALDERRAMA": 4.3,
+   "CLAUDIA LÓPEZ": 1.0,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.9,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "05": {
+   "ABELARDO DE LA ESPRIELLA": 55.5,
+   "IVÁN CEPEDA CASTRO": 26.0,
+   "PALOMA VALENCIA LASERNA": 9.5,
+   "SERGIO FAJARDO VALDERRAMA": 7.2,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.0,
+   "CLAUDIA LÓPEZ": 0.4,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "08": {
+   "IVÁN CEPEDA CASTRO": 53.0,
+   "ABELARDO DE LA ESPRIELLA": 41.5,
+   "SERGIO FAJARDO VALDERRAMA": 2.7,
+   "PALOMA VALENCIA LASERNA": 2.0,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.3,
+   "CLAUDIA LÓPEZ": 0.2,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.0,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.0,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "13": {
+   "IVÁN CEPEDA CASTRO": 55.0,
+   "ABELARDO DE LA ESPRIELLA": 38.8,
+   "PALOMA VALENCIA LASERNA": 3.0,
+   "SERGIO FAJARDO VALDERRAMA": 1.9,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.5,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.3,
+   "CLAUDIA LÓPEZ": 0.3,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "15": {
+   "ABELARDO DE LA ESPRIELLA": 51.3,
+   "IVÁN CEPEDA CASTRO": 32.9,
+   "PALOMA VALENCIA LASERNA": 8.8,
+   "SERGIO FAJARDO VALDERRAMA": 4.4,
+   "CLAUDIA LÓPEZ": 1.2,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.9,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "17": {
+   "ABELARDO DE LA ESPRIELLA": 45.5,
+   "IVÁN CEPEDA CASTRO": 30.4,
+   "PALOMA VALENCIA LASERNA": 12.9,
+   "SERGIO FAJARDO VALDERRAMA": 5.5,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 2.9,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.3,
+   "CLAUDIA LÓPEZ": 1.0,
+   "MIGUEL URIBE LONDOÑO": 0.2,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "19": {
+   "IVÁN CEPEDA CASTRO": 70.2,
+   "ABELARDO DE LA ESPRIELLA": 19.9,
+   "PALOMA VALENCIA LASERNA": 6.1,
+   "SERGIO FAJARDO VALDERRAMA": 1.8,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.8,
+   "CLAUDIA LÓPEZ": 0.6,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.2,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "20": {
+   "IVÁN CEPEDA CASTRO": 47.3,
+   "ABELARDO DE LA ESPRIELLA": 47.1,
+   "PALOMA VALENCIA LASERNA": 2.5,
+   "SERGIO FAJARDO VALDERRAMA": 1.7,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.8,
+   "CLAUDIA LÓPEZ": 0.2,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.0,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.0,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "23": {
+   "IVÁN CEPEDA CASTRO": 56.5,
+   "ABELARDO DE LA ESPRIELLA": 38.5,
+   "PALOMA VALENCIA LASERNA": 2.8,
+   "SERGIO FAJARDO VALDERRAMA": 1.2,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.4,
+   "CLAUDIA LÓPEZ": 0.2,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.0,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "25": {
+   "ABELARDO DE LA ESPRIELLA": 46.2,
+   "IVÁN CEPEDA CASTRO": 38.2,
+   "PALOMA VALENCIA LASERNA": 7.9,
+   "SERGIO FAJARDO VALDERRAMA": 4.6,
+   "CLAUDIA LÓPEZ": 1.7,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.0,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "11": {
+   "IVÁN CEPEDA CASTRO": 42.4,
+   "ABELARDO DE LA ESPRIELLA": 38.4,
+   "PALOMA VALENCIA LASERNA": 9.3,
+   "SERGIO FAJARDO VALDERRAMA": 6.4,
+   "CLAUDIA LÓPEZ": 2.5,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.5,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.0,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "27": {
+   "IVÁN CEPEDA CASTRO": 77.2,
+   "ABELARDO DE LA ESPRIELLA": 16.0,
+   "PALOMA VALENCIA LASERNA": 4.0,
+   "SERGIO FAJARDO VALDERRAMA": 0.8,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.7,
+   "CLAUDIA LÓPEZ": 0.4,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.2,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.2,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.1,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "41": {
+   "ABELARDO DE LA ESPRIELLA": 55.3,
+   "IVÁN CEPEDA CASTRO": 32.8,
+   "PALOMA VALENCIA LASERNA": 6.7,
+   "SERGIO FAJARDO VALDERRAMA": 2.7,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.2,
+   "CLAUDIA LÓPEZ": 0.6,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.2,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "47": {
+   "IVÁN CEPEDA CASTRO": 53.4,
+   "ABELARDO DE LA ESPRIELLA": 40.1,
+   "PALOMA VALENCIA LASERNA": 3.7,
+   "SERGIO FAJARDO VALDERRAMA": 1.6,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.5,
+   "CLAUDIA LÓPEZ": 0.2,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.0,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "52": {
+   "IVÁN CEPEDA CASTRO": 70.0,
+   "ABELARDO DE LA ESPRIELLA": 21.8,
+   "PALOMA VALENCIA LASERNA": 4.6,
+   "SERGIO FAJARDO VALDERRAMA": 1.9,
+   "CLAUDIA LÓPEZ": 0.6,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.5,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "66": {
+   "ABELARDO DE LA ESPRIELLA": 45.7,
+   "IVÁN CEPEDA CASTRO": 36.8,
+   "PALOMA VALENCIA LASERNA": 9.0,
+   "SERGIO FAJARDO VALDERRAMA": 5.4,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.4,
+   "CLAUDIA LÓPEZ": 1.0,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.3,
+   "MIGUEL URIBE LONDOÑO": 0.2,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "54": {
+   "ABELARDO DE LA ESPRIELLA": 71.5,
+   "IVÁN CEPEDA CASTRO": 17.6,
+   "PALOMA VALENCIA LASERNA": 4.6,
+   "SERGIO FAJARDO VALDERRAMA": 4.0,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.6,
+   "CLAUDIA LÓPEZ": 0.3,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.1,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "63": {
+   "ABELARDO DE LA ESPRIELLA": 49.6,
+   "IVÁN CEPEDA CASTRO": 32.8,
+   "PALOMA VALENCIA LASERNA": 9.6,
+   "SERGIO FAJARDO VALDERRAMA": 5.5,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.3,
+   "CLAUDIA LÓPEZ": 0.8,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.2,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "68": {
+   "ABELARDO DE LA ESPRIELLA": 58.0,
+   "IVÁN CEPEDA CASTRO": 29.2,
+   "PALOMA VALENCIA LASERNA": 6.5,
+   "SERGIO FAJARDO VALDERRAMA": 4.0,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.4,
+   "CLAUDIA LÓPEZ": 0.5,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.1,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.0,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "70": {
+   "IVÁN CEPEDA CASTRO": 57.4,
+   "ABELARDO DE LA ESPRIELLA": 36.9,
+   "PALOMA VALENCIA LASERNA": 3.6,
+   "SERGIO FAJARDO VALDERRAMA": 1.1,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.4,
+   "CLAUDIA LÓPEZ": 0.2,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.1,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "73": {
+   "ABELARDO DE LA ESPRIELLA": 47.8,
+   "IVÁN CEPEDA CASTRO": 35.7,
+   "PALOMA VALENCIA LASERNA": 10.8,
+   "SERGIO FAJARDO VALDERRAMA": 3.1,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.3,
+   "CLAUDIA LÓPEZ": 0.7,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.2,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "76": {
+   "IVÁN CEPEDA CASTRO": 54.4,
+   "ABELARDO DE LA ESPRIELLA": 34.4,
+   "PALOMA VALENCIA LASERNA": 5.7,
+   "SERGIO FAJARDO VALDERRAMA": 3.7,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.7,
+   "CLAUDIA LÓPEZ": 0.6,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "81": {
+   "ABELARDO DE LA ESPRIELLA": 52.8,
+   "IVÁN CEPEDA CASTRO": 35.5,
+   "PALOMA VALENCIA LASERNA": 6.1,
+   "SERGIO FAJARDO VALDERRAMA": 2.4,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 2.0,
+   "CLAUDIA LÓPEZ": 0.5,
+   "MIGUEL URIBE LONDOÑO": 0.2,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "18": {
+   "ABELARDO DE LA ESPRIELLA": 49.2,
+   "IVÁN CEPEDA CASTRO": 40.0,
+   "PALOMA VALENCIA LASERNA": 5.0,
+   "SERGIO FAJARDO VALDERRAMA": 2.4,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 2.0,
+   "CLAUDIA LÓPEZ": 0.5,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.3,
+   "MIGUEL URIBE LONDOÑO": 0.2,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "85": {
+   "ABELARDO DE LA ESPRIELLA": 62.5,
+   "IVÁN CEPEDA CASTRO": 25.2,
+   "PALOMA VALENCIA LASERNA": 6.8,
+   "SERGIO FAJARDO VALDERRAMA": 2.8,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.7,
+   "CLAUDIA LÓPEZ": 0.5,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "44": {
+   "IVÁN CEPEDA CASTRO": 56.4,
+   "ABELARDO DE LA ESPRIELLA": 38.5,
+   "PALOMA VALENCIA LASERNA": 2.5,
+   "SERGIO FAJARDO VALDERRAMA": 1.2,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.6,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.3,
+   "CLAUDIA LÓPEZ": 0.3,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "94": {
+   "IVÁN CEPEDA CASTRO": 57.8,
+   "ABELARDO DE LA ESPRIELLA": 31.7,
+   "PALOMA VALENCIA LASERNA": 5.9,
+   "SERGIO FAJARDO VALDERRAMA": 1.6,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.1,
+   "CLAUDIA LÓPEZ": 0.9,
+   "MIGUEL URIBE LONDOÑO": 0.4,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.3,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.2,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "50": {
+   "ABELARDO DE LA ESPRIELLA": 53.2,
+   "IVÁN CEPEDA CASTRO": 33.1,
+   "PALOMA VALENCIA LASERNA": 7.0,
+   "SERGIO FAJARDO VALDERRAMA": 3.4,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 2.3,
+   "CLAUDIA LÓPEZ": 0.6,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "95": {
+   "ABELARDO DE LA ESPRIELLA": 48.9,
+   "IVÁN CEPEDA CASTRO": 38.6,
+   "PALOMA VALENCIA LASERNA": 6.1,
+   "SERGIO FAJARDO VALDERRAMA": 2.5,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 2.3,
+   "CLAUDIA LÓPEZ": 0.9,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.3,
+   "MIGUEL URIBE LONDOÑO": 0.2,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "88": {
+   "IVÁN CEPEDA CASTRO": 45.9,
+   "ABELARDO DE LA ESPRIELLA": 45.0,
+   "PALOMA VALENCIA LASERNA": 4.8,
+   "SERGIO FAJARDO VALDERRAMA": 3.1,
+   "CLAUDIA LÓPEZ": 0.4,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.3,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "91": {
+   "IVÁN CEPEDA CASTRO": 56.6,
+   "ABELARDO DE LA ESPRIELLA": 31.9,
+   "PALOMA VALENCIA LASERNA": 6.5,
+   "SERGIO FAJARDO VALDERRAMA": 1.9,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.4,
+   "CLAUDIA LÓPEZ": 0.9,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.3,
+   "MIGUEL URIBE LONDOÑO": 0.2,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "86": {
+   "IVÁN CEPEDA CASTRO": 73.0,
+   "ABELARDO DE LA ESPRIELLA": 19.4,
+   "PALOMA VALENCIA LASERNA": 3.4,
+   "SERGIO FAJARDO VALDERRAMA": 1.6,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.3,
+   "CLAUDIA LÓPEZ": 0.4,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.3,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.1,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "97": {
+   "IVÁN CEPEDA CASTRO": 76.8,
+   "ABELARDO DE LA ESPRIELLA": 15.3,
+   "PALOMA VALENCIA LASERNA": 3.8,
+   "SERGIO FAJARDO VALDERRAMA": 1.6,
+   "CLAUDIA LÓPEZ": 0.8,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.6,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 0.6,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.2,
+   "MIGUEL URIBE LONDOÑO": 0.2,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.1,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  },
+  "99": {
+   "IVÁN CEPEDA CASTRO": 46.8,
+   "ABELARDO DE LA ESPRIELLA": 44.5,
+   "PALOMA VALENCIA LASERNA": 4.6,
+   "RAÚL SANTIAGO BOTERO JARAMILLO": 1.5,
+   "SERGIO FAJARDO VALDERRAMA": 1.4,
+   "CLAUDIA LÓPEZ": 0.4,
+   "ÓSCAR MAURICIO LIZCANO ARANGO": 0.3,
+   "MIGUEL URIBE LONDOÑO": 0.2,
+   "ROY LEONARDO BARRERAS MONTEALEGRE": 0.1,
+   "SONDRA MACOLLINS GARVIN PINTO": 0.1,
+   "GUSTAVO MATAMOROS CAMACHO": 0.0,
+   "CARLOS EDUARDO CAICEDO OMAR": 0.0,
+   "LUIS GILBERTO MURILLO URRUTIA": 0.0
+  }
+ },
+ "lean_2026": {
+  "nacional": {
+   "derecha_uribismo": 49.8,
+   "izquierda": 40.8,
+   "verdes_alternativos": 5.2,
+   "otros_blanco_nulo": 3.1,
+   "centro_tradicional": 1.1
+  },
+  "05": {
+   "derecha_uribismo": 63.1,
+   "izquierda": 25.2,
+   "verdes_alternativos": 7.5,
+   "otros_blanco_nulo": 3.2,
+   "centro_tradicional": 1.1
+  },
+  "08": {
+   "izquierda": 52.0,
+   "derecha_uribismo": 42.8,
+   "verdes_alternativos": 2.9,
+   "otros_blanco_nulo": 1.8,
+   "centro_tradicional": 0.5
+  },
+  "13": {
+   "izquierda": 53.7,
+   "derecha_uribismo": 40.8,
+   "otros_blanco_nulo": 2.5,
+   "verdes_alternativos": 2.2,
+   "centro_tradicional": 0.8
+  },
+  "15": {
+   "derecha_uribismo": 58.5,
+   "izquierda": 32.0,
+   "verdes_alternativos": 5.6,
+   "otros_blanco_nulo": 2.9,
+   "centro_tradicional": 1.1
+  },
+  "17": {
+   "derecha_uribismo": 56.1,
+   "izquierda": 29.2,
+   "verdes_alternativos": 6.4,
+   "otros_blanco_nulo": 4.4,
+   "centro_tradicional": 4.0
+  },
+  "19": {
+   "izquierda": 66.5,
+   "derecha_uribismo": 24.8,
+   "otros_blanco_nulo": 5.3,
+   "verdes_alternativos": 2.4,
+   "centro_tradicional": 0.9
+  },
+  "20": {
+   "derecha_uribismo": 48.3,
+   "izquierda": 46.0,
+   "otros_blanco_nulo": 2.7,
+   "verdes_alternativos": 2.0,
+   "centro_tradicional": 1.0
+  },
+  "23": {
+   "izquierda": 55.3,
+   "derecha_uribismo": 40.5,
+   "otros_blanco_nulo": 2.2,
+   "verdes_alternativos": 1.4,
+   "centro_tradicional": 0.6
+  },
+  "25": {
+   "derecha_uribismo": 52.3,
+   "izquierda": 36.9,
+   "verdes_alternativos": 6.2,
+   "otros_blanco_nulo": 3.4,
+   "centro_tradicional": 1.1
+  },
+  "11": {
+   "derecha_uribismo": 46.5,
+   "izquierda": 41.4,
+   "verdes_alternativos": 8.8,
+   "otros_blanco_nulo": 2.6,
+   "centro_tradicional": 0.7
+  },
+  "27": {
+   "izquierda": 74.4,
+   "derecha_uribismo": 19.6,
+   "otros_blanco_nulo": 3.8,
+   "verdes_alternativos": 1.4,
+   "centro_tradicional": 0.9
+  },
+  "41": {
+   "derecha_uribismo": 60.2,
+   "izquierda": 31.9,
+   "verdes_alternativos": 3.4,
+   "otros_blanco_nulo": 3.2,
+   "centro_tradicional": 1.4
+  },
+  "47": {
+   "izquierda": 51.8,
+   "derecha_uribismo": 42.6,
+   "otros_blanco_nulo": 3.0,
+   "verdes_alternativos": 1.9,
+   "centro_tradicional": 0.7
+  },
+  "52": {
+   "izquierda": 67.6,
+   "derecha_uribismo": 25.7,
+   "otros_blanco_nulo": 3.5,
+   "verdes_alternativos": 2.5,
+   "centro_tradicional": 0.7
+  },
+  "66": {
+   "derecha_uribismo": 52.7,
+   "izquierda": 35.4,
+   "verdes_alternativos": 6.2,
+   "otros_blanco_nulo": 4.0,
+   "centro_tradicional": 1.6
+  },
+  "54": {
+   "derecha_uribismo": 74.6,
+   "izquierda": 17.3,
+   "verdes_alternativos": 4.3,
+   "otros_blanco_nulo": 2.1,
+   "centro_tradicional": 1.7
+  },
+  "63": {
+   "derecha_uribismo": 57.1,
+   "izquierda": 31.6,
+   "verdes_alternativos": 6.1,
+   "otros_blanco_nulo": 3.8,
+   "centro_tradicional": 1.4
+  },
+  "68": {
+   "derecha_uribismo": 63.0,
+   "izquierda": 28.5,
+   "verdes_alternativos": 4.5,
+   "otros_blanco_nulo": 2.5,
+   "centro_tradicional": 1.5
+  },
+  "70": {
+   "izquierda": 56.1,
+   "derecha_uribismo": 39.7,
+   "otros_blanco_nulo": 2.3,
+   "verdes_alternativos": 1.4,
+   "centro_tradicional": 0.5
+  },
+  "73": {
+   "derecha_uribismo": 56.7,
+   "izquierda": 34.6,
+   "verdes_alternativos": 3.8,
+   "otros_blanco_nulo": 3.4,
+   "centro_tradicional": 1.4
+  },
+  "76": {
+   "izquierda": 52.7,
+   "derecha_uribismo": 39.0,
+   "verdes_alternativos": 4.3,
+   "otros_blanco_nulo": 3.2,
+   "centro_tradicional": 0.9
+  },
+  "81": {
+   "derecha_uribismo": 56.4,
+   "izquierda": 33.9,
+   "otros_blanco_nulo": 4.7,
+   "verdes_alternativos": 2.9,
+   "centro_tradicional": 2.1
+  },
+  "18": {
+   "derecha_uribismo": 51.7,
+   "izquierda": 38.1,
+   "otros_blanco_nulo": 5.0,
+   "verdes_alternativos": 3.0,
+   "centro_tradicional": 2.2
+  },
+  "85": {
+   "derecha_uribismo": 67.1,
+   "izquierda": 24.4,
+   "otros_blanco_nulo": 3.4,
+   "verdes_alternativos": 3.3,
+   "centro_tradicional": 1.8
+  },
+  "44": {
+   "izquierda": 54.8,
+   "derecha_uribismo": 40.0,
+   "otros_blanco_nulo": 2.9,
+   "verdes_alternativos": 1.5,
+   "centro_tradicional": 0.9
+  },
+  "94": {
+   "izquierda": 56.0,
+   "derecha_uribismo": 36.8,
+   "otros_blanco_nulo": 3.3,
+   "verdes_alternativos": 2.6,
+   "centro_tradicional": 1.4
+  },
+  "50": {
+   "derecha_uribismo": 58.1,
+   "izquierda": 31.9,
+   "verdes_alternativos": 3.9,
+   "otros_blanco_nulo": 3.7,
+   "centro_tradicional": 2.4
+  },
+  "95": {
+   "derecha_uribismo": 52.0,
+   "izquierda": 36.4,
+   "otros_blanco_nulo": 5.9,
+   "verdes_alternativos": 3.3,
+   "centro_tradicional": 2.4
+  },
+  "88": {
+   "derecha_uribismo": 47.7,
+   "izquierda": 43.9,
+   "otros_blanco_nulo": 4.5,
+   "verdes_alternativos": 3.4,
+   "centro_tradicional": 0.4
+  },
+  "91": {
+   "izquierda": 54.8,
+   "derecha_uribismo": 37.4,
+   "otros_blanco_nulo": 3.4,
+   "verdes_alternativos": 2.8,
+   "centro_tradicional": 1.6
+  },
+  "86": {
+   "izquierda": 70.3,
+   "derecha_uribismo": 22.1,
+   "otros_blanco_nulo": 3.9,
+   "verdes_alternativos": 2.3,
+   "centro_tradicional": 1.4
+  },
+  "97": {
+   "izquierda": 75.1,
+   "derecha_uribismo": 18.9,
+   "verdes_alternativos": 2.5,
+   "otros_blanco_nulo": 2.4,
+   "centro_tradicional": 1.1
+  },
+  "99": {
+   "derecha_uribismo": 47.8,
+   "izquierda": 45.5,
+   "otros_blanco_nulo": 3.0,
+   "verdes_alternativos": 1.9,
+   "centro_tradicional": 1.8
+  },
+  "fuente": "Registraduría, presidencial 2026 primera vuelta (solo votantes)"
+ },
+ "lean_2026_adultos": {
+  "nacional": {
+   "otros_blanco_nulo": 43.3,
+   "derecha_uribismo": 29.1,
+   "izquierda": 23.9,
+   "verdes_alternativos": 3.0,
+   "centro_tradicional": 0.6
+  },
+  "05": {
+   "otros_blanco_nulo": 43.0,
+   "derecha_uribismo": 37.2,
+   "izquierda": 14.8,
+   "verdes_alternativos": 4.4,
+   "centro_tradicional": 0.6
+  },
+  "08": {
+   "otros_blanco_nulo": 51.0,
+   "izquierda": 26.0,
+   "derecha_uribismo": 21.4,
+   "verdes_alternativos": 1.4,
+   "centro_tradicional": 0.2
+  },
+  "13": {
+   "otros_blanco_nulo": 55.0,
+   "izquierda": 24.8,
+   "derecha_uribismo": 18.8,
+   "verdes_alternativos": 1.0,
+   "centro_tradicional": 0.4
+  },
+  "15": {
+   "derecha_uribismo": 38.1,
+   "otros_blanco_nulo": 36.8,
+   "izquierda": 20.8,
+   "verdes_alternativos": 3.6,
+   "centro_tradicional": 0.7
+  },
+  "17": {
+   "otros_blanco_nulo": 42.0,
+   "derecha_uribismo": 34.0,
+   "izquierda": 17.7,
+   "verdes_alternativos": 3.9,
+   "centro_tradicional": 2.4
+  },
+  "19": {
+   "izquierda": 43.1,
+   "otros_blanco_nulo": 38.7,
+   "derecha_uribismo": 16.1,
+   "verdes_alternativos": 1.6,
+   "centro_tradicional": 0.6
+  },
+  "20": {
+   "otros_blanco_nulo": 48.8,
+   "derecha_uribismo": 25.4,
+   "izquierda": 24.2,
+   "verdes_alternativos": 1.1,
+   "centro_tradicional": 0.5
+  },
+  "23": {
+   "otros_blanco_nulo": 50.0,
+   "izquierda": 28.3,
+   "derecha_uribismo": 20.7,
+   "verdes_alternativos": 0.7,
+   "centro_tradicional": 0.3
+  },
+  "25": {
+   "derecha_uribismo": 36.4,
+   "otros_blanco_nulo": 32.8,
+   "izquierda": 25.7,
+   "verdes_alternativos": 4.3,
+   "centro_tradicional": 0.8
+  },
+  "11": {
+   "otros_blanco_nulo": 33.8,
+   "derecha_uribismo": 31.6,
+   "izquierda": 28.1,
+   "verdes_alternativos": 6.0,
+   "centro_tradicional": 0.5
+  },
+  "27": {
+   "otros_blanco_nulo": 60.7,
+   "izquierda": 30.4,
+   "derecha_uribismo": 8.0,
+   "verdes_alternativos": 0.6,
+   "centro_tradicional": 0.4
+  },
+  "41": {
+   "otros_blanco_nulo": 42.7,
+   "derecha_uribismo": 35.7,
+   "izquierda": 18.9,
+   "verdes_alternativos": 2.0,
+   "centro_tradicional": 0.8
+  },
+  "47": {
+   "otros_blanco_nulo": 54.8,
+   "izquierda": 24.1,
+   "derecha_uribismo": 19.9,
+   "verdes_alternativos": 0.9,
+   "centro_tradicional": 0.3
+  },
+  "52": {
+   "otros_blanco_nulo": 44.6,
+   "izquierda": 38.8,
+   "derecha_uribismo": 14.8,
+   "verdes_alternativos": 1.4,
+   "centro_tradicional": 0.4
+  },
+  "66": {
+   "otros_blanco_nulo": 43.7,
+   "derecha_uribismo": 30.9,
+   "izquierda": 20.8,
+   "verdes_alternativos": 3.6,
+   "centro_tradicional": 0.9
+  },
+  "54": {
+   "otros_blanco_nulo": 47.0,
+   "derecha_uribismo": 40.4,
+   "izquierda": 9.4,
+   "verdes_alternativos": 2.3,
+   "centro_tradicional": 0.9
+  },
+  "63": {
+   "otros_blanco_nulo": 43.0,
+   "derecha_uribismo": 33.8,
+   "izquierda": 18.7,
+   "verdes_alternativos": 3.6,
+   "centro_tradicional": 0.8
+  },
+  "68": {
+   "derecha_uribismo": 41.0,
+   "otros_blanco_nulo": 36.6,
+   "izquierda": 18.5,
+   "verdes_alternativos": 2.9,
+   "centro_tradicional": 1.0
+  },
+  "70": {
+   "otros_blanco_nulo": 48.1,
+   "izquierda": 29.8,
+   "derecha_uribismo": 21.1,
+   "verdes_alternativos": 0.7,
+   "centro_tradicional": 0.3
+  },
+  "73": {
+   "otros_blanco_nulo": 43.6,
+   "derecha_uribismo": 33.1,
+   "izquierda": 20.2,
+   "verdes_alternativos": 2.2,
+   "centro_tradicional": 0.8
+  },
+  "76": {
+   "otros_blanco_nulo": 45.4,
+   "izquierda": 29.7,
+   "derecha_uribismo": 22.0,
+   "verdes_alternativos": 2.4,
+   "centro_tradicional": 0.5
+  },
+  "81": {
+   "otros_blanco_nulo": 56.5,
+   "derecha_uribismo": 25.8,
+   "izquierda": 15.5,
+   "verdes_alternativos": 1.3,
+   "centro_tradicional": 1.0
+  },
+  "18": {
+   "otros_blanco_nulo": 49.2,
+   "derecha_uribismo": 27.6,
+   "izquierda": 20.4,
+   "verdes_alternativos": 1.6,
+   "centro_tradicional": 1.2
+  },
+  "85": {
+   "derecha_uribismo": 45.5,
+   "otros_blanco_nulo": 34.5,
+   "izquierda": 16.5,
+   "verdes_alternativos": 2.2,
+   "centro_tradicional": 1.2
+  },
+  "44": {
+   "otros_blanco_nulo": 64.8,
+   "izquierda": 19.9,
+   "derecha_uribismo": 14.5,
+   "verdes_alternativos": 0.5,
+   "centro_tradicional": 0.3
+  },
+  "94": {
+   "otros_blanco_nulo": 68.2,
+   "izquierda": 18.4,
+   "derecha_uribismo": 12.1,
+   "verdes_alternativos": 0.9,
+   "centro_tradicional": 0.5
+  },
+  "50": {
+   "otros_blanco_nulo": 38.4,
+   "derecha_uribismo": 37.2,
+   "izquierda": 20.4,
+   "verdes_alternativos": 2.5,
+   "centro_tradicional": 1.5
+  },
+  "95": {
+   "otros_blanco_nulo": 52.6,
+   "derecha_uribismo": 26.2,
+   "izquierda": 18.3,
+   "verdes_alternativos": 1.7,
+   "centro_tradicional": 1.2
+  },
+  "88": {
+   "otros_blanco_nulo": 67.8,
+   "derecha_uribismo": 16.1,
+   "izquierda": 14.8,
+   "verdes_alternativos": 1.1,
+   "centro_tradicional": 0.1
+  },
+  "91": {
+   "otros_blanco_nulo": 56.9,
+   "izquierda": 24.4,
+   "derecha_uribismo": 16.7,
+   "verdes_alternativos": 1.2,
+   "centro_tradicional": 0.7
+  },
+  "86": {
+   "otros_blanco_nulo": 50.9,
+   "izquierda": 35.9,
+   "derecha_uribismo": 11.3,
+   "verdes_alternativos": 1.2,
+   "centro_tradicional": 0.7
+  },
+  "97": {
+   "otros_blanco_nulo": 65.4,
+   "izquierda": 26.6,
+   "derecha_uribismo": 6.7,
+   "verdes_alternativos": 0.9,
+   "centro_tradicional": 0.4
+  },
+  "99": {
+   "otros_blanco_nulo": 63.4,
+   "derecha_uribismo": 18.0,
+   "izquierda": 17.1,
+   "verdes_alternativos": 0.7,
+   "centro_tradicional": 0.7
+  },
+  "fuente": "igual, sobre el censo electoral: quien no votó cuenta como 'ninguno'"
+ },
+ "participacion_2026_1v": {
+  "nacional": 58.5,
+  "05": 58.9,
+  "08": 49.9,
+  "13": 46.2,
+  "15": 65.1,
+  "17": 60.7,
+  "19": 64.8,
+  "20": 52.6,
+  "23": 51.2,
+  "25": 69.6,
+  "11": 67.9,
+  "27": 40.9,
+  "41": 59.2,
+  "47": 46.6,
+  "52": 57.4,
+  "66": 58.7,
+  "54": 54.2,
+  "63": 59.3,
+  "68": 65.0,
+  "70": 53.1,
+  "73": 58.4,
+  "76": 56.4,
+  "81": 45.7,
+  "18": 53.4,
+  "85": 67.8,
+  "44": 36.3,
+  "94": 32.9,
+  "50": 64.0,
+  "95": 50.4,
+  "88": 33.7,
+  "91": 44.6,
+  "86": 51.1,
+  "97": 35.4,
+  "99": 37.7
+ },
+ "2026_2v": {
+  "nacional": {
+   "ABELARDO DE LA ESPRIELLA": 50.1,
+   "IVÁN CEPEDA CASTRO": 49.9
+  },
+  "05": {
+   "ABELARDO DE LA ESPRIELLA": 65.9,
+   "IVÁN CEPEDA CASTRO": 34.1
+  },
+  "08": {
+   "IVÁN CEPEDA CASTRO": 59.2,
+   "ABELARDO DE LA ESPRIELLA": 40.8
+  },
+  "13": {
+   "IVÁN CEPEDA CASTRO": 60.2,
+   "ABELARDO DE LA ESPRIELLA": 39.8
+  },
+  "15": {
+   "ABELARDO DE LA ESPRIELLA": 61.2,
+   "IVÁN CEPEDA CASTRO": 38.8
+  },
+  "17": {
+   "ABELARDO DE LA ESPRIELLA": 60.1,
+   "IVÁN CEPEDA CASTRO": 39.9
+  },
+  "19": {
+   "IVÁN CEPEDA CASTRO": 76.8,
+   "ABELARDO DE LA ESPRIELLA": 23.2
+  },
+  "20": {
+   "IVÁN CEPEDA CASTRO": 51.5,
+   "ABELARDO DE LA ESPRIELLA": 48.5
+  },
+  "23": {
+   "IVÁN CEPEDA CASTRO": 58.8,
+   "ABELARDO DE LA ESPRIELLA": 41.2
+  },
+  "25": {
+   "ABELARDO DE LA ESPRIELLA": 53.9,
+   "IVÁN CEPEDA CASTRO": 46.1
+  },
+  "11": {
+   "IVÁN CEPEDA CASTRO": 53.6,
+   "ABELARDO DE LA ESPRIELLA": 46.4
+  },
+  "27": {
+   "IVÁN CEPEDA CASTRO": 82.1,
+   "ABELARDO DE LA ESPRIELLA": 17.9
+  },
+  "41": {
+   "ABELARDO DE LA ESPRIELLA": 62.1,
+   "IVÁN CEPEDA CASTRO": 37.9
+  },
+  "47": {
+   "IVÁN CEPEDA CASTRO": 57.6,
+   "ABELARDO DE LA ESPRIELLA": 42.4
+  },
+  "52": {
+   "IVÁN CEPEDA CASTRO": 77.6,
+   "ABELARDO DE LA ESPRIELLA": 22.4
+  },
+  "66": {
+   "ABELARDO DE LA ESPRIELLA": 54.9,
+   "IVÁN CEPEDA CASTRO": 45.1
+  },
+  "54": {
+   "ABELARDO DE LA ESPRIELLA": 77.6,
+   "IVÁN CEPEDA CASTRO": 22.4
+  },
+  "63": {
+   "ABELARDO DE LA ESPRIELLA": 59.5,
+   "IVÁN CEPEDA CASTRO": 40.5
+  },
+  "68": {
+   "ABELARDO DE LA ESPRIELLA": 65.6,
+   "IVÁN CEPEDA CASTRO": 34.4
+  },
+  "70": {
+   "IVÁN CEPEDA CASTRO": 59.7,
+   "ABELARDO DE LA ESPRIELLA": 40.3
+  },
+  "73": {
+   "ABELARDO DE LA ESPRIELLA": 58.7,
+   "IVÁN CEPEDA CASTRO": 41.3
+  },
+  "76": {
+   "IVÁN CEPEDA CASTRO": 61.7,
+   "ABELARDO DE LA ESPRIELLA": 38.3
+  },
+  "81": {
+   "ABELARDO DE LA ESPRIELLA": 57.8,
+   "IVÁN CEPEDA CASTRO": 42.2
+  },
+  "18": {
+   "IVÁN CEPEDA CASTRO": 50.2,
+   "ABELARDO DE LA ESPRIELLA": 49.8
+  },
+  "85": {
+   "ABELARDO DE LA ESPRIELLA": 70.2,
+   "IVÁN CEPEDA CASTRO": 29.8
+  },
+  "44": {
+   "IVÁN CEPEDA CASTRO": 61.1,
+   "ABELARDO DE LA ESPRIELLA": 38.9
+  },
+  "94": {
+   "IVÁN CEPEDA CASTRO": 64.7,
+   "ABELARDO DE LA ESPRIELLA": 35.3
+  },
+  "50": {
+   "ABELARDO DE LA ESPRIELLA": 60.1,
+   "IVÁN CEPEDA CASTRO": 39.9
+  },
+  "95": {
+   "ABELARDO DE LA ESPRIELLA": 54.1,
+   "IVÁN CEPEDA CASTRO": 45.9
+  },
+  "88": {
+   "IVÁN CEPEDA CASTRO": 55.1,
+   "ABELARDO DE LA ESPRIELLA": 44.9
+  },
+  "91": {
+   "IVÁN CEPEDA CASTRO": 62.8,
+   "ABELARDO DE LA ESPRIELLA": 37.2
+  },
+  "86": {
+   "IVÁN CEPEDA CASTRO": 79.6,
+   "ABELARDO DE LA ESPRIELLA": 20.4
+  },
+  "97": {
+   "IVÁN CEPEDA CASTRO": 81.8,
+   "ABELARDO DE LA ESPRIELLA": 18.2
+  },
+  "99": {
+   "IVÁN CEPEDA CASTRO": 55.0,
+   "ABELARDO DE LA ESPRIELLA": 45.0
+  }
+ }
+}

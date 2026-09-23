@@ -47,7 +47,7 @@ const LIBRETO = (process.env.LIBRETO ?? "1") !== "0";
 const ORDEN_CACHE = (process.env.ORDEN_CACHE ?? "1") !== "0";
 const mod = new Function("OPC", "LIBRETO", "ORDEN_CACHE", NOMBRES.map(extraer).join("\n") + "\nreturn {persona, sondeoInstr, anclaDe, anclaItemDe, votoCelda, posturaEstimada, anclaEstimadaDe};")(null, LIBRETO, ORDEN_CACHE);
 
-const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "web/residents_v2.json"), "utf8"));
+const RES = JSON.parse(fs.readFileSync(process.env.CAREO_RESIDENTES || path.join(ROOT, "web/residents_v2.json"), "utf8"));
 const residentes = (RES.residentes || RES).filter(r => r.edad >= 18);   // universo ECP
 const DOS = JSON.parse(fs.readFileSync(process.env.CAREO_DOSSIERS || path.join(ROOT, "web/dossiers.json"), "utf8"));
 const MARG = JSON.parse(fs.readFileSync(path.join(ROOT, "web/marginals.json"), "utf8")).departamentos;

@@ -495,10 +495,23 @@ def elegir_compromiso(rid, edad):
     return COMPROMISO_PESOS[tramo_edad(edad)][-1][0]
 
 
-def elegir_lean(perfil, r):
-    """Familia política por ruleta con los pct de perfiles_politicos_2018."""
+# LEAN_FUENTE: de dónde sale el aire político de cada departamento.
+#   2018          Senado 2018 (perfiles_politicos_2018.json), lo de siempre
+#   2026          presidencial 2026, primera vuelta, solo votantes
+#   2026_adultos  igual, sobre el censo electoral: quien no votó va a "ninguno"
+# (simcolombia/pipeline/presidenciales.py → data/presidenciales.json)
+LEAN_FUENTE = os.environ.get("LEAN_FUENTE", "2026_adultos")   # medido 2026-09-23: no empeora (Sucre y nacional)
+_PRES = {}
+if LEAN_FUENTE != "2018":
+    _PRES = json.loads((BASE / "data" / "presidenciales.json").read_text())["lean_2026" if LEAN_FUENTE == "2026" else "lean_2026_adultos"]
+
+
+def elegir_lean(perfil, r, cod=None):
+    """Familia política por ruleta con los pct de la fuente elegida."""
     lp = None
-    if isinstance(perfil, dict):
+    if _PRES and cod in _PRES:
+        lp = _PRES[cod]
+    elif isinstance(perfil, dict):
         lp = perfil.get("lean_2018") or perfil.get("lean") or perfil
     if not isinstance(lp, dict) or not lp:
         lp = FALLBACK_LEAN
@@ -583,7 +596,7 @@ for cod in sorted(DEP):
             "clase": clase,
             "peso": round(peso, 3),
             "compromiso": elegir_compromiso(rid, edad),
-            "lean": elegir_lean(perfil, random.Random(_hash(rid, "lean"))),
+            "lean": elegir_lean(perfil, random.Random(_hash(rid, "lean")), cod),
             "ingreso_m": ingreso_m,
             "origen": "geih",
             "ciudad_geih": CIUDAD_GEIH.get(cod_norm(_get(r, "area", "AREA", default="") or "")) if _get(r, "area", "AREA", default=None) else None,
@@ -631,6 +644,6 @@ for _cod, _grupo in _por.items():
     for x in sorted(_urb, key=_prio)[:_n]:
         x["clase"] = "resto"
 
-out = DASH / "residents_v2.json"
+out = Path(os.environ["SALIDA"]) if os.environ.get("SALIDA") else DASH / "residents_v2.json"   # SALIDA: probar sin tocar el sitio
 json.dump(RES, out.open("w", encoding="utf-8"), ensure_ascii=False)
 print(f"→ {out}")

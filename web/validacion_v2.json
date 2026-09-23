@@ -1,5 +1,5 @@
 {
-  "generado": "2026-09-23T18:47:22.464334+00:00",
+  "generado": "2026-09-23T19:32:34.919296+00:00",
   "ok": true,
   "n_residentes": 8000,
   "peso_total": 53474636.9,
@@ -123,30 +123,30 @@
     },
     {
       "id": "5",
-      "nombre": "Lean vs perfiles 2018",
+      "nombre": "Lean vs presidencial 2026",
       "umbral": 5.0,
       "umbral_str": "±5pp",
       "ok": true,
-      "metrica": 4.19,
-      "metrica_str": "4.2pp",
+      "metrica": 1.23,
+      "metrica_str": "1.2pp",
       "detalle": {
         "observado_pct": {
-          "derecha": 15.85,
-          "izquierda": 10.05,
-          "centro": 53.24,
-          "indeciso": 20.86
+          "indeciso": 42.07,
+          "derecha": 30.18,
+          "izquierda": 23.99,
+          "centro": 3.77
         },
         "perfiles_pct": {
-          "derecha": 14.4,
-          "izquierda": 5.86,
-          "centro": 55.21,
-          "indeciso": 24.53
+          "indeciso": 43.3,
+          "derecha": 29.1,
+          "izquierda": 23.9,
+          "centro": 3.6
         },
         "delta_pp": {
-          "derecha": 1.46,
-          "izquierda": 4.19,
-          "centro": -1.97,
-          "indeciso": -3.68
+          "indeciso": -1.23,
+          "derecha": 1.08,
+          "izquierda": 0.09,
+          "centro": 0.17
         }
       },
       "fallas": 0

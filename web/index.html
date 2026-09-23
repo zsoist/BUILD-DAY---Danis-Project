@@ -1508,7 +1508,7 @@ async function boot(){
   try{
     // ORDEN: residents.json (el pesado, 1.3MB) primero y solo — es el que bloquea el
     // render; marginals/validacion (livianos) van después, en paralelo entre sí
-    try{RES=await jfetch("residents_v2.json?v=24");}
+    try{RES=await jfetch("residents_v2.json?v=25");}
     catch(e){RES=await jfetch("residents.json");}
     [MARG,VAL]=await Promise.all([
       jfetch("marginals.json").then(m=>m.departamentos),
@@ -2149,13 +2149,15 @@ async function respuestasECP(){
   try{_RESP=await (await fetch("respuestas_ecp.json")).json();}catch(e){_RESP=null;}
   return _RESP;
 }
+let _INCL=null;
+async function inclinacion(){try{return _INCL??=await (await fetch("inclinacion.json")).json();}catch(e){return null;}}
 async function estimarPct(q){
   if(API_OK===false)return null;
   try{
     const r=await fetch("/api/opina/",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({estimar:true,pregunta:q})});
-    const p=r.ok?(await r.json()).pct:null;
-    return typeof p==="number"&&p>=0&&p<=100?p:null;
+    const j=r.ok?await r.json():{};
+    return typeof j.pct==="number"&&j.pct>=0&&j.pct<=100?{pct:j.pct,lado:j.lado||null}:null;
   }catch(e){return null;}
 }
 async function recuperarItem(q){
@@ -2520,8 +2522,13 @@ async function conversar(q){
   if(anc&&!ecp){try{const f=await fetch("opinion/"+anc.codigo.replace(":","_")+".json");CEL=f.ok?await f.json():null;}catch(e){}}
   const vozAnc=r=>kAnc>=0?(R.por_id[r.id]?{v:R.por_id[r.id][kAnc]}:null):CEL?(v=>v===undefined?null:{v})(votoCelda(r,CEL,anc.codigo)):null;
   /* sin ancla: postura sorteada con la estimación de analista (solo sondeo sí/no) */
-  const EST=!anc&&pctEst!=null?pctEst:null;
-  const ladoDe=r=>EST==null?undefined:(posturaEstimada(r,q,EST)??undefined);
+  const EST=!anc&&pctEst!=null?pctEst.pct:null;
+  /* si la pregunta es partidista, cada voz parte de la estimación corrida según cómo
+     votó su departamento en 2026 (medido contra 2018 y 2022: error 11→8 y 15→9,5 pts) */
+  const INCL=EST!=null&&pctEst.lado?await inclinacion():null;
+  const pctDe=r=>{if(!INCL||INCL.dptos[r.dpto]==null)return EST;
+    return Math.min(99,Math.max(1,EST+(pctEst.lado==="izquierda"?1:-1)*INCL.k*INCL.dptos[r.dpto]));};
+  const ladoDe=r=>EST==null?undefined:(posturaEstimada(r,q,pctDe(r))??undefined);
   clearInterval(ticker);$("#ticker")?.remove();$("#estado").textContent="";
   ctxBox(ctx);
   if(anc&&kAnc>=0)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>El DANE ya preguntó esto</b> (Encuesta de Cultura Política 2023): «${esc(anc.texto)}». Cada voz responde lo que respondió su donante real, una persona de su misma edad, sexo, educación y región.</div>`);
@@ -2563,7 +2570,9 @@ async function conversar(q){
     /* sin ancla, la cifra es la del analista: en 16 preguntas ciegas se alejó
        17.3 pts de la real; lo que dijeron las voces, 25.1 (docs/METODO.md) */
     if(EST!=null){const [la]=etiquetas();
-      $("#tally").insertAdjacentHTML("beforeend",`<div class="estim" title="Nadie ha medido esta pregunta en Colombia. La cifra es la estimación de un modelo actuando como analista de opinión; en pruebas se alejó en promedio 17 puntos de la realidad.">🧭 ≈ <b>${Math.round(EST)}%</b> ${esc(la)} · estimación de un modelo como analista (±17 pts en pruebas), no es encuesta</div>`);}
+      const uno=SEL.size===1&&INCL?[...SEL][0]:null, cifra=uno?pctDe({dpto:uno}):EST;
+      const ajuste=INCL?(uno?` · corrida según cómo votó ${esc(MARG[uno]?.nombre||"")} en 2026`:" · cada voz, corrida según cómo votó su departamento"):"";
+      $("#tally").insertAdjacentHTML("beforeend",`<div class="estim" title="Nadie ha medido esta pregunta en Colombia. La cifra es la estimación de un modelo actuando como analista de opinión; en pruebas se alejó en promedio 17 puntos de la realidad.${INCL?" Como la pregunta es partidista, se corre por departamento con la votación presidencial de 2026 (probado contra 2018 y 2022).":""}">🧭 ≈ <b>${Math.round(cifra)}%</b> ${esc(la)} · estimación de un modelo como analista (±17 pts en pruebas)${ajuste}, no es encuesta</div>`);}
     const est=EST!=null?null:await estimacion(votos);
     if(est&&isFinite(est.favor)){const [la]=etiquetas();
       $("#tally").insertAdjacentHTML("beforeend",`<div class="estim" title="Mezcla medida contra la ECP 2023 del DANE: pesa la etiqueta de cada voz y lo que dijo en sus palabras. No es una encuesta: no tiene margen de error.">≈ <b>${Math.round(100*est.favor)}%</b> ${esc(la)} entre quienes toman partido · estimación calibrada, no es encuesta</div>`);}

@@ -492,10 +492,19 @@ def chk_compromiso(res):
 
 
 def chk_lean(res, perf_doc):
-    """5) Lean agregado nacional ponderado vs perfiles_politicos_2018 (±5pp/familia)."""
-    base = {"id": "5", "nombre": "Lean vs perfiles 2018",
+    """5) Lean agregado nacional ponderado vs su fuente (±5pp/familia): la presidencial
+    2026 sobre adultos (data/presidenciales.json, lo que usa generate_population_v2 por
+    defecto) o, si no existe, perfiles_politicos_2018."""
+    pres = DATA / "presidenciales.json"
+    dist = None
+    if pres.exists():
+        dist = defaultdict(float)
+        for k, v in json.loads(pres.read_text())["lean_2026_adultos"]["nacional"].items():
+            dist[_familia(k) or k] += float(v)        # los mismos nombres canónicos que el lado observado
+        dist = dict(dist)
+    base = {"id": "5", "nombre": "Lean vs presidencial 2026" if dist else "Lean vs perfiles 2018",
             "umbral": TOL_LEAN_PP, "umbral_str": f"±{TOL_LEAN_PP:.0f}pp"}
-    dist = _dist_perfiles(perf_doc)
+    dist = dist or _dist_perfiles(perf_doc)
     if not dist:
         return {**base, "ok": False, "metrica": None, "metrica_str": "n/a",
                 "detalle": "perfiles_politicos_2018.json ausente o no reconocible",

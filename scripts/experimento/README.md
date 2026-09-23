@@ -68,7 +68,38 @@ región Caribe de la ECP (`REGION=2`; la ECP no publica departamento). 3 ítems 
 | **Sucre v2** | 0.168 / 0.182 | 0.037 / 0.043 | 0.060 / 0.088 | **0.096** |
 | solo dossier nuevo | 0.174 / 0.174 | 0.054 / 0.047 | 0.104 / 0.100 | 0.109 |
 
-Regla fijada antes de ver: se despliega si el W1 medio no empeora. Lección: el ejemplo del dialecto
+Regla fijada antes de ver: se despliega si el W1 medio no empeora. **Corrección:** la misma versión
+medida en otra sesión dio 0.110: el ruido entre sesiones es ~±0.013, así que la mejora 0.107→0.096
+NO es significativa. Lo que sí se puede decir: no empeora.
+
+### Inclinación política 2026 (se despliega)
+
+`lean` de cada persona sale ahora de la presidencial 2026, primera vuelta, sobre el censo electoral
+(quien no votó = "ninguno"; `simcolombia/pipeline/presidenciales.py`), en vez del Senado 2018. Sucre
+pasa de 70 % "partidos tradicionales" a izquierda 30 · derecha 21 · ninguno 48. Careo (3 ítems × 2):
+Sucre 0.110 → 0.110, nacional 0.088 → 0.083. Los ítems de democracia casi no dependen del partido.
+
+### Sondeo sin ancla, por departamento (se despliega)
+
+La estimación del analista es nacional. Decirle el departamento («población: adultos de Sucre») NO
+sirve: en 5 preguntas × 10 departamentos baja el error de 19,1 a 17,3 pero en Sucre lo sube de 17,0 a
+19,7 (el modelo cree que Sucre es menos de izquierda de lo que es). Lo que sí: correr la estimación
+nacional con la inclinación medida del departamento (`web/inclinacion.json`, izquierda − derecha en
+2026 contra el país; k = 0,5) cuando la pregunta es partidista. Fuera de muestra:
+
+| prueba | nacional | corrida | Sucre |
+|---|---|---|---|
+| 2022, 10 dptos × 3 preguntas | 15,0 | **9,5** | 12,3 → 8,1 |
+| 2018, 32 dptos × 4 preguntas (k fijado antes) | 11,2 | **7,9** (gana 89/132) | 7,8 → 8,9 |
+
+Qué pregunta es partidista lo decide Jev (confianza ≥ 0,8): 17/20 partidistas bien, 0 al revés, 0/15
+neutras tocadas. Límite: corrige la diferencia entre departamentos, no el error del analista en la
+cifra nacional (a «¿votaría por Cepeda?» le puso ~18 % nacional).
+
+### Descartado: LAPOP por departamento
+
+Sucre tiene 24 encuestados en LAPOP 2023: un margen propio con ±20 pts de error no le gana al regional
+y no hay contra qué validarlo (la ECP no publica departamento). Lección: el ejemplo del dialecto
 era una queja ("¿y el agua cuándo llega?") y volvía pesimistas a todas las voces (P5301 0.199–0.232);
 con un ejemplo neutro, no. El sesgo pesimista de P5301 (media 2.33 contra 3.03 real) sigue igual.
 

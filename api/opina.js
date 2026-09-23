@@ -367,8 +367,29 @@ export default async function handler(req, res) {
         return Number.isFinite(n) && n >= 0 && n <= 100 ? n : null;
       } catch (e) { return null; } finally { clearTimeout(timer); }
     };
-    const v = (await Promise.all(["deepseek/deepseek-v4.1-flash", "z-ai/glm-5.3-flash"].map(uno))).filter(x => x != null);
-    return res.status(200).json({ pct: v.length ? v.reduce((a, b) => a + b, 0) / v.length : null });
+    // ¿responder SÍ es ponerse de un lado político? El juez (Jev) decide; solo con
+    // confianza ≥ 0.8 (medido en 35 preguntas: 17/20 partidistas bien, 0 al revés,
+    // 0/15 neutras tocadas). Con eso el cliente corre la estimación por departamento.
+    const lado = async () => {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), Math.min(8000, restante()));
+      try {
+        const r = await fetch("https://openrouter.ai/api/alpha/decisions", {
+          method: "POST", signal: ctrl.signal,
+          headers: { Authorization: `Bearer ${orK}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ model: "typesafe/jev-1.13", state: `Pregunta de sí o no, en Colombia: «${q}»`,
+            questions: { lado: { type: "choice", instructions: "¿De qué lado político queda quien responde SÍ? Si la pregunta no es partidista, ninguna.",
+              criteria: { izquierda: "responder SÍ es ponerse del lado de la izquierda colombiana (Petro, Cepeda, Pacto Histórico, sus políticas)",
+                derecha: "responder SÍ es ponerse del lado de la derecha colombiana (uribismo, Centro Democrático, Duque, De la Espriella, sus políticas)",
+                ninguna: "la pregunta no divide a la gente entre izquierda y derecha, o no se sabe" } } } }),
+        });
+        const a = anotar("jev", "jev-1.13", await r.json())?.answers?.lado;
+        return a && a.choice !== "ninguna" && a.confidence >= 0.8 ? a.choice : null;
+      } catch (e) { return null; } finally { clearTimeout(timer); }
+    };
+    const [v0, ladoSi] = await Promise.all([Promise.all(["deepseek/deepseek-v4.1-flash", "z-ai/glm-5.3-flash"].map(uno)), lado()]);
+    const v = v0.filter(x => x != null);
+    return res.status(200).json({ pct: v.length ? v.reduce((a, b) => a + b, 0) / v.length : null, lado: ladoSi });
   }
 
   // ── AGRUPAR: el juez del show ("¿qué dicen los colombianos?") ──
