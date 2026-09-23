@@ -98,7 +98,7 @@ cifra nacional (a «¿votaría por Cepeda?» le puso ~18 % nacional).
 
 ### Percepciones del DANE con geografía fina (se despliega)
 
-Anexos públicos del DANE (agregados, no microdatos: los microdatos tienen reCAPTCHA y no se bajan):
+Anexos públicos del DANE (agregados; los microdatos tienen reCAPTCHA y los baja una persona):
 ECV 2025 cuadros 35-39 por **departamento × cabecera/resto** y Pulso Social 2023 por **ciudad** (23
 capitales, Sincelejo incluida), sexo y edad. `simcolombia/pipeline/fuentes_dane_percepcion.py` los
 lee; el enjambre GLM (7 agentes, 30 s, $0,004) etiquetó los 74 ítems (texto, cuáles son «sí») y se
@@ -113,6 +113,14 @@ Sondeo de 20 voces en Sucre, producción antes contra local después, contra la 
 | **error medio** | | **26,7** | **8,6** |
 
 Con 20 voces cada cifra tiene ±11 pts de ruido.
+
+**Microdatos ECV 2025** (los bajó Daniel; `simcolombia/pipeline/ecv_micro.py`): 11 escalas 0-10 de
+bienestar (vida, ingreso, salud, feliz/triste ayer…), 235.350 personas unidas al municipio, celdas
+**capital del departamento / resto** (`dcap`, 63 celdas ≥30). Las celdas, sorteadas sobre las 8.000
+personas, reproducen al DANE (ingreso satisfecho: Sincelejo 52,8 vs 55,7; resto de Sucre 41,8 vs 40,8).
+La voz decía bien «cero tristeza» pero se etiquetaba `a_favor`: «¿triste ayer?» salía 29-46 % contra
+5-7 % real. En las escalas ECV la postura la fija el corte del DANE, no el modelo: 10 % (20 voces).
+Solo ECV; las 40 escalas de LAPOP con corte siguen igual hasta medirlas.
 
 ### Descartado: LAPOP por departamento
 

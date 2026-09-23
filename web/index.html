@@ -2114,7 +2114,8 @@ function votoCelda(r,D,codigo){
     /* DANE con geografía fina: ECV por departamento × zona, Pulso Social por ciudad (y su edad en 3 grupos) */
     dc:r.dpto+"|"+(r.clase==="cabecera"?"cabecera":"resto"),
     ciudad:r.ciudad_geih?String(r.ciudad_geih).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""):undefined,
-    ge3:e<25?0:e<55?1:2,zona:r.clase==="cabecera"?"cabecera":"resto"};
+    ge3:e<25?0:e<55?1:2,zona:r.clase==="cabecera"?"cabecera":"resto",
+    dcap:r.dpto+"|"+(r.ciudad_geih?"capital":"resto")};   // ECV microdatos: capital del departamento o el resto
   const nac=D["*"],p={};let tot=0;
   for(const [v,p0] of Object.entries(nac)){
     let x=p0;
@@ -2520,7 +2521,7 @@ async function conversar(q){
   /* ECP: respuesta del donante (el DANE la publica por persona). LAPOP y
      Latinobarómetro: sorteo desde los agregados de la celda (su licencia no
      permite más). Medido en 8 preguntas ciegas: error 21.2 → 6.3 pts. */
-  const ecp=anc&&!/^(LAPOP|LB|ECV|EPS):/.test(anc.codigo);   // ECP: donante por persona; el resto, celdas agregadas
+  const ecp=anc&&!/^(LAPOP|LB|ECV|EPS|ECSC):/.test(anc.codigo);   // ECP: donante por persona; el resto, celdas agregadas
   const R=ecp?await respuestasECP():null, kAnc=R?R.items.indexOf(anc.codigo):-1;
   let CEL=null;
   if(anc&&!ecp){try{const f=await fetch("opinion/"+anc.codigo.replace(":","_")+".json");CEL=f.ok?await f.json():null;}catch(e){}}
@@ -2537,7 +2538,7 @@ async function conversar(q){
   ctxBox(ctx);
   if(anc&&kAnc>=0)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>El DANE ya preguntó esto</b> (Encuesta de Cultura Política 2023): «${esc(anc.texto)}». Cada voz responde lo que respondió su donante real, una persona de su misma edad, sexo, educación y región.</div>`);
   else if(EST!=null)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">🧭 <b>Nadie ha medido esto en Colombia.</b> Las posturas se reparten según una estimación de un modelo (en pruebas, se aleja unos 17 pts de la realidad): tómalo como exploración, no como encuesta.</div>`);
-  else if(anc&&CEL)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>Esto ya se preguntó en Colombia</b> (${esc(anc.fuente||"")}): «${esc(anc.texto)}». Cada voz parte de cómo respondió gente real de su edad, sexo, educación y región. <span class="cita">Fuente: ${/^LAPOP/.test(anc.codigo)?'LAPOP Lab, <a href="https://www.vanderbilt.edu/lapop/" target="_blank" rel="noopener">Barómetro de las Américas</a> 2023':'Corporación <a href="https://www.latinobarometro.org" target="_blank" rel="noopener">Latinobarómetro</a>, 2024'}; tablas agregadas, uso no comercial.</span></div>`);
+  else if(anc&&CEL)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>Esto ya se preguntó en Colombia</b> (${esc(anc.fuente||"")}): «${esc(anc.texto)}». Cada voz parte de cómo respondió gente real de su edad, sexo, educación y región. <span class="cita">Fuente: ${/^LAPOP/.test(anc.codigo)?'LAPOP Lab, <a href="https://www.vanderbilt.edu/lapop/" target="_blank" rel="noopener">Barómetro de las Américas</a> 2023; tablas agregadas, uso no comercial.':/^LB:/.test(anc.codigo)?'Corporación <a href="https://www.latinobarometro.org" target="_blank" rel="noopener">Latinobarómetro</a>, 2024; tablas agregadas, uso no comercial.':`<a href="https://www.dane.gov.co" target="_blank" rel="noopener">DANE</a>, ${esc(anc.fuente||"")}; tablas agregadas.`}</span></div>`);
 
   if(MODO==="sondeo"){
     const run0=RUN;
@@ -2552,6 +2553,10 @@ async function conversar(q){
           {role:"user",content:q+"\n\nRecuerda: cierra tu respuesta con la etiqueta [POSTURA: a_favor|en_contra|depende|ni_ni]."}];
         const raw=await flash(msgs);
         let [pos,txt]=postura(raw);
+        /* escala 0-10 del DANE (ECV): la voz dice bien «cero tristeza» pero etiqueta a_favor
+           (medido: triste ayer, 46% vs 5-7% real). El corte es del DANE, no del modelo. */
+        const fija=va&&anc.escala&&/^ECV:/.test(anc.codigo)?(vAnc==null?"ni_ni":anc.afirmativas.includes(String(vAnc))?"a_favor":"en_contra"):null;
+        if(fija)pos=fija;
         if(!pos){const rr=await flash(msgs.concat([{role:"assistant",content:raw},
           {role:"user",content:"Te faltó la etiqueta final. Responde SOLO la etiqueta [POSTURA: a_favor|en_contra|depende|ni_ni] que corresponde a lo que acabas de decir."}]),16);
           pos=postura(rr||"")[0];}
@@ -2564,7 +2569,7 @@ async function conversar(q){
         votos.push({pos,txt,spr:spriteDe(r),id:r.id,n:r.nombre.split(" ")[0]});votoCara(r.id,pos);
         const af=anc?.afirmativas?anc.afirmativas.includes(String(vAnc)):vAnc===1,
           sus=anc?.sustantivas?anc.sustantivas.includes(String(vAnc)):vAnc===1||vAnc===2;
-        if(sus){const s=(window.__ancla??={sigue:0,n:0});s.n++;
+        if(sus&&!fija){const s=(window.__ancla??={sigue:0,n:0});s.n++;
           if((af&&pos==="a_favor")||(!af&&pos==="en_contra"))s.sigue++;}
         typewriter(say,txt);ESC("habla",r,txt,pos);
         card.style.setProperty("--pc",COLORES[pos]||COLORES.depende);tally(p);

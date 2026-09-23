@@ -1,0 +1,356 @@
+[
+ {
+  "codigo": "ECV:vida",
+  "fuente": "DANE ECV 2025 (microdatos, por departamento)",
+  "texto": "¿Qué tan satisfecho se siente con su vida actualmente?",
+  "escala": [
+   0,
+   10
+  ],
+  "opciones": {
+   "0": "totalmente insatisfecho",
+   "10": "totalmente satisfecho"
+  },
+  "afirmativas": [
+   "7",
+   "8",
+   "9",
+   "10"
+  ],
+  "sustantivas": [
+   "0",
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ]
+ },
+ {
+  "codigo": "ECV:ingreso",
+  "fuente": "DANE ECV 2025 (microdatos, por departamento)",
+  "texto": "¿Qué tan satisfecho se siente con su ingreso actualmente?",
+  "escala": [
+   0,
+   10
+  ],
+  "opciones": {
+   "0": "totalmente insatisfecho",
+   "10": "totalmente satisfecho"
+  },
+  "afirmativas": [
+   "7",
+   "8",
+   "9",
+   "10"
+  ],
+  "sustantivas": [
+   "0",
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ]
+ },
+ {
+  "codigo": "ECV:salud",
+  "fuente": "DANE ECV 2025 (microdatos, por departamento)",
+  "texto": "¿Qué tan satisfecho se siente con su salud actualmente?",
+  "escala": [
+   0,
+   10
+  ],
+  "opciones": {
+   "0": "totalmente insatisfecho",
+   "10": "totalmente satisfecho"
+  },
+  "afirmativas": [
+   "7",
+   "8",
+   "9",
+   "10"
+  ],
+  "sustantivas": [
+   "0",
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ]
+ },
+ {
+  "codigo": "ECV:seguridad",
+  "fuente": "DANE ECV 2025 (microdatos, por departamento)",
+  "texto": "¿Qué tan satisfecho se siente con su nivel de seguridad actualmente?",
+  "escala": [
+   0,
+   10
+  ],
+  "opciones": {
+   "0": "totalmente insatisfecho",
+   "10": "totalmente satisfecho"
+  },
+  "afirmativas": [
+   "7",
+   "8",
+   "9",
+   "10"
+  ],
+  "sustantivas": [
+   "0",
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ]
+ },
+ {
+  "codigo": "ECV:trabajo",
+  "fuente": "DANE ECV 2025 (microdatos, por departamento)",
+  "texto": "¿Qué tan satisfecho se siente con su trabajo o actividad actualmente?",
+  "escala": [
+   0,
+   10
+  ],
+  "opciones": {
+   "0": "totalmente insatisfecho",
+   "10": "totalmente satisfecho"
+  },
+  "afirmativas": [
+   "7",
+   "8",
+   "9",
+   "10"
+  ],
+  "sustantivas": [
+   "0",
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ]
+ },
+ {
+  "codigo": "ECV:tiempo_libre",
+  "fuente": "DANE ECV 2025 (microdatos, por departamento)",
+  "texto": "¿Qué tan satisfecho se siente con su tiempo libre?",
+  "escala": [
+   0,
+   10
+  ],
+  "opciones": {
+   "0": "totalmente insatisfecho",
+   "10": "totalmente satisfecho"
+  },
+  "afirmativas": [
+   "7",
+   "8",
+   "9",
+   "10"
+  ],
+  "sustantivas": [
+   "0",
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ]
+ },
+ {
+  "codigo": "ECV:feliz",
+  "fuente": "DANE ECV 2025 (microdatos, por departamento)",
+  "texto": "¿Qué tan feliz se sintió ayer?",
+  "escala": [
+   0,
+   10
+  ],
+  "opciones": {
+   "0": "nada",
+   "10": "completamente"
+  },
+  "afirmativas": [
+   "7",
+   "8",
+   "9",
+   "10"
+  ],
+  "sustantivas": [
+   "0",
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ]
+ },
+ {
+  "codigo": "ECV:preocupado",
+  "fuente": "DANE ECV 2025 (microdatos, por departamento)",
+  "texto": "¿Qué tan preocupado se sintió ayer?",
+  "escala": [
+   0,
+   10
+  ],
+  "opciones": {
+   "0": "nada",
+   "10": "completamente"
+  },
+  "afirmativas": [
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ],
+  "sustantivas": [
+   "0",
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ]
+ },
+ {
+  "codigo": "ECV:triste",
+  "fuente": "DANE ECV 2025 (microdatos, por departamento)",
+  "texto": "¿Qué tan triste se sintió ayer?",
+  "escala": [
+   0,
+   10
+  ],
+  "opciones": {
+   "0": "nada",
+   "10": "completamente"
+  },
+  "afirmativas": [
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ],
+  "sustantivas": [
+   "0",
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ]
+ },
+ {
+  "codigo": "ECV:vale_pena",
+  "fuente": "DANE ECV 2025 (microdatos, por departamento)",
+  "texto": "¿Qué tanto considera que las cosas que hace en su vida valen la pena?",
+  "escala": [
+   0,
+   10
+  ],
+  "opciones": {
+   "0": "nada",
+   "10": "completamente"
+  },
+  "afirmativas": [
+   "7",
+   "8",
+   "9",
+   "10"
+  ],
+  "sustantivas": [
+   "0",
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ]
+ },
+ {
+  "codigo": "ECV:escalon",
+  "fuente": "DANE ECV 2025 (microdatos, por departamento)",
+  "texto": "En una escalera de 0 a 10, donde 10 es la mejor vida posible, ¿en cuál escalón se encuentra hoy?",
+  "escala": [
+   0,
+   10
+  ],
+  "opciones": {
+   "0": "la peor vida posible",
+   "10": "la mejor vida posible"
+  },
+  "afirmativas": [
+   "7",
+   "8",
+   "9",
+   "10"
+  ],
+  "sustantivas": [
+   "0",
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ]
+ }
+]

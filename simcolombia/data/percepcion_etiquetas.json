@@ -331,7 +331,7 @@
  },
  "EPS:bs7b_a": {
   "codigo": "EPS:bs7b_a",
-  "usar": true,
+  "usar": false,
   "texto": "¿Qué tan satisfecho se siente usted con la vida en general?",
   "afirmativas": [
    "4",
@@ -344,11 +344,11 @@
    "4",
    "5"
   ],
-  "porque": ""
+  "porque": "duplica una pregunta de la ECV 2025 (microdatos), que cubre todo el departamento"
  },
  "EPS:bs7b_b": {
   "codigo": "EPS:bs7b_b",
-  "usar": true,
+  "usar": false,
   "texto": "¿Qué tan satisfecho se siente usted con su estado de salud?",
   "afirmativas": [
    "4",
@@ -361,11 +361,11 @@
    "4",
    "5"
   ],
-  "porque": ""
+  "porque": "duplica una pregunta de la ECV 2025 (microdatos), que cubre todo el departamento"
  },
  "EPS:bs7b_g": {
   "codigo": "EPS:bs7b_g",
-  "usar": true,
+  "usar": false,
   "texto": "¿Qué tan satisfecho se siente usted con el tiempo libre que tiene?",
   "afirmativas": [
    "4",
@@ -378,7 +378,7 @@
    "4",
    "5"
   ],
-  "porque": ""
+  "porque": "duplica una pregunta de la ECV 2025 (microdatos), que cubre todo el departamento"
  },
  "EPS:bs7b_c": {
   "codigo": "EPS:bs7b_c",
@@ -584,7 +584,7 @@
  },
  "EPS:bs13": {
   "codigo": "EPS:bs13",
-  "usar": true,
+  "usar": false,
   "texto": "¿Cuánto considera usted que las cosas que hace en su vida valen la pena?",
   "afirmativas": [
    "4",
@@ -597,7 +597,7 @@
    "4",
    "5"
   ],
-  "porque": ""
+  "porque": "duplica una pregunta de la ECV 2025 (microdatos), que cubre todo el departamento"
  },
  "EPS:bs14": {
   "codigo": "EPS:bs14",

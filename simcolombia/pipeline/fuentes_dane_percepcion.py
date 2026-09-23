@@ -252,6 +252,11 @@ def publicar():
         banco.append({"codigo": cod, "fuente": fuente, "texto": L["texto"], "opciones": it["opciones"],
                       "afirmativas": L.get("afirmativas", []), "sustantivas": L.get("sustantivas", list(it["opciones"]))})
         n += 1
+    micro = RAIZ / "simcolombia" / "data" / "ecv_micro_banco.json"      # de ecv_micro.py (celdas ya en web/opinion)
+    if micro.exists():
+        extra = json.loads(micro.read_text())
+        banco += extra
+        n += len(extra)
     (RAIZ / "web" / "banco.json").write_text(json.dumps(banco, ensure_ascii=False, separators=(",", ":")))
     print(f"publicados {n} ítems · banco: {len(banco)} preguntas")
 
