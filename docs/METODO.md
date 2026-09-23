@@ -299,3 +299,12 @@ ese %. Obediencia según la redacción (8 ítems, 50/50):
 Queda compresión: las voces aún tiran hacia su creencia (9 de cada 10 voces
 con "NO" asignado lo sostienen donde el modelo cree que no; "SÍ" contra su
 creencia, menos). El sitio lo dice: "Nadie ha medido esto en Colombia".
+
+## Tertulia y grupos (22 sep 2026)
+
+| Pregunta | Resultado | Qué cambia en el sitio |
+|---|---|---|
+| ¿Debatir mueve algo? (8 ítems × 3 mesas × 8 voces × 3 vueltas, contra monólogos sellados) | Reparto final igual (3.8 pts de diferencia, IC de la diferencia de error −6.2 a +2.7). Por su propia etiqueta, 0 voces cruzan de lado; 4 frases de "me convencieron" en 576 turnos | La tertulia se rotula "conversación ilustrativa"; "↷ cambió" solo si la voz misma cambió su etiqueta |
+| ¿Reproduce diferencias entre grupos? (edad, sexo, región, educación) | Sin ancla: 41% de aciertos de dirección (azar). Con postura estimada: 45%. Anclado: 75% (83% con 200 voces; techo 84%). Con 5 voces por grupo ni encuestados reales pasan de 62% | No afirmar nada por grupo con las voces. Con ancla, citar la tabla real |
+
+Scripts: `scripts/experimento/tertulia.mjs`, `scripts/experimento/grupos.py`.

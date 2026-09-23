@@ -1,0 +1,103 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - text: ColombIA
+      - emphasis [ref=e5]: ¡que piensa!
+    - navigation "Tipo de conversación" [ref=e6]:
+      - button "PAÍS" [ref=e7] [cursor=pointer]
+      - button "▶ TERTULIA" [pressed] [ref=e8] [cursor=pointer]
+      - button "SONDEO" [ref=e9] [cursor=pointer]
+    - combobox "Territorio" [ref=e10] [cursor=pointer]:
+      - option "★ Toda Colombia (panel nacional)"
+      - option "Amazonas"
+      - option "Antioquia"
+      - option "Arauca"
+      - option "Atlántico"
+      - option "Bogotá D.C." [selected]
+      - option "Bolívar"
+      - option "Boyacá"
+      - option "Caldas"
+      - option "Caquetá"
+      - option "Casanare"
+      - option "Cauca"
+      - option "Cesar"
+      - option "Chocó"
+      - option "Córdoba"
+      - option "Cundinamarca"
+      - option "Guainía"
+      - option "Guaviare"
+      - option "Huila"
+      - option "La Guajira"
+      - option "Magdalena"
+      - option "Meta"
+      - option "Nariño"
+      - option "Norte de Santander"
+      - option "Putumayo"
+      - option "Quindío"
+      - option "Risaralda"
+      - option "San Andrés y Providencia"
+      - option "Santander"
+      - option "Sucre"
+      - option "Tolima"
+      - option "Valle del Cauca"
+      - option "Vaupés"
+      - option "Vichada"
+    - generic [ref=e11]:
+      - button "MAPA" [ref=e12] [cursor=pointer]
+      - button "CENSO" [ref=e13] [cursor=pointer]
+      - button "LA TIERRA" [ref=e14] [cursor=pointer]
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - generic [ref=e17]: 8,000
+        - text: residentes
+      - generic [ref=e18]:
+        - generic [ref=e19]: "33"
+        - text: territorios
+      - generic [ref=e20]:
+        - generic [ref=e21]: completa
+        - text: base DANE
+    - button "AJUSTES" [ref=e22] [cursor=pointer]
+  - main [ref=e23]:
+    - generic [ref=e24]:
+      - 'region "Escenario: la gente conversa aquí" [ref=e25]':
+        - generic [ref=e29]:
+          - generic [ref=e30]: ▶
+          - generic [ref=e31]: Plaza de Bolívar
+          - generic [ref=e32]: Bogotá
+        - 'generic "Nadie de los que ves existe: son personas sintéticas con demografía real del DANE" [ref=e33]': SIMULACIÓN
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - button "¿El metro sí va o es puro cuento?" [ref=e36] [cursor=pointer]
+          - button "¿Suben otra vez el pasaje de TransMilenio?" [ref=e37] [cursor=pointer]
+          - button "¿El racionamiento de agua sigue o ya?" [ref=e38] [cursor=pointer]
+          - button "¿Petro o quién pa'l 2026?" [ref=e39] [cursor=pointer]
+          - button "¿Uber ya es legal o todavía no?" [ref=e40] [cursor=pointer]
+        - generic [ref=e41]:
+          - generic [aria-hidden] [ref=e42]: ▶
+          - textbox "Tu pregunta al país" [ref=e43] [cursor=pointer]:
+            - /placeholder: Pregúntale al país lo que quieras…
+          - combobox "Cuántas voces" [ref=e44] [cursor=pointer]:
+            - option "8 voces" [selected]
+            - option "12 voces"
+            - option "20 voces"
+          - button "PREGUNTAR" [ref=e45] [cursor=pointer]
+        - generic [ref=e46]:
+          - generic [ref=e47]: "TERTULIA · conversación ilustrativa: se responden y se contradicen, pero medido, casi nadie cambia de opinión."
+          - generic [ref=e48]:
+            - text: "muestra:"
+            - generic [ref=e49]:
+              - text: Bogotá D.C.
+              - button "Quitar Bogotá D.C. de la muestra" [ref=e50] [cursor=pointer]: ×
+            - button "todo el país" [ref=e51] [cursor=pointer]
+    - generic [ref=e52]:
+      - heading "la conversación" [level=2] [ref=e53]
+      - log [ref=e55]:
+        - generic [ref=e56]:
+          - generic [ref=e57]: ¿Qué piensa Colombia?
+          - paragraph [ref=e58]: Escribe una pregunta abajo y mira llegar a la gente. Cada persona es una ficha real del DANE; lo que dice lo genera un modelo.
+          - paragraph [ref=e59]: 📊 Si la pregunta ya la midió una encuesta seria, las voces parten de esas respuestas reales.
+          - paragraph [ref=e60]: 🧭 Si nadie la ha medido, es exploración, no encuesta.
+  - generic [ref=e61]:
+    - text: "⚠ SIMULACIÓN — residentes sintéticos: sus variables socioeconómicas se muestrean de personas reales encuestadas por el DANE (GEIH 2025–2026) y se ponderan a los totales oficiales; el nombre, la personalidad y las opiniones son generados. NO es una encuesta: ninguno de estos existe. Reporte de fidelidad:"
+    - link "validacion.json" [ref=e62] [cursor=pointer]:
+      - /url: validacion_v2.json

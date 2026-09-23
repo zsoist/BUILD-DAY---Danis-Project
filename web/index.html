@@ -117,8 +117,8 @@ h3:first-child{margin-top:0}
 #modo button{font-family:"Silkscreen";font-size:9px;padding:5px 10px;color:var(--faint)}
 #modo button[aria-pressed="true"]{color:var(--work);border-color:var(--work)}
 #resps{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
-.resp{display:grid;grid-template-columns:44px 1fr;gap:11px;background:var(--panel2);box-shadow:2px 2px 0 #0006;border:2px solid var(--grid);padding:11px 12px;border-left:4px solid var(--pc,var(--grid));max-width:94%;animation:entra .22s steps(3)}
-.resp.alt{margin-left:auto;grid-template-columns:1fr 40px;border-left:2px solid var(--grid);border-right:4px solid var(--pc,var(--grid))}
+.resp{display:grid;grid-template-columns:44px 1fr;gap:11px;background:var(--panel2);box-shadow:2px 2px 0 #0006;border:2px solid var(--grid);padding:11px 12px;max-width:94%;animation:entra .22s steps(3)}
+.resp.alt{margin-left:auto;grid-template-columns:1fr 40px;}
 .resp.alt .px{order:2}.resp.alt>div{order:1;text-align:right}
 @keyframes entra{from{transform:translateY(8px);opacity:0}}
 .resp .who{font-family:"Silkscreen";font-size:9px;color:var(--dim);margin-bottom:4px}
@@ -154,7 +154,7 @@ align-items:center;justify-content:center}
 #ticker::before{content:"";width:8px;height:8px;background:var(--work);
 animation:tickblink .7s steps(2) infinite}
 @keyframes tickblink{50%{opacity:.2}}
-.ctx{border:2px solid var(--accent);border-left-width:5px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 7%,var(--panel2)),var(--panel2));padding:11px 14px 12px;font-size:14.5px;line-height:1.65;color:var(--text);box-shadow:3px 3px 0 #0008;overflow-wrap:anywhere}
+.ctx{border:2px solid var(--accent);background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 7%,var(--panel2)),var(--panel2));padding:11px 14px 12px;font-size:14.5px;line-height:1.65;color:var(--text);box-shadow:3px 3px 0 #0008;overflow-wrap:anywhere}
 .ctx b{font-family:"Silkscreen";font-size:9px;color:var(--accent);display:block;margin-bottom:5px}
 .ctx .cbody{white-space:pre-line;display:block}
 .ctx.off{border-color:var(--grid);opacity:.85}
@@ -372,7 +372,181 @@ button,.pxbtn{min-height:44px;touch-action:manipulation}
 }
 .estim{color:var(--dim);font-size:10px;margin-top:3px}.estim b{color:var(--text)}
 .ancla{font-size:11px;color:var(--dim);border:1px solid var(--grid);padding:6px 9px;margin:0 0 8px}.ancla b{color:var(--text)}
+#rcard header canvas{display:none}#rspr{height:128px;image-rendering:pixelated;filter:drop-shadow(0 6px 0 #0006)}
 .ancla .cita{display:block;margin-top:4px;font-size:10px;color:var(--dim)}.ancla .cita a{color:inherit}
+/* ═══════════ MUNDO HD-2D (DESIGN.md) — va al final: manda sobre lo anterior ═══════════ */
+:root{--noche:#0b1030;--win-a:#2a3a8f;--win-b:#121a4a;--crema:#f4ecd8;--oro:#fcd116;
+--si:#2fd08a;--no:#ff5a5f;--dep:#fcd116;--nini:#9aa3b8;--tenue:#b9c0e0;
+--bg:var(--noche);--panel:#16205a;--panel2:#0f1640;--grid:#34449a;--text:var(--crema);
+--dim:var(--tenue);--faint:#8d96c4;--work:var(--oro);--ok:var(--si);--fail:var(--no);--accent:#7fb2ff;
+--top:58px}
+html,body{height:100%}
+body{background:radial-gradient(120% 90% at 50% 0%,#1a2466 0%,var(--noche) 60%) fixed;overflow:hidden}
+/* la ventana del JRPG: añil en degradado, doble borde crema */
+.ventana{position:relative;background:linear-gradient(180deg,var(--win-a),var(--win-b));border:2px solid var(--crema);
+border-radius:6px;box-shadow:0 0 0 2px var(--win-b),0 0 0 4px color-mix(in srgb,var(--crema) 55%,transparent),0 14px 32px #0009}
+.ventana::after{content:"";position:absolute;inset:3px;border:1px solid #ffffff1c;border-radius:4px;pointer-events:none}
+html body #app{max-width:none;margin:0;padding:0;display:flex;flex-direction:column;height:100vh;height:100dvh;gap:0;grid-template-areas:none}
+/* barra superior: menú de consola */
+html body #top{height:var(--top);flex:0 0 auto;display:flex;align-items:center;gap:14px;padding:0 14px;background:linear-gradient(180deg,#1b2670,#0e1545);border:0;border-bottom:2px solid var(--crema);box-shadow:0 2px 0 var(--win-b),0 6px 18px #0008;z-index:20;flex-wrap:nowrap}
+#title{font-size:15px;color:var(--oro);text-shadow:2px 2px 0 #000a;white-space:nowrap}
+#lema{color:var(--tenue)}
+#modo{display:flex;gap:4px;margin-left:10px}
+html body #modo button{font-family:"Silkscreen";font-size:11px;letter-spacing:.06em;padding:8px 16px 8px 24px;background:transparent;border:2px solid transparent;border-radius:4px;color:var(--tenue);position:relative;min-height:0;width:auto;flex:0 0 auto}
+html body #modo button:hover{color:var(--crema)}
+html body #modo button[aria-pressed="true"]{color:var(--oro);border-color:var(--crema);background:linear-gradient(180deg,var(--win-a),var(--win-b))}
+#modo button[aria-pressed="true"]::before{content:"▶";position:absolute;left:8px;color:var(--oro);animation:cursor .9s steps(2) infinite}
+@keyframes cursor{50%{transform:translateX(2px)}}
+html body #dptosel{min-width:0;width:220px;font-size:14px;padding:7px 10px;border:2px solid var(--crema);border-radius:4px;background:var(--win-b);color:var(--crema)}
+#tbtn{display:flex;gap:6px}
+html body .pxbtn{font-family:"Silkscreen";font-size:10.5px;letter-spacing:.05em;padding:8px 12px;border:2px solid var(--crema);border-radius:4px;background:linear-gradient(180deg,var(--win-a),var(--win-b));color:var(--crema);box-shadow:0 3px 0 #000a}
+html body .pxbtn:hover{color:var(--oro)}
+html body .pxbtn[aria-expanded="true"]{color:var(--oro);box-shadow:inset 0 0 0 2px var(--oro)}
+html body #kpis{margin-left:auto;gap:16px}
+#kpis div b{color:var(--crema);font-size:12px}#kpis div span{font-size:11px;color:var(--tenue)}
+/* escenario + chat */
+#escenario{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) min(420px,34vw);gap:14px;padding:14px}
+#escena{position:relative;min-height:0;border-radius:8px;overflow:hidden;background:#0d1236;border:2px solid var(--crema);box-shadow:0 0 0 2px var(--win-b),0 0 0 4px #f4ecd866,0 20px 50px #000c}
+#escena .fondo{position:absolute;inset:0;background-size:cover;background-position:center bottom;opacity:0;transition:opacity 1.3s ease,transform 14s ease-out;transform:scale(1.06);filter:blur(.7px) saturate(1.04)}
+#escena .fondo.on{opacity:1;transform:scale(1)}
+#escena::after{content:"";position:absolute;inset:0;pointer-events:none;background:
+radial-gradient(120% 80% at 50% 45%,transparent 55%,#05081fb0 100%),linear-gradient(180deg,#0b10301f,transparent 30%,transparent 70%,#0b103070);z-index:2}
+#esc3d{position:absolute;inset:0;width:100%;height:100%;z-index:1;image-rendering:pixelated}
+#esc-capa{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden}
+#lugar{position:absolute;left:16px;top:16px;z-index:5;padding:9px 16px 9px 30px;display:flex;flex-direction:column;line-height:1.25}
+#lugar i{position:absolute;left:11px;top:11px;font-style:normal;color:var(--oro);font-size:11px}
+#lugar b{font-family:"Silkscreen";font-size:13px;color:var(--oro);letter-spacing:.04em;text-shadow:2px 2px 0 #000a}
+#lugar span{font-size:12.5px;color:var(--tenue)}
+#lugar.entra{animation:lugar .7s steps(6)}
+@keyframes lugar{from{transform:translateX(-24px);opacity:0}}
+#simtag{position:absolute;right:16px;top:16px;z-index:5;font-family:"Silkscreen";font-size:10px;letter-spacing:.12em;color:#fff;background:#c21f2c;border:2px solid #ffd7d9;border-radius:3px;padding:5px 10px;box-shadow:0 3px 0 #0009}
+/* diálogo de abajo: la pregunta */
+#lado-escena{display:flex;flex-direction:column;gap:10px;min-height:0}
+#lado-escena #escena{flex:1 1 auto}
+#dialogo{position:relative;display:flex;flex-direction:column;gap:8px;flex:0 0 auto}
+html body #qbar{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 34px;border-bottom:2px solid var(--crema);flex-wrap:nowrap}
+#qbar .cursor{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-style:normal;color:var(--oro);animation:cursor .9s steps(2) infinite}
+html body #qin{flex:1 1 auto;min-width:0;background:transparent;border:0;color:var(--crema);font-size:17px !important;padding:8px 4px !important;outline:none}
+#qin::placeholder{color:#c8cdea99}
+html body #nsel{flex:0 0 auto;width:auto;background:var(--win-b);border:2px solid #f4ecd899;border-radius:4px;color:var(--crema);font-size:13px;padding:7px 8px}
+html body #qbar button[type=submit]{flex:0 0 auto;background:var(--oro);color:#1a1300;border-color:#fff4b0;font-size:12px;padding:10px 16px;text-shadow:none}
+html body #qbar button[type=submit]:hover{background:#ffe45c;color:#1a1300}
+html body #qbar button:disabled{opacity:.5}
+html body #sugg{display:flex;flex-wrap:nowrap;gap:6px;padding:0;overflow-x:auto;scrollbar-width:none;mask-image:linear-gradient(90deg,#000 88%,transparent)}
+#sugg::-webkit-scrollbar{display:none}
+html body #sugg button{flex:0 0 auto;font-size:13px;padding:6px 12px;border:1px solid #f4ecd866;border-radius:20px;background:#121a4a;color:var(--crema);backdrop-filter:blur(4px);white-space:nowrap}
+html body #sugg button::before,html body #sugg button::after{display:none}
+html body #sugg button:hover{border-color:var(--oro);color:var(--oro)}
+#pie-dialogo{display:flex;gap:10px;align-items:center;justify-content:space-between;font-size:12px;color:var(--tenue)}
+html body #modohelp{padding:0;color:var(--tenue);font-size:12px;flex:1;min-width:0}
+html body #selinfo{padding:0;border:0;color:var(--tenue);font-size:12px;text-align:right}
+#selinfo .chip{border-color:var(--oro);background:#0b1030b0}
+/* globos de diálogo sobre las cabezas */
+.globo,.marca,.juezdice{position:absolute;left:0;top:0;will-change:transform}
+.globo .gv{position:absolute;bottom:0;left:0;transform:translate(-50%,-6px);width:max-content;max-width:min(340px,40vw);background:linear-gradient(180deg,var(--win-a),var(--win-b));border:2px solid var(--crema);border-radius:6px;box-shadow:0 0 0 2px var(--win-b),0 10px 22px #000a;padding:9px 13px 10px;animation:globo .22s steps(3)}
+.globo .gv::after{content:"";position:absolute;left:50%;bottom:-9px;width:12px;height:12px;background:var(--win-b);border-right:2px solid var(--crema);border-bottom:2px solid var(--crema);transform:translateX(-50%) rotate(45deg)}
+.globo b{display:block;font-family:"Silkscreen";font-size:10px;color:var(--oro);letter-spacing:.05em;margin-bottom:3px}
+.globo b::before{content:"";display:inline-block;width:8px;height:8px;background:var(--pc);margin-right:6px;vertical-align:0}
+.globo p{font-size:14.5px;line-height:1.45;color:var(--crema)}
+.globo.sale{opacity:0;transition:opacity .25s}
+@keyframes globo{from{transform:translate(-50%,6px) scale(.9);opacity:0}}
+.marca{font-family:"Silkscreen";font-size:15px;color:var(--pc);text-shadow:0 0 6px #000,2px 2px 0 #000;margin:-22px 0 0 -6px;animation:marca .35s steps(4)}
+.marca.piensa{color:var(--crema);font-size:13px;animation:piensa 1s steps(2) infinite}
+@keyframes marca{0%{transform:scale(2);opacity:0}}
+@keyframes piensa{50%{opacity:.35}}
+/* cartel de veredicto */
+.cartel{position:absolute;left:50%;top:70px;transform:translateX(-50%);width:min(560px,calc(100% - 40px));background:linear-gradient(180deg,var(--win-a),var(--win-b));border:2px solid var(--crema);border-radius:6px;box-shadow:0 0 0 2px var(--win-b),0 0 0 4px var(--pc),0 18px 40px #000c;padding:14px 18px;color:var(--crema);font-size:15px;line-height:1.55;pointer-events:auto;animation:cartel .45s steps(5)}
+.cartel b{display:block;font-family:"Silkscreen";font-size:12px;color:var(--pc);letter-spacing:.06em;margin-bottom:5px}
+@keyframes cartel{from{transform:translate(-50%,-14px);opacity:0}}
+/* el show: tablero de respuestas */
+.tablero{position:absolute;right:18px;top:64px;width:min(440px,calc(100% - 36px));padding:14px 14px 10px;background:linear-gradient(180deg,#1d2a7a,#0b1238);border:3px solid #ffd76a;border-radius:8px;box-shadow:0 0 0 3px #3a1f00,0 0 26px #ffcf4a55,0 20px 40px #000c;animation:cartel .5s steps(5)}
+.tablero h4{font-family:"Silkscreen";font-size:12px;color:#ffd76a;letter-spacing:.08em;margin-bottom:8px;text-align:center;text-shadow:0 0 8px #ffb20088}
+.tablero ol{list-style:none;display:flex;flex-direction:column;gap:6px}
+.tablero li{display:grid;grid-template-columns:28px 1fr 44px;align-items:center;background:#070b2a;border:2px solid #3b4aa8;border-radius:4px;min-height:36px;overflow:hidden;perspective:400px}
+.tablero li>span{font-family:"Silkscreen";font-size:13px;color:#ffe9a8;padding:6px 8px;transition:opacity .2s}
+.tablero li .n{background:#3b4aa8;color:#fff;text-align:center;padding:9px 0}
+.tablero li .e,.tablero li .c{opacity:0}
+.tablero li .c{text-align:right;color:#fff}
+.tablero li.ve{border-color:var(--pc);animation:voltea .45s steps(4)}
+.tablero li.ve .e,.tablero li.ve .c{opacity:1}
+.tablero li.ve .n{background:var(--pc);color:#081020}
+@keyframes voltea{0%{transform:rotateX(90deg)}100%{transform:none}}
+.tablero small{display:block;font-size:11.5px;color:var(--tenue);margin-top:8px;line-height:1.4}
+/* empotrado: el tablero pintado del estudio se enciende con las respuestas */
+.tablero.empotrado{right:auto;padding:.5em .6em;border:0;border-radius:2px;background:#0a0e2ef2;box-shadow:inset 0 0 0 2px #ffd76a55,0 0 30px #ffcf4a66;display:flex;flex-direction:column;animation:none}
+.tablero.empotrado h4{font-size:.78em;margin-bottom:.35em}
+.tablero.empotrado ol{flex:1;gap:.28em}
+.tablero.empotrado li{min-height:0;flex:1;grid-template-columns:1.9em 1fr 2.6em;border-width:1px}
+.tablero.empotrado li>span{font-size:.82em;padding:0 .5em}
+.tablero.empotrado li .n{padding:0;display:flex;align-items:center;justify-content:center;height:100%}
+.tablero.empotrado small{display:none}
+.juezdice{font-family:"Silkscreen";font-size:11px;color:#1a1300;background:var(--oro);border:2px solid #fff4b0;border-radius:4px;padding:6px 10px;width:max-content;max-width:260px;transform-origin:bottom left;margin:-40px 0 0 -30px;box-shadow:0 4px 0 #0009;white-space:normal;line-height:1.5}
+/* chat: la ventana de la derecha */
+html body #encuesta{grid-area:auto;min-height:0;display:flex;flex-direction:column;background:linear-gradient(180deg,var(--win-a),var(--win-b));border:2px solid var(--crema)}
+html body #encuesta>h2{font-family:"Silkscreen";font-size:11px;color:var(--oro);padding:12px 14px 10px;border-bottom:2px solid #f4ecd844;display:flex;justify-content:space-between;align-items:center;gap:8px}
+#estado{color:var(--tenue);font-weight:400}
+html body #tally{padding:10px 12px;gap:8px;border-bottom:2px solid #f4ecd822}
+html body #tally:empty{display:none}
+html body .tal{background:#0b1238;border:2px solid #3b4aa8;border-radius:4px;box-shadow:none;min-width:0;padding:8px 6px 7px}
+html body .tal b{font-size:18px}
+html body #resps{flex:1;min-height:0;overflow-y:auto;padding:12px;gap:9px;scrollbar-width:thin;scrollbar-color:#f4ecd855 transparent}
+.bienvenida{color:var(--tenue);font-size:14.5px;line-height:1.6;padding:6px 4px}
+.bienvenida b{display:block;font-family:"Silkscreen";font-size:14px;color:var(--oro);margin-bottom:8px}
+.bienvenida p{margin-bottom:8px}.bienvenida span{margin-right:4px}
+html body .resp,html body .resp.alt{grid-template-columns:44px 1fr;max-width:100%;margin:0;background:#0b1238d9;border:2px solid color-mix(in srgb,var(--pc,#3b4aa8) 60%,#3b4aa8);border-radius:5px;box-shadow:none;padding:9px 11px}
+html body .resp .who::before{content:"";display:inline-block;width:8px;height:8px;background:var(--pc,#3b4aa8);margin-right:6px;vertical-align:0}
+html body .resp.alt .px{order:0}html body .resp.alt>div{order:0;text-align:left}
+html body .resp .px{width:44px;height:44px;object-fit:cover;object-position:50% 0;image-rendering:pixelated;background:#1b2670;border:1px solid #3b4aa8;border-radius:3px}
+html body .resp .who{color:var(--oro);font-size:9.5px}
+html body .resp .say{font-size:14.5px;color:var(--crema)}
+html body .ctx,html body .mod,html body .conclu,html body .ancla{background:#0b1238;border:2px solid #3b4aa8;border-radius:5px;box-shadow:none;color:var(--crema)}
+html body .ctx{border-color:var(--accent)}
+html body .ancla{font-size:12.5px;color:var(--tenue);padding:8px 11px}
+html body .ancla b{color:var(--crema)}
+html body #seats,html body #ticker{display:none}
+html body .ronda{color:var(--tenue)}
+.juicio{border:2px solid #ffd76a;border-radius:5px;background:#0b1238;padding:10px 12px;color:var(--crema);font-size:14px}
+.juicio b{display:block;font-family:"Silkscreen";font-size:10px;color:#ffd76a;margin-bottom:6px}
+.juicio ol{margin:0 0 0 18px;display:flex;flex-direction:column;gap:2px}.juicio small{display:block;margin-top:6px;color:var(--tenue);font-size:12px}
+/* cajones: mapa, censo, la tierra */
+.cajon{position:fixed;top:calc(var(--top) + 12px);bottom:12px;width:min(430px,calc(100vw - 24px));z-index:30;display:flex;flex-direction:column;min-height:0;transition:transform .38s cubic-bezier(.2,.9,.25,1),visibility 0s .38s;visibility:hidden}
+.cajon.izq{left:12px;transform:translateX(calc(-100% - 30px))}
+.cajon.der{right:12px;transform:translateX(calc(100% + 30px))}
+.cajon.abierto{transform:none;visibility:visible;transition:transform .38s cubic-bezier(.2,.9,.25,1)}
+.cajon>h2{font-family:"Silkscreen";font-size:11px;color:var(--oro);padding:12px 14px;border-bottom:2px solid #f4ecd844;display:flex;align-items:center;gap:8px;text-transform:lowercase}
+.cajon>h2 b{color:var(--tenue);font-weight:400;margin-left:auto}
+.cajon>h2.sub{border-top:2px solid #f4ecd844}
+.cajon .cierra{margin-left:8px;background:transparent;border:2px solid #f4ecd899;border-radius:4px;color:var(--crema);font-size:12px;padding:3px 9px;line-height:1}
+.cajon .body{padding:14px 16px;overflow-y:auto;min-height:0;flex:1}
+#dr-mapa #navmap{flex:1;min-height:0;overflow:auto;padding:10px}
+#ficha #muestra{max-height:34%;overflow-y:auto}
+html body #banner{position:fixed;left:0;right:0;bottom:0;z-index:10;font-size:11px;padding:4px 12px;background:#070b25e6;color:var(--tenue);border-top:1px solid #f4ecd833;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html body #banner:hover{white-space:normal}
+#escenario{padding-bottom:30px}
+@media (max-width:1100px){#kpis{display:none !important}html body #dptosel{width:170px}}
+@media (max-width:900px){
+  html,body{overflow:auto}
+  html body #app{height:auto;min-height:100dvh}
+  html body #top{height:auto;flex-wrap:wrap;padding:8px 10px;gap:8px;position:sticky;top:0}
+  #title{font-size:13px}#lema{display:none}
+  #modo{order:3;flex:1 1 100%;margin:0}html body #modo button{flex:1;padding:8px 6px 8px 18px;font-size:10px}
+  html body #dptosel{flex:1;width:auto}
+  #tbtn{order:4;flex:1 1 100%}#tbtn .pxbtn{flex:1;padding:8px 4px;font-size:9.5px}
+  #gear{display:none}
+  #escenario{display:flex;flex-direction:column;padding:8px 8px 40px;gap:10px}
+  #escena{height:56vh;min-height:360px;flex:0 0 auto}
+  html body #qbar{flex-wrap:wrap;padding:8px 8px 8px 28px}
+  html body #qin{flex:1 1 100%;font-size:16px !important}
+  #pie-dialogo{display:none}
+  html body #encuesta{min-height:60vh}
+  #lugar{left:10px;top:10px;padding:6px 12px 6px 24px}#lugar b{font-size:11px}
+  #simtag{right:10px;top:10px;font-size:8.5px}
+  .globo .gv{max-width:62vw}.globo p{font-size:13px}
+  .tablero{left:10px;right:10px;width:auto;top:56px}
+  .cartel{top:56px}
+  .cajon{top:8px;bottom:8px}
+}
+@media (prefers-reduced-motion:reduce){#escena .fondo{transition:opacity .3s}.cajon{transition:none}}
 </style>
 </head>
 <body>
@@ -380,53 +554,72 @@ button,.pxbtn{min-height:44px;touch-action:manipulation}
   <header id="top">
     <img id="logo" src="assets/quepiensa_96.png" alt="" width="38" height="38">
     <span id="title">Colomb<small>IA</small><em id="lema">¡que piensa!</em></span>
-    <select id="dptosel" aria-label="Departamento"></select>
+    <nav id="modo" aria-label="Tipo de conversación"><button data-m="pais" aria-pressed="false">PAÍS</button><button data-m="tertulia" aria-pressed="true">TERTULIA</button><button data-m="sondeo" aria-pressed="false">SONDEO</button></nav>
+    <select id="dptosel" aria-label="Territorio"></select>
+    <div id="tbtn">
+      <button type="button" class="pxbtn" data-cajon="dr-mapa" aria-controls="dr-mapa" aria-expanded="false">MAPA</button>
+      <button type="button" class="pxbtn" data-cajon="dr-censo" aria-controls="dr-censo" aria-expanded="false">CENSO</button>
+      <button type="button" class="pxbtn" data-cajon="ficha" aria-controls="ficha" aria-expanded="false">LA TIERRA</button>
+    </div>
     <div id="kpis"></div>
     <button id="gear" class="pxbtn">AJUSTES</button>
   </header>
 
-  <section id="censo">
-    <div class="panel"><h2>colombia <b id="maptag">toca un territorio</b></h2>
-      <div id="navmap" aria-busy="true"><div id="maptip"></div><div class="pxf" style="color:var(--faint);padding:24px;text-align:center">cargando 33 territorios…</div></div><div id="maplabel">—</div>
+  <main id="escenario">
+    <div id="lado-escena">
+    <section id="escena" aria-label="Escenario: la gente conversa aquí">
+      <div class="fondo a on"></div><div class="fondo b"></div>
+      <canvas id="esc3d" aria-hidden="true"></canvas>
+      <div id="esc-capa" aria-hidden="true"></div>
+      <div id="lugar" class="ventana"><i>▶</i><b>Plaza de Bolívar</b><span>Bogotá</span></div>
+      <div id="simtag" title="Nadie de los que ves existe: son personas sintéticas con demografía real del DANE">SIMULACIÓN</div>
+    </section>
+    <div id="dialogo">
+        <div id="sugg"></div>
+        <form id="qbar" class="ventana">
+          <i class="cursor" aria-hidden="true">▶</i>
+          <input id="qin" aria-label="Tu pregunta al país" placeholder="Pregúntale al país lo que quieras…" autocomplete="off">
+          <select id="nsel" aria-label="Cuántas voces">
+            <option value="8">8 voces</option><option value="12">12 voces</option><option value="20">20 voces</option>
+          </select>
+          <button class="pxbtn" type="submit">PREGUNTAR</button>
+        </form>
+        <div id="pie-dialogo"><div id="modohelp"></div><div id="selinfo"></div></div>
+      </div>
     </div>
-    <div class="panel" style="flex:1"><h2>el censo <b id="c-src-tag">DANE</b></h2>
-      <div class="body" id="censobody" aria-busy="true"><div class="fuente">cargando censo DANE…</div></div>
-    </div>
-  </section>
 
-  <section id="encuesta" class="panel">
-    <h2><span>la conversación <b id="estado"></b> <span id="reloj"></span></span>
-      <span id="ctrl"><button id="btnpausa" type="button">⏸ PAUSAR</button><button id="btnfin" type="button">■ CERRAR</button></span>
-      <span id="modo"><button data-m="pais" aria-pressed="false">PAÍS</button><button data-m="tertulia" aria-pressed="true">TERTULIA</button><button data-m="sondeo" aria-pressed="false">SONDEO</button></span></h2>
-    <div id="modohelp"></div>
-    <div id="selinfo"></div>
-    <form id="qbar">
-      <input id="qin" aria-label="Tu pregunta al país" placeholder="pregúntale al país lo que quieras… (toca una sugerencia y edítala)" autocomplete="off" style="font-size:13.5px;padding:8px 11px">
-      <select id="nsel" aria-label="Tamaño del panel" style="flex:0 0 auto">
-        <option value="8">8 voces</option><option value="12">12 voces</option>
-        <option value="20">20 voces</option>
-      </select>
-      <button class="pxbtn" type="submit">PREGUNTAR</button>
-    </form>
-    <div id="sugg"></div>
-    <div id="tally"></div>
-    <div id="resps" role="log" aria-live="polite"><div style="color:var(--faint);padding:16px;text-align:center;line-height:2">
-      <b style="color:var(--work)">1.</b> toca territorios en el mapa (uno, varios, o ninguno = todo el país)<br>
-      <b style="color:var(--work)">2.</b> elige el tipo de conversación arriba a la derecha<br>
-      <b style="color:var(--work)">3.</b> suelta tu pregunta abajo — y míralos hablar</div></div>
+    <section id="encuesta" class="ventana">
+      <h2><span>la conversación <b id="estado"></b> <span id="reloj"></span></span>
+        <span id="ctrl"><button id="btnpausa" type="button">⏸ PAUSAR</button><button id="btnfin" type="button">■ CERRAR</button></span></h2>
+      <div id="tally"></div>
+      <div id="resps" role="log" aria-live="polite"><div class="bienvenida">
+        <b>¿Qué piensa Colombia?</b>
+        <p>Escribe una pregunta abajo y mira llegar a la gente. Cada persona es una ficha real del DANE; lo que dice lo genera un modelo.</p>
+        <p><span>📊</span> Si la pregunta ya la midió una encuesta seria, las voces parten de esas respuestas reales.</p>
+        <p><span>🧭</span> Si nadie la ha medido, es exploración, no encuesta.</p></div></div>
+    </section>
+  </main>
 
-  </section>
-
-  <aside id="ficha">
-    <div class="panel"><h2>la tierra</h2><div class="body" id="dossier" aria-busy="true"><div class="fuente">cargando dossier…</div></div></div>
-    <div class="panel"><h2>residentes de muestra</h2><div id="muestra" aria-busy="true"><div class="fuente">cargando censo DANE…</div></div></div>
+  <aside id="dr-mapa" class="cajon izq ventana" aria-label="Mapa de Colombia">
+    <h2>colombia <b id="maptag">toca un territorio</b><button type="button" class="cierra" aria-label="Cerrar mapa">✕</button></h2>
+    <div id="navmap" aria-busy="true"><div id="maptip"></div><div class="pxf" style="color:var(--faint);padding:24px;text-align:center">cargando 33 territorios…</div></div><div id="maplabel">—</div>
+  </aside>
+  <aside id="dr-censo" class="cajon izq ventana" aria-label="El censo">
+    <h2>el censo <b id="c-src-tag">DANE</b><button type="button" class="cierra" aria-label="Cerrar censo">✕</button></h2>
+    <div class="body" id="censobody" aria-busy="true"><div class="fuente">cargando censo DANE…</div></div>
+  </aside>
+  <aside id="ficha" class="cajon der ventana" aria-label="La tierra">
+    <h2>la tierra<button type="button" class="cierra" aria-label="Cerrar">✕</button></h2>
+    <div class="body" id="dossier" aria-busy="true"><div class="fuente">cargando dossier…</div></div>
+    <h2 class="sub">residentes de muestra</h2>
+    <div id="muestra" aria-busy="true"><div class="fuente">cargando censo DANE…</div></div>
   </aside>
 
   <div id="banner">⚠ SIMULACIÓN — residentes sintéticos: sus variables socioeconómicas se muestrean de personas reales encuestadas por el DANE (GEIH 2025–2026) y se ponderan a los totales oficiales; el nombre, la personalidad y las opiniones son generados. NO es una encuesta: ninguno de estos existe. Reporte de fidelidad: <a href="validacion_v2.json">validacion.json</a></div>
 </div>
 
 <div id="rmask"><div id="rcard">
-  <header><canvas id="rpx" width="16" height="16"></canvas>
+  <header><canvas id="rpx" width="16" height="16"></canvas><img id="rspr" alt="" hidden>
     <div><div class="nm" id="rnom"></div><div class="sub" id="rsub"></div></div>
     <button class="pxbtn cerrar" onclick="document.getElementById('rmask').classList.remove('open')">X</button></header>
   <div class="rkv" id="rkv"></div>
@@ -449,6 +642,55 @@ const mesCO=()=>new Date().toLocaleDateString("es-CO",{timeZone:"America/Bogota"
 const triestado=v=>v===true?true:v===false?false:null;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let cfg={orkey:""};
+/* ESCENA (web/escena.js, módulo): el sitio le cuenta qué pasa; si aún no
+   cargó, las llamadas esperan en la cola. */
+window.ESC_Q=window.ESC_Q||[];
+function ESC(m,...a){try{if(window.ESCENA)return window.ESCENA[m]?.(...a);window.ESC_Q.push([m,a]);}catch(e){}}
+/* GENTE: 47 personajes pixel (web/gente/<hoja>_<i>.webp) en un solo estilo.
+   A cada residente le toca el más parecido por región, sexo, edad y oficio;
+   si hay empate, decide un hash de su id. Es vestuario, no dato: no cambia
+   nada de lo que la voz dice. [id, sexo, edad j/a/m, regiones, oficio] */
+const OF={ofi:/ofic|admin|contad|profesional|docen|ingen|analist|asesor|gerent|abogad|secretar|director|jef/,
+  obra:/constru|albañ|obra|ayudante|operari|mecán|electric|soldad|plomer/,dom:/domicil|mensaj|repart/,
+  agro:/agric|caf|jornal|campes|cultiv|agropec|finca|cosech|siembr/,gan:/ganad|pecuar|vaquer|arriero|animal/,
+  com:/tend|comerc|vend|negoc|almac|caj/,pesca:/pesc/,cond:/conduc|moto|transp|taxi|chofer/,
+  edu:/docen|profes|maestr|educa/,salud:/enferm|salud|médic|medic|auxiliar/,vig:/vigil|seguridad|celador|guarda|escolt/,
+  hogar:/hogar/,pens:/pension|jubil/,tec:/program|sistem|tecnolog|softw|técnic|tecnic|diseñ/,estu:/estudi/};
+const SPR=[["andino_0","H","j",["urb"]],["andino_1","M","j",["urb"],OF.estu],["andino_2","H","a",["urb"],OF.ofi],["andino_3","M","a",["urb"],OF.ofi],
+ ["andino_4","H","m",["urb","campo"]],["andino_5","M","m",["urb"]],["andino_6","H","a",["*"],OF.obra],["andino_7","H","j",["urb"],OF.dom],
+ ["campo_0","H","j",["campo"],OF.agro],["campo_1","M","j",["campo"],OF.agro],["campo_2","H","a",["campo"]],["campo_3","M","a",["campo"]],
+ ["campo_4","H","m",["campo"]],["campo_5","M","m",["campo"]],["campo_6","H","a",["campo","llano"],OF.gan],["campo_7","M","a",["campo","urb"],OF.com],
+ ["caribe_0","H","j",["caribe"]],["caribe_1","M","j",["caribe"]],["caribe_2","H","a",["caribe"]],["caribe_3","M","a",["caribe","pac"],OF.com],
+ ["caribe_4","H","m",["caribe"],OF.pesca],["caribe_5","M","m",["caribe"]],["caribe_6","H","a",["caribe"],OF.cond],["caribe_7","M","a",["*"],OF.edu],
+ ["oriente_0","H","a",["llano"]],["oriente_1","M","a",["llano"]],["oriente_2","H","j",["llano","campo"]],["oriente_3","M","a",["wayuu"]],
+ ["oriente_4","H","a",["wayuu"]],["oriente_5","H","a",["amaz"]],["oriente_6","M","a",["amaz"]],["oriente_7","H","m",["llano"]],
+ ["pacifico_0","H","j",["pac"]],["pacifico_1","M","j",["pac"]],["pacifico_2","H","a",["pac"],OF.pesca],["pacifico_3","M","a",["pac"]],
+ ["pacifico_4","H","m",["pac"]],["pacifico_5","M","m",["pac"]],["pacifico_6","M","a",["*"],OF.salud],["pacifico_7","H","a",["pac"],OF.agro],
+ ["urbano_0","H","a",["urb","caribe"],OF.cond],["urbano_1","M","j",["urb"]],["urbano_2","H","a",["*"],OF.vig],["urbano_3","M","a",["*"],OF.hogar],
+ ["urbano_4","H","m",["urb"],OF.pens],["urbano_5","M","a",["urb","caribe"],OF.com],["urbano_6","H","j",["urb"],OF.tec]];
+function regionesDe(r){
+  const d=r.dpto,rural=r.clase&&r.clase!=="cabecera";
+  if(["08","13","20","23","47","70","88"].includes(d))return rural?["caribe","campo"]:["caribe"];
+  if(d==="44")return ["caribe","wayuu"];
+  if(d==="27")return ["pac"];
+  if(["76","52","19"].includes(d))return rural?["pac","campo"]:["urb","pac"];
+  if(["50","85","81","99"].includes(d))return rural?["llano","campo"]:["llano","urb"];
+  if(["91","97","95","86","18","94"].includes(d))return rural?["amaz","campo"]:["amaz","urb"];
+  return rural?["campo"]:["urb"];
+}
+function spriteDe(r,usados){
+  if(r._spr)return r._spr;
+  const sx=r.sexo==="hombre"?"H":"M",e=r.edad<30?"j":r.edad<60?"a":"m",reg=regionesDe(r),of=String(r.ocupacion||"").toLowerCase();
+  const orden={j:0,a:1,m:2};let mejor=[],top=-1;
+  for(const [id,s,ed,rg,rx] of SPR){
+    if(s!==sx)continue;
+    let p=(ed===e?3:Math.abs(orden[ed]-orden[e])===1?1:-3)+(rg.some(x=>reg.includes(x))?3:rg.includes("*")?1:0)+(rx&&rx.test(of)?5:0)-(usados?.has(id)?7:0);
+    if(p>top){top=p;mejor=[id];}else if(p===top)mejor.push(id);
+  }
+  return r._spr=mejor[Math.floor(h01(r.id+"|spr")*mejor.length)];
+}
+function asignarSprites(lista){const u=new Set();for(const r of lista){if(!r._spr)spriteDe(r,u);u.add(r._spr);}}
+window.spriteDe=spriteDe;
 try{cfg={...cfg,...JSON.parse(localStorage.getItem("sim-cfg")||"{}")};
   if(!cfg.orkey){const ag=JSON.parse(localStorage.getItem("ag-cfg")||"{}");if(ag.orkey)cfg.orkey=ag.orkey;}}catch(e){}
 // clave local (solo existe en la máquina de Daniel; gitignoreada)
@@ -550,6 +792,7 @@ async function mesa(cod){
   const pool=RES.filter(r=>r.dpto===cod&&r.edad>=18);
   for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}  // Fisher-Yates: sort(random) no baraja parejo
   const sample=pool.slice(0,4);
+  asignarSprites(sample);ESC("escena",{modo:"pais",sel:[cod],gente:sample});
   el.insertAdjacentHTML("beforeend",`<div class="seats"></div><div class="ticker"><span class="tickertxt">llegan los de ${esc(d.nombre)}…</span></div>`);
   const _seats=el.querySelector(".seats");
   sample.forEach((r,i)=>{const s=document.createElement("div");s.className="seat";
@@ -580,7 +823,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
       if(!pos)pos=(await clasificarPostura(q,txt))||'';
       if(CONV.stop||PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
       if(!['a_favor','en_contra','depende','ni_ni'].includes(pos))pos='sin_postura';
-      typewriter(say,txt);
+      typewriter(say,txt);ESC("habla",r,txt,pos);
       card.style.setProperty("--pc",COLORES[pos]||COLORES.depende);
       transcript.push({n:r.nombre.split(" ")[0],t:txt,p:pos});
     }catch(e){say.classList.remove("thinking");say.textContent="(se quedó callado)";}
@@ -600,6 +843,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   if(PAIS!==owner||!document.body.contains(el)){path?.classList.remove("hot");finMesa();return;}
   el.insertAdjacentHTML("beforeend",
     `<div class="conclu" style="--pc:${COLORES[pos]}"><b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(concl)}</div>`);
+  ESC("cartel",`<b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(concl)}`,pos);
   festejo(el);
   selloHumano(q,transcript,el);
   el.scrollTop=1e9;
@@ -651,9 +895,9 @@ let SEL=new Set(["11"]);   // territorios elegidos para la muestra (vacío = tod
 let DECIDIDO={};  // cod → postura concluida (pinta ambos mapas)
 
 const MODOTXT={
-  sondeo:"SONDEO · Todos contestan a la vez. Rápido: cuántos dirían sí, no o depende. No es una encuesta: son respuestas generadas, sin margen de error.",
-  tertulia:"TERTULIA · Conversan de a uno, se responden y se contradicen. Hasta 3 minutos o hasta ponerse de acuerdo.",
-  pais:"EL PAÍS · Escribes una pregunta y tocas el mapa: cada territorio delibera, concluye y se pinta."};
+  sondeo:"SONDEO · el show: todos contestan a la vez y el juez agrupa lo que dijeron. No es una encuesta.",
+  tertulia:"TERTULIA · conversación ilustrativa: se responden y se contradicen, pero medido, casi nadie cambia de opinión.",
+  pais:"EL PAÍS · escribe una pregunta y toca el mapa: cada territorio arma su mesa y concluye."};
 function selInfo(){
   const el=$("#selinfo"); if(!el)return;
   if(!SEL.size){el.innerHTML=`<b>muestra:</b> toda Colombia (proporcional a población real) — toca el mapa para acotar`;return;}
@@ -667,6 +911,7 @@ function syncSel(){
   if(SEL.size===1)cur=[...SEL][0];
   $("#dptosel").value=SEL.size===1?cur:"CO";
   paintNav();selInfo();render();
+  ESC("vistaLugar",MODO,[...SEL]);
 }
 
 async function drawNav(){
@@ -1047,7 +1292,8 @@ $("#modo").onclick=e=>{const m=e.target.dataset.m;if(!m||m===MODO)return;
     DECIDIDO={};$("#tally").innerHTML="";}
   MODO=m;
   $("#modo").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===m)));
-  $("#modohelp").textContent=MODOTXT[m];paintNav();};
+  $("#modohelp").textContent=MODOTXT[m];paintNav();
+  ESC("vista",m,[...SEL]);if(m==="pais")abrirCajon("dr-mapa",true);};
 const COLORES={a_favor:"var(--ok)",en_contra:"var(--fail)",depende:"var(--work)",ni_ni:"var(--faint)"};
 const SUGG_BASE=["el nuevo metro / transporte público","que la IA haga su trabajo",
 "el precio del café","irse a vivir a otra ciudad","que sus hijos estudien virtual"];
@@ -1275,6 +1521,7 @@ function scrollAbajo(el){
 function typewriter(el,txt){
   const host=el.closest("#resps,#mesa");
   const card=el.closest(".resp"),cv=card?.querySelector("canvas.px");
+  if(card&&!cv)card.classList.add("talk"),setTimeout(()=>card.classList.remove("talk"),1800);
   const r=card&&RESBY[card.dataset.rid];
   let habla=null;
   if(cv&&r){card.classList.add("talk");let b=0;
@@ -1293,6 +1540,7 @@ const RESBY={};
 function verResidente(r){
   const d=MARG[r.dpto]||{},f=d.fuentes||{},e=estiloDe(r);
   const cv=document.getElementById("rpx");retrato(cv,r.id,r.sexo,r.ocupacion,r.edad);
+  $("#rspr").src="gente/"+spriteDe(r)+".webp";$("#rspr").hidden=false;
   $("#rnom").textContent=r.nombre;
   $("#rsub").textContent=`${r.edad} años · ${r.sexo} · ${r.dpto_nombre}`;
   const filas=[
@@ -1334,8 +1582,8 @@ function bubble(r,alt,parent){
   RESBY[r.id]=r;
   const host=parent||$("#resps");
   const card=document.createElement("div");card.className="resp"+(alt?" alt":"");
-  const cv=document.createElement("canvas");cv.className="px";retrato(cv,r.id,r.sexo,r.ocupacion,r.edad);
-  card.append(cv);
+  const cv=document.createElement("img");cv.className="px";cv.alt="";cv.loading="lazy";cv.src="gente/"+spriteDe(r)+".webp";
+  card.append(cv);ESC("piensa",r);
   card.dataset.rid=r.id;card.title="ver ficha DANE";
   card.insertAdjacentHTML("beforeend",`<div><div class="who">${esc(r.nombre)} · ${r.edad} ·
     ${esc(r.ocupacion)}${SEL.size!==1?" · <span style='color:var(--accent)'>"+esc(r.dpto_nombre)+"</span>":""}</div>
@@ -1770,6 +2018,8 @@ async function conversar(q){
   /* LA MESA SE ARMA: llegan los vecinos + ticker vivo mientras busca contexto */
   $("#resps").insertAdjacentHTML("beforeend",
     `<div id="seats"></div><div id="ticker"><span id="tickertxt">llamando a los vecinos…</span></div>`);
+  asignarSprites(sample);
+  ESC("escena",{modo:MODO,sel:[...SEL],gente:sample});
   const seats=$("#seats");
   sample.forEach((r,i)=>{
     const s=document.createElement("div");s.className="seat";
@@ -1806,6 +2056,7 @@ async function conversar(q){
   else if(anc&&CEL)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>Esto ya se preguntó en Colombia</b> (${esc(anc.fuente||"")}): «${esc(anc.texto)}». Cada voz parte de cómo respondió gente real de su edad, sexo, educación y región. <span class="cita">Fuente: ${/^LAPOP/.test(anc.codigo)?'LAPOP Lab, <a href="https://www.vanderbilt.edu/lapop/" target="_blank" rel="noopener">Barómetro de las Américas</a> 2023':'Corporación <a href="https://www.latinobarometro.org" target="_blank" rel="noopener">Latinobarómetro</a>, 2024'}; tablas agregadas, uso no comercial.</span></div>`);
 
   if(MODO==="sondeo"){
+    const run0=RUN;
     $("#estado").textContent="sondeando…";
     let obed=0,obedN=0;const votos=[];
     await Promise.all(sample.map(async r=>{
@@ -1830,7 +2081,7 @@ async function conversar(q){
           sus=anc?.sustantivas?anc.sustantivas.includes(String(vAnc)):vAnc===1||vAnc===2;
         if(sus){const s=(window.__ancla??={sigue:0,n:0});s.n++;
           if((af&&pos==="a_favor")||(!af&&pos==="en_contra"))s.sigue++;}
-        typewriter(say,txt);
+        typewriter(say,txt);ESC("habla",r,txt,pos);
         card.style.setProperty("--pc",COLORES[pos]||COLORES.depende);tally(p);
       }catch(e){p.sin_postura=(p.sin_postura||0)+1;tally(p);say.classList.remove("thinking");say.textContent="(no contestó)";}
     }));
@@ -1838,6 +2089,21 @@ async function conversar(q){
     const est=await estimacion(votos);
     if(est&&isFinite(est.favor)){const [la]=etiquetas();
       $("#tally").insertAdjacentHTML("beforeend",`<div class="estim" title="Mezcla medida contra la ECP 2023 del DANE: pesa la etiqueta de cada voz y lo que dijo en sus palabras. No es una encuesta: no tiene margen de error.">≈ <b>${Math.round(100*est.favor)}%</b> ${esc(la)} entre quienes toman partido · estimación calibrada, no es encuesta</div>`);}
+    /* EL JUEZ DEL SHOW: un modelo agrupa lo que dijeron; el conteo lo hace este
+       código con los índices que devuelve (números nunca de un modelo) */
+    const conTexto=votos.filter(v=>typeof v.txt==="string"&&v.txt.trim().length>=3);
+    if(conTexto.length>=3&&run0===RUN){try{
+      const rj=await fetch("/api/opina/",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({agrupar:true,pregunta:q,textos:conTexto.map(v=>v.txt)})});
+      const g=rj.ok?(await rj.json()).grupos:[];
+      if(Array.isArray(g)&&g.length&&run0===RUN){
+        const filas=g.map(x=>{const c={};x.i.forEach(k=>{const p=conTexto[k]?.pos;if(p)c[p]=(c[p]||0)+1;});
+          return {e:x.e,n:x.i.length,pos:Object.entries(c).sort((a,b)=>b[1]-a[1])[0]?.[0]};}).sort((a,b)=>b.n-a.n);
+        const nota=(EST!=null?"🧭 Nadie ha medido esto: es exploración. ":anc?"📊 Las voces partieron de respuestas reales de una encuesta. ":"")+"Agrupa un modelo; cuenta el código.";
+        ESC("tablero",{titulo:"¿QUÉ DICEN LOS COLOMBIANOS?",n:conTexto.length,filas,nota});
+        $("#resps").insertAdjacentHTML("beforeend",`<div class="juicio"><b>EL JUEZ AGRUPÓ ${conTexto.length} RESPUESTAS</b><ol>${filas.map(f=>`<li>${esc(f.e)} · ${f.n}</li>`).join("")}</ol><small>${esc(nota)}</small></div>`);
+        $("#resps").scrollTop=1e9;
+      }}catch(e){}}
   }else{
     /* ── DELIBERACIÓN CONTINUA: hasta 3 min, pausable, corta cuando hay acuerdo ── */
     const run=RUN;                  // token ya invalidado por abortarCorrida(): si entra otra pregunta, esta se aborta
@@ -1870,10 +2136,10 @@ async function conversar(q){
           const raw=await flash([{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+`
 Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_nombre}. Habla CORTO como colombiano de verdad: máximo 2 frases, a veces UNA basta. Reacciona a lo dicho (cita por nombre, apoya o contradice con picardía), puedes cambiar de opinión si te convencieron. Nada de discursos. PROHIBIDO adoptar la anécdota de otro como propia: si alguien ya contó lo de la camiseta/aguinaldo, tú traes una vivencia DISTINTA de tu oficio y tu edad, con tus propios detalles (plata, barrio, familia, edad) que nadie más pueda firmar. PROHIBIDO repetir una metáfora o frase-lema que ya sonó 2 veces en la mesa — cámbiale el ángulo (otro oficio, otro año, otra ciudad) o cede el punto y pasa a OTRA arista del tema. Si la mesa lleva 2 vueltas dando vueltas a lo mismo, tu intervención abre una arista nueva (plata/familia/barrio/historia/futuro) y no vuelve a citar el ejemplo ajeno como si fuera tuyo. Cierra con [POSTURA: a_favor|en_contra|depende|ni_ni] — ni_ni SOLO si a tu personaje genuinamente le da igual el tema; a_favor significa SÍ A LA PREGUNTA LITERAL del tema, no a lo que digan las noticias.`},
             {role:"user",content:`Tema: ${q}\n${charla}\nVUELTA ${ronda+1}. TU ÚLTIMA POSTURA REGISTRADA: ${postDe[r.id]?postDe[r.id].replace("_"," ")+" — si cambias de lado, DILO explícito ('me convencieron', 'ya no estoy tan seguro')":"ninguna aún"}.${r.compromiso==="indiferente"?" Si de verdad no tienes nada nuevo, puedes pasar corto ('yo paso, eso ya está dicho').":""}${ROCES[r.id]?`\n${ROCES[r.id].quien} te contradijo hace un rato; si viene al caso, cóbraselo con nombre propio — sin pelear, como se hace entre vecinos.`:""}\nTe toca, ${r.nombre.split(" ")[0]}. Cierra tu idea COMPLETA antes de la etiqueta — nada de frases a medias.`}],140);
-          let [pos,txt]=postura(raw);
+          let [pos,txt]=postura(raw);const propia=!!pos;
           if(!pos)pos=await clasificarPostura(q,txt);
-          if(pos){const prev=postDe[r.id];postDe[r.id]=pos;tallyVivo(postDe,sample.length);if(prev&&prev!==pos)card.insertAdjacentHTML("beforeend",`<div style="font-size:9px;color:var(--work);margin-top:3px">↷ cambió: ${prev.replace("_"," ")} → ${pos.replace("_"," ")}</div>`);}
-          typewriter(say,txt);
+          if(pos){const prev=postDe[r.id];postDe[r.id]=pos;tallyVivo(postDe,sample.length);if(propia&&prev&&prev!==pos)card.insertAdjacentHTML("beforeend",`<div style="font-size:9px;color:var(--work);margin-top:3px">↷ cambió: ${prev.replace("_"," ")} → ${pos.replace("_"," ")}</div>`);}
+          typewriter(say,txt);ESC("habla",r,txt,pos);
           card.style.setProperty("--pc",COLORES[pos]||"var(--grid)");
           const mio=r.nombre.split(" ")[0];
           for(const otro of transcript){
@@ -1925,6 +2191,7 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
         `<div class="mod" style="border-color:${acordo?"var(--ok)":"var(--fail)"}">
          <b style="color:${acordo?"var(--ok)":"var(--fail)"}">${acordo?"✔ SE PUSIERON DE ACUERDO":"✘ NO HUBO ACUERDO"} · ${Math.round((Date.now()-CONV.start)/1000)}s · ${transcript.length} intervenciones</b>${esc(resumen)}</div>`);
       $("#resps").scrollTop=1e9;
+      ESC("cartel",`<b>${acordo?"✔ SE PUSIERON DE ACUERDO":"✘ NO HUBO ACUERDO"}</b>${esc(resumen)}`,acordo?"a_favor":"en_contra");
       guardar("tertulia",cur,q,{posturas:p,resumen,acordo,rondas:ronda,
         segundos:Math.round((Date.now()-CONV.start)/1000),participantes:sample.map(r=>r.id)});
       selloHumano(q,transcript);
@@ -1934,6 +2201,19 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
   $("#estado").textContent="";
 }
 boot();
+ESC("vista",MODO,[...SEL]);
+/* CAJONES: mapa, censo y la tierra se abren sobre el escenario */
+function abrirCajon(id,forzar){
+  const el=document.getElementById(id);if(!el)return;
+  const abre=forzar??!el.classList.contains("abierto");
+  document.querySelectorAll(".cajon.abierto").forEach(c=>{if(c!==el&&(c.classList.contains("izq")===el.classList.contains("izq"))){c.classList.remove("abierto");
+    document.querySelector(`[data-cajon="${c.id}"]`)?.setAttribute("aria-expanded","false");}});
+  el.classList.toggle("abierto",abre);
+  document.querySelector(`[data-cajon="${id}"]`)?.setAttribute("aria-expanded",String(abre));
+}
+document.querySelectorAll("[data-cajon]").forEach(b=>b.onclick=()=>abrirCajon(b.dataset.cajon));
+document.querySelectorAll(".cajon .cierra").forEach(b=>b.onclick=()=>abrirCajon(b.closest(".cajon").id,false));
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".cajon.abierto").forEach(c=>abrirCajon(c.id,false));});
 /* ═══ RONDA 8 · efectos pixel premium ═══ */
 window.festejo=el=>{const c=el&&el.querySelector('.conclu');if(!c)return;
 const pc=(getComputedStyle(c).getPropertyValue('--pc')||'').trim()||'#ffd23e';
@@ -1978,5 +2258,6 @@ document.querySelectorAll('#navmap path').forEach(p=>p.classList.add('pacha'));
 setTimeout(()=>document.querySelectorAll('.pacha').forEach(p=>p.classList.remove('pacha')),3200);}
 else if(!done&&bar.dataset.full){delete bar.dataset.full;bar.classList.remove('full');}};
 </script>
+<script type="module" src="escena.js"></script>
 </body>
 </html>

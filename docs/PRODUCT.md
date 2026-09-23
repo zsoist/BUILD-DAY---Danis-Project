@@ -37,6 +37,8 @@ Restricciones de diseño: una sesión dura segundos y cuesta poco por visita. To
 
 - **IRTree: probado y rechazado.** Calibración W1 0,019, holdout 0,272: peor que el azar.
 - Cualquier uso que dependa de precisión encuestística está fuera de alcance por diseño.
+- **La tertulia es teatro, no deliberación:** medido, el debate no cambia el reparto.
+- **Nada por grupo** (jóvenes, costa…) contando voces: solo la tabla real cuando hay ancla.
 
 ## Cómo sabemos si sirve
 - Una persona nueva pregunta y entiende la respuesta en menos de 2 minutos, sin ayuda.
