@@ -100,6 +100,12 @@ const charco = (() => {
     new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: .5 }));
   m.rotation.x = -Math.PI / 2; m.position.set(0, .005, -.2); scene.add(m); return m;
 })();
+/* aire: lo lejano se funde con el color del horizonte pintado (perspectiva atmosférica) */
+function niebla(base, t) {
+  const c = CIELOS[base], col = new THREE.Color(c ? c.abajo : t || "#cfd6e0");
+  const d = Math.hypot(CAM_BASE.y, CAM_BASE.z);
+  scene.fog = QUIETO ? null : new THREE.Fog(col, d + 4, d + 160);     // sutil: a 20 m de más, ~12 %
+}
 /* ── gente ───────────────────────────────────────────────────────────── */
 const GENTE = new Map();          // id → actor
 let JUEZ = null, MESA = null;
@@ -140,10 +146,17 @@ const UTIL_DE = { nacional: "bogota", bogota: "bogota", medellin: "antioquia", c
   popayan: "sur_andino", boyaca: "boyaca", santander: "santander", llanos: "llanos", amazonia: "amazonia" };
 function utileriaDe(k) { return window.CATALOGO?.utileria?.[UTIL_DE[k]] || null; }
 const COSAS = [[-4.7, -1.7], [4.9, -2.0], [-5.8, 0.7], [5.9, 0.5]];
+/* cuánto cabe: el medio ancho visible del escenario (en z = -0,3) contra el de
+   referencia (4,6). En una playa vista desde arriba cabe menos que en una plaza */
+function escalaEscenario() {
+  const c = aPantalla(new THREE.Vector3(0, 0, -.3)), d = aPantalla(new THREE.Vector3(1, 0, -.3));
+  const medio = MUNDO.w / 2 / Math.max(1e-3, d.x - c.x);
+  return Math.min(1.1, Math.max(.5, medio / 4.6));
+}
 /* acomodos: dónde se para cada quien */
 function repartir(r) { const k = Math.ceil(r / 7), base = Math.floor(r / k); return Array.from({ length: k }, (_, i) => base + (i < r % k ? 1 : 0)); }
 function puestos(n, modo) {
-  const P = [];
+  const P = [], e = escalaEscenario();
   if (modo === "mesa") {
     // hasta 9: herradura detrás de la mesa, repartida PAREJO EN X (así nadie queda
     // detrás de otro en pantalla). Más de 9: la mesa con 7 y el resto en corrillos
@@ -152,11 +165,11 @@ function puestos(n, modo) {
     const g0 = grupos[0], ancho = Math.min(3.7, .45 + g0 * .42);
     for (let i = 0; i < g0; i++) {
       const x = g0 === 1 ? 0 : -ancho + 2 * ancho * i / (g0 - 1), k = x / (ancho + .7);
-      P.push([x, -0.25 - 1.05 * Math.sqrt(1 - k * k)]);
+      P.push([x * e, -0.25 - 1.05 * e * Math.sqrt(1 - k * k)]);
     }
     const CENTROS = [[-2.9, -3.7], [3.1, -3.9], [0.2, -6.2], [-3.6, -7.0], [3.9, -7.2]];
     grupos.slice(1).forEach((m, j) => {
-      const [cx0, cz] = CENTROS[j % CENTROS.length], cx = cx0 * (PANO ? 1.6 : 1), w = Math.min(1.7, .25 + m * .3);
+      const [cx0, cz0] = CENTROS[j % CENTROS.length], cx = cx0 * (PANO ? 1.6 : 1) * e, cz = cz0 * e, w = Math.min(1.7, .25 + m * .3) * e;
       for (let i = 0; i < m; i++) {
         const x = m === 1 ? 0 : -w + 2 * w * i / (m - 1), k = x / (w + .5);
         P.push([cx + x, cz - .6 * Math.sqrt(1 - k * k) + (i % 2) * .14, false, j + 1]);
@@ -255,10 +268,43 @@ function piensa(a) {
 }
 
 let pisoY = .82;
+/* ── la cámara de la pintura ───────────────────────────────────────────
+   Regla del pintor: una persona de pie mide (su altura / altura de la cámara) ×
+   (distancia de sus pies a la línea del horizonte). Si la cámara 3D no tiene el
+   horizonte donde lo tiene el cuadro, la gente no achica al alejarse (o achica de
+   más) y no cuadra con las puertas. Por fondo: [horizonte (fy), altura de la
+   cámara en metros]. La altura sale de una puerta medida (Salento, Barichara,
+   Popayán, La Candelaria); sin puerta, la que deja a una persona en el ~17 % del
+   alto del cuadro en el escenario (en la playa o el desierto el cuadro se ve desde
+   arriba: la cámara sale de 6 a 8 m). */
+const HORIZ = {
+  nacional: [.40], bogota: [.52, 2.5], medellin: [.55], caribe: [.52], cafetero: [.50, 2.47],
+  llanos: [.47], amazonia: [.32], choco: [.30], santander: [.50, 1.62], narino: [.50],
+  popayan: [.55, 1.8], cali: [.55], guajira: [.15], sanandres: [.12], boyaca: [.52], tatacoa: [.45],
+  nacional_pano: [.45], bogota_pano: [.56], medellin_pano: [.60], caribe_pano: [.50],
+  cafetero_pano: [.55], llanos_pano: [.40], amazonia_pano: [.30], choco_pano: [.30],
+  santander_pano: [.55], narino_pano: [.55], popayan_pano: [.60], cali_pano: [.58],
+  guajira_pano: [.20], sanandres_pano: [.20], boyaca_pano: [.55], tatacoa_pano: [.50],
+};
 function encuadrar() {
-  /* el fondo va "cover" y pegado abajo: el piso pintado a fracción f de la
-     imagen cae en pantalla donde lo dice el recorte real de este visor */
-  const W = MUNDO.w, H = MUNDO.h;
+  const W = MUNDO.w, H = MUNDO.h, hz = HORIZ[sueloK];
+  if (hz) {
+    // cabeceo: el horizonte de la cámara cae en el horizonte pintado; altura: la de la puerta;
+    // distancia: el centro de la tertulia (z = -0,3) cae en el piso del cuadro (pisoY)
+    ALTO = 1.45;
+    const t = Math.tan(THREE.MathUtils.degToRad(camara.fov / 2)), pf = Math.max(pisoY, hz[0] + .08);
+    const hc = (hz[1] || 1.65 * (pf - hz[0]) / .17) / 1.65 * ALTO;
+    const Yh = imgAPantalla(.5, hz[0]).y, Yp = imgAPantalla(.5, pf).y;
+    const th = Math.atan((1 - 2 * Yh / H) * t), al = Math.atan((2 * Yp / H - 1) * t);
+    const D = hc / Math.tan(Math.max(.02, al + th)) - .3;
+    CAM_BASE.set(0, hc, D); MIRA_BASE.set(0, hc - Math.tan(th) * D, 0);
+    camara.position.copy(CAM_BASE); camObj.copy(CAM_BASE);
+    miraObj.copy(MIRA_BASE); mira.copy(MIRA_BASE);
+    camara.lookAt(MIRA_BASE); camara.updateMatrixWorld();
+    return;
+  }
+  /* sin horizonte medido (el estudio): el piso pintado a fracción pisoY cae donde toca */
+  CAM_BASE.set(0, 3.1, CAM_BASE.z > 5 ? CAM_BASE.z : 12.5);
   const imgH = Math.max(H, W * IMG.h / IMG.w), yPx = H - (1 - pisoY) * imgH;
   const objetivo = 1 - 2 * Math.min(.94, Math.max(.45, yPx / H)), p = new THREE.Vector3(0, 0, -.3);
   let lo = -6, hi = 8;
@@ -728,7 +774,7 @@ function lugar(k, pano = false) {
   cielo.poner(base);
   ambiente.poner(k);
   const [nom, sub, t] = LUGARES[k];
-  const [fy, esc] = (pano ? PISO_PANO[k] || [.86, 1.0] : PISO[k]) || [.84, 1]; pisoY = fy; ALTO = 1.45 * esc; medir();
+  const [fy, esc] = (pano ? PISO_PANO[k] || [.86, 1.0] : PISO[k]) || [.84, 1]; pisoY = fy; ALTO = HORIZ[base] ? 1.45 : 1.45 * esc; medir(); niebla(base, t);
   tinte = new THREE.Color(t);
   for (const a of [...GENTE.values(), JUEZ, MESA]) a?.userData.cuerpo?.material.color.copy(tinte);
   const pl = $("#lugar");
@@ -739,7 +785,7 @@ function lugar(k, pano = false) {
 /* hablar de verdad: se detiene, levanta la mano, dice la idea, muestra su voto */
 function hablaYa(r, txt, pos) {
   const a = GENTE.get(r.id); if (!a) return;
-  a.userData.meta = null;                                 // quien habla no camina
+  if (a.userData.fuera || !a.userData.casa) a.userData.meta = null;   // quien habla no pasea (pero si viene llegando, sigue hasta su puesto)
   a.userData.habla = performance.now() + Math.min(3600, 900 + idea(txt).length * 25);
   a.userData.mano = performance.now() + 1400;             // pide la palabra
   a.userData.paseo = performance.now() + 9000;
@@ -779,13 +825,13 @@ const API = {
     const U = utileriaDe(lugarActual);
     if (acomodo === "mesa") {
       MESA = await actor("mesa", "escenas/" + (U?.mesa || "mesa.webp"), ALTO * .72, 1, true);
-      MESA.position.set(0, 0, 0.55);
+      MESA.position.set(0, 0, 0.55 * escalaEscenario());
     }
     if (U && acomodo !== "publico") {           // ambiente: hasta 3 cosas del lugar, a los lados
       const cosas = U.cosas.slice(0, 3);
       await Promise.all(cosas.map(async (c, i) => {
         const a = await actor("cosa" + i, "escenas/" + c, ALTO * (i === 2 ? .7 : .85), 1, true);
-        a.position.set(COSAS[i][0], 0, COSAS[i][1]);
+        const e = escalaEscenario(); a.position.set(COSAS[i][0] * e, 0, COSAS[i][1] * e);
         GENTE.set("__cosa" + i, a);
       }));
     }
@@ -814,15 +860,23 @@ const API = {
       }
       a.userData.meta = new THREE.Vector3(x, 0, z);
       a.userData.casa = a.userData.meta.clone();
+      a.userData.llegando = true;
       a.userData.paseo = performance.now() + 14000 + Math.random() * 30000;
       a.userData.quieto = acomodo === "publico";          // concursantes y público no pasean
+      a.userData.edad = r.edad;
+      a.userData.vel = 1.9 * (r.edad > 64 ? .68 : r.edad < 30 ? 1.12 : 1);   // los mayores caminan más despacio
       const fondo = i % 2 === 0;                          // unos llegan del fondo, otros por los lados
       if (QUIETO) a.position.set(x, 0, z);
       else {
         // llegan por donde se puede llegar: del fondo de la calle o por las orillas del piso
         const E = ENT || {};
         const o = fondo ? E.fondo : (x < 0 ? E.izq : E.der);
-        if (o) a.position.set(o.x + (Math.random() - .5) * .8, 0, o.z + (Math.random() - .5) * .4);
+        if (o) {
+          // en una plaza enorme el fondo queda a 30 m: se entra desde máximo 7 unidades de su puesto
+          const v = new THREE.Vector3(o.x - x, 0, o.z - z), L = v.length();
+          if (L > 7) { v.multiplyScalar(7 / L); if (!caminable(x + v.x, z + v.z)) v.multiplyScalar(.6); }
+          a.position.set(x + v.x + (Math.random() - .5) * .8, 0, z + v.z + (Math.random() - .5) * .4);
+        }
         else if (fondo) a.position.set(x * .6 + (Math.random() - .5) * 2, 0, -6.5);
         else a.position.set((x < 0 ? -1 : 1) * 9, 0, z - 1);
         a.userData.llega = performance.now() + i * (acomodo === "publico" ? 420 : 200);
@@ -904,9 +958,36 @@ const API = {
 mundo.append(host.querySelector("#cielo"), ...capaFondo, canvas);
 window.ESCENA = API;
 API._pinta = () => { for (let i = 0; i < 3; i++) cuadroForzado(); };
+/* depuración: qué tan alta (fracción de la imagen) se ve una persona parada en (fx, fy) del fondo */
+API._alto = (fx, fy) => {
+  const p = imgAPiso(fx, fy); if (!p) return null;
+  const k = Math.max(MUNDO.w / IMG.w, MUNDO.h / IMG.h), ih = IMG.h * k;
+  const b = aPantalla(new THREE.Vector3(p.x, 0, p.z)), c = aPantalla(new THREE.Vector3(p.x, ALTO, p.z));
+  return +((b.y - c.y) / ih).toFixed(4);
+};
+API._cam = () => {           // depuración: cámara y ancho visible del escenario (z = -0,3)
+  const c = aPantalla(new THREE.Vector3(0, 0, -.3)), d = aPantalla(new THREE.Vector3(1, 0, -.3));
+  return { cam: CAM_BASE.toArray().map(v => +v.toFixed(2)), mira: +MIRA_BASE.y.toFixed(2), medioAncho: +(MUNDO.w / 2 / (d.x - c.x)).toFixed(2), piso: +(c.y / MUNDO.h).toFixed(3) };
+};
+API._camina = (i, fx, fy) => {   // depuración: manda a la persona i a un punto del cuadro
+  const a = [...GENTE.entries()].filter(([k]) => !k.startsWith("__"))[i]?.[1], q = imgAPiso(fx, fy);
+  if (a && q) { a.userData.meta = q; a.userData.fuera = true; a.userData.salio = performance.now(); a.userData.llega = 0; }
+  return !!(a && q && caminable(q.x, q.z));
+};
 API._diag = () => ({ gente: GENTE.size, juez: !!JUEZ, pos: [...GENTE.values()].map(a => a.position.toArray().map(v => +v.toFixed(2))), cam: camara.position.toArray().map(v => +v.toFixed(2)) });
 for (const [m, a] of (window.ESC_Q || []).splice(0)) API[m]?.(...a);
 
+/* empuje para no atravesar a los demás: personas (radio 0,3), mesa (0,9), cosas y podios (0,5) */
+function esquive(a) {
+  let x = 0, z = 0;
+  for (const b of [...GENTE.values(), MESA]) {
+    if (!b || b === a || !b.visible) continue;
+    const r = (b === MESA ? .9 : b.userData.estatico ? .5 : .3) + .32;
+    const dx = a.position.x - b.position.x, dz = a.position.z - b.position.z, d = Math.hypot(dx, dz);
+    if (d < r && d > 1e-4) { const k = (r - d) / r; x += dx / d * k; z += dz / d * k; }
+  }
+  return x || z ? { x, z } : null;
+}
 /* ── bucle ───────────────────────────────────────────────────────────── */
 function medir() {
   const r = host.getBoundingClientRect();
@@ -917,7 +998,7 @@ function medir() {
   camara.aspect = MUNDO.w / MUNDO.h;
   // en pantallas angostas, la cámara se aleja para que quepa la gente
   const va = r.width / r.height;
-  CAM_BASE.z = va < 1 ? 17.5 : va < 1.4 ? 14.5 : 12.5;
+  if (!HORIZ[sueloK]) CAM_BASE.z = va < 1 ? 17.5 : va < 1.4 ? 14.5 : 12.5;
   camara.updateProjectionMatrix();
   encuadrar(); ubicarTablero(); cielo.medir();
   clearTimeout(medir.t); medir.t = setTimeout(() => ambiente.recolocar(), 400);
@@ -935,9 +1016,31 @@ function pasear(ahora) {
   for (const a of GENTE.values()) if (a.userData.meta && !a.userData.estatico) andando++;
   for (const a of GENTE.values()) {
     const u = a.userData;
-    if (u.estatico || u.quieto || !u.casa || u.meta || u.habla > ahora || ahora < u.paseo || andando >= 1 || modoActual !== "tertulia") continue;
+    if (u.estatico || u.quieto || !u.casa || u.meta || u.habla > ahora || ahora < u.paseo || andando >= 2 || modoActual === "sondeo") continue;
     if (u.fuera) {                                         // de vuelta a su puesto
-      u.meta = u.casa.clone(); u.fuera = false; u.paseo = ahora + 25000 + Math.random() * 25000; andando++; continue;
+      u.meta = u.casa.clone(); u.fuera = false; u.salio = ahora; u.paseo = ahora + 20000 + Math.random() * 25000; andando++; continue;
+    }
+    const r = Math.random();
+    if (r < .3) {                                          // se va a charlar con otro, de lado a lado
+      const otros = [...GENTE.values()].filter(b => b !== a && !b.userData.estatico && !b.userData.meta && b.userData.habla < ahora && b.userData.casa);
+      const o = otros[Math.floor(Math.random() * otros.length)];
+      if (o) {
+        const lado = a.position.x < o.position.x ? -.75 : .75, q = new THREE.Vector3(o.position.x + lado, 0, o.position.z + .05);
+        if (caminable(q.x, q.z, u.alto)) {
+          u.meta = q; u.fuera = true; u.salio = ahora; u.charla = ahora + 9000;
+          o.userData.paseo = Math.max(o.userData.paseo, ahora + 12000);          // el otro lo espera
+          setTimeout(() => { if (o.parent) o.userData.mano = performance.now() + 900; }, 1800);
+          u.paseo = ahora + 7000 + Math.random() * 5000; andando++; continue;
+        }
+      }
+    } else if (r < .55) {                                  // cruza la plaza o sube la calle, y vuelve
+      const L = SUELO[sueloK];
+      for (let i = 0; L && i < 16; i++) {
+        const fx = .08 + Math.random() * .84, s0 = sueloEn(fx), fy = s0 + .02 + Math.random() * Math.max(.02, .93 - s0 - .02);
+        const q = imgAPiso(fx, fy);
+        if (q && caminable(q.x, q.z, u.alto)) { u.meta = q; u.fuera = true; u.salio = ahora; u.paseo = ahora + 3500 + Math.random() * 4000; andando++; break; }
+      }
+      if (u.meta) continue;
     }
     const dianas = [MESA, ...[...GENTE.values()].filter(g => g.userData.id?.startsWith?.("cosa"))].filter(Boolean);
     let q = null;
@@ -948,7 +1051,7 @@ function pasear(ahora) {
     }
     q = q || puntoLibre(u.casa.x, u.casa.z, 1.6, u.alto);
     if (!q) { u.paseo = ahora + 6000; continue; }
-    u.meta = q; u.fuera = true; u.paseo = ahora + 2500 + Math.random() * 3000; andando++;
+    u.meta = q; u.fuera = true; u.salio = ahora; u.paseo = ahora + 2500 + Math.random() * 3000; andando++;
   }
 }
 function cuadro() {
@@ -976,7 +1079,19 @@ function cuadroForzado() {
       tmp.subVectors(u.meta, a.position);
       const d = tmp.length();
       if (d > .03) {
-        a.position.addScaledVector(tmp.normalize(), Math.min(d, u.vel * dt));
+        tmp.normalize();
+        // esquiva: nadie atraviesa a nadie ni a la mesa; el empuje es lateral y suave
+        const ex = esquive(a);
+        if (ex) { tmp.x += ex.x * 1.6; tmp.z += ex.z * 1.6; tmp.normalize(); }
+        const paso = Math.min(d, u.vel * dt), nx = a.position.x + tmp.x * paso, nz = a.position.z + tmp.z * paso;
+        // y no se sale del piso pintado: si el paso cae en una pared, resbala por el borde
+        if (!u.llegando && !caminable(nx, nz, u.alto) && caminable(a.position.x, a.position.z, u.alto)) {
+          if (caminable(nx, a.position.z, u.alto)) a.position.x = nx;
+          else if (caminable(a.position.x, nz, u.alto)) a.position.z = nz;
+          else u.meta = null;
+        } else a.position.set(nx, 0, nz);
+        if (u.meta && ahora - (u.salio || ahora) > 16000) u.meta = null;     // atascado: se queda donde está
+        if (u.llegando && caminable(a.position.x, a.position.z, u.alto)) u.llegando = false;
         brinco = Math.abs(Math.sin(t * 9 + u.fase)) * .035;              // pasos
         anda = true;
         // hacia dónde mira: de lado (se refleja a la izquierda), de espaldas si se aleja, de frente si viene
@@ -984,7 +1099,9 @@ function cuadroForzado() {
         c.scale.x = u.dir === "lado" && tmp.x < 0 ? -1 : (u.cuadros === 8 || u.dir === "lado") ? 1 : c.scale.x;
         if (u.cuadros < 8 && Math.abs(tmp.x) > Math.abs(tmp.z) * .5) c.scale.x = (tmp.x < 0 ? -1 : 1);
       } else {
-        u.meta = null; c.scale.x = 1; u.dir = null;
+        u.meta = null; c.scale.x = 1; u.dir = null; u.salio = 0;
+        if (u.charla && ahora < u.charla) { u.mano = ahora + 900; const e = document.createElement("div");
+          e.className = "marca taza"; e.textContent = "💬"; pegar(e, a, -4); setTimeout(() => e.remove(), 2200); }
         if (u.sirve) { u.sirve = false; u.mano = ahora + 900; const e = document.createElement("div");
           e.className = "marca taza"; e.textContent = "☕"; pegar(e, a, -4); setTimeout(() => e.remove(), 1600); }
       }
