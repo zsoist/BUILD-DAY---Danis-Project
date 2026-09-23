@@ -749,7 +749,8 @@ function abortarCorrida(){RUN++;CONV.stop=true;CONV.paused=false;
 $("#btnpausa").onclick=()=>{CONV.paused=!CONV.paused;
   $("#btnpausa").textContent=CONV.paused?"▶ SEGUIR":"⏸ PAUSAR";
   $("#btnpausa").classList.toggle("pausa",CONV.paused);};
-$("#btnfin").onclick=()=>{CONV.stop=true;abortarCorrida();};  // stop en la corrida viva + teardown (typewriters, controles, botón)
+$("#btnfin").onclick=()=>{CONV.stop=true;CONV.paused=false;
+  if(MODO!=="tertulia")abortarCorrida();};  // en tertulia, cerrar = levantar la mesa con veredicto; en lo demás, cancelar  // stop en la corrida viva + teardown (typewriters, controles, botón)
 setInterval(()=>{if($("#ctrl").style.display!=="none"&&CONV.start){
   const s=Math.round((Date.now()-CONV.start)/1000);
   $("#reloj").textContent=(CONV.paused?"⏸ ":"")+Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
@@ -793,6 +794,7 @@ async function mesa(cod){
   for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}  // Fisher-Yates: sort(random) no baraja parejo
   const sample=pool.slice(0,4);
   asignarSprites(sample);ESC("escena",{modo:"pais",sel:[cod],gente:sample});
+  abrirCajon("dr-mapa",false);          // la mesa se ve entera; el mapa vuelve con el veredicto
   el.insertAdjacentHTML("beforeend",`<div class="seats"></div><div class="ticker"><span class="tickertxt">llegan los de ${esc(d.nombre)}…</span></div>`);
   const _seats=el.querySelector(".seats");
   sample.forEach((r,i)=>{const s=document.createElement("div");s.className="seat";
@@ -844,6 +846,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   el.insertAdjacentHTML("beforeend",
     `<div class="conclu" style="--pc:${COLORES[pos]}"><b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(concl)}</div>`);
   ESC("cartel",`<b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(concl)}`,pos);
+  setTimeout(()=>{if(MODO==="pais"&&PAIS===owner)abrirCajon("dr-mapa",true);},3200);
   festejo(el);
   selloHumano(q,transcript,el);
   el.scrollTop=1e9;
@@ -1293,7 +1296,7 @@ $("#modo").onclick=e=>{const m=e.target.dataset.m;if(!m||m===MODO)return;
   MODO=m;
   $("#modo").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===m)));
   $("#modohelp").textContent=MODOTXT[m];paintNav();
-  ESC("vista",m,[...SEL]);if(m==="pais")abrirCajon("dr-mapa",true);};
+  ESC("vista",m,[...SEL]);abrirCajon("dr-mapa",m==="pais");};
 const COLORES={a_favor:"var(--ok)",en_contra:"var(--fail)",depende:"var(--work)",ni_ni:"var(--faint)"};
 const SUGG_BASE=["el nuevo metro / transporte público","que la IA haga su trabajo",
 "el precio del café","irse a vivir a otra ciudad","que sus hijos estudien virtual"];
@@ -2049,7 +2052,7 @@ async function conversar(q){
   /* sin ancla: postura sorteada con la estimación de analista (solo sondeo sí/no) */
   const EST=!anc&&pctEst!=null?pctEst:null;
   const ladoDe=r=>EST==null?undefined:(posturaEstimada(r,q,EST)??undefined);
-  clearInterval(ticker);$("#ticker")?.remove();
+  clearInterval(ticker);$("#ticker")?.remove();$("#estado").textContent="";
   ctxBox(ctx);
   if(anc&&kAnc>=0)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>El DANE ya preguntó esto</b> (Encuesta de Cultura Política 2023): «${esc(anc.texto)}». Cada voz responde lo que respondió su donante real, una persona de su misma edad, sexo, educación y región.</div>`);
   else if(EST!=null)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">🧭 <b>Nadie ha medido esto en Colombia.</b> Las posturas se reparten según una estimación de un modelo (en pruebas, se aleja unos 17 pts de la realidad): tómalo como exploración, no como encuesta.</div>`);
@@ -2086,7 +2089,11 @@ async function conversar(q){
       }catch(e){p.sin_postura=(p.sin_postura||0)+1;tally(p);say.classList.remove("thinking");say.textContent="(no contestó)";}
     }));
     if(obedN)$("#tally").insertAdjacentHTML("beforeend",`<div style="color:var(--dim);font-size:10px;margin-top:2px">libreto: ${obed}/${obedN} fieles a su inclinación asignada</div>`);
-    const est=await estimacion(votos);
+    /* sin ancla, la cifra es la del analista: en 16 preguntas ciegas se alejó
+       17.3 pts de la real; lo que dijeron las voces, 25.1 (docs/METODO.md) */
+    if(EST!=null){const [la]=etiquetas();
+      $("#tally").insertAdjacentHTML("beforeend",`<div class="estim" title="Nadie ha medido esta pregunta en Colombia. La cifra es la estimación de un modelo actuando como analista de opinión; en pruebas se alejó en promedio 17 puntos de la realidad.">🧭 ≈ <b>${Math.round(EST)}%</b> ${esc(la)} · estimación de un modelo como analista (±17 pts en pruebas), no es encuesta</div>`);}
+    const est=EST!=null?null:await estimacion(votos);
     if(est&&isFinite(est.favor)){const [la]=etiquetas();
       $("#tally").insertAdjacentHTML("beforeend",`<div class="estim" title="Mezcla medida contra la ECP 2023 del DANE: pesa la etiqueta de cada voz y lo que dijo en sus palabras. No es una encuesta: no tiene margen de error.">≈ <b>${Math.round(100*est.favor)}%</b> ${esc(la)} entre quienes toman partido · estimación calibrada, no es encuesta</div>`);}
     /* EL JUEZ DEL SHOW: un modelo agrupa lo que dijeron; el conteo lo hace este

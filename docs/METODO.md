@@ -308,3 +308,7 @@ creencia, menos). El sitio lo dice: "Nadie ha medido esto en Colombia".
 | ¿Reproduce diferencias entre grupos? (edad, sexo, región, educación) | Sin ancla: 41% de aciertos de dirección (azar). Con postura estimada: 45%. Anclado: 75% (83% con 200 voces; techo 84%). Con 5 voces por grupo ni encuestados reales pasan de 62% | No afirmar nada por grupo con las voces. Con ancla, citar la tabla real |
 
 Scripts: `scripts/experimento/tertulia.mjs`, `scripts/experimento/grupos.py`.
+
+**Cifra mostrada sin ancla.** En esas 16 preguntas, la estimación sola (17.3)
+le gana a lo que dicen las voces (25.1); el sondeo muestra la del analista,
+rotulada, y deja la mezcla etiqueta + SSR para las preguntas con ancla.
