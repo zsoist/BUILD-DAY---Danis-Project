@@ -786,7 +786,7 @@ html body #navmap #mtierra path.dep{fill:color-mix(in srgb,var(--dep) 55%,#12204
 #mundo{position:absolute;inset:0;transform-origin:0 0;will-change:transform;z-index:0}
 .placa.tenue{opacity:0;transition:opacity .3s ease}
 .placa.tenue.ve{opacity:1}
-#escena:hover .placa.tenue:not(.ve){opacity:.75}
+@media (hover:hover) and (pointer:fine){#escena:hover .placa.tenue:not(.ve){opacity:.75}}   /* en táctil el hover se queda pegado */
 #zoomesc{position:absolute;right:12px;bottom:12px;z-index:6;display:flex;gap:4px;opacity:.55;transition:opacity .2s ease}
 #escena:hover #zoomesc{opacity:1}
 #zoomesc button{font:12px "Silkscreen";color:var(--crema);background:linear-gradient(var(--win-a),var(--win-b));border:2px solid #f4ecd8aa;border-radius:4px;width:30px;height:30px;cursor:pointer;box-shadow:0 2px 0 #000a;transition:transform .12s ease}
