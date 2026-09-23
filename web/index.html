@@ -733,6 +733,53 @@ html body #rcard .rkv{grid-template-columns:150px 1fr 150px 1fr;gap:12px 18px}
 .conclu .temas{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.conclu .temas span{font-size:12px;padding:3px 9px;border-radius:12px;background:#f4ecd814;border:1px solid #f4ecd844}
 .dchip{display:inline-block;margin:4px 4px 0 0;font-size:11.5px;padding:2px 8px;border-radius:10px;border:1px solid #3b4aa8;color:var(--crema)}
 .dchip.fav{border-color:var(--si);background:#2fd08a22}.dchip.con{border-color:var(--no);background:#ff5a5f22}.dchip.dep{border-color:var(--dep);background:#fcd1161c}
+
+/* ── mapa casi 3D ── */
+html body #dr-mapa #navmap{position:relative;overflow:hidden;border-radius:6px;
+  background:radial-gradient(120% 90% at 40% 35%,#1d3f7a 0%,#10244f 55%,#0a1433 100%);
+  box-shadow:inset 0 0 0 2px #f4ecd81f,inset 0 0 60px #000a}
+#navmap::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;
+  background:repeating-linear-gradient(0deg,#9ec5ff14 0 1px,transparent 1px 16px),repeating-linear-gradient(90deg,#9ec5ff14 0 1px,transparent 1px 16px)}
+#mapcam{flex:1;min-height:0;display:flex;transform:perspective(1300px) rotateX(24deg) scale(.88);transform-origin:50% 50%;
+  animation:mecer 18s ease-in-out infinite alternate}
+#navmap:hover #mapcam{animation-play-state:paused}
+@keyframes mecer{from{transform:perspective(1300px) rotateX(22deg) rotateZ(-.7deg) scale(.88)}to{transform:perspective(1300px) rotateX(27deg) rotateZ(.7deg) scale(.88)}}
+html body #dr-mapa #navmap svg{--z:1;touch-action:none;cursor:grab;filter:none}
+#mtierra{filter:drop-shadow(0 calc(5px / var(--z)) 0 #070c24) drop-shadow(0 calc(14px / var(--z)) calc(10px / var(--z)) #000b)}
+html body #navmap #mtierra path{--lado:color-mix(in srgb,var(--rg) 38%,#060a1f);
+  fill:color-mix(in srgb,var(--rg) 46%,#16204f);stroke:#f4ecd8;stroke-opacity:.34;stroke-width:calc(1.1px / var(--z));stroke-linejoin:round;
+  transform-box:fill-box;transition:transform .5s cubic-bezier(.34,1.56,.64,1),filter .3s ease,fill .5s ease,opacity .25s ease}
+#navmap #mtierra path:nth-child(3n){fill:color-mix(in srgb,var(--rg) 40%,#16204f)}
+#navmap #mtierra path:nth-child(3n+1){fill:color-mix(in srgb,var(--rg) 52%,#16204f)}
+html body #navmap #mtierra path.hov{transform:translateY(calc(-3px / var(--z)));stroke:var(--oro);stroke-opacity:1;
+  filter:brightness(1.22) drop-shadow(0 calc(3px / var(--z)) 0 var(--lado))}
+html body #navmap #mtierra path.sel{transform:translateY(calc(-13px / var(--z)));stroke:var(--oro);stroke-opacity:1;stroke-width:calc(2px / var(--z));
+  fill:color-mix(in srgb,var(--rg) 78%,#fff3);filter:drop-shadow(0 calc(13px / var(--z)) 0 var(--lado)) drop-shadow(0 calc(22px / var(--z)) calc(10px / var(--z)) #000c)}
+html body #navmap #mtierra path.fav{fill:color-mix(in srgb,var(--si) 62%,#12204a)}
+html body #navmap #mtierra path.con{fill:color-mix(in srgb,var(--no) 62%,#12204a)}
+html body #navmap #mtierra path.dep{fill:color-mix(in srgb,var(--dep) 55%,#12204a)}
+#navmap svg.spot #mtierra path:not(.hov):not(.sel):not(.hot){opacity:.55}
+#navmap .isla{fill:none;stroke:#f4ecd855;stroke-width:calc(1px / var(--z));stroke-dasharray:3 3}
+#navmap .isla-t{font:7px "Silkscreen";fill:#f4ecd8aa;text-anchor:middle}
+#mnombres{pointer-events:none}
+#mnombres .nom>text{font-family:"Silkscreen";font-size:calc(12.5px / var(--z));fill:#f4ecd8;text-anchor:middle;dominant-baseline:middle;
+  paint-order:stroke;stroke:#0b1030;stroke-width:calc(3.6px / var(--z));opacity:0;transition:opacity .3s ease,transform .5s cubic-bezier(.34,1.56,.64,1);letter-spacing:.04em}
+#mnombres .nom.cabe>text,#mnombres .nom.sel>text,#mnombres .nom.hov>text{opacity:.92}
+#mnombres .nom.sel>text,#mnombres .nom.hov>text{fill:var(--oro);opacity:1}
+#mnombres .nom.sel{transform:translateY(calc(-13px / var(--z)))}
+#mnombres .nom.hov:not(.sel){transform:translateY(calc(-3px / var(--z)))}
+#mnombres .nom{transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
+#mnombres .cap circle{r:calc(3.6px / var(--z));fill:var(--rg);stroke:#fff;stroke-width:calc(1.1px / var(--z))}
+#mnombres .cap.nac circle{r:calc(5.5px / var(--z));fill:var(--oro);stroke:#0b1030}
+#mnombres .cap text{font-family:"Saira",sans-serif;font-weight:700;font-size:calc(12px / var(--z));fill:#fff;paint-order:stroke;stroke:#0b1030;stroke-width:calc(3.4px / var(--z));opacity:0;transition:opacity .3s ease}
+#navmap svg.cerca #mnombres .cap text,#mnombres .nom.sel .cap text,#mnombres .nom.hov .cap text,#mnombres .cap.nac text{opacity:1}
+#navmap #mapley{position:absolute;left:10px;bottom:10px;max-width:calc(100% - 150px);z-index:4;padding:6px 9px;border-radius:5px;background:#0b1030cc;border:1px solid #f4ecd826;backdrop-filter:blur(4px);font-size:11px}
+#mapzoom{position:absolute;right:12px;bottom:12px;display:flex;gap:4px;z-index:4}
+#mapzoom button{font:10px "Silkscreen";color:var(--crema);background:linear-gradient(var(--win-a),var(--win-b));border:2px solid #f4ecd8aa;border-radius:4px;min-width:30px;height:30px;padding:0 8px;cursor:pointer;box-shadow:0 2px 0 #000a;transition:transform .12s ease}
+#mapzoom button:hover{border-color:var(--oro);color:var(--oro)}
+#mapzoom button:active{transform:scale(.94)}
+#mapley .capley i{border-radius:50%;background:var(--oro);outline:1.5px solid #fff}
+@media (prefers-reduced-motion:reduce){#mapcam{animation:none}html body #navmap #mtierra path,#mnombres .nom{transition:none}}
 </style>
 </head>
 <body>
@@ -1160,21 +1207,114 @@ function syncSel(){
   ESC("vistaLugar",MODO,[...SEL]);pintaLista();pintaTerr();
 }
 
+/* ── MAPA CASI 3D ──
+   Tablero inclinado (CSS perspective); cada departamento tiene grosor (sombra dura
+   de su propio color); el elegido salta como ficha y la cámara (el viewBox) lo encuadra.
+   Las capitales van con lat/lon reales proyectadas con el mismo ajuste lineal del mapa. */
+const ISLA=140;   // San Andrés viene fuera del viewBox: se trae al recuadro de arriba a la izquierda
+const CAPITAL={"05":["Medellín",6.244,-75.581],"08":["Barranquilla",10.964,-74.796],"11":["Bogotá",4.711,-74.072],
+ "13":["Cartagena",10.391,-75.479],"15":["Tunja",5.535,-73.367],"17":["Manizales",5.070,-75.517],"18":["Florencia",1.614,-75.606],
+ "19":["Popayán",2.444,-76.614],"20":["Valledupar",10.463,-73.253],"23":["Montería",8.748,-75.881],"27":["Quibdó",5.692,-76.658],
+ "41":["Neiva",2.936,-75.281],"44":["Riohacha",11.544,-72.907],"47":["Santa Marta",11.241,-74.199],"50":["Villavicencio",4.142,-73.626],
+ "52":["Pasto",1.214,-77.281],"54":["Cúcuta",7.894,-72.508],"63":["Armenia",4.534,-75.681],"66":["Pereira",4.813,-75.696],
+ "68":["Bucaramanga",7.119,-73.123],"70":["Sincelejo",9.305,-75.398],"73":["Ibagué",4.438,-75.232],"76":["Cali",3.452,-76.532],
+ "81":["Arauca",7.084,-70.759],"85":["Yopal",5.339,-72.395],"86":["Mocoa",1.152,-76.647],"88":["San Andrés",12.584,-81.701],
+ "91":["Leticia",-4.215,-69.940],"94":["Inírida",3.865,-67.924],"95":["San José del Guaviare",2.572,-72.645],"97":["Mitú",1.253,-70.234],
+ "99":["Puerto Carreño",6.189,-67.486]};
+const proy=(la,lo)=>[16+(lo+79.0)*48.64,53+(12.46-la)*45.54];
+const CORTO={"11":"Bogotá","54":"N. Santander","76":"Valle","88":"S. Andrés"};
+const CAM={vb:null,meta:null,raf:0,cajas:{},arrastro:false};
+function etiquetasMapa(){
+  const svg=$("#navmap svg"),g=$("#mnombres");if(!svg||!g)return;
+  const [,,W,H]=GEO.viewBox.split(" ").map(Number);CAM.vb=CAM.meta=[0,0,W,H];CAM.W=W;CAM.H=H;
+  let html="";
+  svg.querySelectorAll("#mtierra path").forEach(p=>{
+    const c=p.dataset.cod,b=p.getBBox();CAM.cajas[c]=b;
+    // punto de rótulo: la muestra interior más lejos del borde (no el centro de la caja, que en
+    // departamentos en C cae afuera)
+    const N=14,dentro=[],fuera=[];
+    for(let i=0;i<=N;i++)for(let j=0;j<=N;j++){const x=b.x+b.width*i/N,y=b.y+b.height*j/N;
+      (p.isPointInFill(new DOMPoint(x,y))?dentro:fuera).push([x,y]);}
+    let mejor=[b.x+b.width/2,b.y+b.height/2],md=-1;
+    for(const [x,y] of dentro){let d=Math.min(x-b.x,b.x+b.width-x,y-b.y,b.y+b.height-y);
+      for(const [u,v] of fuera){const e=Math.hypot(x-u,y-v);if(e<d)d=e;}
+      if(d>md){md=d;mejor=[x,y];}}
+    const k=CAPITAL[c];let cap="";
+    if(k){let [x,y]=proy(k[1],k[2]);if(c==="88")x+=ISLA;
+      cap=`<g class="cap${c==="11"?" nac":""} rg${macroDe(c)}" data-c="${c}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3"/><text x="${(x+5).toFixed(1)}" y="${(y+3).toFixed(1)}">${esc(k[0])}</text></g>`;}
+    const nom=CORTO[c]||MARG[c]?.nombre||c;
+    html+=`<g class="nom" data-c="${c}" data-w="${Math.max(b.width,b.height).toFixed(0)}" data-r="${md.toFixed(1)}">${c==="11"?"":`<text x="${mejor[0].toFixed(1)}" y="${mejor[1].toFixed(1)}">${esc(nom.toUpperCase())}</text>`}${cap}</g>`;
+  });
+  g.innerHTML=html;camara(CAM.meta,true);
+}
+function encuadre(cods){
+  if(!CAM.W)return null;
+  if(!cods.length)return [0,0,CAM.W,CAM.H];
+  let x1=1e9,y1=1e9,x2=-1e9,y2=-1e9;
+  for(const c of cods){const b=CAM.cajas[c];if(!b)continue;x1=Math.min(x1,b.x);y1=Math.min(y1,b.y);x2=Math.max(x2,b.x+b.width);y2=Math.max(y2,b.y+b.height);}
+  if(x1>x2)return [0,0,CAM.W,CAM.H];
+  // aire alrededor y un mínimo: Bogotá sola no debe llenar la pantalla
+  let w=Math.max((x2-x1)*1.9,190),h=Math.max((y2-y1)*1.9,250);
+  const r=CAM.W/CAM.H;if(w/h>r)h=w/r;else w=h*r;
+  w=Math.min(w,CAM.W);h=Math.min(h,CAM.H);
+  const cx=(x1+x2)/2,cy=(y1+y2)/2;
+  return [Math.min(Math.max(cx-w/2,0),CAM.W-w),Math.min(Math.max(cy-h/2,0),CAM.H-h),w,h];
+}
+function camara(meta,ya){
+  const svg=$("#navmap svg");if(!svg||!meta||!CAM.vb)return;
+  if(CAM.meta&&!ya&&meta.every((v,i)=>Math.abs(v-CAM.meta[i])<.5))return;
+  CAM.meta=meta;cancelAnimationFrame(CAM.raf);
+  const de=CAM.vb.slice(),t0=performance.now(),dur=ya||document.hidden||matchMedia("(prefers-reduced-motion: reduce)").matches?0:720;
+  const paso=t=>{const k=dur?Math.min(1,(t-t0)/dur):1,e=1-Math.pow(1-k,3);   // ease-out cúbico
+    CAM.vb=de.map((v,i)=>v+(meta[i]-v)*e);
+    svg.setAttribute("viewBox",CAM.vb.map(v=>v.toFixed(1)).join(" "));
+    const z=CAM.W/CAM.vb[2];svg.style.setProperty("--z",z.toFixed(3));
+    // nombres: se ven si caben a este zoom; capitales al acercarse o si su dpto está elegido
+    svg.querySelectorAll("#mnombres .nom").forEach(n=>{n.classList.toggle("cabe",+n.dataset.r*z>19||+n.dataset.w*z>190);});
+    svg.classList.toggle("cerca",z>1.5);
+    if(k<1)CAM.raf=requestAnimationFrame(paso);};
+  if(dur)CAM.raf=requestAnimationFrame(paso);else paso(t0);
+}
+function camaraControles(svg){
+  $("#mapzoom").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+    const f=+b.dataset.z;if(!f)return camara([0,0,CAM.W,CAM.H]);
+    const [x,y,w,h]=CAM.meta,nw=Math.min(CAM.W,Math.max(120,w/f)),nh=nw*h/w;
+    camara([Math.min(Math.max(x+(w-nw)/2,0),CAM.W-nw),Math.min(Math.max(y+(h-nh)/2,0),CAM.H-nh),nw,nh]);});
+  // rueda = zoom hacia el cursor; arrastrar = mover la cámara (y no cuenta como click)
+  svg.addEventListener("wheel",e=>{e.preventDefault();
+    const r=svg.getBoundingClientRect(),[x,y,w,h]=CAM.meta,f=e.deltaY<0?1.25:.8;
+    const nw=Math.min(CAM.W,Math.max(120,w/f)),nh=nw*h/w,px=(e.clientX-r.x)/r.width,py=(e.clientY-r.y)/r.height;
+    camara([Math.min(Math.max(x+(w-nw)*px,0),CAM.W-nw),Math.min(Math.max(y+(h-nh)*py,0),CAM.H-nh),nw,nh]);},{passive:false});
+  let ini=null;
+  svg.addEventListener("pointerdown",e=>{ini={x:e.clientX,y:e.clientY,vb:CAM.meta.slice()};CAM.arrastro=false;});
+  addEventListener("pointermove",e=>{if(!ini)return;const dx=e.clientX-ini.x,dy=e.clientY-ini.y;
+    if(!CAM.arrastro&&Math.hypot(dx,dy)<6)return;CAM.arrastro=true;
+    const r=svg.getBoundingClientRect(),[x,y,w,h]=ini.vb,s=w/r.width;
+    camara([Math.min(Math.max(x-dx*s,0),CAM.W-w),Math.min(Math.max(y-dy*s,0),CAM.H-h),w,h],true);});
+  addEventListener("pointerup",()=>{ini=null;setTimeout(()=>CAM.arrastro=false,0);});
+}
+
 async function drawNav(){
   if(!GEO){try{GEO=await fetch("colombia.json").then(r=>r.json())}catch(e){return}}
-  $("#navmap").innerHTML=`<div id="maptip"></div><svg viewBox="${GEO.viewBox}" role="group" aria-label="Mapa de Colombia: usa Tab y Enter para elegir territorio">${
-    Object.entries(GEO.paths).map(([c,p])=>`<path d="${p}" data-cod="${c}" class="rg${macroDe(c)}" role="button" tabindex="0" aria-label="${esc(MARG[c]?.nombre||c)}"/>`).join("")}</svg>
-    <div id="mapley">${Object.entries(MACRO).map(([k,v])=>`<span class="rg${k}"><i></i>${esc(v)}</span>`).join("")}</div>`;
+  if(GEO.paths["88"]&&!GEO._isla){GEO._isla=1;GEO.paths["88"]=GEO.paths["88"].replace(/(-?\d+\.?\d*),/g,(m,x)=>(+x+ISLA).toFixed(1)+",");}
+  $("#navmap").innerHTML=`<div id="maptip"></div><div id="mapcam"><svg viewBox="${GEO.viewBox}" role="group" aria-label="Mapa de Colombia: usa Tab y Enter para elegir territorio">
+    <rect class="isla" x="14" y="2" width="48" height="62" rx="3"/><text class="isla-t" x="38" y="72">SAN ANDRÉS</text>
+    <g id="mtierra">${Object.entries(GEO.paths).map(([c,p])=>`<path d="${p}" data-cod="${c}" class="rg${macroDe(c)}" role="button" tabindex="0" aria-label="${esc(MARG[c]?.nombre||c)}"/>`).join("")}</g>
+    <g id="mnombres" aria-hidden="true"></g></svg></div>
+    <div id="mapzoom"><button type="button" data-z="1.6" aria-label="Acercar">+</button><button type="button" data-z=".62" aria-label="Alejar">−</button><button type="button" data-z="0" aria-label="Ver todo el país">PAÍS</button></div>
+    <div id="mapley">${Object.entries(MACRO).map(([k,v])=>`<span class="rg${k}"><i></i>${esc(v)}</span>`).join("")}<span class="capley"><i></i>capital</span></div>`;
+  etiquetasMapa();
   const svg=$("#navmap svg");
   function elegir(cod){
     if(!cod)return;
-    if(MODO==="pais"&&PAIS.q){cur=cod;SEL=new Set([cod]);$("#dptosel").value=cod;selInfo();paintNav();render();pintaTerr();abrirCajon("dr-mapa",false);mesa(cod);return;}
-    if(MODO==="pais"){cur=cod;SEL=new Set([cod]);syncSel();abrirCajon("dr-mapa",false);const i=$("#qin");i.placeholder="¿Qué le preguntas a "+(MARG[cod]?.nombre||"")+"?";i.focus();return;}
+    if(MODO==="pais"&&PAIS.q){cur=cod;SEL=new Set([cod]);$("#dptosel").value=cod;selInfo();paintNav();render();pintaTerr();setTimeout(()=>abrirCajon("dr-mapa",false),700);mesa(cod);return;}
+    if(MODO==="pais"){cur=cod;SEL=new Set([cod]);syncSel();setTimeout(()=>abrirCajon("dr-mapa",false),700);const i=$("#qin");i.placeholder="¿Qué le preguntas a "+(MARG[cod]?.nombre||"")+"?";i.focus();return;}
     if(SEL.has(cod)&&SEL.size>0)SEL.delete(cod);else SEL.add(cod);
     cur=cod; syncSel();
   }
   window.elegirDpto=elegir;pintaLista();
-  svg.addEventListener("click",e=>elegir(e.target.dataset?.cod));
+  svg.addEventListener("click",e=>{if(CAM.arrastro)return;elegir(e.target.dataset?.cod)});
+  camaraControles(svg);
   svg.addEventListener("keydown",e=>{
     const cod=e.target.dataset?.cod;
     if(cod&&(e.key==="Enter"||e.key===" ")){e.preventDefault();elegir(cod);}
@@ -1195,7 +1335,8 @@ async function drawNav(){
       tip.style.top=(ev.clientY-r.y+10)+"px";return;}
     if(cod===hovCod&&!ev)return;
     svg.classList.toggle("spot",!!cod);
-    svg.querySelectorAll("path.hov").forEach(x=>x.classList.remove("hov"));
+    svg.querySelectorAll(".hov").forEach(x=>x.classList.remove("hov"));
+    if(cod)document.querySelector(`#mnombres [data-c="${cod}"]`)?.classList.add("hov");
     const tip=$("#maptip");
     if(!cod){tip.style.display="none";hovCod=null;
       $("#maplabel").textContent=MARG[cur]?.nombre||"—";return;}
@@ -1231,12 +1372,16 @@ async function drawNav(){
   paintNav();
 }
 function paintNav(){
-  document.querySelectorAll("#navmap path").forEach(p=>{
-    const c=p.dataset.cod;
-    p.classList.toggle("sel",SEL.has(c)||(MODO==="pais"&&c===cur));
+  const elegidos=[];
+  document.querySelectorAll("#mtierra path").forEach(p=>{
+    const c=p.dataset.cod,sel=SEL.has(c)||(MODO==="pais"&&c===cur);
+    if(sel&&!p.classList.contains("sel"))p.parentNode.appendChild(p);      // el que se levanta queda encima
+    p.classList.toggle("sel",sel);if(sel)elegidos.push(c);
+    document.querySelector(`#mnombres [data-c="${c}"]`)?.classList.toggle("sel",sel);
     p.classList.remove("fav","con","dep");
     if(DECIDIDO[c])p.classList.add({a_favor:"fav",en_contra:"con",depende:"dep"}[DECIDIDO[c]]);
   });
+  if($("#mtierra"))camara(encuadre(elegidos));
   $("#maptag").textContent=MODO==="pais"?"el país responde":
     SEL.size?SEL.size+" elegido"+(SEL.size>1?"s":""):"toda colombia";
   if(window.progresoPais)progresoPais();

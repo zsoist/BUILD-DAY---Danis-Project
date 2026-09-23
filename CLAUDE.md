@@ -28,7 +28,7 @@ uvx --from git+https://github.com/zsoist/SWARMS enjambre-visor        # localhos
 ## Comandos
 
 ```bash
-cd web && python3 -m http.server 8377               # sitio local
+node scripts/dev.mjs                                # sitio local + proxy real (lee .env)
 uv run python simcolombia/pipeline/validar_v2.py    # Python 3.12, entorno en la raíz
 node --test seguridad/filtro.test.mjs               # antes de tocar el filtro
 node --test scripts/experimento/anclas.test.mjs     # antes de tocar la estimación del sondeo
