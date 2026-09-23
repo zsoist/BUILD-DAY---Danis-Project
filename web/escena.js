@@ -280,6 +280,156 @@ function puntoLibre(cx, cz, radio, alto) {
   }
   return null;
 }
+
+/* ── cielo vivo ──────────────────────────────────────────────────────────
+   Los fondos con cielo recortado (escenas/<k>_tierra.webp, ver scripts/escena/cielo.py)
+   dejan ver este lienzo: degradado con tramado Bayer, nubes pixel que pasan y
+   pájaros del lugar. Resolución baja escalada sin suavizado: píxel de verdad. */
+const CIELOS = {};
+const cielo = (() => {
+  const cv = document.createElement("canvas"); cv.id = "cielo"; host.prepend(cv);
+  const g = cv.getContext("2d");
+  const PX = 3, BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+  let W = 0, H = 0, k = null, pal = null, degr = null, nubes = [], aves = [], proxAves = 0, sol = null;
+  const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const mez = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+  const css = c => `rgb(${c[0]},${c[1]},${c[2]})`;
+  /* pájaros por lugar: [forma, color, color2, velocidad px/s, tamaño bandada] */
+  const AVES = {
+    nacional: [["paloma", "#8b8f9c", "#c9ccd6", 16, 5], ["golondrina", "#24222e", "#24222e", 26, 3]],
+    bogota: [["paloma", "#8b8f9c", "#c9ccd6", 16, 4], ["golondrina", "#24222e", "#24222e", 26, 3]],
+    medellin: [["golondrina", "#24222e", "#24222e", 26, 4], ["gallinazo", "#1c1a20", "#3a3640", 9, 2]],
+    caribe: [["gaviota", "#f7f7f2", "#9aa2ad", 18, 4], ["alcatraz", "#6e6258", "#b9aea0", 11, 3]],
+    sanandres: [["gaviota", "#f7f7f2", "#9aa2ad", 18, 5], ["alcatraz", "#6e6258", "#b9aea0", 11, 3]],
+    guajira: [["flamenco", "#f08aa0", "#20181c", 13, 6], ["gaviota", "#f7f7f2", "#9aa2ad", 18, 3]],
+    cafetero: [["loro", "#3fbf4a", "#f2d640", 22, 5], ["golondrina", "#24222e", "#24222e", 26, 3]],
+    cali: [["garza", "#f4f4ee", "#e3b23c", 12, 3], ["golondrina", "#24222e", "#24222e", 26, 4]],
+    choco: [["garza", "#f4f4ee", "#e3b23c", 12, 3], ["loro", "#3fbf4a", "#f2d640", 22, 4]],
+    amazonia: [["guacamaya", "#e0302a", "#2f6fe0", 17, 3], ["loro", "#3fbf4a", "#f2d640", 22, 6]],
+    llanos: [["corocora", "#e8412c", "#e8412c", 14, 7], ["garza", "#f4f4ee", "#e3b23c", 12, 4]],
+    santander: [["gallinazo", "#1c1a20", "#3a3640", 9, 3], ["golondrina", "#24222e", "#24222e", 26, 3]],
+    popayan: [["gallinazo", "#1c1a20", "#3a3640", 9, 2], ["golondrina", "#24222e", "#24222e", 26, 3]],
+    narino: [["gallinazo", "#1c1a20", "#3a3640", 9, 2]],
+  };
+  /* cuadros de aleteo (a = color, b = color2); arriba y abajo */
+  const FORMA = {
+    golondrina: [["a...a", ".a.a.", "..a.."], [".....", "aaaaa", "..a.."]],
+    paloma: [["a...a", ".abaa", "..a.."], [".....", "aabaa", ".a.a."]],
+    gaviota: [["b.....b", ".a...a.", "..aaa.."], [".......", "baaaaab", "...a..."]],
+    alcatraz: [["a.......a", ".a.....a.", "..aabaa..", "....b...."], [".........", "aaaabaaaa", "....b...."]],
+    flamenco: [["a.....a", ".a...a.", "bbaaaab", "......."], [".......", "aaaaaaa", "bb....b", "......."]],
+    loro: [["a...a", ".aba.", "..a.."], [".....", "aabaa", "..a.."]],
+    guacamaya: [["b.....b", ".a...a.", "..aaa..", "...bb.."], [".......", "baaaaab", "...a...", "...bb.."]],
+    corocora: [["a...a", ".aaa.", "..a.."], [".....", "aaaaa", ".a.a."]],
+    garza: [["a.......a", ".a.....a.", "..aaaaa..", "......b.."], [".........", "aaaaaaaaa", "......b.."]],
+    gallinazo: [["b.........b", ".baaaaaaab.", "....aaa...."], ["b.........b", ".baaaaaaab.", "....aaa...."]],
+  };
+  function paleta(c) {
+    const a = rgb(c.arriba), b = rgb(c.abajo), h = c.hora;
+    if (h === "tarde") return { top: mez(a, [66, 56, 128], .55), bot: mez(b, [255, 176, 104], .45), nube: [255, 222, 188], sombra: [186, 124, 146], sol: true };
+    if (h === "bruma") return { top: mez(a, [132, 182, 200], .6), bot: mez(b, [232, 222, 196], .3), nube: [246, 242, 230], sombra: [196, 190, 172] };
+    if (h === "niebla") return { top: mez(a, [168, 186, 202], .55), bot: mez(b, [228, 226, 218], .35), nube: [246, 246, 242], sombra: [196, 202, 210] };
+    return { top: mez(a, [70, 146, 222], .68), bot: mez(b, [214, 236, 246], .4), nube: [255, 255, 255], sombra: mez(mez(a, [70, 146, 222], .68), [255, 255, 255], .5) };
+  }
+  function nubeSprite(w) {
+    const h = Math.max(6, Math.round(w * .38)), c = document.createElement("canvas"); c.width = w; c.height = h;
+    const x = c.getContext("2d"); x.fillStyle = "#fff";
+    x.beginPath(); x.ellipse(w / 2, h * .72, w / 2, h * .28, 0, 0, 7); x.fill();
+    const n = 3 + (Math.random() * 3 | 0);
+    for (let i = 0; i < n; i++) { const r = h * (.28 + Math.random() * .22), cx = r + (w - 2 * r) * (i + .5) / n;
+      x.beginPath(); x.arc(cx, h * .72 - r * .55, r, 0, 7); x.fill(); }
+    // píxel duro: nada de antialias
+    const d = x.getImageData(0, 0, w, h), P = d.data;
+    for (let i = 0; i < P.length; i += 4) {
+      const y = (i / 4 / w) | 0, on = P[i + 3] > 110;
+      const col = y > h * .62 ? pal.sombra : pal.nube;
+      P[i] = col[0]; P[i + 1] = col[1]; P[i + 2] = col[2]; P[i + 3] = on ? 255 : 0;
+    }
+    x.putImageData(d, 0, 0);
+    return c;
+  }
+  function horizonte() {
+    const c = CIELOS[k]; if (!c) return H;
+    const r = host.getBoundingClientRect(), kk = Math.max(r.width / 1376, r.height / 768), ih = 768 * kk;
+    return Math.min(H, Math.ceil((r.height - ih + c.horizonte * ih) / PX) + 2);
+  }
+  function pintarDegradado() {
+    if (!pal || !W) return;
+    degr = document.createElement("canvas"); degr.width = W; degr.height = H;
+    const x = degr.getContext("2d"), d = x.createImageData(W, H), P = d.data, hz = Math.max(8, horizonte()), BANDAS = 7;
+    for (let y = 0; y < H; y++) {
+      const t = Math.min(1, y / hz) * BANDAS, b0 = Math.floor(t), fr = t - b0;
+      for (let xx = 0; xx < W; xx++) {
+        const b = fr * 16 > BAYER[(y & 3) * 4 + (xx & 3)] ? b0 + 1 : b0;
+        const col = mez(pal.top, pal.bot, Math.min(1, b / BANDAS)), i = (y * W + xx) * 4;
+        P[i] = col[0]; P[i + 1] = col[1]; P[i + 2] = col[2]; P[i + 3] = 255;
+      }
+    }
+    x.putImageData(d, 0, 0);
+    if (pal.sol) {        // sol bajo de la tarde, con halo tramado
+      const sx = W * .7, sy = hz - 6, R = 11;
+      for (let y = -R * 3; y <= R * 3; y++) for (let xx = -R * 3; xx <= R * 3; xx++) {
+        const dd = Math.hypot(xx, y), X = Math.round(sx + xx), Y = Math.round(sy + y);
+        if (X < 0 || Y < 0 || X >= W || Y >= H) continue;
+        if (dd <= R) { x.fillStyle = dd > R - 2 ? "#ffd88a" : "#fff3c8"; x.fillRect(X, Y, 1, 1); }
+        else if (dd < R * 3 && (R * 3 - dd) / (R * 2) * 16 > BAYER[(Y & 3) * 4 + (X & 3)] + 6) { x.fillStyle = "rgba(255,214,150,.55)"; x.fillRect(X, Y, 1, 1); }
+      }
+    }
+  }
+  function sembrar() {
+    const hz = horizonte();
+    nubes = Array.from({ length: Math.max(4, Math.round(W / 70)) }, () => {
+      const y = hz * (.06 + Math.random() * .62), lejos = y / hz;          // más abajo = más lejos: chica y lenta
+      const w = Math.round((58 - lejos * 30) * (.6 + Math.random() * .6));
+      return { x: Math.random() * (W + 80) - 40, y: Math.round(y), v: (3.2 - lejos * 2.2) * (.7 + Math.random() * .5), spr: nubeSprite(w) };
+    }).sort((a, b) => b.y - a.y);                                         // las lejanas se pintan primero
+    aves = []; proxAves = performance.now() + 2500 + Math.random() * 4000;
+  }
+  function bandada(ahora) {
+    const tipos = AVES[k]; if (!tipos || QUIETO) return;
+    const [forma, a, b, v, n] = tipos[Math.random() < .7 ? 0 : tipos.length - 1];
+    const hz = horizonte(), dir = Math.random() < .5 ? 1 : -1, y0 = hz * (.12 + Math.random() * .5);
+    const cuantos = Math.max(1, Math.round(n * (.6 + Math.random() * .6)));
+    for (let i = 0; i < cuantos; i++)
+      aves.push({ forma, a, b, v: v * (.9 + Math.random() * .2) * dir, x: dir > 0 ? -12 - i * (6 + Math.random() * 5) : W + 12 + i * (6 + Math.random() * 5),
+        y: y0 + (i % 2 ? 1 : -1) * Math.ceil(i / 2) * (3 + Math.random() * 2), fase: Math.random() * 6, planea: forma === "gallinazo" || forma === "garza" });
+    proxAves = ahora + 9000 + Math.random() * 14000;
+  }
+  return {
+    poner(clave) {
+      k = clave; const c = CIELOS[k];
+      cv.style.display = c ? "block" : "none";
+      if (!c) return;
+      pal = paleta(c); this.medir();
+    },
+    medir() {
+      const r = host.getBoundingClientRect(); if (!r.width) return;
+      W = cv.width = Math.ceil(r.width / PX); H = cv.height = Math.ceil(r.height / PX);
+      if (pal) { pintarDegradado(); sembrar(); }
+    },
+    cuadro(dt, t, ahora) {
+      if (!pal || !degr || cv.style.display === "none") return;
+      g.drawImage(degr, 0, 0);
+      for (const n of nubes) {
+        if (!QUIETO) n.x += n.v * dt;
+        if (n.x > W + 10) n.x = -n.spr.width - 10;
+        g.drawImage(n.spr, Math.round(n.x), n.y);
+      }
+      if (ahora > proxAves) bandada(ahora);
+      aves = aves.filter(p => p.x > -60 && p.x < W + 60);
+      for (const p of aves) {
+        p.x += p.v * dt; const F = FORMA[p.forma], fr = p.planea ? F[0] : F[(t * 5 + p.fase | 0) % 2];
+        const y = Math.round(p.y + Math.sin(t * 2 + p.fase) * 1.5), x0 = Math.round(p.x);
+        for (let j = 0; j < fr.length; j++) for (let i = 0; i < fr[j].length; i++) {
+          const ch = fr[j][p.v < 0 ? i : fr[j].length - 1 - i]; if (ch === ".") continue;
+          g.fillStyle = ch === "a" ? p.a : p.b; g.fillRect(x0 + i, y + j, 1, 1);
+        }
+      }
+    },
+  };
+})();
+// si el primer lugar se pintó antes de saber qué cielos hay, se vuelve a poner (ya con su cielo)
+fetch("escenas/cielos.json").then(r => r.json()).then(d => { Object.assign(CIELOS, d); const k = lugarActual; if (k) { lugarActual = null; lugar(k); } }).catch(() => {});
 /* ── lugar ───────────────────────────────────────────────────────────── */
 let lugarActual = null, capa = 0;
 function lugar(k) {
@@ -289,10 +439,11 @@ function lugar(k) {
   const siguiente = capaFondo[1 - capa];
   const img = new Image();
   img.onload = () => {
-    siguiente.style.backgroundImage = `url(escenas/${k}.webp)`;
+    siguiente.style.backgroundImage = `url(escenas/${CIELOS[k] ? k + "_tierra" : k}.webp)`;
     siguiente.classList.add("on"); capaFondo[capa].classList.remove("on"); capa = 1 - capa;
   };
-  img.src = `escenas/${k}.webp`;
+  img.src = `escenas/${CIELOS[k] ? k + "_tierra" : k}.webp`;
+  cielo.poner(k);
   const [nom, sub, t] = LUGARES[k];
   const [fy, esc] = PISO[k] || [.84, 1]; pisoY = fy; ALTO = 1.45 * esc; encuadrar();
   tinte = new THREE.Color(t);
@@ -463,7 +614,7 @@ function medir() {
   // en pantallas angostas, la cámara se aleja para que quepa la gente
   CAM_BASE.z = camara.aspect < 1 ? 17.5 : camara.aspect < 1.4 ? 14.5 : 12.5;
   camara.updateProjectionMatrix();
-  encuadrar(); ubicarTablero();
+  encuadrar(); ubicarTablero(); cielo.medir();
 }
 new ResizeObserver(medir).observe(host);
 medir();
@@ -506,6 +657,7 @@ function cuadroForzado() {
   if (!QUIETO) camara.position.x += Math.sin(t * .23) * .002;        // la cámara respira, no se pasea
   if (!QUIETO) pasear(ahora);
   camara.lookAt(mira);
+  cielo.cuadro(dt, t, ahora);
   for (const a of [...GENTE.values(), JUEZ, MESA]) {
     if (!a) continue;
     const u = a.userData, c = u.cuerpo;
