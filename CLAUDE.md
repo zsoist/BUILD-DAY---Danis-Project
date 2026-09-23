@@ -21,7 +21,7 @@ El enjambre NO vive aquí: `github.com/zsoist/SWARMS`. Se usa sobre esta carpeta
 (lee `.env`, escribe `runs/`):
 
 ```bash
-uvx --from git+https://github.com/zsoist/SWARMS enjambre "tarea"      # o --plan plan.json
+uvx --refresh --from git+https://github.com/zsoist/SWARMS enjambre --plan plan.json   # enjambre --help
 uvx --from git+https://github.com/zsoist/SWARMS enjambre-visor        # localhost:8777
 ```
 
@@ -55,11 +55,13 @@ node --test scripts/experimento/anclas.test.mjs     # antes de tocar la estimaci
   manda el mismo cuerpo a ambos. Detalle: `docs/OPENROUTER.md`.
 - **Nunca copies el enjambre de vuelta aquí.** Dos copias a mano rompieron
   SWARMS dos veces en un día.
-- **Enjambre GLM: mira la línea `flota:` del resumen.** Con tareas largas GLM
-  razona 5–12k tokens aunque pidas effort low; con techo de 8k volvía vacío y
-  el reintento se iba callado a DeepSeek (7/8 y 9/9 así, 2026-09-23). SWARMS ya
-  lo arregla (techo 24k, ruta CoreWeave/BaseTen, vacío = reintento GLM). En el
-  plan usa `thinking:"none"`; si el resumen dice "respuestas vacías", revisa.
+- **"Enjambre"/"swarms" = SWARMS con la flota GLM**, por plan (`--plan`):
+  `"thinking":"none"` en cada tarea, `"ensamblar": false` si el entregable son
+  los artefactos, y `uvx --refresh` para traer el SWARMS publicado. Al final lee
+  `flota:` (qué modelo contestó, vacías) y `llamadas:` (mediana, la más lenta y
+  por quién). Referencia: 9 agentes en 138 s, 0 vacías, ~$0,06. Si no se parece,
+  algo cambió: re-mide con `ejemplos/banco_proveedores.mjs` en SWARMS. El
+  2026-09-23 la flota "GLM" contestaba DeepSeek en silencio (arreglado allá).
 - **Lo que propone el enjambre se verifica antes de aplicarse**
   (`scripts/verificar_bugs.py` + el navegador): de 29 bugs de GLM, 8 eran falsos
   y 7 arreglos habrían roto algo (`ReferenceError`, chequeo en el sitio equivocado).
