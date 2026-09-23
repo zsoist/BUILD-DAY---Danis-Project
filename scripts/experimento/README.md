@@ -96,6 +96,24 @@ Qué pregunta es partidista lo decide Jev (confianza ≥ 0,8): 17/20 partidistas
 neutras tocadas. Límite: corrige la diferencia entre departamentos, no el error del analista en la
 cifra nacional (a «¿votaría por Cepeda?» le puso ~18 % nacional).
 
+### Percepciones del DANE con geografía fina (se despliega)
+
+Anexos públicos del DANE (agregados, no microdatos: los microdatos tienen reCAPTCHA y no se bajan):
+ECV 2025 cuadros 35-39 por **departamento × cabecera/resto** y Pulso Social 2023 por **ciudad** (23
+capitales, Sincelejo incluida), sexo y edad. `simcolombia/pipeline/fuentes_dane_percepcion.py` los
+lee; el enjambre GLM (7 agentes, 30 s, $0,004) etiquetó los 74 ítems (texto, cuáles son «sí») y se
+corrigieron a mano 3 (uno invertido). 56 entran al banco como anclas (`web/opinion/ECV_*`, `EPS_*`).
+Sondeo de 20 voces en Sucre, producción antes contra local después, contra la ECV de Sucre:
+
+| pregunta | verdad | antes | después |
+|---|---|---|---|
+| ¿se considera pobre? | 68,5 % | 35 % (sin ancla) | 75 % |
+| ¿le alcanzan los ingresos? | 37,6 % | 40 % | 25 % |
+| ¿se siente seguro en su barrio? | 88,3 % | 44 % (LAPOP) | 95 % |
+| **error medio** | | **26,7** | **8,6** |
+
+Con 20 voces cada cifra tiene ±11 pts de ruido.
+
 ### Descartado: LAPOP por departamento
 
 Sucre tiene 24 encuestados en LAPOP 2023: un margen propio con ±20 pts de error no le gana al regional

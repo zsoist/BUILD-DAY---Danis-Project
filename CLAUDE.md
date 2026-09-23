@@ -96,6 +96,8 @@ cada voz recibe una postura sorteada con la estimación de un analista (acción
 `donantes_ecp.py`, `banco_ecp.py` o `fuentes_opinion.py`, regenera y vuelve a medir.
 **LAPOP/LB: a `web/` y a git solo agregados** (celdas ≥10); los microdatos y lo
 que sale por persona se quedan en `simcolombia/data/raw_v2/`.
+También anclan percepciones del DANE con geografía fina: ECV 2025 por departamento
+× zona y Pulso Social por ciudad (`fuentes_dane_percepcion.py`, anexos públicos).
 
 ## Seguridad del proxy: lo que aguanta y lo que no
 

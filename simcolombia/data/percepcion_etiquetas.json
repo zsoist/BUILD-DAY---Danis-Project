@@ -1,0 +1,1055 @@
+{
+ "ECV:ingresos": {
+  "codigo": "ECV:ingresos",
+  "usar": true,
+  "texto": "¿Los ingresos de su hogar alcanzan para cubrir los gastos mínimos?",
+  "afirmativas": [
+   "2",
+   "3"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3"
+  ],
+  "porque": ""
+ },
+ "ECV:pobre": {
+  "codigo": "ECV:pobre",
+  "usar": true,
+  "texto": "¿Usted se considera pobre?",
+  "afirmativas": [
+   "1"
+  ],
+  "sustantivas": [
+   "1",
+   "2"
+  ],
+  "porque": ""
+ },
+ "ECV:barrio": {
+  "codigo": "ECV:barrio",
+  "usar": true,
+  "texto": "¿Se siente seguro en el barrio o la vereda donde vive?",
+  "afirmativas": [
+   "1"
+  ],
+  "sustantivas": [
+   "1",
+   "2"
+  ],
+  "porque": ""
+ },
+ "ECV:economia_antes": {
+  "codigo": "ECV:economia_antes",
+  "usar": true,
+  "texto": "¿Cómo está la situación económica de su hogar comparada con la de hace un año?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "ECV:economia_despues": {
+  "codigo": "ECV:economia_despues",
+  "usar": true,
+  "texto": "¿Cómo cree que estará la situación económica de su hogar dentro de un año?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:cc1": {
+  "codigo": "EPS:cc1",
+  "usar": true,
+  "texto": "¿Cómo está la situación económica de su hogar comparada con la de hace 12 meses?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:cc2": {
+  "codigo": "EPS:cc2",
+  "usar": true,
+  "texto": "¿Cómo cree usted que será la situación económica de su hogar dentro de 12 meses?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:cc3": {
+  "codigo": "EPS:cc3",
+  "usar": true,
+  "texto": "¿Cómo está la situación económica del país comparada con la de hace 12 meses?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:cc4": {
+  "codigo": "EPS:cc4",
+  "usar": true,
+  "texto": "¿Cómo cree usted que será la situación económica del país dentro de 12 meses?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:cc5": {
+  "codigo": "EPS:cc5",
+  "usar": true,
+  "texto": "Comparada con hace un año, ¿tiene usted hoy más posibilidades de comprar ropa, zapatos o alimentos?",
+  "afirmativas": [
+   "1"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3"
+  ],
+  "porque": ""
+ },
+ "EPS:cc6": {
+  "codigo": "EPS:cc6",
+  "usar": true,
+  "texto": "Comparada con hace un año, ¿cómo ve las posibilidades de su hogar de comprar muebles o electrodomésticos?",
+  "afirmativas": [
+   "1"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3"
+  ],
+  "porque": ""
+ },
+ "EPS:cc7": {
+  "codigo": "EPS:cc7",
+  "usar": true,
+  "texto": "¿Considera usted que en los próximos 12 meses usted o alguien de su hogar tendrá dinero para salir de vacaciones?",
+  "afirmativas": [
+   "1"
+  ],
+  "sustantivas": [
+   "1",
+   "2"
+  ],
+  "porque": ""
+ },
+ "EPS:cc8": {
+  "codigo": "EPS:cc8",
+  "usar": true,
+  "texto": "¿Actualmente usted tiene posibilidades de ahorrar alguna parte de sus ingresos?",
+  "afirmativas": [
+   "1"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3"
+  ],
+  "porque": ""
+ },
+ "EPS:cc9": {
+  "codigo": "EPS:cc9",
+  "usar": true,
+  "texto": "¿Cómo cree usted que estarán sus condiciones económicas para ahorrar dentro de 12 meses, comparadas con las actuales?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:cc10": {
+  "codigo": "EPS:cc10",
+  "usar": true,
+  "texto": "¿Cómo cree usted que se comportarán los precios en el país durante los próximos 12 meses, comparados con el año anterior?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "porque": ""
+ },
+ "EPS:cc11": {
+  "codigo": "EPS:cc11",
+  "usar": true,
+  "texto": "¿Cómo cree usted que se comportará el empleo en el país en los próximos 12 meses?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:cc12": {
+  "codigo": "EPS:cc12",
+  "usar": true,
+  "texto": "¿Usted o alguien de su hogar piensa comprar un automóvil, nuevo o usado, en los próximos 2 años?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3"
+  ],
+  "porque": ""
+ },
+ "EPS:cc13": {
+  "codigo": "EPS:cc13",
+  "usar": true,
+  "texto": "¿Usted o alguien de su hogar piensa comprar, construir o remodelar una vivienda en los próximos 2 años?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3"
+  ],
+  "porque": ""
+ },
+ "EPS:bs1": {
+  "codigo": "EPS:bs1",
+  "usar": true,
+  "texto": "En general, ¿cómo es su estado de salud hoy en día?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs6": {
+  "codigo": "EPS:bs6",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Es de selección múltiple: lista de síntomas donde se marcan varias opciones."
+ },
+ "EPS:bs7": {
+  "codigo": "EPS:bs7",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Es de selección múltiple: lista de actividades de afrontamiento."
+ },
+ "EPS:bs7_a": {
+  "codigo": "EPS:bs7_a",
+  "usar": true,
+  "texto": "¿Qué tan fácil cree usted que sería organizarse con otros miembros de su comunidad para trabajar por una causa común?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs7b_a": {
+  "codigo": "EPS:bs7b_a",
+  "usar": true,
+  "texto": "¿Qué tan satisfecho se siente usted con la vida en general?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs7b_b": {
+  "codigo": "EPS:bs7b_b",
+  "usar": true,
+  "texto": "¿Qué tan satisfecho se siente usted con su estado de salud?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs7b_g": {
+  "codigo": "EPS:bs7b_g",
+  "usar": true,
+  "texto": "¿Qué tan satisfecho se siente usted con el tiempo libre que tiene?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs7b_c": {
+  "codigo": "EPS:bs7b_c",
+  "usar": true,
+  "texto": "¿Qué tan satisfecho se siente usted con su situación económica actual?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs7b_d": {
+  "codigo": "EPS:bs7b_d",
+  "usar": true,
+  "texto": "¿Qué tan satisfecho se siente usted con su situación laboral?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs7b_e": {
+  "codigo": "EPS:bs7b_e",
+  "usar": true,
+  "texto": "¿Qué tan satisfecho se siente usted con su vida emocional?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs7b_f": {
+  "codigo": "EPS:bs7b_f",
+  "usar": true,
+  "texto": "¿Qué tan satisfecho se siente usted con sus relaciones interpersonales?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs8_a": {
+  "codigo": "EPS:bs8_a",
+  "usar": true,
+  "texto": "¿Cuánto confía usted en sus vecinos?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs8_b": {
+  "codigo": "EPS:bs8_b",
+  "usar": true,
+  "texto": "¿Cuánto confía usted en las personas desconocidas?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs8_c": {
+  "codigo": "EPS:bs8_c",
+  "usar": true,
+  "texto": "¿Cuánto confía usted en personas de otra nacionalidad?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs8_d": {
+  "codigo": "EPS:bs8_d",
+  "usar": true,
+  "texto": "¿Cuánto confía usted en los científicos de Colombia?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs8_e": {
+  "codigo": "EPS:bs8_e",
+  "usar": true,
+  "texto": "¿Cuánto confía usted en los periodistas de este país?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs8_g": {
+  "codigo": "EPS:bs8_g",
+  "usar": true,
+  "texto": "¿Cuánto confía usted en los políticos de este país?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs10": {
+  "codigo": "EPS:bs10",
+  "usar": true,
+  "texto": "¿Qué tan seguro se siente usted caminando solo por su barrio de noche?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "porque": ""
+ },
+ "EPS:bs11": {
+  "codigo": "EPS:bs11",
+  "usar": true,
+  "texto": "¿Qué tan seguro se siente usted caminando solo por su barrio de día?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "porque": ""
+ },
+ "EPS:bs13": {
+  "codigo": "EPS:bs13",
+  "usar": true,
+  "texto": "¿Cuánto considera usted que las cosas que hace en su vida valen la pena?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:bs14": {
+  "codigo": "EPS:bs14",
+  "usar": true,
+  "texto": "¿Hasta qué punto ha podido cumplir usted los principales objetivos que se ha propuesto en su vida?",
+  "afirmativas": [
+   "4",
+   "5",
+   "6"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "porque": ""
+ },
+ "EPS:ml1": {
+  "codigo": "EPS:ml1",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Es un dato administrativo sobre ocupación, no una pregunta de opinión o percepción."
+ },
+ "EPS:ml6": {
+  "codigo": "EPS:ml6",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Solo aplica a quienes trabajan, no a cualquier adulto."
+ },
+ "EPS:ml7": {
+  "codigo": "EPS:ml7",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Solo aplica a personas con educación y aspiraciones laborales, no a cualquier adulto."
+ },
+ "EPS:ml2": {
+  "codigo": "EPS:ml2",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Solo aplica a quienes trabajaron la última semana, es un dato fáctico de subgrupo."
+ },
+ "EPS:ml8": {
+  "codigo": "EPS:ml8",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Solo aplica a quienes teletrabajan, no a cualquier adulto."
+ },
+ "EPS:ml5": {
+  "codigo": "EPS:ml5",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Solo aplica a personas que trabajan y desean trabajar remotamente; es sobre preferencia laboral, no opinión general."
+ },
+ "EPS:ml9": {
+  "codigo": "EPS:ml9",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Pregunta de selección múltiple y solo aplica a quienes trabajaron remotamente."
+ },
+ "EPS:ml10": {
+  "codigo": "EPS:ml10",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Es un dato logístico de selección única entre medios de transporte, solo para quienes van al trabajo; no es opinión."
+ },
+ "EPS:rc3": {
+  "codigo": "EPS:rc3",
+  "usar": true,
+  "texto": "¿Durante los últimos siete días se ha sentido más sobrecargado con las tareas del hogar que el mes anterior?",
+  "afirmativas": [
+   "1"
+  ],
+  "sustantivas": [
+   "1",
+   "2"
+  ],
+  "porque": ""
+ },
+ "EPS:rc5": {
+  "codigo": "EPS:rc5",
+  "usar": true,
+  "texto": "¿Qué tan satisfecho se siente usted con la forma en que se distribuyen las tareas del hogar entre los miembros de su hogar?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp1": {
+  "codigo": "EPS:pdp1",
+  "usar": true,
+  "texto": "¿En su opinión, en Colombia hay actualmente desigualdad de ingresos entre los pobres y los ricos?",
+  "afirmativas": [
+   "1"
+  ],
+  "sustantivas": [
+   "1",
+   "2"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp2": {
+  "codigo": "EPS:pdp2",
+  "usar": true,
+  "texto": "¿Qué tan aceptable le parece la desigualdad de ingresos que existe actualmente en Colombia?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp3a": {
+  "codigo": "EPS:pdp3a",
+  "usar": true,
+  "texto": "¿Cuánta responsabilidad tiene el Estado en reducir las diferencias de ingresos entre pobres y ricos en Colombia?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp3b": {
+  "codigo": "EPS:pdp3b",
+  "usar": true,
+  "texto": "¿Cuánta responsabilidad tienen las empresas privadas en reducir las diferencias de ingresos entre pobres y ricos en Colombia?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp3c": {
+  "codigo": "EPS:pdp3c",
+  "usar": true,
+  "texto": "¿Cuánta responsabilidad tienen las personas de altos ingresos en reducir las diferencias de ingresos entre pobres y ricos?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp4": {
+  "codigo": "EPS:pdp4",
+  "usar": true,
+  "texto": "En su opinión, ¿qué porcentaje de la población en Colombia es actualmente pobre?",
+  "afirmativas": [],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp5a": {
+  "codigo": "EPS:pdp5a",
+  "usar": true,
+  "texto": "¿Qué tan fáciles son para las personas en general las oportunidades laborales en Colombia?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp5b": {
+  "codigo": "EPS:pdp5b",
+  "usar": true,
+  "texto": "¿Qué tan fácil es el acceso a la justicia para las personas en general en Colombia?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp5c": {
+  "codigo": "EPS:pdp5c",
+  "usar": true,
+  "texto": "¿Qué tan fácil es el acceso al sistema de salud para las personas en general en Colombia?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp5d": {
+  "codigo": "EPS:pdp5d",
+  "usar": true,
+  "texto": "¿Qué tan fáciles son para las personas en general las oportunidades educativas en Colombia?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp5e": {
+  "codigo": "EPS:pdp5e",
+  "usar": true,
+  "texto": "¿Qué tan fácil es el acceso a los servicios públicos para las personas en general en Colombia?",
+  "afirmativas": [
+   "4",
+   "5"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp6": {
+  "codigo": "EPS:pdp6",
+  "usar": true,
+  "texto": "Si imagine una escalera de 0 a 10 donde 10 son los más ricos de Colombia, ¿en qué escalón se ubicaría usted ahora?",
+  "afirmativas": [],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10",
+   "11"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp7": {
+  "codigo": "EPS:pdp7",
+  "usar": true,
+  "texto": "¿Qué porcentaje de sus ingresos mensuales considera usted que dedica al pago de impuestos?",
+  "afirmativas": [],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp8": {
+  "codigo": "EPS:pdp8",
+  "usar": true,
+  "texto": "¿Qué porcentaje de sus ingresos mensuales considera usted que debería dedicar al pago de impuestos?",
+  "afirmativas": [],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp9": {
+  "codigo": "EPS:pdp9",
+  "usar": true,
+  "texto": "En Colombia, ¿cuál es el principal factor para que las personas tengan más éxito y ascenso en el trabajo?",
+  "afirmativas": [],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp10": {
+  "codigo": "EPS:pdp10",
+  "usar": true,
+  "texto": "Comparando su nivel de vida con el de sus padres cuando tenían su edad, ¿usted es más rico, más pobre o casi igual?",
+  "afirmativas": [
+   "1"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp11": {
+  "codigo": "EPS:pdp11",
+  "usar": true,
+  "texto": "Comparando su nivel de vida con el que cree que tendrán sus hijos a su edad, ¿ellos serán más ricos, más pobres o casi iguales?",
+  "afirmativas": [
+   "1"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3"
+  ],
+  "porque": ""
+ },
+ "EPS:pdp12": {
+  "codigo": "EPS:pdp12",
+  "usar": false,
+  "texto": "¿Usted se considera pobre?",
+  "afirmativas": [
+   "1"
+  ],
+  "sustantivas": [
+   "1",
+   "2"
+  ],
+  "porque": "duplica ECV:pobre, que cubre todo el departamento (también lo rural)"
+ },
+ "EPS:vi2": {
+  "codigo": "EPS:vi2",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Aplica solo a personas que reportaron comportamientos de violencia y es de selección de autores, no de opinión."
+ },
+ "EPS:pm2": {
+  "codigo": "EPS:pm2",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Selección múltiple de métodos anticonceptivos y aplica solo a personas sexualmente activas."
+ },
+ "EPS:pm5": {
+  "codigo": "EPS:pm5",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Solo aplica a mujeres en edad fértil y es un estado biológico, no una opinión o percepción."
+ },
+ "EPS:pm6": {
+  "codigo": "EPS:pm6",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Solo aplica a personas que menstruaron en el último mes."
+ },
+ "EPS:pm7": {
+  "codigo": "EPS:pm7",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Selección múltiple de elementos usados y solo aplica a personas que menstruaron."
+ },
+ "EPS:pm8": {
+  "codigo": "EPS:pm8",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Solo aplica a personas que menstruaron en el último mes."
+ },
+ "EPS:pm10": {
+  "codigo": "EPS:pm10",
+  "usar": false,
+  "texto": "",
+  "afirmativas": [],
+  "sustantivas": [],
+  "porque": "Solo aplica a personas que menstruaron en el último mes."
+ }
+}

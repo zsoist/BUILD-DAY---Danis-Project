@@ -2110,7 +2110,11 @@ const REGION_ECP={"11":1,"08":2,"13":2,"20":2,"23":2,"44":2,"47":2,"70":2,"88":2
 function votoCelda(r,D,codigo){
   if(!D||!D["*"])return undefined;
   const e=r.edad,perfil={region:REGION_ECP[r.dpto],sexo:r.sexo==="hombre"?1:2,
-    ge:e<30?0:e<45?1:e<60?2:3,edu:{ninguna:0,primaria:0,secundaria:1,media:1,superior:2}[r.educacion]??1};
+    ge:e<30?0:e<45?1:e<60?2:3,edu:{ninguna:0,primaria:0,secundaria:1,media:1,superior:2}[r.educacion]??1,
+    /* DANE con geografía fina: ECV por departamento × zona, Pulso Social por ciudad (y su edad en 3 grupos) */
+    dc:r.dpto+"|"+(r.clase==="cabecera"?"cabecera":"resto"),
+    ciudad:r.ciudad_geih?String(r.ciudad_geih).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""):undefined,
+    ge3:e<25?0:e<55?1:2};
   const nac=D["*"],p={};let tot=0;
   for(const [v,p0] of Object.entries(nac)){
     let x=p0;
@@ -2516,7 +2520,7 @@ async function conversar(q){
   /* ECP: respuesta del donante (el DANE la publica por persona). LAPOP y
      Latinobarómetro: sorteo desde los agregados de la celda (su licencia no
      permite más). Medido en 8 preguntas ciegas: error 21.2 → 6.3 pts. */
-  const ecp=anc&&!/^(LAPOP|LB):/.test(anc.codigo);
+  const ecp=anc&&!/^(LAPOP|LB|ECV|EPS):/.test(anc.codigo);   // ECP: donante por persona; el resto, celdas agregadas
   const R=ecp?await respuestasECP():null, kAnc=R?R.items.indexOf(anc.codigo):-1;
   let CEL=null;
   if(anc&&!ecp){try{const f=await fetch("opinion/"+anc.codigo.replace(":","_")+".json");CEL=f.ok?await f.json():null;}catch(e){}}
