@@ -127,19 +127,27 @@ const UTIL_DE = { nacional: "bogota", bogota: "bogota", medellin: "antioquia", c
 function utileriaDe(k) { return window.CATALOGO?.utileria?.[UTIL_DE[k]] || null; }
 const COSAS = [[-4.7, -1.7], [4.9, -2.0], [-5.8, 0.7], [5.9, 0.5]];
 /* acomodos: dónde se para cada quien */
+function repartir(r) { const k = Math.ceil(r / 7), base = Math.floor(r / k); return Array.from({ length: k }, (_, i) => base + (i < r % k ? 1 : 0)); }
 function puestos(n, modo) {
   const P = [];
   if (modo === "mesa") {
-    // media luna detrás de la mesa, de frente a la cámara; si son muchos, segunda fila
-    const f1 = Math.min(n, 8);
-    for (let i = 0; i < f1; i++) {
-      const t = f1 === 1 ? .5 : i / (f1 - 1), a = Math.PI * (1.08 - 1.16 * t);
-      P.push([Math.cos(a) * 3.1, -0.2 - Math.sin(a) * 1.05]);
+    // hasta 9: herradura detrás de la mesa, repartida PAREJO EN X (así nadie queda
+    // detrás de otro en pantalla). Más de 9: la mesa con 7 y el resto en corrillos
+    // junto a las cosas del lugar y al fondo, como en una plaza de verdad.
+    const grupos = n <= 9 ? [n] : [7, ...repartir(n - 7)];
+    const g0 = grupos[0], ancho = Math.min(3.7, .45 + g0 * .42);
+    for (let i = 0; i < g0; i++) {
+      const x = g0 === 1 ? 0 : -ancho + 2 * ancho * i / (g0 - 1), k = x / (ancho + .7);
+      P.push([x, -0.25 - 1.05 * Math.sqrt(1 - k * k)]);
     }
-    for (let i = 0; i < n - f1; i++) {
-      const m = n - f1, t = m === 1 ? .5 : i / (m - 1);
-      P.push([-4.6 + 9.2 * t, -2.6 - (i % 2) * .35]);
-    }
+    const CENTROS = [[-2.9, -3.7], [3.1, -3.9], [0.2, -6.2], [-3.6, -7.0], [3.9, -7.2]];
+    grupos.slice(1).forEach((m, j) => {
+      const [cx, cz] = CENTROS[j % CENTROS.length], w = Math.min(1.7, .25 + m * .3);
+      for (let i = 0; i < m; i++) {
+        const x = m === 1 ? 0 : -w + 2 * w * i / (m - 1), k = x / (w + .5);
+        P.push([cx + x, cz - .6 * Math.sqrt(1 - k * k) + (i % 2) * .14, false, j + 1]);
+      }
+    });
   } else if (modo === "publico") {
     // el show: hasta 5 concursantes detrás de su podio; el resto, de pie al
     // fondo de la tarima; el presentador adelante a la izquierda
@@ -158,9 +166,10 @@ function puestos(n, modo) {
 }
 
 /* ── globos y marcas en HTML, anclados a la cabeza ─────────────────────── */
+/* coordenadas LÓGICAS del visor (sin el zoom de la cámara 2D): para decidir dónde se camina */
 function aPantalla(v) {
-  const p = v.clone().project(camara), r = canvas.getBoundingClientRect();
-  return { x: (p.x * .5 + .5) * r.width, y: (-p.y * .5 + .5) * r.height, z: p.z };
+  const p = v.clone().project(camara), W = canvas.clientWidth, H = canvas.clientHeight;
+  return { x: (p.x * .5 + .5) * W, y: (-p.y * .5 + .5) * H, z: p.z };
 }
 function cabeza(a) { return new THREE.Vector3(a.position.x, a.userData.alto * 1.02, a.position.z); }
 function pies(a) { return new THREE.Vector3(a.position.x, 0, a.position.z); }
@@ -173,7 +182,7 @@ function seguir() {
   const W = canvas.clientWidth;
   for (const el of over.querySelectorAll("[data-dy]")) {
     const a = el.userData; if (!a || !a.parent) { el.remove(); continue; }
-    const p = aPantalla(el.dataset.ancla === "pies" ? pies(a) : cabeza(a));
+    const q = aPantalla(el.dataset.ancla === "pies" ? pies(a) : cabeza(a)), p = vistaA(q);
     el.style.transform = `translate(${Math.round(p.x)}px,${Math.round(p.y - (+el.dataset.dy || 0))}px)`;
     const gv = el.firstElementChild;
     if (gv && el.classList.contains("globo")) {
@@ -542,6 +551,63 @@ const ambiente = (() => {
     },
   };
 })();
+
+/* ── cámara 2D ─────────────────────────────────────────────────────────
+   Cielo, fondo pintado y lienzo 3D viven juntos en #mundo y se acercan como una
+   sola pieza (zoom sobre el cuadro): así el piso pintado y la gente nunca se
+   desalinean. Globos y nombres quedan afuera, a tamaño legible.
+   Sola: se acerca a quien habla (más si hay mucha gente) y vuelve al plano general.
+   A mano: rueda = zoom hacia el cursor, arrastrar = mover, doble clic = todo. */
+const mundo = document.createElement("div"); mundo.id = "mundo";
+host.prepend(mundo);
+const VISTA = { z: 1, fx: 0, fy: 0, zo: 1, fxo: 0, fyo: 0, hasta: 0, mano: 0, sigue: null, tx: 0, ty: 0 };
+function vistaA(p) { return { x: VISTA.tx + p.x * VISTA.z, y: VISTA.ty + p.y * VISTA.z }; }
+function enfocar(a, z, ms) {
+  if (QUIETO || performance.now() < VISTA.mano) return;
+  VISTA.sigue = a; VISTA.zo = z; VISTA.hasta = performance.now() + ms;
+}
+function general() { VISTA.sigue = null; VISTA.zo = 1; }
+function camara2d(dt, ahora) {
+  const W = host.clientWidth, H = host.clientHeight;
+  if (VISTA.sigue && VISTA.sigue.parent && ahora < Math.max(VISTA.hasta, VISTA.mano)) {
+    const u = VISTA.sigue.userData, p = aPantalla(new THREE.Vector3(VISTA.sigue.position.x, u.alto * .62, VISTA.sigue.position.z));
+    VISTA.fxo = p.x; VISTA.fyo = p.y;
+  } else if (ahora > VISTA.mano) { general(); VISTA.fxo = W / 2; VISTA.fyo = H / 2; }
+  const k = QUIETO ? 1 : Math.min(1, dt * 2.2);          // se desliza, no salta
+  VISTA.z += (VISTA.zo - VISTA.z) * k; VISTA.fx += (VISTA.fxo - VISTA.fx) * k; VISTA.fy += (VISTA.fyo - VISTA.fy) * k;
+  const z = VISTA.z;
+  VISTA.tx = Math.min(0, Math.max(W - W * z, W / 2 - VISTA.fx * z));
+  VISTA.ty = Math.min(0, Math.max(H - H * z, H * .55 - VISTA.fy * z));
+  mundo.style.transform = `translate3d(${VISTA.tx.toFixed(1)}px,${VISTA.ty.toFixed(1)}px,0) scale(${z.toFixed(4)})`;
+}
+(() => {
+  host.addEventListener("wheel", e => {
+    if (e.target.closest(".cartel,.tablero,.globo")) return;
+    e.preventDefault();
+    const r = host.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+    const zn = Math.min(2.4, Math.max(1, VISTA.zo * (e.deltaY < 0 ? 1.18 : .85)));
+    // el punto bajo el cursor se queda quieto
+    const lx = (mx - VISTA.tx) / VISTA.z, ly = (my - VISTA.ty) / VISTA.z;
+    VISTA.sigue = null; VISTA.zo = zn; VISTA.fxo = lx + (r.width / 2 - mx) / zn; VISTA.fyo = ly + (r.height * .55 - my) / zn;
+    VISTA.mano = performance.now() + 15000;
+  }, { passive: false });
+  let ini = null;
+  host.addEventListener("pointerdown", e => { if (e.button === 0 && !e.target.closest("button,a,.cartel,.tablero")) ini = { x: e.clientX, y: e.clientY, fx: VISTA.fxo, fy: VISTA.fyo }; });
+  addEventListener("pointermove", e => {
+    if (!ini || VISTA.zo <= 1.01) return;
+    VISTA.sigue = null; VISTA.mano = performance.now() + 15000;
+    VISTA.fxo = ini.fx - (e.clientX - ini.x) / VISTA.z; VISTA.fyo = ini.fy - (e.clientY - ini.y) / VISTA.z;
+  });
+  addEventListener("pointerup", () => { ini = null; });
+  host.addEventListener("dblclick", () => { VISTA.mano = 0; general(); });
+  const bt = document.createElement("div"); bt.id = "zoomesc";
+  bt.innerHTML = `<button type="button" data-z="1.25" aria-label="Acercar">+</button><button type="button" data-z=".8" aria-label="Alejar">−</button><button type="button" data-z="0" aria-label="Ver todo">⤢</button>`;
+  bt.onclick = e => { const b = e.target.closest("button"); if (!b) return; const f = +b.dataset.z;
+    if (!f) { VISTA.mano = 0; general(); return; }
+    VISTA.sigue = null; VISTA.zo = Math.min(2.4, Math.max(1, VISTA.zo * f)); if (VISTA.zo === 1) { VISTA.mano = 0; return; }
+    VISTA.mano = performance.now() + 15000; };
+  host.append(bt);
+})();
 /* ── lugar ───────────────────────────────────────────────────────────── */
 let lugarActual = null, capa = 0;
 function lugar(k) {
@@ -573,6 +639,10 @@ function hablaYa(r, txt, pos) {
   a.userData.habla = performance.now() + Math.min(3600, 900 + idea(txt).length * 25);
   a.userData.mano = performance.now() + 1400;             // pide la palabra
   a.userData.paseo = performance.now() + 9000;
+  const muchos = [...GENTE.keys()].filter(k => !k.startsWith("__")).length;
+  enfocar(a, muchos > 9 ? 1.55 : muchos > 5 ? 1.18 : 1.08, Math.min(5200, 2200 + idea(txt).length * 30));
+  a.userData.placa?.classList.add("ve");
+  setTimeout(() => a.userData.placa?.classList.remove("ve"), 6000);
   globo(a, `${r.nombre.split(" ")[0]} · ${r.edad}`, txt, pos);
   marca(a, pos);
 }
@@ -642,6 +712,7 @@ const API = {
         a.userData.llega = performance.now() + i * (acomodo === "publico" ? 420 : 200);
       }
       placa(a, r.nombre.split(" ")[0]);
+      if (gente.length > 9) a.userData.placa.classList.add("tenue");
       GENTE.set(r.id, a);
     }));
   },
@@ -651,7 +722,7 @@ const API = {
     hablaYa(r, txt, pos);
   },
   turnos(on) { turnos = !!on; COLA.length = 0; enTurno = false; },
-  calma() { camObj.copy(CAM_BASE); miraObj.copy(MIRA_BASE); },
+  calma() { camObj.copy(CAM_BASE); miraObj.copy(MIRA_BASE); general(); },
   titulo(q, modo) {
     over.querySelectorAll(".rotulo").forEach(e => e.remove());
     const el = document.createElement("div");
@@ -676,6 +747,7 @@ const API = {
   async tablero({ titulo, n, filas, nota }) {
     // espera a que termine la ronda de turnos: el show no se pisa a sí mismo
     while (enTurno) await new Promise(s => setTimeout(s, 300));
+    VISTA.mano = 0; general();
     over.querySelectorAll(".tablero,.juezdice,.globo").forEach(e => e.remove());
     const t = document.createElement("div");
     t.className = "tablero grande";
@@ -713,6 +785,7 @@ const API = {
   vista(modo, sel) { quitarTodos(); API.calma(); lugar(modo === "sondeo" ? "estudio" : API.lugarDe(sel)); },
   vistaLugar(modo, sel) { if (modo !== "sondeo") lugar(API.lugarDe(sel)); },
 };
+mundo.append(host.querySelector("#cielo"), ...capaFondo, canvas);
 window.ESCENA = API;
 API._pinta = () => { for (let i = 0; i < 3; i++) cuadroForzado(); };
 API._diag = () => ({ gente: GENTE.size, juez: !!JUEZ, pos: [...GENTE.values()].map(a => a.position.toArray().map(v => +v.toFixed(2))), cam: camara.position.toArray().map(v => +v.toFixed(2)) });
@@ -771,6 +844,7 @@ function cuadroForzado() {
   if (!QUIETO) camara.position.x += Math.sin(t * .23) * .002;        // la cámara respira, no se pasea
   if (!QUIETO) pasear(ahora);
   camara.lookAt(mira);
+  camara2d(dt, ahora);
   cielo.cuadro(dt, t, ahora);
   ambiente.cuadro(dt, t, ahora);
   for (const a of [...GENTE.values(), JUEZ, MESA]) {
