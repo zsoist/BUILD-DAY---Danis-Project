@@ -1051,5 +1051,47 @@
   "afirmativas": [],
   "sustantivas": [],
   "porque": "Solo aplica a personas que menstruaron en el último mes."
+ },
+ "ECV:eps": {
+  "codigo": "ECV:eps",
+  "usar": true,
+  "texto": "¿Cómo le parece la calidad del servicio de su EPS?",
+  "afirmativas": [
+   "1",
+   "2"
+  ],
+  "sustantivas": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "porque": ""
+ },
+ "ECSC:inseguro_ciudad": {
+  "codigo": "ECSC:inseguro_ciudad",
+  "usar": true,
+  "texto": "¿Se siente inseguro en su ciudad o municipio?",
+  "afirmativas": [
+   "1"
+  ],
+  "sustantivas": [
+   "1",
+   "2"
+  ],
+  "porque": ""
+ },
+ "ECSC:inseguro_barrio": {
+  "codigo": "ECSC:inseguro_barrio",
+  "usar": true,
+  "texto": "¿Se siente inseguro en su barrio o vereda?",
+  "afirmativas": [
+   "1"
+  ],
+  "sustantivas": [
+   "1",
+   "2"
+  ],
+  "porque": ""
  }
 }

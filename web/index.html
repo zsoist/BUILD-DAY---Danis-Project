@@ -2114,7 +2114,7 @@ function votoCelda(r,D,codigo){
     /* DANE con geografía fina: ECV por departamento × zona, Pulso Social por ciudad (y su edad en 3 grupos) */
     dc:r.dpto+"|"+(r.clase==="cabecera"?"cabecera":"resto"),
     ciudad:r.ciudad_geih?String(r.ciudad_geih).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""):undefined,
-    ge3:e<25?0:e<55?1:2};
+    ge3:e<25?0:e<55?1:2,zona:r.clase==="cabecera"?"cabecera":"resto"};
   const nac=D["*"],p={};let tot=0;
   for(const [v,p0] of Object.entries(nac)){
     let x=p0;

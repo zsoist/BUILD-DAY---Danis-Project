@@ -52,7 +52,7 @@ def filas(ws):
 
 
 # ── ECV 2025 ────────────────────────────────────────────────────────────────
-ECV_CUADROS = {35: "ingresos", 36: "pobre", 37: "barrio", 38: "economia_antes", 39: "economia_despues"}
+ECV_CUADROS = {21: "eps", 35: "ingresos", 36: "pobre", 37: "barrio", 38: "economia_antes", 39: "economia_despues"}
 
 
 def ecv():
@@ -161,9 +161,53 @@ def pulso():
     return items
 
 
+# ── ECSC 2024 ───────────────────────────────────────────────────────────────
+# % de 15+ que se siente inseguro, por zona, sexo y 13 ciudades (cuadro 32: en su ciudad o
+# municipio; 34: en su barrio o vereda). La ciudad se guarda RELATIVA a la cabecera
+# (ciudad·nacional/cabecera): votoCelda multiplica zona × ciudad y así da la ciudad exacta,
+# sin contar dos veces que las ciudades son cabecera.
+ECSC_CUADROS = {32: "inseguro_ciudad", 34: "inseguro_barrio"}
+
+
+def ecsc():
+    wb = openpyxl.load_workbook(RAW / "anex-ECSC-2024.xlsx", read_only=True, data_only=True)
+    items = {}
+    for n, clave in ECSC_CUADROS.items():
+        F = filas(wb[f"Cuadro {n}"])
+        titulo = next((str(c) for r in F[:8] for c in r if isinstance(c, str) and c.startswith("Percepción de insegu")), clave)
+        par = lambda p: {"1": round(p / 100, 4), "2": round(1 - p / 100, 4)}
+        nac = cab = res = None
+        sexo, ciudad = {}, {}
+        for r in F:
+            if not r or not isinstance(r[0], str):
+                continue
+            v = [x for x in r[1:] if isinstance(x, (int, float))]
+            if len(v) < 11:
+                continue
+            nombre, total, hom, muj = norm(r[0]), v[1], v[6], v[11]      # [Total,%,cve,LI,LS] × total/hombres/mujeres
+            if nombre.startswith("total nacional"):
+                nac = total
+                sexo = {"1": par(hom), "2": par(muj)}
+            elif nombre.startswith("cabeceras"):
+                cab = total
+            elif nombre.startswith("centro poblado"):
+                res = total
+            elif not nombre.startswith("total"):
+                ciudad[nombre] = total
+        items[f"ECSC:{clave}"] = {"fuente": "DANE ECSC 2024", "titulo": titulo,
+            "opciones": {"1": "Se siente inseguro/a", "2": "No se siente inseguro/a"},
+            "celdas": {"*": par(nac), "zona": {"cabecera": par(cab), "resto": par(res)}, "sexo": sexo,
+                       "ciudad": {c: {"1": round(p * nac / cab / 100, 4), "2": round((100 - p) * (100 - nac) / (100 - cab) / 100, 4)}
+                                  for c, p in ciudad.items()},
+                       "_ciudad_real": {c: par(p) for c, p in ciudad.items()}}}
+    return items
+
+
 def main():
-    E, P = ecv(), pulso()
-    todo = {**E, **P}
+    E, P, S = ecv(), pulso(), ecsc()
+    todo = {**E, **P, **S}
+    print("ECSC:", {k: (v["celdas"]["*"], len(v["celdas"]["ciudad"])) for k, v in S.items()})
+    print("ECV eps Sucre:", E["ECV:eps"]["opciones"], E["ECV:eps"]["celdas"].get("70|total"))
     (RAIZ / "simcolombia" / "data" / "percepcion_items.json").write_text(json.dumps(todo, ensure_ascii=False, indent=1))
     print(f"ECV: {len(E)} ítems · Pulso: {len(P)} ítems con ciudades")
     s = E["ECV:pobre"]["celdas"]
@@ -187,14 +231,17 @@ def publicar():
       web/banco.json          reemplaza las entradas ECV:/EPS: anteriores."""
     items = json.loads((RAIZ / "simcolombia" / "data" / "percepcion_items.json").read_text())
     lab = json.loads((RAIZ / "simcolombia" / "data" / "percepcion_etiquetas.json").read_text())
-    banco = [b for b in json.loads((RAIZ / "web" / "banco.json").read_text()) if not b["codigo"].startswith(("ECV:", "EPS:"))]
+    banco = [b for b in json.loads((RAIZ / "web" / "banco.json").read_text()) if not b["codigo"].startswith(("ECV:", "EPS:", "ECSC:"))]
     n = 0
     for cod, it in items.items():
         L = lab.get(cod)
         if not L or not L.get("usar"):
             continue
         c = it["celdas"]
-        if cod.startswith("ECV:"):
+        if cod.startswith("ECSC:"):
+            D = {k: v for k, v in c.items() if not k.startswith("_")}
+            fuente = "DANE ECSC 2024 (13 ciudades, zona y sexo)"
+        elif cod.startswith("ECV:"):
             D = {"*": c["nacional|total"], "dc": {k: v for k, v in c.items() if not k.startswith("nacional") and not k.endswith("|total")}}
             fuente = "DANE ECV 2025 (por departamento y zona)"
         else:
