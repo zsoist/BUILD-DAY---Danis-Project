@@ -106,7 +106,7 @@ async function actor(id, url, alto = ALTO, cuadros = 1, estatico = false) {
     new THREE.MeshBasicMaterial({ map: sombraTex, transparent: true, depthWrite: false }));
   som.rotation.x = -Math.PI / 2; som.position.y = 0.01;
   g.add(som, cuerpo);
-  g.userData = { id, cuerpo, alto, fase: Math.random() * 6.28, meta: null, vel: 2.6, habla: 0, llega: null,
+  g.userData = { id, cuerpo, alto, fase: Math.random() * 6.28, meta: null, vel: 1.9, habla: 0, llega: null,
     cuadros, estatico, mano: 0, cuadro: 0 };
   scene.add(g);
   return g;
@@ -312,7 +312,7 @@ function hablaYa(r, txt, pos) {
   globo(a, `${r.nombre.split(" ")[0]} · ${r.edad}`, txt, pos);
   marca(a, pos);
 }
-let turnos = false, enTurno = false;
+let turnos = false, enTurno = false, modoActual = "tertulia";
 const COLA = [];
 function siguienteTurno() {
   const t = COLA.shift();
@@ -330,6 +330,7 @@ const API = {
   lugar,
   async escena({ modo, lugar: k, sel, gente, pregunta }) {
     quitarTodos();
+    modoActual = modo;
     API.turnos(modo === "sondeo");
     if (pregunta) API.titulo(pregunta, modo);
     lugar(k || (modo === "sondeo" ? "estudio" : API.lugarDe(sel)));
@@ -367,7 +368,7 @@ const API = {
       if (!caminable(x, z)) { const q = puntoLibre(x * .8, z, 1.5); if (q) { x = q.x; z = q.z; } }
       a.userData.meta = new THREE.Vector3(x, 0, z);
       a.userData.casa = a.userData.meta.clone();
-      a.userData.paseo = performance.now() + 7000 + Math.random() * 9000;
+      a.userData.paseo = performance.now() + 14000 + Math.random() * 30000;
       a.userData.quieto = acomodo === "publico";          // concursantes y público no pasean
       const fondo = i % 2 === 0;                          // unos llegan del fondo, otros por los lados
       if (QUIETO) a.position.set(x, 0, z);
@@ -477,9 +478,9 @@ function pasear(ahora) {
   for (const a of GENTE.values()) if (a.userData.meta && !a.userData.estatico) andando++;
   for (const a of GENTE.values()) {
     const u = a.userData;
-    if (u.estatico || u.quieto || !u.casa || u.meta || u.habla > ahora || ahora < u.paseo || andando >= 2) continue;
+    if (u.estatico || u.quieto || !u.casa || u.meta || u.habla > ahora || ahora < u.paseo || andando >= 1 || modoActual !== "tertulia") continue;
     if (u.fuera) {                                         // de vuelta a su puesto
-      u.meta = u.casa.clone(); u.fuera = false; u.paseo = ahora + 9000 + Math.random() * 12000; andando++; continue;
+      u.meta = u.casa.clone(); u.fuera = false; u.paseo = ahora + 25000 + Math.random() * 25000; andando++; continue;
     }
     const dianas = [MESA, ...[...GENTE.values()].filter(g => g.userData.id?.startsWith?.("cosa"))].filter(Boolean);
     let q = null;
@@ -518,7 +519,7 @@ function cuadroForzado() {
         a.position.addScaledVector(tmp.normalize(), Math.min(d, u.vel * dt));
         brinco = Math.abs(Math.sin(t * 9 + u.fase)) * .035;              // pasos
         anda = true;
-        c.scale.x = (tmp.x < 0 ? -1 : 1);                                // mira hacia donde camina
+        if (Math.abs(tmp.x) > Math.abs(tmp.z) * .5) c.scale.x = (tmp.x < 0 ? -1 : 1);   // solo se voltea si de verdad va de lado
       } else {
         u.meta = null; c.scale.x = 1;
         if (u.sirve) { u.sirve = false; u.mano = ahora + 900; const e = document.createElement("div");
@@ -527,7 +528,7 @@ function cuadroForzado() {
     }
     if (u.habla > ahora && u.cuadros < 4) brinco = Math.max(brinco, Math.abs(Math.sin(t * 16)) * .06);
     if (u.cuadros === 4) {
-      const f = anda ? [1, 0, 2, 0][Math.floor(t * 7.5 + u.fase) % 4] : u.mano > ahora ? 3 : 0;
+      const f = anda ? [1, 0, 2, 0][Math.floor(t * 6 + u.fase) % 4] : u.mano > ahora ? 3 : 0;
       if (f !== u.cuadro) { u.cuadro = f; c.material.map.offset.x = f / 4; }
     }
     const resp = QUIETO ? 1 : 1 + Math.sin(t * 2.1 + u.fase) * .012;   // respira

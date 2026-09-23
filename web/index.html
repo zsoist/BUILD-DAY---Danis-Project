@@ -712,6 +712,27 @@ html body #rcard .rkv{grid-template-columns:150px 1fr 150px 1fr;gap:12px 18px}
   .voces input{width:110px}
   html body #pie-dialogo{display:flex}
 }
+
+/* ── población premium: iconos, color por familia, carrusel de atajos ── */
+.ico{width:18px;height:18px;flex:0 0 auto}
+#pob-pre{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;scrollbar-width:thin;scrollbar-color:#f4ecd855 transparent;mask-image:linear-gradient(90deg,#000 94%,transparent)}
+#pob-pre button{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;scroll-snap-align:start;padding:8px 14px}
+#pob-pre button .ico{color:var(--oro)}
+#pob-pre button.on{background:var(--oro);color:#1a1300;border-color:#fff4b0}#pob-pre button.on .ico{color:#1a1300}
+.pob-f{border-top:3px solid var(--fc)}
+.pob-f h4{color:var(--fc)}
+.pob-o button .ico{color:var(--fc);opacity:.9}
+.pob-o button i{background:color-mix(in srgb,var(--fc) 16%,transparent)}
+.pob-o button.on{border-color:var(--fc);box-shadow:inset 0 0 0 1px var(--fc)}.pob-o button.on i{background:color-mix(in srgb,var(--fc) 34%,transparent)}
+.pob-f.dec .pob-o{height:150px}
+.pob-f.dec .pob-o button i{background:linear-gradient(0deg,color-mix(in srgb,hsl(calc(170 - var(--h,0) * .6) 70% 55%) 55%,transparent),transparent)}
+.pob-f.dec .pob-o button em{font-style:normal;font-family:"Silkscreen";font-size:9px;color:hsl(calc(170 - var(--h,0) * .6) 80% 65%);position:relative;letter-spacing:-1px}
+.pob-exp{font-size:12px;line-height:1.5;color:var(--tenue);margin-top:8px}.pob-exp b{color:var(--crema)}
+
+.pob-f.dec .pob-o button small{position:relative;font-size:9.5px;color:var(--tenue);line-height:1.1}
+.conclu .temas{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.conclu .temas span{font-size:12px;padding:3px 9px;border-radius:12px;background:#f4ecd814;border:1px solid #f4ecd844}
+.dchip{display:inline-block;margin:4px 4px 0 0;font-size:11.5px;padding:2px 8px;border-radius:10px;border:1px solid #3b4aa8;color:var(--crema)}
+.dchip.fav{border-color:var(--si);background:#2fd08a22}.dchip.con{border-color:var(--no);background:#ff5a5f22}.dchip.dep{border-color:var(--dep);background:#fcd1161c}
 </style>
 </head>
 <body>
@@ -882,9 +903,9 @@ function spriteDe(r,usados){
     const sx=r.sexo==="hombre"?"H":"M",reg=regionKey(r),fam=familia(r.ocupacion);
     let mejor=[],top=-1e9;
     for(const c of CATALOGO.gente){
-      if(c.s!==sx||c.o==="presentador")continue;
+      if(c.s!==sx||c.o==="presentador"||c.fijo)continue;
       const p=(c.r.some(x=>reg.includes(x))?5:0)+3-Math.min(3,Math.abs(c.e-r.edad)/10)
-        +(fam&&familia(c.o)===fam?4:0)-(usados?.has(c.id)?9:0);
+        +(fam&&familia(c.o)===fam?4:0)-(usados?.has(c.id)?100:0);   // nadie se repite en la misma escena
       if(p>top+1e-9){top=p;mejor=[c.id];}else if(Math.abs(p-top)<1e-9)mejor.push(c.id);
     }
     if(mejor.length)return r._spr=mejor[Math.floor(h01(r.id+"|spr")*mejor.length)];
@@ -898,7 +919,10 @@ function spriteDe(r,usados){
   }
   return r._spr=mejor[Math.floor(h01(r.id+"|spr")*mejor.length)];
 }
-function asignarSprites(lista){const u=new Set();for(const r of lista){if(!r._spr)spriteDe(r,u);u.add(r._spr);}}
+function asignarSprites(lista){
+  // cada escena, gente distinta: si dos quedaron con el mismo personaje, el segundo se reasigna
+  const u=new Set();
+  for(const r of lista){if(r._spr&&u.has(r._spr))r._spr=null;if(!r._spr)spriteDe(r,u);u.add(r._spr);}}
 window.spriteDe=spriteDe;
 try{cfg={...cfg,...JSON.parse(localStorage.getItem("sim-cfg")||"{}")};
   if(!cfg.orkey){const ag=JSON.parse(localStorage.getItem("ag-cfg")||"{}");if(ag.orkey)cfg.orkey=ag.orkey;}}catch(e){}
@@ -1008,7 +1032,7 @@ async function mesa(cod){
   path?.classList.add("hot");
   const pool=RES.filter(r=>r.dpto===cod&&r.edad>=18);
   for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}  // Fisher-Yates: sort(random) no baraja parejo
-  const sample=pool.slice(0,4);
+  const sample=pool.slice(0,7);   // 7: impar, la mesa no queda empatada
   asignarSprites(sample);ESC("escena",{modo:"pais",sel:[cod],gente:sample,pregunta:q});
   $("#pc-donde").textContent="mesa de "+d.nombre;
   $("#pc-caras").innerHTML=sample.map(r=>`<img src="gente/${spriteDe(r)}.webp" alt="" title="${esc(r.nombre)}" data-rid="${r.id}">`).join("");
@@ -1064,6 +1088,9 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   el.insertAdjacentHTML("beforeend",
     `<div class="conclu" style="--pc:${COLORES[pos]}"><b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(concl)}</div>`);
   ESC("cartel",`<b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(concl)}`,pos);
+  resumirTurnos(q,transcript.map(t=>`${t.n}: ${t.t}`)).then(R=>{
+    if(R.temas?.length&&document.body.contains(el))el.querySelector(".conclu")?.insertAdjacentHTML("beforeend",`<div class="temas">${R.temas.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`);
+    if(PAIS===owner)(owner.data??={})[cod]={...(owner.data[cod]||{}),temas:R.temas||[]};});
   setTimeout(()=>{if(MODO==="pais"&&PAIS===owner)abrirCajon("dr-mapa",true);},3200);
   festejo(el);
   selloHumano(q,transcript,el);
@@ -1074,7 +1101,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   owner.tally[pos]++;
   guardar("pais",cod,q,{postura:pos,conclusion:concl,
     participantes:sample.map(r=>r.id),intervenciones:transcript.length});
-  $("#tally").innerHTML=tallyHTML(owner.tally,"",["dptos a favor","dptos en contra","dptos divididos"]);
+  $("#tally").innerHTML=tallyHTML(owner.tally,"",["dptos favorables","dptos desfavorables","dptos divididos"]);
   pintaLista();
   (owner.data??={})[cod]={transcript,concl,pos,ctx,sample:sample.map(r=>r.id)};
   finMesa();
@@ -1829,7 +1856,7 @@ function opcionesDe(q){
   return m?{a:m[1].trim(),b:m[2].trim()}:null;
 }
 function etiquetas(){
-  return OPC?[OPC.a,OPC.b,"ni uno ni otro"]:["a favor","en contra","depende"];
+  return OPC?[OPC.a,OPC.b,"ni uno ni otro"]:["favorable","desfavorable","depende"];
 }
 function sondeoInstr(r){
   const M=marcoDe(r);
@@ -2320,7 +2347,7 @@ async function conversar(q){
         const gl=lado===undefined?estiloDe(r).lean:LEAN[lado?0:2];
         if(pos!=='sin_postura'&&pos!=='ni_ni'&&r.compromiso!=='indiferente'){obedN++;
           if((gl.includes('A FAVOR')&&pos==='a_favor')||(gl.includes('EN CONTRA')&&pos==='en_contra')||(gl.includes('dividido')&&pos==='depende'))obed++;}
-        votos.push({pos,txt,spr:spriteDe(r)});votoCara(r.id,pos);
+        votos.push({pos,txt,spr:spriteDe(r),id:r.id,n:r.nombre.split(" ")[0]});votoCara(r.id,pos);
         const af=anc?.afirmativas?anc.afirmativas.includes(String(vAnc)):vAnc===1,
           sus=anc?.sustantivas?anc.sustantivas.includes(String(vAnc)):vAnc===1||vAnc===2;
         if(sus){const s=(window.__ancla??={sigue:0,n:0});s.n++;
@@ -2352,7 +2379,14 @@ async function conversar(q){
         ESC("tablero",{titulo:J.titulo?J.titulo.toUpperCase():"¿QUÉ DICEN LOS COLOMBIANOS?",n:conTexto.length,filas,nota});
         $("#resps").insertAdjacentHTML("beforeend",`<div class="juicio"><b>EL JUEZ AGRUPÓ ${conTexto.length} RESPUESTAS</b><ol>${filas.map(f=>`<li>${esc(f.e)} · ${f.n}</li>`).join("")}</ol><small>${esc(nota)}</small></div>`);
         abajo();
-      }}catch(e){}}
+      }}catch(e){}
+      if(run0===RUN){
+        const R=await resumirTurnos(q,conTexto.map(v=>`${v.n}: ${v.txt}`));
+        if(run0===RUN&&(R.temas?.length||R.coinciden||R.chocan)){
+          const votoDe={};votos.forEach(v=>votoDe[v.id]=v.pos);
+          $("#resps").insertAdjacentHTML("beforeend",tarjetaResumen("LO QUE DIJERON",R,sample,votoDe,`${conTexto.length} respuestas · ${EST!=null?"exploración: nadie lo ha medido":anc?"partieron de una encuesta real":"respuestas generadas"}`));
+          abajo();}
+      }}
   }else{
     /* ── DELIBERACIÓN CONTINUA: hasta 3 min, pausable, corta cuando hay acuerdo ── */
     const run=RUN;                  // token ya invalidado por abortarCorrida(): si entra otra pregunta, esta se aborta
@@ -2461,6 +2495,43 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
 }
 boot();
 ESC("vista",MODO,[...SEL]);
+/* ICONOS de la población: trazo fino, 24×24, en el color del texto */
+const ICO=(()=>{const P={
+  hombre:'<circle cx="12" cy="5" r="2.6"/><path d="M9 9.5h6l-.8 6H13l-.4 6h-1.2l-.4-6H9.8z"/>',
+  mujer:'<circle cx="12" cy="5" r="2.6"/><path d="M10 9.5h4l2.3 7h-3l-.5 5h-1.6l-.5-5h-3z"/>',
+  joven:'<circle cx="12" cy="6" r="2.4"/><path d="M8 21l2-6-1-4 3-1.5 3 1.5-1 4 2 6M9.5 12.5L7 14M14.5 12.5l2.5-1.5"/>',
+  adulto:'<circle cx="12" cy="5.5" r="2.4"/><path d="M9 21v-7l-1-4.5h8L15 14v7M8 16h8"/><rect x="15.5" y="15" width="4" height="3.2" rx=".6"/>',
+  maduro:'<circle cx="12" cy="5.5" r="2.4"/><path d="M8.5 21v-7.5l1-4h5l1 4V21M9.5 5.2c.8-1.7 4.2-1.7 5 0"/>',
+  mayor:'<circle cx="11" cy="5.5" r="2.4"/><path d="M8 21l1.5-7-1-4h4.5l2 4 .5 7M17.5 11v10M17.5 11c0-1.3 1.8-1.3 1.8 0"/>',
+  bogota:'<path d="M5 21V9l4-2v14M9 21V5h6v16M15 21v-9h4v9M3 21h18M11 8h2M11 11h2M11 14h2"/>',
+  caribe:'<path d="M12 21c0-5 .5-9 3-12M15 9c-2.5-2-6-2-8 .5M15 9c1-2.5 4-3.5 6-2M15 9c2.5 0 4 1.5 4.5 3.5M3 21c3-1.5 6-1.5 9 0s6 1.5 9 0"/>',
+  oriente:'<path d="M2 20l6-10 4 6 3-4 7 8zM8 10l2 3M16 13l1.5-2"/>',
+  centro:'<path d="M3 20c2-5 5-8 9-8s7 3 9 8M7 15c1.5-1 3-1 4.5 0M13.5 13.5c1.5-1 3-1 4.5 0"/><circle cx="17" cy="6" r="2"/>',
+  pacifico:'<path d="M2 14c2.5-2 5-2 7.5 0s5 2 7.5 0 3.5-1.5 5 0M2 19c2.5-2 5-2 7.5 0s5 2 7.5 0 3.5-1.5 5 0M8 10c0-3 2-5 5-6-1 2-1 4 0 6"/>',
+  orinoquia:'<circle cx="12" cy="10" r="3.5"/><path d="M12 3v1.5M5 10H3.5M20.5 10H19M7 5l1 1M17 5l-1 1M2 18h20M5 21h14"/>',
+  amazonia:'<path d="M12 21v-8M12 13c-4 0-7-3-7-7 4 0 7 3 7 7zM12 13c4 0 7-3 7-7-4 0-7 3-7 7zM12 9c0-3 1-5 3-6"/>',
+  ciudad:'<path d="M3 21V10h5v11M8 21V4h8v17M16 21v-8h5v8M2 21h20M11 7h2M11 10h2M11 13h2M5 13h1M18 16h1"/>',
+  rural:'<path d="M3 21v-8l6-5 6 5v8M3 21h18M12 21v-5H6v5M15 16l3-2 3 2v5M1 13l8-6.5L17 13"/>',
+  ninguna:'<rect x="5" y="4" width="14" height="17" rx="1.5"/><path d="M8 9h8M8 13h5"/><path d="M4 20L20 5" opacity=".7"/>',
+  primaria:'<path d="M16.5 3.5l4 4L8 20H4v-4zM14 6l4 4"/>',
+  secundaria:'<path d="M4 5.5c3-1.5 5.5-1 8 .5 2.5-1.5 5-2 8-.5V19c-3-1.5-5.5-1-8 .5-2.5-1.5-5-2-8-.5zM12 6v13.5"/>',
+  media:'<path d="M7 8V6a5 5 0 0110 0v2M5 8h14l-1 13H6zM9 13h6"/>',
+  superior:'<path d="M2 9l10-5 10 5-10 5zM6 11v5c3.5 2.5 8.5 2.5 12 0v-5M22 9v6"/>',
+  trabaja:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2M3 12h18M11 12v2h2v-2"/>',
+  hogar:'<path d="M3 11l9-7 9 7M5 9.5V20h14V9.5M10 20v-6h4v6"/>',
+  busca:'<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l6 6M8 10.5h5"/>',
+  inactivo:'<path d="M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3zM5 17a3 3 0 013-3h10M9 8h5"/>',
+  pensionado:'<path d="M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9"/>',
+  sub:'<path d="M12 20s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 10c0 5.5-7 10-7 10z"/><path d="M9 11h6M12 8v6"/>',
+  contrib:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h4"/><path d="M17.5 13.5l.8 1.6 1.7.2-1.2 1.2.3 1.7-1.6-.8-1.6.8.3-1.7-1.2-1.2 1.7-.2z"/>',
+  militante:'<path d="M4 10v4h3l7 4V6L7 10zM17 9a4 4 0 010 6M19.5 7a7 7 0 010 10"/>',
+  opina:'<path d="M4 5h16v11H10l-5 4v-4H4z"/><path d="M8 9h8M8 12h5"/>',
+  desencantado:'<circle cx="12" cy="12" r="9"/><path d="M8.5 16c2-1.8 5-1.8 7 0M8.5 9.5h2M13.5 9.5h2"/>',
+  indiferente:'<circle cx="12" cy="12" r="9"/><path d="M8.5 15h7M8.5 10h2M13.5 10h2"/>',
+  plata:'<circle cx="12" cy="12" r="9"/><path d="M14.5 8.5c-.6-1-1.6-1.3-2.5-1.3-1.5 0-2.7.8-2.7 2.1 0 3 5.4 1.6 5.4 4.6 0 1.3-1.2 2.3-2.7 2.3-1.1 0-2.2-.5-2.8-1.4M12 5.5v1.7M12 16.2v2"/>',
+  sin:'<circle cx="12" cy="12" r="9"/><path d="M6 18L18 6"/>',
+  voto:'<rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M9 10V4h6v6M8 14h8"/>'};
+  return k=>`<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${P[k]||""}</svg>`;})();
 /* ═══ POBLACIÓN: a quién se le pregunta ═══
    Por defecto, todo el país en proporción a su población real. Con filtros
    la muestra deja de representar al país: la interfaz lo dice. */
@@ -2475,20 +2546,32 @@ function decilDe(r){
     DECILES=Array.from({length:9},(_,i)=>v[Math.floor(v.length*(i+1)/10)]);}
   if(!(r.ingreso_m>0))return 0;let d=1;for(const t of DECILES)if(r.ingreso_m>t)d++;return d;}
 const FILTROS=[
-  {k:"sexo",t:"Sexo",o:[["hombre","hombres"],["mujer","mujeres"]],f:r=>r.sexo},
-  {k:"edad",t:"Edad",o:[["18-29","18–29"],["30-44","30–44"],["45-59","45–59"],["60+","60 o más"]],f:r=>r.edad<30?"18-29":r.edad<45?"30-44":r.edad<60?"45-59":"60+"},
-  {k:"region",t:"Región",o:Object.entries(MACRO).map(([k,v])=>[k,v]),f:r=>String(macroDe(r.dpto))},
-  {k:"zona",t:"Zona",o:[["cabecera","ciudad o pueblo"],["resto","rural"]],f:r=>r.clase||"cabecera"},
-  {k:"edu",t:"Educación",o:[["ninguna","ninguna"],["primaria","primaria"],["secundaria","secundaria"],["media","media"],["superior","superior"]],f:r=>r.educacion},
-  {k:"ocup",t:"Qué hace",o:[["trabaja","trabaja"],["hogar","oficios del hogar"],["busca trabajo","busca trabajo"],["inactivo","inactivo (incl. estudia)"],["pensionado","pensionado"]],f:ocupGrupo},
-  {k:"ingreso",t:"Ingreso laboral (decil DANE)",o:[["0","sin ingreso"],...[1,2,3,4,5,6,7,8,9,10].map(d=>[String(d),"d"+d])],f:r=>String(decilDe(r)),dec:1},
-  {k:"salud",t:"Salud",o:[["subsidiado","subsidiado"],["contributivo","contributivo"]],f:r=>r.regimen_salud},
-  {k:"compromiso",t:"Relación con la política",o:[["militante","militante"],["opinador","opina"],["desencantado","desencantado"],["indiferente","indiferente"]],f:r=>r.compromiso},
-  {k:"lean",t:"Aire político del territorio",o:[["derecha_uribismo","derecha"],["centro_tradicional","centro / tradicional"],["izquierda","izquierda"],["verdes_alternativos","verdes"],["otros_blanco_nulo","blanco / otros"]],f:r=>r.lean},
+  {k:"sexo",t:"Sexo",c:"#7fb2ff",o:[["hombre","hombres","hombre"],["mujer","mujeres","mujer"]],f:r=>r.sexo},
+  {k:"edad",t:"Edad",c:"#f0a35e",o:[["18-29","18 a 29","joven"],["30-44","30 a 44","adulto"],["45-59","45 a 59","maduro"],["60+","60 o más","mayor"]],f:r=>r.edad<30?"18-29":r.edad<45?"30-44":r.edad<60?"45-59":"60+"},
+  {k:"region",t:"Región",c:"#5fd0c0",o:[["1","Bogotá","bogota"],["2","Caribe","caribe"],["3","Oriente andino","oriente"],["4","Centro andino","centro"],["5","Pacífico","pacifico"],["6","Orinoquía","orinoquia"],["7","Amazonía","amazonia"]],f:r=>String(macroDe(r.dpto))},
+  {k:"zona",t:"Zona",c:"#b7a4ff",o:[["cabecera","ciudad o pueblo","ciudad"],["resto","rural","rural"]],f:r=>r.clase||"cabecera"},
+  {k:"edu",t:"Educación",c:"#ffd36a",o:[["ninguna","ninguna","ninguna"],["primaria","primaria","primaria"],["secundaria","secundaria","secundaria"],["media","media","media"],["superior","universitaria o técnica","superior"]],f:r=>r.educacion},
+  {k:"ocup",t:"Qué hace",c:"#8fd694",o:[["trabaja","trabaja","trabaja"],["hogar","oficios del hogar","hogar"],["busca trabajo","busca trabajo","busca"],["inactivo","inactivo (incl. estudia)","inactivo"],["pensionado","pensionado","pensionado"]],f:ocupGrupo},
+  {k:"ingreso",t:"Cuánto gana por su trabajo",c:"#fcd116",o:[["0","no gana por trabajo","sin"],...[1,2,3,4,5,6,7,8,9,10].map(d=>[String(d),"d"+d,"plata"])],f:r=>String(decilDe(r)),dec:1},
+  {k:"salud",t:"Salud",c:"#ff8fa3",o:[["subsidiado","subsidiado (no paga)","sub"],["contributivo","contributivo (paga)","contrib"]],f:r=>r.regimen_salud},
+  {k:"compromiso",t:"Relación con la política",c:"#ffb86b",o:[["militante","militante","militante"],["opinador","opina","opina"],["desencantado","desencantado","desencantado"],["indiferente","indiferente","indiferente"]],f:r=>r.compromiso},
+  {k:"lean",t:"Aire político de su territorio",c:"#c3c9e8",o:[["derecha_uribismo","derecha","voto","#6c9bea"],["centro_tradicional","centro / tradicional","voto","#d9b44a"],["izquierda","izquierda","voto","#e07b72"],["verdes_alternativos","verdes / alternativos","voto","#5fbf7a"],["otros_blanco_nulo","blanco / otros","voto","#9aa3b8"]],f:r=>r.lean},
 ];
+function rangoCorto(d){decilDe({});const T=DECILES,m=v=>(v/1e6).toLocaleString("es-CO",{maximumFractionDigits:1});
+  return d===1?"≤"+m(T[0])+"M":d===10?">"+m(T[8])+"M":m(T[d-2])+"–"+m(T[d-1])+"M";}
+/* cuánto gana cada decil, en pesos: "d3" no le dice nada a nadie */
+function rangoDecil(d){decilDe({});const T=DECILES,m=v=>v>=1e6?"$"+(v/1e6).toLocaleString("es-CO",{maximumFractionDigits:1})+" M":"$"+Math.round(v/1e3)+" mil";
+  return d===1?"hasta "+m(T[0]):d===10?"más de "+m(T[8]):m(T[d-2])+" – "+m(T[d-1]);}
 const FILTRO={};                 // k → Set de valores elegidos (vacío = todos)
-const PRESETS=[["Todo el país",{}],["Jóvenes 18–29",{edad:["18-29"]}],["Mayores de 60",{edad:["60+"]}],["Mujeres",{sexo:["mujer"]}],
-  ["Rurales",{zona:["resto"]}],["Costa Caribe",{region:["2"]}],["Universitarios",{edu:["superior"]}],["Ingresos bajos",{ingreso:["0","1","2","3"]}]];
+/* atajos que se combinan: se suman al filtro (y en la misma casilla, se unen) */
+const PRESETS=[["Jóvenes 18–29","joven",{edad:["18-29"]}],["Mayores de 60","mayor",{edad:["60+"]}],["Rural","rural",{zona:["resto"]}],
+  ["Ganan más, en ciudades","plata",{ingreso:["8","9","10"],zona:["cabecera"]}],["Costa joven","caribe",{region:["2"],edad:["18-29"]}],
+  ["Campesinado mayor","rural",{zona:["resto"],edad:["45-59","60+"]}],["Jóvenes sin empleo","busca",{edad:["18-29"],ocup:["busca trabajo"]}],
+  ["Profesionales que trabajan","superior",{edu:["superior"],ocup:["trabaja"]}],["Clase media urbana","ciudad",{ingreso:["4","5","6","7"],zona:["cabecera"]}],
+  ["Hogar y cuidado","hogar",{ocup:["hogar"]}],["Pensionados","pensionado",{ocup:["pensionado"]}],["Bogotanos universitarios","bogota",{region:["1"],edu:["superior"]}],
+  ["Pacífico y Amazonía","pacifico",{region:["5","7"]}],["Desencantados","desencantado",{compromiso:["desencantado","indiferente"]}],
+  ["Militantes","militante",{compromiso:["militante"]}],["Sin estudios","ninguna",{edu:["ninguna","primaria"]}]];
+const presetOn=P=>Object.entries(P).every(([k,v])=>v.every(x=>FILTRO[k]?.has(x)));
 function pasa(r,salvo){for(const F of FILTROS){if(F.k===salvo)continue;const S=FILTRO[F.k];if(S&&S.size&&!S.has(F.f(r)))return false;}return true;}
 function filtrosActivos(){return FILTROS.filter(F=>FILTRO[F.k]?.size);}
 function resumenFiltro(){return filtrosActivos().map(F=>[...FILTRO[F.k]].map(v=>F.o.find(o=>o[0]===v)?.[1]||v).join("/")).join(" · ");}
@@ -2496,12 +2579,15 @@ function pintaPob(){
   const base=RES.filter(r=>r.edad>=18&&(!SEL.size||SEL.has(r.dpto)));
   const cumplen=base.filter(r=>pasa(r)).length;
   $("#pob-cuenta").innerHTML=`<b>${cumplen.toLocaleString("es-CO")}</b><span>de ${base.length.toLocaleString("es-CO")} adultos ${SEL.size?"del territorio":"del país"}</span>`;
-  $("#pob-pre").innerHTML=PRESETS.map(([n],i)=>`<button type="button" data-p="${i}">${esc(n)}</button>`).join("");
+  $("#pob-pre").innerHTML=PRESETS.map(([n,ic,P],i)=>`<button type="button" data-p="${i}" class="${presetOn(P)?"on":""}">${ICO(ic)}<span>${esc(n)}</span></button>`).join("");
   $("#pob-grid").innerHTML=FILTROS.map(F=>{
     const otros=base.filter(r=>pasa(r,F.k)),c={};otros.forEach(r=>{const v=F.f(r);c[v]=(c[v]||0)+1;});
     const max=Math.max(1,...F.o.map(([v])=>c[v]||0)),S=FILTRO[F.k];
-    return `<div class="pob-f${F.dec?" dec":""}"><h4>${esc(F.t)}${S?.size?`<button type="button" data-borrar="${F.k}">todos</button>`:""}</h4><div class="pob-o">${
-      F.o.map(([v,l])=>`<button type="button" data-k="${F.k}" data-v="${esc(v)}" class="${S?.size?(S.has(v)?"on":"off"):""}" style="--w:${Math.round(100*(c[v]||0)/max)}%"><i></i><span>${esc(l)}</span><b>${(c[v]||0).toLocaleString("es-CO")}</b></button>`).join("")}</div></div>`;}).join("");
+    const cuerpo=F.dec
+      ? `<div class="pob-o">${F.o.map(([v,l,ic],i)=>`<button type="button" data-k="${F.k}" data-v="${esc(v)}" class="${S?.size?(S.has(v)?"on":"off"):""}" style="--w:${Math.round(100*(c[v]||0)/max)}%;--h:${i?Math.round(40+i*21):0}" title="${v==="0"?"no tiene ingreso laboral":"decil "+v+": "+rangoDecil(+v)+" al mes"}"><i></i>${v==="0"?ICO("sin"):`<em>${"$".repeat(Math.ceil(+v/2.5))}</em>`}<span>${v==="0"?"no gana":esc(l)}</span><small>${v==="0"?"$0":rangoCorto(+v)}</small><b>${(c[v]||0).toLocaleString("es-CO")}</b></button>`).join("")}</div>
+         <p class="pob-exp">Dividimos a quienes ganan por su trabajo en <b>10 grupos iguales</b>, del que menos gana (d1) al que más (d10). Pasa el cursor para ver cuánto gana al mes cada grupo: d1 ${esc(rangoDecil(1))} · d5 ${esc(rangoDecil(5))} · d10 ${esc(rangoDecil(10))}.</p>`
+      : `<div class="pob-o">${F.o.map(([v,l,ic,col])=>`<button type="button" data-k="${F.k}" data-v="${esc(v)}" class="${S?.size?(S.has(v)?"on":"off"):""}" style="--w:${Math.round(100*(c[v]||0)/max)}%${col?`;--fc:${col}`:""}"><i></i>${ICO(ic)}<span>${esc(l)}</span><b>${(c[v]||0).toLocaleString("es-CO")}</b></button>`).join("")}</div>`;
+    return `<div class="pob-f${F.dec?" dec":""}" style="--fc:${F.c}"><h4>${esc(F.t)}${S?.size?`<button type="button" data-borrar="${F.k}">quitar</button>`:""}</h4>${cuerpo}</div>`;}).join("");
   const n=filtrosActivos().length;
   $("#pob-aviso").textContent=n?`Muestra filtrada: ya no representa al país. ${cumplen<(+$("#nsel").value||8)?"Muy pocas personas cumplen.":""}`:"Todo el país, en proporción a su población real.";
   $("#pob-n").hidden=!n;$("#pob-n").textContent=n;
@@ -2513,7 +2599,10 @@ $("#pob-limpiar").onclick=()=>{for(const k in FILTRO)delete FILTRO[k];pintaPob()
 $("#pobmask").addEventListener("click",e=>{
   if(e.target.id==="pobmask"){$("#pobmask").hidden=true;return;}
   const b=e.target.closest("button");if(!b)return;
-  if(b.dataset.p!=null){for(const k in FILTRO)delete FILTRO[k];for(const [k,v] of Object.entries(PRESETS[+b.dataset.p][1]))FILTRO[k]=new Set(v);pintaPob();return;}
+  if(b.dataset.p!=null){const P=PRESETS[+b.dataset.p][2];
+    if(presetOn(P)){for(const [k,v] of Object.entries(P)){v.forEach(x=>FILTRO[k]?.delete(x));if(!FILTRO[k]?.size)delete FILTRO[k];}}
+    else for(const [k,v] of Object.entries(P)){const S=(FILTRO[k]??=new Set());v.forEach(x=>S.add(x));}
+    pintaPob();return;}
   if(b.dataset.borrar){delete FILTRO[b.dataset.borrar];pintaPob();return;}
   if(b.dataset.k){const S=(FILTRO[b.dataset.k]??=new Set());S.has(b.dataset.v)?S.delete(b.dataset.v):S.add(b.dataset.v);if(!S.size)delete FILTRO[b.dataset.k];pintaPob();}
 });
@@ -2522,6 +2611,22 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#pobmask").hidd
 $("#nsel").addEventListener("input",()=>{$("#nsel-v").textContent=$("#nsel").value;});
 $("#terrbtn").onclick=()=>abrirCajon("dr-mapa",true);
 function pintaTerr(){const t=$("#terr-t");if(t)t.textContent=SEL.size===0?"Toda Colombia":SEL.size===1?(MARG[[...SEL][0]]?.nombre||""):SEL.size+" territorios";}
+/* RESUMEN: "esto es lo que hablaron", en los tres modos (acción resumir) */
+async function resumirTurnos(q,lineas){
+  try{const r=await fetch("/api/opina/",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({resumir:true,pregunta:q,turnos:lineas.slice(-30)})});
+    if(r.ok)return await r.json();}catch(e){}
+  return {temas:[],coinciden:"",chocan:""};
+}
+function tarjetaResumen(titulo,R,gente,votoDe,pie){
+  const [la,lb,ld]=etiquetas();
+  const bando=(k,l)=>{const g=gente.filter(r=>votoDe[r.id]===k);return g.length?`<div class="bando ${k}"><b>${g.length}</b><span>${esc(l)}</span>${g.map(r=>`<img src="gente/${spriteDe(r)}.webp" alt="" title="${esc(r.nombre)}">`).join("")}</div>`:"";};
+  return `<div class="cierre"><b class="ct">${esc(titulo)}</b>
+    ${R.temas?.length?`<div class="temas">${R.temas.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`:""}
+    ${R.coinciden?`<p class="co"><i>🤝</i>${esc(R.coinciden)}</p>`:""}${R.chocan?`<p class="ch"><i>⚔</i>${esc(R.chocan)}</p>`:""}
+    ${gente.length?`<div class="bandos">${bando("a_favor",la)}${bando("en_contra",lb)}${bando("depende",ld)}${bando("ni_ni","ni fu ni fa")}</div>`:""}
+    ${pie?`<small>${pie}</small>`:""}</div>`;
+}
 /* LISTA DE DEPARTAMENTOS: tocar Bogotá en el mapa era casi imposible */
 function pintaLista(){
   const L=$("#dptolista");if(!L||!Object.keys(MARG).length)return;
@@ -2547,6 +2652,16 @@ async function recorrer(){
     await mesa(c);
     await new Promise(r=>setTimeout(r,2500));
   }
+  if(PAIS!==yo||MODO!=="pais")return;
+  const hechos=Object.entries(yo.data||{}).filter(([,v])=>v?.concl);
+  if(hechos.length<2)return;
+  const R=await resumirTurnos(yo.q,hechos.map(([c,v])=>`${MARG[c]?.nombre}: ${v.concl}`));
+  if(PAIS!==yo)return;
+  const E={a_favor:"fav",en_contra:"con",depende:"dep"};
+  $("#resps").insertAdjacentHTML("beforeend",tarjetaResumen("LO QUE DIJO EL PAÍS",R,[],{},
+    `${hechos.length} mesas de 7 · ${hechos.map(([c,v])=>`<span class="dchip ${E[v.pos]||""}">${esc(MARG[c]?.nombre||c)}</span>`).join("")}`));
+  ESC("cartel",`<b>LO QUE DIJO EL PAÍS</b>${esc((R.temas||[]).join(" · "))}${R.chocan?" — "+esc(R.chocan):""}`,"depende");
+  abajo();
 }
 $("#recorrer")?.addEventListener("click",recorrer);
 /* el chat: si subes a leer, no te arrastra hacia abajo */

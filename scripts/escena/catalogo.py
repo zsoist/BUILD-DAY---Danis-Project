@@ -9,7 +9,8 @@ Las regiones son las 12 del reparto (scripts/escena/reparto/). A cada
 residente el sitio le busca el personaje más parecido: es vestuario, no dato.
 OJO: la utilería que escribe esto es automática; la desplegada se curó a mano
 (una mesa por región, solo objetos que se sostienen solos) y vive en el
-catalogo.json publicado. Si regeneras, vuelve a curarla.
+catalogo.json publicado. Si regeneras, vuelve a curarla. Igual los personajes
+con un mueble pegado (carretilla, mostrador): "fijo":1, no se asignan.
 Modelo para lo nuevo: openai/gpt-image-2.5-flare, quality low, background
 transparent, input_references (≈$0.005 la hoja; ver banco_imagen.mjs).
 """
