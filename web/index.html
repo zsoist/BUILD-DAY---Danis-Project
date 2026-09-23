@@ -551,6 +551,87 @@ html body #banner:hover{white-space:normal}
   .cajon{top:8px;bottom:8px}
 }
 @media (prefers-reduced-motion:reduce){#escena .fondo{transition:opacity .3s}.cajon{transition:none}}
+
+/* ── cabecera de la pregunta: arriba, grande, ceremoniosa ── */
+#pregcab{padding:12px 14px 10px;border-bottom:2px solid #f4ecd822;background:linear-gradient(180deg,#ffffff0d,transparent)}
+#pregcab small{display:block;font-family:"Silkscreen";font-size:9.5px;letter-spacing:.14em;color:var(--oro);margin-bottom:4px}
+#pregcab b{display:block;font-size:19px;line-height:1.3;color:var(--crema);font-weight:600;text-wrap:balance}
+#pc-meta{display:flex;justify-content:space-between;gap:10px;margin-top:6px;font-size:12px;color:var(--tenue)}
+#pc-reloj{font-family:"Silkscreen";font-size:10.5px;color:var(--crema);white-space:nowrap}
+#pc-caras{display:flex;flex-wrap:wrap;gap:4px;margin-top:9px}
+#pc-caras img{width:30px;height:30px;object-fit:cover;object-position:50% 0;image-rendering:pixelated;background:#1b2670;border:2px solid #3b4aa8;border-radius:5px;transition:border-color .3s ease-out,transform .3s ease-out}
+#pc-caras img.c-a_favor{border-color:var(--si);box-shadow:0 0 0 1px var(--si)}
+#pc-caras img.c-en_contra{border-color:var(--no);box-shadow:0 0 0 1px var(--no)}
+#pc-caras img.c-depende{border-color:var(--dep)}
+#pc-caras img.c-ni_ni,#pc-caras img.c-sin_postura{border-color:var(--nini);opacity:.7}
+/* ── HUD de posturas ── */
+html body #tally{display:block;padding:10px 14px 12px}
+.hud{display:flex;flex-direction:column;gap:8px}
+.hudbar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:#0b1238;box-shadow:inset 0 0 0 1px #3b4aa8;gap:2px}
+.hudbar i{display:block;transition:flex-grow .5s cubic-bezier(.2,.9,.3,1)}
+.hudbar .fav{background:var(--si)}.hudbar .con{background:var(--no)}.hudbar .dep{background:var(--dep)}.hudbar .nini,.hudbar .sinp{background:var(--nini)}.hudbar .vacio{background:transparent}
+.hudley{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--tenue)}
+.hudley span{display:inline-flex;align-items:baseline;gap:5px}
+.hudley b{font-family:"Silkscreen";font-size:14px;color:var(--crema)}
+.hudley .fav b{color:var(--si)}.hudley .con b{color:var(--no)}.hudley .dep b{color:var(--dep)}
+.hudley .falta{margin-left:auto;opacity:.75}
+html body .estim{margin-top:6px;font-size:12px;color:var(--tenue);line-height:1.45}
+/* ── avisos, tarjetas y chips ── */
+#nuevas{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:3;font-family:"Silkscreen";font-size:10px;letter-spacing:.06em;padding:7px 12px;border-radius:20px;border:2px solid var(--crema);background:var(--oro);color:#1a1300;box-shadow:0 6px 16px #000a;animation:globo .3s cubic-bezier(.2,.9,.3,1)}
+html body #encuesta{position:relative}
+html body .resp .say{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+html body .resp.abierta .say{-webkit-line-clamp:unset;display:block}
+.vermas{background:none;border:0;padding:3px 0 0;font-family:"Silkscreen";font-size:9px;letter-spacing:.06em;color:var(--oro);cursor:pointer}
+.roce{display:inline-flex;align-items:center;gap:4px;margin:6px 6px 0 0;padding:2px 8px 2px 4px;border-radius:12px;background:#ff5a5f22;border:1px solid #ff5a5f88;font-size:11.5px;color:#ffd0d1}
+.roce img{width:18px;height:18px;object-fit:cover;object-position:50% 0;image-rendering:pixelated;border-radius:4px;border:1px solid var(--no)}
+/* ── cierre: de qué hablaron ── */
+.cierre{border:2px solid var(--oro);border-radius:6px;background:linear-gradient(180deg,#1d2a7a,#0b1238);padding:13px 14px;box-shadow:0 0 0 2px var(--win-b),0 12px 26px #0008;animation:globo .4s cubic-bezier(.2,.9,.3,1)}
+.cierre .ct{display:block;font-family:"Silkscreen";font-size:11px;letter-spacing:.1em;color:var(--oro);margin-bottom:9px}
+.cierre .temas{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.cierre .temas span{font-size:13px;padding:4px 10px;border-radius:14px;background:#f4ecd814;border:1px solid #f4ecd855;color:var(--crema)}
+.cierre p{display:flex;gap:8px;font-size:14px;line-height:1.5;color:var(--crema);margin:0 0 7px}
+.cierre p i{font-style:normal}
+.bandos{display:flex;flex-direction:column;gap:5px;margin:10px 0 8px}
+.bando{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--tenue)}
+.bando b{font-family:"Silkscreen";font-size:13px;min-width:18px}
+.bando.a_favor b{color:var(--si)}.bando.en_contra b{color:var(--no)}.bando.depende b{color:var(--dep)}
+.bando span{min-width:92px}
+.bando img{width:24px;height:24px;object-fit:cover;object-position:50% 0;image-rendering:pixelated;border-radius:4px;background:#1b2670}
+.cierre small{display:block;font-size:11.5px;color:var(--tenue)}
+/* ── escenario: nombre bajo los pies, rótulo de la pregunta, tablero grande ── */
+.placa{position:absolute;left:0;top:0;pointer-events:none}
+.placa{font-family:"Silkscreen";font-size:10px;letter-spacing:.06em;color:#fff;text-shadow:1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000;white-space:nowrap;margin:6px 0 0;translate:-50% 0}
+.rotulo{position:absolute;left:50%;top:16px;transform:translateX(-50%);max-width:min(620px,calc(100% - 330px));text-align:center;background:linear-gradient(180deg,#1d2a7aee,#0b1238ee);border:2px solid var(--crema);border-radius:6px;padding:7px 16px 9px;box-shadow:0 0 0 2px var(--win-b),0 10px 24px #0009;animation:cartel .5s cubic-bezier(.2,.9,.3,1)}
+.rotulo small{display:block;font-family:"Silkscreen";font-size:8.5px;letter-spacing:.14em;color:var(--oro)}
+.rotulo b{display:block;font-size:16px;line-height:1.3;color:var(--crema);font-weight:600;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.tablero.grande{left:50%;right:auto;top:12%;transform:translateX(-50%);width:min(620px,calc(100% - 40px));padding:16px 16px 12px}
+.tablero.grande h4{font-size:13px;margin-bottom:12px}
+.tablero.grande li{grid-template-columns:34px 1fr auto 48px;min-height:44px;position:relative}
+.tablero.grande li::before{content:"";position:absolute;inset:0 auto 0 34px;width:0;background:color-mix(in srgb,var(--pc) 22%,transparent);transition:width .8s cubic-bezier(.2,.9,.3,1)}
+.tablero.grande li.ve::before{width:calc((100% - 34px) * var(--pct-n,0))}
+.tablero.grande li>span{position:relative;font-size:14px}
+.tablero .caras{display:flex;gap:2px;padding:0 6px;opacity:0;transition:opacity .3s}
+.tablero li.ve .caras{opacity:1}
+.tablero .caras img{width:22px;height:22px;object-fit:cover;object-position:50% 0;image-rendering:pixelated;border-radius:3px;background:#1b2670}
+.juezdice{position:absolute;left:16px;bottom:16px;top:auto;max-width:min(420px,calc(100% - 32px));margin:0;transform:none!important;font-size:11px}
+.juezdice b{display:block;font-size:8.5px;letter-spacing:.14em;opacity:.75;margin-bottom:2px}
+.marca.taza{font-size:16px;text-shadow:none;animation:taza 1.6s ease-out forwards}
+@keyframes taza{0%{opacity:0;translate:0 6px}20%{opacity:1}100%{opacity:0;translate:0 -22px}}
+/* ── lista de departamentos ── */
+#dptos{border-top:2px solid #f4ecd844;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;flex:0 1 46%}
+.dfila{display:flex;gap:6px}
+#dptobusca{flex:1;min-width:0;background:var(--win-b);border:2px solid #f4ecd899;border-radius:4px;color:var(--crema);font-size:14px;padding:7px 10px}
+#recorrer{flex:0 0 auto;background:var(--oro);color:#1a1300;border-color:#fff4b0;font-size:9.5px}
+#dptolista{display:grid;grid-template-columns:1fr 1fr;gap:4px;overflow-y:auto;min-height:0}
+#dptolista button{display:flex;justify-content:space-between;align-items:baseline;gap:6px;text-align:left;padding:7px 9px;border-radius:4px;border:1px solid #3b4aa8;background:#0b1238;color:var(--crema);font-size:13px}
+#dptolista button span{font-size:11px;color:var(--tenue)}
+#dptolista button:hover{border-color:var(--oro)}
+#dptolista button.sel{border-color:var(--oro);box-shadow:inset 0 0 0 1px var(--oro)}
+#dptolista button.fav{border-color:var(--si);background:#2fd08a1f}#dptolista button.con{border-color:var(--no);background:#ff5a5f1f}#dptolista button.dep{border-color:var(--dep);background:#fcd1161a}
+#dptolista button.hot{animation:piensa 1s steps(2) infinite}
+#dr-mapa{width:min(460px,calc(100vw - 24px))}
+#dr-mapa #navmap{flex:1 1 54%}
+@media (max-width:900px){.rotulo{max-width:calc(100% - 24px);top:auto;bottom:12px}.rotulo b{font-size:14px}.tablero.grande{top:8px}}
 </style>
 </head>
 <body>
@@ -595,7 +676,11 @@ html body #banner:hover{white-space:normal}
     <section id="encuesta" class="ventana">
       <h2><span>la conversación <b id="estado"></b> <span id="reloj"></span></span>
         <span id="ctrl"><button id="btnpausa" type="button">⏸ PAUSAR</button><button id="btnfin" type="button">■ CERRAR</button></span></h2>
+      <div id="pregcab" hidden><small id="pc-modo"></small><b id="pc-q"></b>
+        <div id="pc-meta"><span id="pc-donde"></span><span id="pc-reloj"></span></div>
+        <div id="pc-caras" aria-label="Quiénes participan"></div></div>
       <div id="tally"></div>
+      <button type="button" id="nuevas" hidden>↓ nuevas respuestas</button>
       <div id="resps" role="log" aria-live="polite"><div class="bienvenida">
         <b>¿Qué piensa Colombia?</b>
         <p>Escribe una pregunta abajo y mira llegar a la gente. Cada persona es una ficha real del DANE; lo que dice lo genera un modelo.</p>
@@ -607,6 +692,10 @@ html body #banner:hover{white-space:normal}
   <aside id="dr-mapa" class="cajon izq ventana" aria-label="Mapa de Colombia">
     <h2>colombia <b id="maptag">toca un territorio</b><button type="button" class="cierra" aria-label="Cerrar mapa">✕</button></h2>
     <div id="navmap" aria-busy="true"><div id="maptip"></div><div class="pxf" style="color:var(--faint);padding:24px;text-align:center">cargando 33 territorios…</div></div><div id="maplabel">—</div>
+    <div id="dptos">
+      <div class="dfila"><input id="dptobusca" placeholder="Buscar departamento…" autocomplete="off" aria-label="Buscar departamento"><button type="button" id="recorrer" class="pxbtn">▶ RECORRER EL PAÍS</button></div>
+      <div id="dptolista" role="list"></div>
+    </div>
   </aside>
   <aside id="dr-censo" class="cajon izq ventana" aria-label="El censo">
     <h2>el censo <b id="c-src-tag">DANE</b><button type="button" class="cierra" aria-label="Cerrar censo">✕</button></h2>
@@ -784,7 +873,9 @@ $("#btnfin").onclick=()=>{CONV.stop=true;CONV.paused=false;
   if(MODO!=="tertulia")abortarCorrida();};  // en tertulia, cerrar = levantar la mesa con veredicto; en lo demás, cancelar  // stop en la corrida viva + teardown (typewriters, controles, botón)
 setInterval(()=>{if($("#ctrl").style.display!=="none"&&CONV.start){
   const s=Math.round((Date.now()-CONV.start)/1000);
-  $("#reloj").textContent=(CONV.paused?"⏸ ":"")+Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+  $("#reloj").textContent="";
+  const t=(CONV.paused?"⏸ ":"⏱ ")+Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+  $("#pc-reloj").textContent=MODO==="tertulia"?t+" / 3:00":t;
 }},1000);
 
 /* ═══ MODO PAÍS: una pregunta, 33 mesas — el mapa se pinta con las conclusiones ═══ */
@@ -798,6 +889,7 @@ async function pais(q){
   $("#ctrl").style.display="flex";  // en país también hay ■ CERRAR: corta las mesas en vuelo
   DECIDIDO={}; paintNav();
   $("#tally").innerHTML="";
+  cabecera("pais",q,"toca un departamento o recorre el país",[]);
   $("#maptag").textContent="el país responde";
   $("#resps").innerHTML=`
     <div style="color:var(--dim);padding:2px 2px 8px">
@@ -824,7 +916,9 @@ async function mesa(cod){
   const pool=RES.filter(r=>r.dpto===cod&&r.edad>=18);
   for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}  // Fisher-Yates: sort(random) no baraja parejo
   const sample=pool.slice(0,4);
-  asignarSprites(sample);ESC("escena",{modo:"pais",sel:[cod],gente:sample});
+  asignarSprites(sample);ESC("escena",{modo:"pais",sel:[cod],gente:sample,pregunta:q});
+  $("#pc-donde").textContent="mesa de "+d.nombre;
+  $("#pc-caras").innerHTML=sample.map(r=>`<img src="gente/${spriteDe(r)}.webp" alt="" title="${esc(r.nombre)}" data-rid="${r.id}">`).join("");
   abrirCajon("dr-mapa",false);          // la mesa se ve entera; el mapa vuelve con el veredicto
   el.insertAdjacentHTML("beforeend",`<div class="seats"></div><div class="ticker"><span class="tickertxt">llegan los de ${esc(d.nombre)}…</span></div>`);
   const _seats=el.querySelector(".seats");
@@ -858,7 +952,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
       if(!['a_favor','en_contra','depende','ni_ni'].includes(pos))pos='sin_postura';
       typewriter(say,txt);ESC("habla",r,txt,pos);
       card.style.setProperty("--pc",COLORES[pos]||COLORES.depende);
-      transcript.push({n:r.nombre.split(" ")[0],t:txt,p:pos});
+      transcript.push({n:r.nombre.split(" ")[0],t:txt,p:pos});votoCara(r.id,pos);
     }catch(e){say.classList.remove("thinking");say.textContent="(se quedó callado)";}
   }
   /* la mesa CONCLUYE — nada de conversación eterna */
@@ -880,17 +974,15 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   setTimeout(()=>{if(MODO==="pais"&&PAIS===owner)abrirCajon("dr-mapa",true);},3200);
   festejo(el);
   selloHumano(q,transcript,el);
-  el.scrollTop=1e9;
+  abajo();
   path?.classList.remove("hot");
   path?.classList.add({a_favor:"fav",en_contra:"con",depende:"dep"}[pos]);
   DECIDIDO[cod]=pos; paintNav();
   owner.tally[pos]++;
   guardar("pais",cod,q,{postura:pos,conclusion:concl,
     participantes:sample.map(r=>r.id),intervenciones:transcript.length});
-  $("#tally").innerHTML=
-    `<div class="tal fav"><b>${owner.tally.a_favor}</b><span>dptos a favor</span></div>
-     <div class="tal con"><b>${owner.tally.en_contra}</b><span>dptos en contra</span></div>
-     <div class="tal dep"><b>${owner.tally.depende}</b><span>dptos divididos</span></div>`;
+  $("#tally").innerHTML=tallyHTML(owner.tally,"",["dptos a favor","dptos en contra","dptos divididos"]);
+  pintaLista();
   (owner.data??={})[cod]={transcript,concl,pos,ctx,sample:sample.map(r=>r.id)};
   finMesa();
 }
@@ -909,7 +1001,7 @@ function renderMesa(cod,dat,el){
   el.insertAdjacentHTML("beforeend",
     `<div class="conclu" style="--pc:${COLORES[dat.pos]}"><b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(dat.concl)}</div>`);
   festejo(el);
-  el.scrollTop=1e9;
+  abajo();
 }
 function mayoria(ts){
   const c={a_favor:0,en_contra:0,depende:0};ts.forEach(t=>{if(t.p in c)c[t.p]++});
@@ -945,7 +1037,7 @@ function syncSel(){
   if(SEL.size===1)cur=[...SEL][0];
   $("#dptosel").value=SEL.size===1?cur:"CO";
   paintNav();selInfo();render();
-  ESC("vistaLugar",MODO,[...SEL]);
+  ESC("vistaLugar",MODO,[...SEL]);pintaLista();
 }
 
 async function drawNav(){
@@ -959,6 +1051,7 @@ async function drawNav(){
     if(SEL.has(cod)&&SEL.size>0)SEL.delete(cod);else SEL.add(cod);
     cur=cod; syncSel();
   }
+  window.elegirDpto=elegir;pintaLista();
   svg.addEventListener("click",e=>elegir(e.target.dataset?.cod));
   svg.addEventListener("keydown",e=>{
     const cod=e.target.dataset?.cod;
@@ -1545,12 +1638,14 @@ ${LIBRETO?"- OBEDECE tu inclinación asignada: el texto debe terminar del lado q
 }
 /* scroll coalescido: N typewriters → un solo layout por frame */
 let pendScroll=false;const COLADOWN=new Set();
+/* el chat baja solo si estabas abajo; si subiste a leer, se queda y avisa */
+let PEGADO=true;
+function abajo(){const e=$("#resps");if(!e)return;if(PEGADO){e.scrollTop=1e9;}else $("#nuevas").hidden=false;}
 function scrollAbajo(el){
   COLADOWN.add(el);
   if(pendScroll)return;
   pendScroll=true;
-  requestAnimationFrame(()=>{pendScroll=false;
-    COLADOWN.forEach(e=>{e.scrollTop=1e9});COLADOWN.clear();});
+  requestAnimationFrame(()=>{pendScroll=false;COLADOWN.clear();abajo();});
 }
 function typewriter(el,txt){
   const host=el.closest("#resps,#mesa");
@@ -1567,7 +1662,11 @@ function typewriter(el,txt){
   const iv=setInterval(()=>{
     i+=paso;el.textContent=txt.slice(0,i);
     if(host)scrollAbajo(host);
-    if(i>=txt.length){clearInterval(iv);TW.delete(iv);fin();}
+    if(i>=txt.length){clearInterval(iv);TW.delete(iv);fin();
+      if(el.scrollHeight>el.clientHeight+6&&!el.nextElementSibling?.classList.contains("vermas")){
+        const b=document.createElement("button");b.type="button";b.className="vermas";b.textContent="ver más ▾";
+        b.onclick=ev=>{ev.stopPropagation();const c=el.closest(".resp");c.classList.toggle("abierta");b.textContent=c.classList.contains("abierta")?"ver menos ▴":"ver más ▾";};
+        el.after(b);}}
   },28);TW.add(iv);
 }
 const RESBY={};
@@ -1622,7 +1721,7 @@ function bubble(r,alt,parent){
   card.insertAdjacentHTML("beforeend",`<div><div class="who">${esc(r.nombre)} · ${r.edad} ·
     ${esc(r.ocupacion)}${SEL.size!==1?" · <span style='color:var(--accent)'>"+esc(r.dpto_nombre)+"</span>":""}</div>
     <div class="say thinking">está escribiendo</div></div>`);
-  host.append(card);host.scrollTop=1e9;
+  host.append(card);abajo();
   return card;
 }
 let OPC=null;  // pregunta tipo "A o B": {a,b}
@@ -1637,12 +1736,22 @@ function sondeoInstr(r){
   const M=marcoDe(r);
   return "\nResponde la encuesta en 1-2 frases. La gente real opina de TODO: aunque la pregunta venga enredada o mal escrita, interprétala como buenamente se entienda (ayúdate del contexto de noticias) y TOMA PARTIDO sobre eso. El largo obedece tu temperamento: el seco despacha en una línea de 5-8 palabras, el parlanchín se extiende; que no midan todas las respuestas lo mismo. "+(M.despiste?"Puedes confesar que la pregunta te llegó enredada, pero igual opinas. ":"PROHIBIDO decir que no entendiste la pregunta, que no sabes de qué te hablan o que eso 'no te quita el sueño': interpreta y opina como haría la gente de verdad. ")+"Cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende|ni_ni]. ni_ni SOLO si tu personaje es de los que la política ni le va ni le viene; depende solo si tu vida te parte genuinamente en dos; si tienes postura, dila clara. a_favor significa SÍ A LA PREGUNTA LITERAL tal como la entendiste (no al debate de las noticias). Tu marco social y tu inclinación asignada fijan tu lado: PROHIBIDO correrte al lado 'simpático' del debate.";
 }
-function tallyHTML(c,extra){
-  const [la,lb,ld]=etiquetas();
-  const cel=(n,l,cls)=>`<div class="tal ${cls}"><b>${n}</b><span>${esc(l)}</span></div>`;
-  const nini=c.ni_ni?`<div class="tal" style="color:var(--faint)"><b>${c.ni_ni}</b><span>ni me va ni me viene</span></div>`:"";
-  const sinp=c.sin_postura?`<div class="tal" style="color:var(--dim)"><b>${c.sin_postura}</b><span>sin postura clara</span></div>`:"";
-  return cel(c.a_favor,la,"fav")+cel(c.en_contra,lb,"con")+cel(c.depende,ld,"dep")+nini+sinp+(extra||"");
+function tallyHTML(c,extra,etq){
+  const [la,lb,ld]=etq||etiquetas();
+  const seg=[["a_favor",la,"fav"],["en_contra",lb,"con"],["depende",ld,"dep"],["ni_ni","ni fu ni fa","nini"],["sin_postura","sin postura","sinp"]].filter(([k])=>c[k]);
+  const barra=`<div class="hudbar">${seg.map(([k,l,cl])=>`<i class="${cl}" style="flex:${c[k]}"></i>`).join("")||'<i class="vacio" style="flex:1"></i>'}</div>`;
+  const ley=`<div class="hudley">${seg.map(([k,l,cl])=>`<span class="${cl}"><b>${c[k]}</b>${esc(l)}</span>`).join("")}${extra||""}</div>`;
+  return `<div class="hud">${barra}${ley}</div>`;
+}
+/* las caras de la cabecera se tiñen con el voto de cada quien */
+function votoCara(rid,pos){const im=document.querySelector(`#pc-caras [data-rid="${rid}"]`);if(!im)return;
+  im.className="c-"+(pos||"sp");im.title=(RESBY[rid]?.nombre||"")+(pos?" · "+pos.replace("_"," "):"");}
+function cabecera(modo,q,donde,gente){
+  $("#pregcab").hidden=false;
+  $("#pc-modo").textContent={sondeo:"LA PREGUNTA DEL SHOW",tertulia:"EL TEMA DE LA MESA",pais:"EL PAÍS RESPONDE"}[modo]||"LA PREGUNTA";
+  $("#pc-q").textContent=q;$("#pc-donde").textContent=donde;$("#pc-reloj").textContent="";
+  $("#pc-caras").innerHTML=(gente||[]).map(r=>`<img src="gente/${spriteDe(r)}.webp" alt="${esc(r.nombre.split(" ")[0])}" title="${esc(r.nombre)}" data-rid="${r.id}">`).join("");
+  PEGADO=true;$("#nuevas").hidden=true;
 }
 function postura(txt){
   const m=txt.match(/\[POSTURA:?\s*(a_favor|en_contra|depende|ni_ni)/i);
@@ -1994,7 +2103,7 @@ function tallyVivo(postDe,n){
   Object.values(postDe).forEach(v=>{if(POSTURAS.indexOf(v)>=0)c[v]++;});
   const falta=n-Object.keys(postDe).length;
   $("#tally").innerHTML=tallyHTML(c,
-    falta>0?`<div class="tal"><b>${falta}</b><span>por hablar</span></div>`:"");
+    falta>0?`<span class="falta"><b>${falta}</b>por hablar</span>`:"");
 }
 function tally(p){
   $("#tally").innerHTML=tallyHTML(p);
@@ -2042,9 +2151,8 @@ async function conversar(q){
   const d=SEL.size===1?MARG[[...SEL][0]]:natMarg();
   const n=Math.max(4,+($("#nsel")?.value||8));
   const sample=muestraDe(SEL,n);
-  $("#resps").innerHTML=`<div style="color:var(--dim);padding:4px 2px 8px">
-    <b class="pxf" style="font-size:10px;color:var(--work)">${MODO==="tertulia"?"TEMA EN LA MESA":"PREGUNTA"}</b>
-    ${esc(q)} — ${n} residentes de ${esc(d.nombre)}</div>`;
+  $("#resps").innerHTML="";
+  cabecera(MODO,q,`${n} residentes de ${d.nombre}`,sample);
   $("#tally").innerHTML="";
   const p={a_favor:0,en_contra:0,depende:0,ni_ni:0,sin_postura:0};
   const dosOf=r=>DOS[r.dpto]||{};
@@ -2053,7 +2161,7 @@ async function conversar(q){
   $("#resps").insertAdjacentHTML("beforeend",
     `<div id="seats"></div><div id="ticker"><span id="tickertxt">llamando a los vecinos…</span></div>`);
   asignarSprites(sample);
-  ESC("escena",{modo:MODO,sel:[...SEL],gente:sample});
+  ESC("escena",{modo:MODO,sel:[...SEL],gente:sample,pregunta:q});
   const seats=$("#seats");
   sample.forEach((r,i)=>{
     const s=document.createElement("div");s.className="seat";
@@ -2110,7 +2218,7 @@ async function conversar(q){
         const gl=lado===undefined?estiloDe(r).lean:LEAN[lado?0:2];
         if(pos!=='sin_postura'&&pos!=='ni_ni'&&r.compromiso!=='indiferente'){obedN++;
           if((gl.includes('A FAVOR')&&pos==='a_favor')||(gl.includes('EN CONTRA')&&pos==='en_contra')||(gl.includes('dividido')&&pos==='depende'))obed++;}
-        votos.push({pos,txt});
+        votos.push({pos,txt,spr:spriteDe(r)});votoCara(r.id,pos);
         const af=anc?.afirmativas?anc.afirmativas.includes(String(vAnc)):vAnc===1,
           sus=anc?.sustantivas?anc.sustantivas.includes(String(vAnc)):vAnc===1||vAnc===2;
         if(sus){const s=(window.__ancla??={sigue:0,n:0});s.n++;
@@ -2119,7 +2227,7 @@ async function conversar(q){
         card.style.setProperty("--pc",COLORES[pos]||COLORES.depende);tally(p);
       }catch(e){p.sin_postura=(p.sin_postura||0)+1;tally(p);say.classList.remove("thinking");say.textContent="(no contestó)";}
     }));
-    if(obedN)$("#tally").insertAdjacentHTML("beforeend",`<div style="color:var(--dim);font-size:10px;margin-top:2px">libreto: ${obed}/${obedN} fieles a su inclinación asignada</div>`);
+    window.__libreto={obed,obedN};   // se mide, no se muestra: no le dice nada a quien lee
     /* sin ancla, la cifra es la del analista: en 16 preguntas ciegas se alejó
        17.3 pts de la real; lo que dijeron las voces, 25.1 (docs/METODO.md) */
     if(EST!=null){const [la]=etiquetas();
@@ -2133,14 +2241,15 @@ async function conversar(q){
     if(conTexto.length>=3&&run0===RUN){try{
       const rj=await fetch("/api/opina/",{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({agrupar:true,pregunta:q,textos:conTexto.map(v=>v.txt)})});
-      const g=rj.ok?(await rj.json()).grupos:[];
+      const J=rj.ok?await rj.json().catch(()=>({})):{},g=J.grupos||[];
       if(Array.isArray(g)&&g.length&&run0===RUN){
         const filas=g.map(x=>{const c={};x.i.forEach(k=>{const p=conTexto[k]?.pos;if(p)c[p]=(c[p]||0)+1;});
-          return {e:x.e,n:x.i.length,pos:Object.entries(c).sort((a,b)=>b[1]-a[1])[0]?.[0]};}).sort((a,b)=>b.n-a.n);
+          return {e:x.e,n:x.i.length,caras:x.i.map(k=>conTexto[k]?.spr).filter(Boolean),pos:Object.entries(c).sort((a,b)=>b[1]-a[1])[0]?.[0]};}).sort((a,b)=>b.n-a.n);
         const nota=(EST!=null?"🧭 Nadie ha medido esto: es exploración. ":anc?"📊 Las voces partieron de respuestas reales de una encuesta. ":"")+"Agrupa un modelo; cuenta el código.";
-        ESC("tablero",{titulo:"¿QUÉ DICEN LOS COLOMBIANOS?",n:conTexto.length,filas,nota});
+        if(J.titulo){ESC("titulo",J.titulo,"sondeo");$("#pc-q").textContent=J.titulo;}
+        ESC("tablero",{titulo:J.titulo?J.titulo.toUpperCase():"¿QUÉ DICEN LOS COLOMBIANOS?",n:conTexto.length,filas,nota});
         $("#resps").insertAdjacentHTML("beforeend",`<div class="juicio"><b>EL JUEZ AGRUPÓ ${conTexto.length} RESPUESTAS</b><ol>${filas.map(f=>`<li>${esc(f.e)} · ${f.n}</li>`).join("")}</ol><small>${esc(nota)}</small></div>`);
-        $("#resps").scrollTop=1e9;
+        abajo();
       }}catch(e){}}
   }else{
     /* ── DELIBERACIÓN CONTINUA: hasta 3 min, pausable, corta cuando hay acuerdo ── */
@@ -2176,7 +2285,7 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
             {role:"user",content:`Tema: ${q}\n${charla}\nVUELTA ${ronda+1}. TU ÚLTIMA POSTURA REGISTRADA: ${postDe[r.id]?postDe[r.id].replace("_"," ")+" — si cambias de lado, DILO explícito ('me convencieron', 'ya no estoy tan seguro')":"ninguna aún"}.${r.compromiso==="indiferente"?" Si de verdad no tienes nada nuevo, puedes pasar corto ('yo paso, eso ya está dicho').":""}${ROCES[r.id]?`\n${ROCES[r.id].quien} te contradijo hace un rato; si viene al caso, cóbraselo con nombre propio — sin pelear, como se hace entre vecinos.`:""}\nTe toca, ${r.nombre.split(" ")[0]}. Cierra tu idea COMPLETA antes de la etiqueta — nada de frases a medias.`}],140);
           let [pos,txt]=postura(raw);const propia=!!pos;
           if(!pos)pos=await clasificarPostura(q,txt);
-          if(pos){const prev=postDe[r.id];postDe[r.id]=pos;tallyVivo(postDe,sample.length);if(propia&&prev&&prev!==pos)card.insertAdjacentHTML("beforeend",`<div style="font-size:9px;color:var(--work);margin-top:3px">↷ cambió: ${prev.replace("_"," ")} → ${pos.replace("_"," ")}</div>`);}
+          if(pos){const prev=postDe[r.id];postDe[r.id]=pos;votoCara(r.id,pos);tallyVivo(postDe,sample.length);if(propia&&prev&&prev!==pos)say.parentElement.insertAdjacentHTML("beforeend",`<div style="font-size:9px;color:var(--work);margin-top:3px">↷ cambió: ${prev.replace("_"," ")} → ${pos.replace("_"," ")}</div>`);}
           typewriter(say,txt);ESC("habla",r,txt,pos);
           card.style.setProperty("--pc",COLORES[pos]||"var(--grid)");
           const mio=r.nombre.split(" ")[0];
@@ -2186,8 +2295,9 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
             if(pa&&pb&&pa!==pb){ROCES[otro.id]={quien:mio,tema:txt.slice(0,70)};
               /* memoria a la vista: un estudio con usuarios midió que la memoria
                  OPACA baja la confianza percibida y la visible la sube */
-              card.insertAdjacentHTML("beforeend",
-                `<div style="font-size:9px;color:var(--faint);margin-top:3px">⚔ le lleva la contraria a ${esc(otro.n)}</div>`);}
+              const ro=RESBY[otro.id];
+              say.parentElement.insertAdjacentHTML("beforeend",
+                `<span class="roce" title="le lleva la contraria a ${esc(otro.n)}">⚔ <img src="gente/${ro?spriteDe(ro):"andino_0"}.webp" alt="">${esc(otro.n)}</span>`);}
           }
           transcript.push({id:r.id,n:mio,d:r.dpto_nombre,t:txt});
         }catch(e){say.classList.remove("thinking");say.textContent="(se quedó callado)";}
@@ -2221,17 +2331,25 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
     try{
       /* si hubo acuerdo lo decide el conteo (código); el resumen solo lo narra */
       const acordo=Math.max(p.a_favor,p.en_contra,p.depende)>=Math.ceil(sample.length*0.8);
-      const resumen=await flash([{role:"system",content:
-        "Cierras tertulias. En máximo 2 frases cortas y COMPLETAS: di quién quedó en qué orilla (nombres) y el porqué en una pincelada. Español colombiano vivo, neutral. El resultado ya está decidido: no lo contradigas."},
-        {role:"user",content:`Tema: ${q}\nResultado: ${acordo?"SÍ hubo acuerdo":"NO hubo acuerdo"} (${p.a_favor} a favor, ${p.en_contra} en contra, ${p.depende} depende).\n`+transcript.map(t=>`${t.n}: ${t.t}`).join("\n")}],220,0.5,"cierre");
-      /* mientras el veredicto viajaba pudo entrar otra pregunta: la corrida vieja no pinta ni guarda nada */
+      /* no "¿hubo acuerdo?" sino de qué hablaron: temas, en qué coinciden, dónde chocan */
+      let R={temas:[],coinciden:"",chocan:""};
+      try{const rr=await fetch("/api/opina/",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({resumir:true,pregunta:q,turnos:transcript.slice(-30).map(t=>`${t.n}: ${t.t}`)})});
+        if(rr.ok)R=await rr.json();}catch(e){}
       if(run!==RUN)return;
+      const resumen=[R.coinciden,R.chocan].filter(Boolean).join(" ");
+      const seg=Math.round((Date.now()-CONV.start)/1000);
+      const [la,lb,ld]=etiquetas();
+      const bando=(k,l)=>{const g=sample.filter(r=>postDe[r.id]===k);return g.length?`<div class="bando ${k}"><b>${g.length}</b><span>${esc(l)}</span>${g.map(r=>`<img src="gente/${spriteDe(r)}.webp" alt="" title="${esc(r.nombre)}">`).join("")}</div>`:"";};
       $("#resps").insertAdjacentHTML("beforeend",
-        `<div class="mod" style="border-color:${acordo?"var(--ok)":"var(--fail)"}">
-         <b style="color:${acordo?"var(--ok)":"var(--fail)"}">${acordo?"✔ SE PUSIERON DE ACUERDO":"✘ NO HUBO ACUERDO"} · ${Math.round((Date.now()-CONV.start)/1000)}s · ${transcript.length} intervenciones</b>${esc(resumen)}</div>`);
-      $("#resps").scrollTop=1e9;
-      ESC("cartel",`<b>${acordo?"✔ SE PUSIERON DE ACUERDO":"✘ NO HUBO ACUERDO"}</b>${esc(resumen)}`,acordo?"a_favor":"en_contra");
-      guardar("tertulia",cur,q,{posturas:p,resumen,acordo,rondas:ronda,
+        `<div class="cierre"><b class="ct">DE QUÉ HABLARON</b>
+         ${R.temas?.length?`<div class="temas">${R.temas.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`:""}
+         ${R.coinciden?`<p class="co"><i>🤝</i>${esc(R.coinciden)}</p>`:""}${R.chocan?`<p class="ch"><i>⚔</i>${esc(R.chocan)}</p>`:""}
+         <div class="bandos">${bando("a_favor",la)}${bando("en_contra",lb)}${bando("depende",ld)}${bando("ni_ni","ni fu ni fa")}</div>
+         <small>${sample.length} voces · ${transcript.length} intervenciones · ${Math.floor(seg/60)}:${String(seg%60).padStart(2,"0")} · ${acordo?"casi todos en un mismo lado":"la mesa quedó repartida"} · conversación ilustrativa</small></div>`);
+      abajo();
+      ESC("cartel",`<b>DE QUÉ HABLARON</b>${esc((R.temas||[]).join(" · "))}${R.chocan?" — "+esc(R.chocan):""}`,acordo?"a_favor":"depende");
+      guardar("tertulia",cur,q,{posturas:p,resumen,temas:R.temas,acordo,rondas:ronda,
         segundos:Math.round((Date.now()-CONV.start)/1000),participantes:sample.map(r=>r.id)});
       selloHumano(q,transcript);
     }catch(e){}
@@ -2241,6 +2359,34 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
 }
 boot();
 ESC("vista",MODO,[...SEL]);
+/* LISTA DE DEPARTAMENTOS: tocar Bogotá en el mapa era casi imposible */
+function pintaLista(){
+  const L=$("#dptolista");if(!L||!Object.keys(MARG).length)return;
+  const f=($("#dptobusca")?.value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const E={a_favor:"fav",en_contra:"con",depende:"dep"};
+  L.innerHTML=Object.entries(MARG).sort((a,b)=>(b[1].poblacion||0)-(a[1].poblacion||0))
+    .filter(([c,d])=>d.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(f))
+    .map(([c,d])=>`<button type="button" role="listitem" data-cod="${c}" class="${E[DECIDIDO[c]]||""} ${SEL.has(c)?"sel":""} ${PAIS?.busy?.[c]?"hot":""}"><b>${esc(d.nombre)}</b><span>${((d.poblacion||0)/1e6).toLocaleString("es-CO",{maximumFractionDigits:1})} M</span></button>`).join("");
+}
+$("#dptobusca")?.addEventListener("input",pintaLista);
+$("#dptolista")?.addEventListener("click",e=>{const b=e.target.closest("button[data-cod]");if(b)window.elegirDpto?.(b.dataset.cod);});
+/* recorrer el país: una mesa por región, una tras otra */
+const RECORRIDO=["11","05","76","08","68","52","50","13","19","91"];
+$("#recorrer")?.addEventListener("click",async()=>{
+  if(MODO!=="pais"){$("#modo [data-m=pais]").click();}
+  if(!PAIS.q){const i=$("#qin");i.placeholder="Primero escribe la pregunta para el país…";i.focus();return;}
+  const yo=PAIS;
+  for(const c of RECORRIDO){
+    if(PAIS!==yo||CONV.stop||MODO!=="pais")break;
+    if(yo.data?.[c])continue;
+    cur=c;SEL=new Set([c]);$("#dptosel").value=c;selInfo();paintNav();render();pintaLista();
+    await mesa(c);
+    await new Promise(r=>setTimeout(r,2500));
+  }
+});
+/* el chat: si subes a leer, no te arrastra hacia abajo */
+$("#resps").addEventListener("scroll",()=>{const e=$("#resps");PEGADO=e.scrollHeight-e.scrollTop-e.clientHeight<80;if(PEGADO)$("#nuevas").hidden=true;});
+$("#nuevas").onclick=()=>{PEGADO=true;$("#resps").scrollTop=1e9;$("#nuevas").hidden=true;};
 /* CAJONES: mapa, censo y la tierra se abren sobre el escenario */
 function abrirCajon(id,forzar){
   const el=document.getElementById(id);if(!el)return;

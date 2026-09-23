@@ -116,7 +116,8 @@ function quitarTodos() {
   GENTE.clear();
   if (JUEZ) { scene.remove(JUEZ); JUEZ = null; }
   if (MESA) { scene.remove(MESA); MESA = null; }
-  over.querySelectorAll(".globo,.marca,.cartel,.tablero,.juezdice").forEach(e => e.remove());
+  over.querySelectorAll(".globo,.marca,.cartel,.tablero,.juezdice,.placa,.rotulo").forEach(e => e.remove());
+  COLA.length = 0; enTurno = false;
 }
 
 /* la mesa y las cosas de cada región (web/gente/catalogo.json, "utileria") */
@@ -162,16 +163,17 @@ function aPantalla(v) {
   return { x: (p.x * .5 + .5) * r.width, y: (-p.y * .5 + .5) * r.height, z: p.z };
 }
 function cabeza(a) { return new THREE.Vector3(a.position.x, a.userData.alto * 1.02, a.position.z); }
-function pegar(el, a, dy = 0) {
+function pies(a) { return new THREE.Vector3(a.position.x, 0, a.position.z); }
+function pegar(el, a, dy = 0, ancla = "cabeza") {
   el.userData = a;
-  el.dataset.dy = dy;
+  el.dataset.dy = dy; el.dataset.ancla = ancla;
   over.append(el);
 }
 function seguir() {
   const W = canvas.clientWidth;
   for (const el of over.querySelectorAll("[data-dy]")) {
     const a = el.userData; if (!a || !a.parent) { el.remove(); continue; }
-    const p = aPantalla(cabeza(a));
+    const p = aPantalla(el.dataset.ancla === "pies" ? pies(a) : cabeza(a));
     el.style.transform = `translate(${Math.round(p.x)}px,${Math.round(p.y - (+el.dataset.dy || 0))}px)`;
     const gv = el.firstElementChild;
     if (gv && el.classList.contains("globo")) {
@@ -191,10 +193,26 @@ function globo(a, nombre, txt, pos) {
   el.innerHTML = `<div class="gv"><b></b><p></p></div>`;
   el.querySelector("b").textContent = nombre;
   pegar(el, a, 14);
-  const p = el.querySelector("p"), corto = txt.length > 170 ? txt.slice(0, 167).replace(/\s+\S*$/, "") + "…" : txt;
+  const p = el.querySelector("p"), corto = idea(txt);
   if (QUIETO) { p.textContent = corto; return; }
   let i = 0; const paso = Math.max(1, Math.round(corto.length / 55));
   const iv = setInterval(() => { i += paso; p.textContent = corto.slice(0, i); if (i >= corto.length) clearInterval(iv); }, 26);
+}
+/* la idea: primera frase, hasta ~110 caracteres. Leer un párrafo en un globo
+   no es un intercambio ágil; el completo queda en la conversación */
+function idea(t) {
+  t = String(t || "").trim();
+  const m = t.match(/^.{25,}?[.!?…](?=\s|$)/);
+  let c = m ? m[0] : t;
+  if (c.length > 115) c = c.slice(0, 112).replace(/\s+\S*$/, "") + "…";
+  return c;
+}
+function placa(a, nombre) {
+  a.userData.placa?.remove();
+  const el = document.createElement("div");
+  el.className = "placa"; el.textContent = nombre;
+  pegar(el, a, -6, "pies");
+  a.userData.placa = el;
 }
 function marca(a, pos) {
   a.userData.marca?.remove();
@@ -247,6 +265,21 @@ function ubicarTablero() {
   if (cabe) Object.assign(t.style, { left: a.x + "px", top: a.y + "px", width: w + "px", height: h + "px", fontSize: Math.max(10, Math.min(16, h / 12)) + "px" });
   else Object.assign(t.style, { left: "", top: "", width: "", height: "", fontSize: "" });
 }
+/* ¿el punto (x,z) del piso cae dentro del cuadro, sobre el piso, con la persona
+   entera a la vista? Así nadie se sale de la imagen ni camina por las paredes */
+function caminable(x, z, alto = ALTO) {
+  const r = host.getBoundingClientRect(), H = r.height || 1;
+  const f = aPantalla(new THREE.Vector3(x, 0, z)), c = aPantalla(new THREE.Vector3(x, alto, z));
+  const fx = f.x / (r.width || 1), fy = f.y / H;
+  return fx > .06 && fx < .94 && fy < .95 && fy > Math.max(.5, pisoY - .3) && c.y / H > .1;
+}
+function puntoLibre(cx, cz, radio, alto) {
+  for (let i = 0; i < 24; i++) {
+    const x = cx + (Math.random() * 2 - 1) * radio, z = cz + (Math.random() * 2 - 1) * radio * .7;
+    if (caminable(x, z, alto)) return new THREE.Vector3(x, 0, z);
+  }
+  return null;
+}
 /* ── lugar ───────────────────────────────────────────────────────────── */
 let lugarActual = null, capa = 0;
 function lugar(k) {
@@ -269,6 +302,25 @@ function lugar(k) {
     pl.classList.remove("entra"); void pl.offsetWidth; pl.classList.add("entra"); }
 }
 
+/* hablar de verdad: se detiene, levanta la mano, dice la idea, muestra su voto */
+function hablaYa(r, txt, pos) {
+  const a = GENTE.get(r.id); if (!a) return;
+  a.userData.meta = null;                                 // quien habla no camina
+  a.userData.habla = performance.now() + Math.min(3600, 900 + idea(txt).length * 25);
+  a.userData.mano = performance.now() + 1400;             // pide la palabra
+  a.userData.paseo = performance.now() + 9000;
+  globo(a, `${r.nombre.split(" ")[0]} · ${r.edad}`, txt, pos);
+  marca(a, pos);
+}
+let turnos = false, enTurno = false;
+const COLA = [];
+function siguienteTurno() {
+  const t = COLA.shift();
+  if (!t) { enTurno = false; return; }
+  enTurno = true;
+  hablaYa(...t);
+  setTimeout(siguienteTurno, QUIETO ? 400 : Math.min(3800, 1600 + idea(t[1]).length * 18));
+}
 /* ── API que usa el sitio ────────────────────────────────────────────── */
 const API = {
   lugarDe(sel) {
@@ -276,8 +328,10 @@ const API = {
     return c.length === 1 ? (DPTO_LUGAR[c[0]] || "nacional") : "nacional";
   },
   lugar,
-  async escena({ modo, lugar: k, sel, gente }) {
+  async escena({ modo, lugar: k, sel, gente, pregunta }) {
     quitarTodos();
+    API.turnos(modo === "sondeo");
+    if (pregunta) API.titulo(pregunta, modo);
     lugar(k || (modo === "sondeo" ? "estudio" : API.lugarDe(sel)));
     camObj.copy(CAM_BASE); miraObj.copy(MIRA_BASE);
     const acomodo = modo === "sondeo" ? "publico" : modo === "pais" ? "pie" : "mesa";
@@ -309,27 +363,39 @@ const API = {
     await Promise.all(gente.map(async (r, i) => {
       const a = await actor(r.id, "gente/" + (r._spr || window.spriteDe?.(r) || "andino_0") + "_poses.webp",
         ALTO * (.97 + (r.edad > 64 ? -.04 : 0) + (r.sexo === "mujer" ? -.03 : 0)), 4);
-      const [x, z] = P[i];
+      let [x, z] = P[i];
+      if (!caminable(x, z)) { const q = puntoLibre(x * .8, z, 1.5); if (q) { x = q.x; z = q.z; } }
       a.userData.meta = new THREE.Vector3(x, 0, z);
-      const lado = x < 0 ? -1 : 1;
+      a.userData.casa = a.userData.meta.clone();
+      a.userData.paseo = performance.now() + 7000 + Math.random() * 9000;
+      a.userData.quieto = acomodo === "publico";          // concursantes y público no pasean
+      const fondo = i % 2 === 0;                          // unos llegan del fondo, otros por los lados
       if (QUIETO) a.position.set(x, 0, z);
-      else { a.position.set(lado * (8.5 + Math.random() * 2), 0, z + .6); a.userData.llega = performance.now() + i * 170; }
+      else {
+        if (fondo) a.position.set(x * .6 + (Math.random() - .5) * 2, 0, -6.5);
+        else a.position.set((x < 0 ? -1 : 1) * 9, 0, z - 1);
+        a.userData.llega = performance.now() + i * (acomodo === "publico" ? 420 : 200);
+      }
+      placa(a, r.nombre.split(" ")[0]);
       GENTE.set(r.id, a);
     }));
   },
   piensa(r) { const a = GENTE.get(r.id); if (a) piensa(a); },
   habla(r, txt, pos) {
-    const a = GENTE.get(r.id); if (!a) return;
-    a.userData.habla = performance.now() + Math.min(4200, 900 + txt.length * 22);
-    a.userData.mano = performance.now() + 1500;          // pide la palabra
-    globo(a, `${r.nombre.split(" ")[0]} · ${r.edad}`, txt, pos);
-    marca(a, pos);
-    if (!QUIETO) {                // la cámara se acerca un poco a quien habla
-      camObj.set(CAM_BASE.x + a.position.x * .32, CAM_BASE.y - .15, CAM_BASE.z - 1.6);
-      miraObj.set(a.position.x * .55, MIRA_BASE.y, a.position.z * .4);
-    }
+    if (turnos) { COLA.push([r, txt, pos]); if (!enTurno) siguienteTurno(); return; }
+    hablaYa(r, txt, pos);
   },
+  turnos(on) { turnos = !!on; COLA.length = 0; enTurno = false; },
   calma() { camObj.copy(CAM_BASE); miraObj.copy(MIRA_BASE); },
+  titulo(q, modo) {
+    over.querySelectorAll(".rotulo").forEach(e => e.remove());
+    const el = document.createElement("div");
+    el.className = "rotulo";
+    el.innerHTML = `<small></small><b></b>`;
+    el.querySelector("small").textContent = { sondeo: "la pregunta del show", tertulia: "el tema de la mesa", pais: "el país responde" }[modo] || "la pregunta";
+    el.querySelector("b").textContent = q;
+    over.append(el);
+  },
   cartel(html, pos) {
     over.querySelectorAll(".cartel,.globo").forEach(e => e.remove());
     const el = document.createElement("div");
@@ -343,26 +409,32 @@ const API = {
   },
   /* el show: el juez revela el tablero fila por fila */
   async tablero({ titulo, n, filas, nota }) {
-    over.querySelectorAll(".tablero,.juezdice").forEach(e => e.remove());
+    // espera a que termine la ronda de turnos: el show no se pisa a sí mismo
+    while (enTurno) await new Promise(s => setTimeout(s, 300));
+    over.querySelectorAll(".tablero,.juezdice,.globo").forEach(e => e.remove());
     const t = document.createElement("div");
-    t.className = "tablero";
+    t.className = "tablero grande";
     t.innerHTML = `<h4></h4><ol></ol><small></small>`;
     t.querySelector("h4").textContent = titulo;
     t.querySelector("small").textContent = nota || "";
     const ol = t.querySelector("ol");
-    filas.slice(0, 6).forEach((f, i) => {
+    filas.slice(0, 5).forEach((f, i) => {
       const li = document.createElement("li");
-      li.innerHTML = `<span class="n">${i + 1}</span><span class="e"></span><span class="c"></span>`;
+      li.innerHTML = `<span class="n">${i + 1}</span><span class="e"></span><span class="caras"></span><span class="c"></span>`;
       li.querySelector(".e").textContent = f.e; li.querySelector(".c").textContent = f.n;
       li.style.setProperty("--pc", COLOR[f.pos] || "#fcd116");
+      li.style.setProperty("--pct-n", (f.n / Math.max(1, n)).toFixed(3));
+      for (const spr of (f.caras || []).slice(0, 6)) {
+        const im = document.createElement("img"); im.src = "gente/" + spr + ".webp"; im.alt = "";
+        li.querySelector(".caras").append(im);
+      }
       ol.append(li);
     });
     over.append(t);
-    ubicarTablero();
     const dice = document.createElement("div");
     dice.className = "juezdice";
-    if (JUEZ) pegar(dice, JUEZ, 18); else over.append(dice);
-    const decir = s => { dice.textContent = s; if (JUEZ) { JUEZ.userData.habla = performance.now() + 1100; JUEZ.userData.mano = performance.now() + 900; } };
+    over.append(dice);
+    const decir = s => { dice.innerHTML = `<b>EL PRESENTADOR</b>`; dice.append(s); if (JUEZ) { JUEZ.userData.habla = performance.now() + 1100; JUEZ.userData.mano = performance.now() + 900; } };
     decir(`¡Le preguntamos a ${n} colombianos sintéticos! Veamos qué dijeron…`);
     const lis = [...ol.children];
     for (let i = lis.length - 1; i >= 0; i--) {
@@ -398,6 +470,29 @@ let visible = true;
 new IntersectionObserver(e => { visible = e[0].isIntersecting; }).observe(host);
 const reloj = new THREE.Clock();
 const tmp = new THREE.Vector3();
+/* vida entre turnos: de a uno o dos, alguien va a la mesa (se sirve un tinto),
+   se acerca a una cosa del lugar o da unos pasos, y vuelve a su puesto */
+function pasear(ahora) {
+  let andando = 0;
+  for (const a of GENTE.values()) if (a.userData.meta && !a.userData.estatico) andando++;
+  for (const a of GENTE.values()) {
+    const u = a.userData;
+    if (u.estatico || u.quieto || !u.casa || u.meta || u.habla > ahora || ahora < u.paseo || andando >= 2) continue;
+    if (u.fuera) {                                         // de vuelta a su puesto
+      u.meta = u.casa.clone(); u.fuera = false; u.paseo = ahora + 9000 + Math.random() * 12000; andando++; continue;
+    }
+    const dianas = [MESA, ...[...GENTE.values()].filter(g => g.userData.id?.startsWith?.("cosa"))].filter(Boolean);
+    let q = null;
+    if (dianas.length && Math.random() < .6) {
+      const d = dianas[Math.floor(Math.random() * dianas.length)];
+      q = puntoLibre(d.position.x + (a.position.x < d.position.x ? -.8 : .8), d.position.z + .15, .35, u.alto);
+      if (q && d === MESA) u.sirve = true;
+    }
+    q = q || puntoLibre(u.casa.x, u.casa.z, 1.6, u.alto);
+    if (!q) { u.paseo = ahora + 6000; continue; }
+    u.meta = q; u.fuera = true; u.paseo = ahora + 2500 + Math.random() * 3000; andando++;
+  }
+}
 function cuadro() {
   requestAnimationFrame(cuadro);
   if (!visible || document.hidden) return;
@@ -407,7 +502,8 @@ function cuadroForzado() {
   const dt = Math.min(reloj.getDelta(), .25), t = reloj.elapsedTime, ahora = performance.now();
   camara.position.lerp(camObj, QUIETO ? 1 : dt * 1.6);
   mira.lerp(miraObj, QUIETO ? 1 : dt * 1.6);
-  if (!QUIETO) camara.position.x += Math.sin(t * .23) * .004;        // la cámara respira
+  if (!QUIETO) camara.position.x += Math.sin(t * .23) * .002;        // la cámara respira, no se pasea
+  if (!QUIETO) pasear(ahora);
   camara.lookAt(mira);
   for (const a of [...GENTE.values(), JUEZ, MESA]) {
     if (!a) continue;
@@ -423,7 +519,11 @@ function cuadroForzado() {
         brinco = Math.abs(Math.sin(t * 9 + u.fase)) * .035;              // pasos
         anda = true;
         c.scale.x = (tmp.x < 0 ? -1 : 1);                                // mira hacia donde camina
-      } else { u.meta = null; c.scale.x = 1; }
+      } else {
+        u.meta = null; c.scale.x = 1;
+        if (u.sirve) { u.sirve = false; u.mano = ahora + 900; const e = document.createElement("div");
+          e.className = "marca taza"; e.textContent = "☕"; pegar(e, a, -4); setTimeout(() => e.remove(), 1600); }
+      }
     }
     if (u.habla > ahora && u.cuadros < 4) brinco = Math.max(brinco, Math.abs(Math.sin(t * 16)) * .06);
     if (u.cuadros === 4) {
