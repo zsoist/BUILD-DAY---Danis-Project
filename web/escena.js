@@ -426,7 +426,7 @@ const cielo = (() => {
     medir() {
       if (!MUNDO.w) return;
       W = cv.width = Math.ceil(MUNDO.w / PX); H = cv.height = Math.ceil(MUNDO.h / PX);
-      if (pal) { pintarDegradado(); sembrar(); }
+      if (pal) { pintarDegradado(); sembrar(); if (degr) g.drawImage(degr, 0, 0); }   // primer cuadro ya, sin esperar al bucle
     },
     cuadro(dt, t, ahora) {
       if (!pal || !degr || cv.style.display === "none") return;
@@ -656,7 +656,8 @@ function hablaYa(r, txt, pos) {
   a.userData.mano = performance.now() + 1400;             // pide la palabra
   a.userData.paseo = performance.now() + 9000;
   const muchos = [...GENTE.keys()].filter(k => !k.startsWith("__")).length;
-  enfocar(a, muchos > 9 ? 1.55 : muchos > 5 ? 1.18 : 1.08, Math.min(5200, 2200 + idea(txt).length * 30));
+  const angosto = host.clientWidth < 640;
+  enfocar(a, muchos > 9 ? 1.55 : angosto ? 1.4 : muchos > 5 ? 1.18 : 1.08, Math.min(5200, 2200 + idea(txt).length * 30));
   a.userData.placa?.classList.add("ve");
   setTimeout(() => a.userData.placa?.classList.remove("ve"), 6000);
   globo(a, `${r.nombre.split(" ")[0]} · ${r.edad}`, txt, pos);
@@ -729,7 +730,7 @@ const API = {
         a.userData.llega = performance.now() + i * (acomodo === "publico" ? 420 : 200);
       }
       placa(a, r.nombre.split(" ")[0]);
-      if (gente.length > 9) a.userData.placa.classList.add("tenue");
+      if (gente.length > 9 || host.clientWidth < 640) a.userData.placa.classList.add("tenue");   // en teléfono no caben 8 nombres en fila
       GENTE.set(r.id, a);
     }));
   },

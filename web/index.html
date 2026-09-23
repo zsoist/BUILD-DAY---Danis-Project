@@ -793,6 +793,24 @@ html body #navmap #mtierra path.dep{fill:color-mix(in srgb,var(--dep) 55%,#12204
 #zoomesc button:hover{border-color:var(--oro);color:var(--oro)}
 #zoomesc button:active{transform:scale(.94)}
 #escena{cursor:grab;touch-action:pan-y}
+
+/* ── teléfono: cabecera en dos filas cortas, escenario más bajo para que la pregunta se vea sin bajar ── */
+@media (max-width:640px){
+  html body #top{position:static;display:grid;grid-template-columns:auto 1fr;grid-template-areas:"logo modo" "sel sel" "btn btn";gap:6px 8px;padding:6px 8px}
+  #logo{grid-area:logo;width:30px;height:30px}
+  #title{display:none}
+  html body #modo{grid-area:modo;order:0;display:flex;gap:4px}
+  html body #modo button{flex:1;padding:7px 4px 7px 14px;font-size:9px;min-height:32px}
+  html body #dptosel{grid-area:sel;height:36px;font-size:14px}
+  html body #tbtn{grid-area:btn;order:0;display:flex;gap:6px}
+  html body #tbtn .pxbtn{flex:1;min-height:34px;padding:6px 2px;font-size:8.5px}
+  html body #escena{height:46vh;height:46dvh;min-height:300px}
+  html body #escenario{padding:6px 6px 44px;gap:8px}
+  #zoomesc{right:8px;bottom:8px}#zoomesc button{width:34px;height:34px}
+  #lugar{max-width:62%}
+  html body .rotulo{top:52px;bottom:auto;left:50%;max-width:calc(100% - 20px);padding:5px 10px}
+  html body .rotulo small{font-size:7.5px}html body .rotulo b{font-size:12px}
+}
 </style>
 </head>
 <body>
