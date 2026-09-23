@@ -7,8 +7,9 @@ pregunta: economía, corrupción, migración, paz, cambio climático.
 LICENCIA — importa más que el código: LAPOP prohíbe "distribuir, compartir o
 publicar los datos en cualquier forma" y permite solo reportar agregados.
 Por eso lo que sale de aquí por persona se escribe en data/raw_v2/ (gitignored,
-no se despliega). A web/ solo van agregados: la distribución de respuestas por
-celda de ≥10 encuestados (web/opinion/), de la que cada voz sortea la suya.
+no se despliega). A web/ solo van tablas de una variable (nacional, por región,
+sexo, edad y educación; grupos ≥30), como en los reportes de las propias
+encuestas, con cita. Cada voz sortea su respuesta combinándolas.
 
 Los microdatos se bajan a mano (ver docs/METODO.md):
   raw_v2/COL_2023_LAPOP_AmericasBarometer_v1.0_w.sav
@@ -126,59 +127,61 @@ def donantes(base, num, items, semilla_fuente):
     return por_id, nivel, len(ok)
 
 
-MIN_CELDA = 10     # agregado publicable: ninguna celda con menos de 10 encuestados
-# de la celda más fina a la más gruesa; el sitio recorre las mismas en votoCelda()
-NIVELES = [("region", "sexo", "ge", "edu"), ("region", "sexo", "ge"), ("region", "ge"),
-           ("region",), ("sexo", "ge", "edu"), ()]
+MIN_GRUPO = 30     # ningún porcentaje publicado sale de menos de 30 encuestados
+DIMS = ("region", "sexo", "ge", "edu")
 
 
-def celdas(base, num, codigos, prefijo):
-    """Distribución ponderada de respuestas por celda: lo único que se publica.
+def marginales(base, num, codigos):
+    """Tablas de UNA variable por pregunta: nacional, por región, por sexo, por
+    edad y por educación. Es lo que LAPOP y Latinobarómetro publican en sus
+    propios reportes ("reporting of aggregated information"); nunca cruces
+    finos. El sitio las combina para cada voz en votoCelda().
 
-    {codigo: {"reg|sexo|edad|edu": {"valor": p, "ns": p}}}, con "*" donde la
-    celda no distingue. "ns" = no sabe o no responde (el donante que no contestó).
+    {codigo: {"*": {valor: p}, "region": {"1": {valor: p}}, "sexo": {...}, ...}}
+    "ns" = no sabe o no responde.
     """
-    ok = base.dropna(subset=["region", "sexo", "edad", "edu"]).copy()
+    ok = base.dropna(subset=list(("region", "sexo", "edad", "edu"))).copy()
     ok["ge"] = ok["edad"].map(grupo_edad)
     for c in ("region", "sexo", "edu"):
         ok[c] = ok[c].astype(int)
-    grupos = []
-    for campos in NIVELES:
-        for clave, g in (ok.groupby(list(campos)) if campos else [((), ok)]):
-            if len(g) < MIN_CELDA:
-                continue
-            clave = clave if isinstance(clave, tuple) else (clave,)
-            k = "|".join(str(dict(zip(campos, clave)).get(c, "*")) for c in ("region", "sexo", "ge", "edu"))
-            grupos.append((k, g.index, g["peso"].fillna(0).to_numpy()))
+    ok["peso"] = ok["peso"].fillna(0)
+    ok = ok[ok["peso"] > 0]
+
+    def dist(idx, col):
+        w = ok.loc[idx, "peso"].to_numpy()
+        acc = defaultdict(float)
+        for x, p in zip(col.loc[idx].to_numpy(), w):
+            acc["ns" if x != x else str(int(x))] += p
+        tot = w.sum()
+        return {x: round(p / tot, 3) for x, p in sorted(acc.items()) if p / tot >= 0.0005}
+
     out = {}
     for cod in codigos:
-        col, d = num[cod.split(":", 1)[1]], {}
-        for k, idx, w in grupos:
-            v = col.loc[idx].to_numpy()
-            tot, acc = w.sum(), defaultdict(float)
-            for x, p in zip(v, w):
-                acc["ns" if x != x else str(int(x))] += p
-            if tot > 0:
-                d[k] = {x: round(p / tot, 3) for x, p in sorted(acc.items()) if p / tot >= 0.0005}
+        col = num[cod.split(":", 1)[1]]
+        d = {"*": dist(ok.index, col)}
+        for dim in DIMS:
+            d[dim] = {str(k): dist(g.index, col) for k, g in ok.groupby(dim) if len(g) >= MIN_GRUPO}
         out[cod] = d
     return out
 
 
 def publicar_celdas(fuentes):
-    """web/opinion/<fuente>_<codigo>.json: un archivo por pregunta, se baja solo
-    el que ancla. web/banco.json: el banco de la búsqueda (ECP + estas)."""
+    """web/opinion/<fuente>_<codigo>.json: las tablas de una pregunta, se baja
+    solo la que ancla. web/banco.json: el banco de la búsqueda (ECP + estas)."""
     banco_f = json.loads((RAIZ / "scripts" / "experimento" / "banco_fuentes.json").read_text())
     destino = RAIZ / "web" / "opinion"
     destino.mkdir(exist_ok=True)
+    for f in destino.glob("*.json"):
+        f.unlink()
     n = 0
     for prefijo, (base, num) in fuentes.items():
         cods = [b["codigo"] for b in banco_f if b["codigo"].startswith(prefijo + ":")]
-        for cod, d in celdas(base, num, cods, prefijo).items():
+        for cod, d in marginales(base, num, cods).items():
             (destino / (cod.replace(":", "_") + ".json")).write_text(json.dumps(d, separators=(",", ":")))
             n += 1
     ecp = json.loads((RAIZ / "web" / "banco_ecp.json").read_text())
     (RAIZ / "web" / "banco.json").write_text(json.dumps(ecp + banco_f, ensure_ascii=False, separators=(",", ":")))
-    print(f"web/opinion: {n} preguntas en agregados (celdas ≥{MIN_CELDA}) · web/banco.json: {len(ecp) + len(banco_f)}")
+    print(f"web/opinion: {n} preguntas en tablas de una variable (grupos ≥{MIN_GRUPO}) · web/banco.json: {len(ecp) + len(banco_f)}")
 
 
 def main():

@@ -252,8 +252,11 @@ export default async function handler(req, res) {
     if (q.length < 4) return res.status(400).json({ error: "pregunta" });
     try {
       if (!globalThis.__banco) {
+        // el banco sale de un origen permitido, nunca del Host que manda el
+        // cliente: un Host ajeno envenenaría el banco de toda la instancia
         const host = req.headers["x-forwarded-host"] || req.headers.host;
-        const r = await fetch(process.env.BANCO_URL || `https://${host}/banco.json`);
+        const propio = ALLOW.find(o => o === `https://${host}`) || ALLOW[0];
+        const r = await fetch(process.env.BANCO_URL || `${propio}/banco.json`);
         globalThis.__banco = await r.json();
       }
       const banco = globalThis.__banco;
@@ -536,7 +539,7 @@ export default async function handler(req, res) {
         return res.status(422).json({ error: "respuesta filtrada", motivo: rev.motivo });
       if (content) {
         const u = j.usage || {};
-        const proveedor = it.url.includes("deepseek") ? "deepseek" : "openrouter";
+        const proveedor = j.provider || "openrouter";
         // flash: ~$0.30/M in, $1.20/M out (pico) — estimación si no viene costo
         const cNum = Number(u.cost);
         const costo = Number.isFinite(cNum) && cNum > 0 ? cNum

@@ -237,16 +237,19 @@ modelo, no usuarios reales.
 Mismo método, 240 preguntas más: economía, paz, corrupción, migración, Estados
 Unidos, aprobación del gobierno. Fuentes: LAPOP 2023 (1.493 colombianos) y
 Latinobarómetro 2024 (1.200). Microdatos solo en local (`raw_v2/`, ignorado).
-LAPOP permite publicar solo agregados, así que en el sitio no hay donante: cada
-voz sortea su respuesta de la distribución de su celda (región · sexo · edad ·
-educación, ≥10 encuestados; si no, la celda siguiente más gruesa), con un hash
-de su id. Para una sola pregunta equivale a un donante al azar de la celda.
+Licencias: LAPOP, uso de investigación no comercial y "reporting of aggregated
+information"; Latinobarómetro, "investigación no comercial, docencia y
+publicaciones", sin volver a publicar los datos. En el sitio no hay donante ni
+cruces finos: por pregunta, las tablas de una variable que ellos mismos
+publican (nacional, región, sexo, edad, educación; grupos ≥30), con cita. Cada
+voz las combina (p ∝ nacional × Π tabla/nacional) y sortea con un hash de su id.
 
 | Prueba ciega (8 ítems sorteados, paráfrasis del enjambre) | Error en % de sí |
 |---|---|
 | 1ª: sin ancla → con donante | 13.3 → 13.8 · **no pasa** |
 | 2ª: sin ancla → con donante | 21.2 → 8.1 |
-| 2ª: sin ancla → con agregados (lo desplegado) | 21.2 → **6.3** · mejora 8/8 |
+| 2ª: sin ancla → con celdas finas | 21.2 → 6.3 · mejora 8/8 |
+| 2ª: con tablas de una variable (lo desplegado) | 19.3 → **6.3** |
 
 Regla fijada antes: mejora media ≥10 pts y ningún ítem empeora >10.
 

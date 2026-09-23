@@ -372,6 +372,7 @@ button,.pxbtn{min-height:44px;touch-action:manipulation}
 }
 .estim{color:var(--dim);font-size:10px;margin-top:3px}.estim b{color:var(--text)}
 .ancla{font-size:11px;color:var(--dim);border:1px solid var(--grid);padding:6px 9px;margin:0 0 8px}.ancla b{color:var(--text)}
+.ancla .cita{display:block;margin-top:4px;font-size:10px;color:var(--dim)}.ancla .cita a{color:inherit}
 </style>
 </head>
 <body>
@@ -546,7 +547,9 @@ async function mesa(cod){
   if(PAIS!==owner||!document.body.contains(el)){finMesa();return;}
   el.innerHTML=`<div class="ronda">— MESA DE ${esc(d.nombre).toUpperCase()} —</div>`;
   path?.classList.add("hot");
-  const sample=RES.filter(r=>r.dpto===cod&&r.edad>=18).sort(()=>Math.random()-.5).slice(0,4);
+  const pool=RES.filter(r=>r.dpto===cod&&r.edad>=18);
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}  // Fisher-Yates: sort(random) no baraja parejo
+  const sample=pool.slice(0,4);
   el.insertAdjacentHTML("beforeend",`<div class="seats"></div><div class="ticker"><span class="tickertxt">llegan los de ${esc(d.nombre)}…</span></div>`);
   const _seats=el.querySelector(".seats");
   sample.forEach((r,i)=>{const s=document.createElement("div");s.className="seat";
@@ -850,7 +853,7 @@ async function boot(){
     .map(([c,d])=>`<option value="${c}" ${c===cur?"selected":""}>${esc(d.nombre)}</option>`).join("");
   sel.onchange=e=>{const v=e.target.value;
     if(v==="CO")SEL.clear();else{SEL=new Set([v]);cur=v;}
-    syncSel();$("#maplabel").textContent=MARG[cur]?.nombre||"—";};
+    syncSel();$("#maplabel").textContent=v==="CO"?"Toda Colombia":MARG[cur]?.nombre||"—";};
   drawNav();selInfo();
   $("#modohelp").textContent=MODOTXT[MODO];
   $("#kpis").innerHTML=`<div><b>${RES.length.toLocaleString()}</b><span>residentes</span></div>
@@ -1386,26 +1389,31 @@ function anclaItemDe(b,v){
   const quien=b.fuente&&!/^ECP/.test(b.fuente)?`A LA ENCUESTA ${b.fuente.toUpperCase()}`:"AL DANE";
   return `\nLO QUE LE RESPONDISTE ${quien} (es tuyo: una persona real como tú lo contestó así). Te preguntaron: «${b.texto}». Respondiste: ${dijo}. Esa es tu postura sobre este tema: explícala desde tu vida.\n`;
 }
-/* LAPOP y Latinobarómetro solo permiten publicar agregados: en vez del donante,
-   cada voz sortea su respuesta de la distribución de su celda (región · sexo ·
-   edad · educación; si tiene <10 encuestados, la siguiente más gruesa). Para UNA
-   pregunta es lo mismo que un donante al azar de la celda. Determinista: hash de
-   id + pregunta. Celdas y niveles: simcolombia/pipeline/fuentes_opinion.py. */
+/* LAPOP y Latinobarómetro permiten publicar solo estadística agregada, con
+   cita. web/opinion/ trae, por pregunta, las tablas de UNA variable que ellos
+   mismos publican: nacional, por región, sexo, edad y educación (grupos ≥30).
+   Cada voz combina las de su perfil (p ∝ nacional × Π tabla/nacional) y sortea
+   su respuesta con un hash de id + pregunta: determinista.
+   Tablas: simcolombia/pipeline/fuentes_opinion.py. */
 const REGION_ECP={"11":1,"08":2,"13":2,"20":2,"23":2,"44":2,"47":2,"70":2,"88":2,
   "15":3,"25":3,"50":3,"54":3,"68":3,"81":3,"85":3,"99":3,"94":3,
   "05":4,"17":4,"18":4,"41":4,"63":4,"66":4,"73":4,"86":4,"91":4,"95":4,"97":4,
   "19":5,"27":5,"52":5,"76":5};
 function votoCelda(r,D,codigo){
-  const reg=REGION_ECP[r.dpto]??"*",sx=r.sexo==="hombre"?1:2,e=r.edad,
-    ge=e<30?0:e<45?1:e<60?2:3,gu={ninguna:0,primaria:0,secundaria:1,media:1,superior:2}[r.educacion]??1;
-  const k=[[reg,sx,ge,gu],[reg,sx,ge,"*"],[reg,"*",ge,"*"],[reg,"*","*","*"],["*",sx,ge,gu],["*","*","*","*"]]
-    .map(c=>c.join("|")).find(c=>D&&D[c]);
-  if(!k)return undefined;
+  if(!D||!D["*"])return undefined;
+  const e=r.edad,perfil={region:REGION_ECP[r.dpto],sexo:r.sexo==="hombre"?1:2,
+    ge:e<30?0:e<45?1:e<60?2:3,edu:{ninguna:0,primaria:0,secundaria:1,media:1,superior:2}[r.educacion]??1};
+  const nac=D["*"],p={};let tot=0;
+  for(const [v,p0] of Object.entries(nac)){
+    let x=p0;
+    for(const [dim,val] of Object.entries(perfil)){const t=D[dim]?.[val];if(t&&p0>0)x*=(t[v]||0)/p0;}
+    p[v]=x;tot+=x;}
+  const ps=Object.entries(tot>0?p:nac);const T=tot>0?tot:1;
   let h=2166136261;for(const c of r.id+"|"+codigo){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}
   h^=h>>>16;h=Math.imul(h,0x85ebca6b);h^=h>>>13;h=Math.imul(h,0xc2b2ae35);h^=h>>>16;
-  let x=(h>>>0)/4294967296;const ps=Object.entries(D[k]);
-  for(const [v,p] of ps){x-=p;if(x<0)return v==="ns"?null:+v;}
-  const u=ps[ps.length-1][0];return u==="ns"?null:+u;   // redondeo: la suma puede quedar en 0.999
+  let x=(h>>>0)/4294967296*T;
+  for(const [v,q] of ps){x-=q;if(x<0)return v==="ns"?null:+v;}
+  const u=ps[ps.length-1][0];return u==="ns"?null:+u;   // redondeo
 }
 let _RESP=null;
 async function respuestasECP(){
@@ -1759,7 +1767,7 @@ async function conversar(q){
   clearInterval(ticker);$("#ticker")?.remove();
   ctxBox(ctx);
   if(anc&&kAnc>=0)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>El DANE ya preguntó esto</b> (Encuesta de Cultura Política 2023): «${esc(anc.texto)}». Cada voz responde lo que respondió su donante real, una persona de su misma edad, sexo, educación y región.</div>`);
-  else if(anc&&CEL)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>Esto ya se preguntó en Colombia</b> (${esc(anc.fuente||"")}): «${esc(anc.texto)}». Cada voz parte de cómo respondió gente real de su misma edad, sexo, educación y región.</div>`);
+  else if(anc&&CEL)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>Esto ya se preguntó en Colombia</b> (${esc(anc.fuente||"")}): «${esc(anc.texto)}». Cada voz parte de cómo respondió gente real de su edad, sexo, educación y región. <span class="cita">Fuente: ${/^LAPOP/.test(anc.codigo)?'LAPOP Lab, <a href="https://www.vanderbilt.edu/lapop/" target="_blank" rel="noopener">Barómetro de las Américas</a> 2023':'Corporación <a href="https://www.latinobarometro.org" target="_blank" rel="noopener">Latinobarómetro</a>, 2024'}; tablas agregadas, uso no comercial.</span></div>`);
 
   if(MODO==="sondeo"){
     $("#estado").textContent="sondeando…";
@@ -1885,7 +1893,7 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
       selloHumano(q,transcript);
     }catch(e){}
   }
-  if(MODO==="sondeo")guardar("sondeo",cur,q,{posturas:p,participantes:sample.map(r=>r.id)});
+  if(MODO==="sondeo")guardar("sondeo",cur,q,{posturas:p,participantes:sample.map(r=>r.id),ancla:anc?.codigo||null});
   $("#estado").textContent="";
 }
 boot();
