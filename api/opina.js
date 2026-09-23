@@ -304,6 +304,39 @@ export default async function handler(req, res) {
   // generación que abusar. Anclas, T y método: docs/METODO.md, sección mezcla.
   // Las anclas deben ser idénticas a GENERICAS en scripts/experimento/postura.py
   // (lo verifica scripts/experimento/anclas.test.mjs).
+  // ── ESTIMAR: % de sí como analista, para preguntas que nadie midió ──
+  // Actuando de persona, el modelo es pesimista sobre Colombia (voces sin
+  // ancla: 38.6 pts de error en 16 preguntas ciegas); como analista casi no lo
+  // es. Con esta cifra el sitio reparte la postura de cada voz: 25.1 pts.
+  // DeepSeek y GLM en paralelo, promedio. Solo devuelve un número.
+  // INSTR idéntico a scripts/experimento/calibracion.py (anclas.test.mjs).
+  if (body.estimar === true) {
+    const orK = process.env.OPENROUTER_API_KEY || process.env.OPENROUTER_KEY;
+    const q = String(body.pregunta || "").slice(0, 400).trim();
+    if (!orK) return res.status(502).json({ error: "sin openrouter en el servidor" });
+    if (q.length < 4) return res.status(400).json({ error: "pregunta" });
+    const INSTR_ESTIMAR = "Eres un analista de opinión pública en Colombia. Te dan una pregunta de sí o no, como la escribiría cualquier persona. Estima qué porcentaje de los colombianos adultos respondería SÍ, entre quienes responden sí o no. Además, di si responder SÍ es ver con buenos ojos al país, sus instituciones, su gente o su situación (valencia 1), verlos con malos ojos (valencia -1), o ninguna de las dos (0). Responde SOLO JSON: {\"pct_si\": <0-100>, \"valencia\": <1|0|-1>}";
+    const uno = async m => {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), Math.min(10000, restante()));
+      try {
+        const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST", signal: ctrl.signal,
+          headers: { Authorization: `Bearer ${orK}`, "Content-Type": "application/json", ...ATRIB },
+          body: JSON.stringify({ model: m, max_tokens: 60, temperature: 0,
+            reasoning: m.includes("glm") ? { effort: "low" } : { enabled: false },
+            provider: m.includes("deepseek") ? RUTEO : { require_parameters: true, data_collection: "deny" },
+            messages: [{ role: "system", content: INSTR_ESTIMAR }, { role: "user", content: q }] }),
+        });
+        const t = (await r.json())?.choices?.[0]?.message?.content || "";
+        const n = Number(JSON.parse((t.match(/\{[\s\S]*\}/) || ["{}"])[0]).pct_si);
+        return Number.isFinite(n) && n >= 0 && n <= 100 ? n : null;
+      } catch (e) { return null; } finally { clearTimeout(timer); }
+    };
+    const v = (await Promise.all(["deepseek/deepseek-v4.1-flash", "z-ai/glm-5.3-flash"].map(uno))).filter(x => x != null);
+    return res.status(200).json({ pct: v.length ? v.reduce((a, b) => a + b, 0) / v.length : null });
+  }
+
   if (body.ssr === true) {
     const orK = process.env.OPENROUTER_API_KEY || process.env.OPENROUTER_KEY;
     const textos = Array.isArray(body.textos)

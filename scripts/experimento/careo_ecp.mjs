@@ -38,13 +38,13 @@ function extraer(nombre) {
 
 const NOMBRES = ["TEMPERAMENTOS", "LEAN", "FRANQUEZA", "ARRANQUES", "estiloDe",
   "FUNDAMENTOS", "marcoDe", "GUSTOS", "FASTIDIOS", "momentoDe", "COMPROMISO_TXT",
-  "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "ESTILOS_RESP", "estiloRespuesta", "persona", "sondeoInstr", "INSTITUCIONES", "anclaDe", "anclaItemDe", "REGION_ECP", "votoCelda"];
+  "LEAN_TXT", "leanLinea", "vida", "DIALECTOS", "dialectoDe", "ESTILOS_RESP", "estiloRespuesta", "persona", "sondeoInstr", "INSTITUCIONES", "anclaDe", "anclaItemDe", "REGION_ECP", "votoCelda", "h01", "posturaEstimada", "anclaEstimadaDe"];
 /* LIBRETO=0: sin la postura asignada por hash. Es lo que decide si la
    dispersión es del método o fabricada por el prompt. Por defecto, la del sitio. */
 const LIBRETO = (process.env.LIBRETO ?? "1") !== "0";
 /* ORDEN_CACHE=0: el prompt en el orden viejo (identidad primero). */
 const ORDEN_CACHE = (process.env.ORDEN_CACHE ?? "1") !== "0";
-const mod = new Function("OPC", "LIBRETO", "ORDEN_CACHE", NOMBRES.map(extraer).join("\n") + "\nreturn {persona, sondeoInstr, anclaDe, anclaItemDe, votoCelda};")(null, LIBRETO, ORDEN_CACHE);
+const mod = new Function("OPC", "LIBRETO", "ORDEN_CACHE", NOMBRES.map(extraer).join("\n") + "\nreturn {persona, sondeoInstr, anclaDe, anclaItemDe, votoCelda, posturaEstimada, anclaEstimadaDe};")(null, LIBRETO, ORDEN_CACHE);
 
 const RES = JSON.parse(fs.readFileSync(path.join(ROOT, "web/residents_v2.json"), "utf8"));
 const residentes = (RES.residentes || RES).filter(r => r.edad >= 18);   // universo ECP
@@ -260,6 +260,11 @@ const CIERRE = "\nResponde la encuesta en 1-2 frases, como hablarías de verdad.
   "[POSTURA: a_favor|en_contra|depende|ni_ni]. a_favor significa SÍ a la pregunta literal.";
 const PODA = process.env.PODA ? JSON.parse(fs.readFileSync(process.env.PODA, "utf8")) : [];
 let PODA_APLICADA = 0;
+/* FRASE_EST: diagnóstico de redacción; {SI} = «Sí»/«No». Sin ella, la del sitio. */
+function fraseEst(si) {
+  if (si == null || !process.env.FRASE_EST) return mod.anclaEstimadaDe(si);
+  return "\n" + process.env.FRASE_EST.replace("{SI}", si ? "Sí" : "No") + "\n";
+}
 function sistemaSitio(r) {
   if (VARIANTE === "nula") return "Eres un colombiano adulto." + CIERRE;
   if (VARIANTE.startsWith("minima") || VARIANTE.endsWith("_min")) {
@@ -284,6 +289,13 @@ function sistemaSitio(r) {
     return mod.persona(r, DOS[r.dpto] || {}) + mod.anclaDe(ACT[r.id]) + mod.sondeoInstr(r);
   if (VARIANTE === "recuperada")
     return mod.persona(r, DOS[r.dpto] || {}) + anclaItemDe(r) + mod.sondeoInstr(r);
+  /* estimada: sin ancla, postura sorteada con el % del analista (PCT) */
+  if (VARIANTE === "estimada")
+  {
+    const lado = mod.posturaEstimada(r, TEXTO_LIBRE, Number(process.env.PCT));
+    return mod.persona(r, DOS[r.dpto] || {}, process.env.LEAN_ALINEADO === "1" && lado != null ? lado : undefined)
+      + fraseEst(lado) + mod.sondeoInstr(r);
+  }
   if (VARIANTE === "hermanas")
     return mod.persona(r, DOS[r.dpto] || {}) + mod.anclaDe(ACT[r.id]) + hermanasDe(HERM[r.id]) + mod.sondeoInstr(r);
   let s = mod.persona(r, DOS[r.dpto] || {}) + mod.sondeoInstr(r);

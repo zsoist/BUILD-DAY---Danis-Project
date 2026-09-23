@@ -1223,7 +1223,9 @@ function momentoDe(r){
   return {franja:franja+dia,gusto:GUSTOS[(h>>>2)%GUSTOS.length],fastidio:FASTIDIOS[(h>>>7)%FASTIDIOS.length]};
 }
 const ORDEN_CACHE=true;
-function persona(r,dos){
+/* lado (true/false): la postura ya asignada a esta voz; el libreto la acompaña
+   en vez de contradecirla. Sin lado, el libreto de siempre. */
+function persona(r,dos,lado){
   const mule=(dos.muletillas||[]).slice(0,6).join(" · ");
   const lug=(dos.lugares||[]).slice(0,4).join(", ");
   const humor=(dos.humor||[]).slice(0,3).join(" · ");
@@ -1234,7 +1236,7 @@ function persona(r,dos){
      orden con el que se midió todo hasta el 22 sep. */
   const P1=`Eres ${r.nombre}, ${r.edad} años, ${r.sexo}, ${r.ocupacion}${vida(r)?", "+vida(r):""}${edu}, régimen ${r.regimen_salud}, de ${r.dpto_nombre}, Colombia.
 Tu tierra: ${dos.vida_cotidiana||""} ${dos.economia_vivida||""}
-${r.compromiso?COMPROMISO_TXT[r.compromiso]+"\n":""}${r.lean?leanLinea(r):""}QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. ${LIBRETO?`Sobre el tema de hoy, ${estiloDe(r).lean}. `:"Sobre el tema de hoy opinas lo que de verdad opinarías TÚ, por tu vida, tu marco y tu territorio; puede ser a favor, en contra, dividido o sin opinión formada. "}${OPC?`LA PREGUNTA ES UNA ELECCIÓN: [POSTURA: a_favor] = eliges «${OPC.a}», [POSTURA: en_contra] = eliges «${OPC.b}», [POSTURA: depende] solo si no vas con ninguno.\n`:""}TU MARCO SOCIAL (obligatorio): creciste en un entorno ${marcoDe(r).cons} frente a lo moral. EN TEMAS MORALES (aborto, eutanasia, drogas, adopción, iglesia, familia) tu lado NO lo decide la inclinación genérica sino tu marco: conservador → defiendes la postura tradicional de tu casa aunque suene duro; liberal → defiendes el cambio; moderado → ${LIBRETO?"sigue tu inclinación asignada":"decides por tu fundamento y tu vida"}. TU FUNDAMENTO (obligatorio): argumentas SOLO desde ${marcoDe(r).fund}. ${marcoDe(r).anecdota?"":"PROHIBIDO contar tragedias de terceros (primas, vecinas, sobrinas moribundas): habla de TU vida. "}${LIBRETO?"Tu postura asignada ES la tuya: tu historia la justifica y NO la cambias porque el contexto o los demás digan otra cosa. Si lo que te tocó es NO TENER OPINIÓN FORMADA, esa es tu respuesta honesta":"Tu postura sale de tu vida y NO la cambias porque el contexto o los demás digan otra cosa. Si NO TIENES OPINIÓN FORMADA, esa es tu respuesta honesta"} y no te la inventes: dilo con tus palabras ("no sabría decirle", "eso no lo he pensado", "de eso sí no sé") y cierra con [POSTURA: ni_ni]. No es cobardía, es la verdad de mucha gente. Franqueza: eres ${estiloDe(r).franq}.`;
+${r.compromiso?COMPROMISO_TXT[r.compromiso]+"\n":""}${r.lean?leanLinea(r):""}QUIÉN ERES AL HABLAR (esto manda sobre todo lo demás): eres ${estiloDe(r).temp}. ${LIBRETO?`Sobre el tema de hoy, ${lado===true?LEAN[0]:lado===false?LEAN[2]:estiloDe(r).lean}. `:"Sobre el tema de hoy opinas lo que de verdad opinarías TÚ, por tu vida, tu marco y tu territorio; puede ser a favor, en contra, dividido o sin opinión formada. "}${OPC?`LA PREGUNTA ES UNA ELECCIÓN: [POSTURA: a_favor] = eliges «${OPC.a}», [POSTURA: en_contra] = eliges «${OPC.b}», [POSTURA: depende] solo si no vas con ninguno.\n`:""}TU MARCO SOCIAL (obligatorio): creciste en un entorno ${marcoDe(r).cons} frente a lo moral. EN TEMAS MORALES (aborto, eutanasia, drogas, adopción, iglesia, familia) tu lado NO lo decide la inclinación genérica sino tu marco: conservador → defiendes la postura tradicional de tu casa aunque suene duro; liberal → defiendes el cambio; moderado → ${LIBRETO?"sigue tu inclinación asignada":"decides por tu fundamento y tu vida"}. TU FUNDAMENTO (obligatorio): argumentas SOLO desde ${marcoDe(r).fund}. ${marcoDe(r).anecdota?"":"PROHIBIDO contar tragedias de terceros (primas, vecinas, sobrinas moribundas): habla de TU vida. "}${LIBRETO?"Tu postura asignada ES la tuya: tu historia la justifica y NO la cambias porque el contexto o los demás digan otra cosa. Si lo que te tocó es NO TENER OPINIÓN FORMADA, esa es tu respuesta honesta":"Tu postura sale de tu vida y NO la cambias porque el contexto o los demás digan otra cosa. Si NO TIENES OPINIÓN FORMADA, esa es tu respuesta honesta"} y no te la inventes: dilo con tus palabras ("no sabría decirle", "eso no lo he pensado", "de eso sí no sé") y cierra con [POSTURA: ni_ni]. No es cobardía, es la verdad de mucha gente. Franqueza: eres ${estiloDe(r).franq}.`;
   const P2=`LA VERDAD INCÓMODA: la gente real tiene prejuicios, manías, rivalidades regionales (cachaco/costeño, paisa orgulloso, rolo frío) y opiniones que no dirían en televisión — si tu personaje las tendría, DILAS con la franqueza que te tocó (cero insultos ni odio, pero sí la pulla, el estereotipo confesado, la queja incómoda). Responder "yo no generalizo" cuando tu personaje SÍ generalizaría es mentir. Tu edad, educación y territorio MOLDEAN tu opinión: un mayor de vereda y un universitario de ciudad NO piensan igual, y eso debe notarse. "Depende" es la salida del político EN UNA DISCUSIÓN, pero en una escala de encuesta el punto medio es una respuesta legítima y mayoritaria: no la evites por quedar bien ni por sonar interesante.`;
   const P3=`Acento regional: SUTIL — la mayoría de la gente habla bastante neutro; se te puede escapar UN rasgo de tu tierra (${dialectoDe(r.dpto)||"tu región"}) de vez en cuando, y JAMÁS repites un cliché regional que ya haya dicho otro en la mesa ni el mismo tuyo dos veces.
 Referentes que puedes soltar si vienen al caso: ${lug||"—"}.${(dos.rivalidades||[]).length?"\nPullas de tu tierra (puedes soltar UNA con picardía si cuadra): "+dos.rivalidades.slice(0,2).join(" · "):""}${(dos.quejas_incomodas||[]).length?"\nQuejas que en tu tierra se dicen en confianza: "+dos.quejas_incomodas.slice(0,2).join(" · "):""}
@@ -1415,11 +1417,40 @@ function votoCelda(r,D,codigo){
   for(const [v,q] of ps){x-=q;if(x<0)return v==="ns"?null:+v;}
   const u=ps[ps.length-1][0];return u==="ns"?null:+u;   // redondeo
 }
+/* SIN ANCLA: nadie midió la pregunta. Actuando de "colombiano de a pie" el
+   modelo es pesimista (voces: error 16.8 pts en 15 preguntas ciegas); como
+   analista casi no lo es (10.6; 13.8 en 350). Entonces el servidor pide una
+   estimación de analista (DeepSeek y GLM, promedio) y cada voz que tiene
+   opinión recibe su postura sorteada con ese %. docs/METODO.md, sin ancla. */
+function h01(s){
+  let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}
+  h^=h>>>16;h=Math.imul(h,0x85ebca6b);h^=h>>>13;h=Math.imul(h,0xc2b2ae35);h^=h>>>16;
+  return (h>>>0)/4294967296;
+}
+function posturaEstimada(r,q,pct){
+  if(r.compromiso==="indiferente"||!(pct>=0&&pct<=100))return null;   // al indiferente no se le asigna lado
+  return h01(r.id+"|"+q)*100<pct;
+}
+function anclaEstimadaDe(si){
+  if(si==null)return "";
+  /* redacción medida: obedecen 78% (la primera, 55%). Con persona(r,dos,lado)
+     el libreto acompaña la postura en vez de contradecirla. */
+  return `\nLO QUE RESPONDES A ESTA PREGUNTA (ya lo tienes decidido y no lo cambias): «${si?"Sí":"No"}». Mucha gente como tú responde así. Esa es tu postura: explícala desde tu vida.\n`;
+}
 let _RESP=null;
 async function respuestasECP(){
   if(_RESP)return _RESP;
   try{_RESP=await (await fetch("respuestas_ecp.json")).json();}catch(e){_RESP=null;}
   return _RESP;
+}
+async function estimarPct(q){
+  if(API_OK===false)return null;
+  try{
+    const r=await fetch("/api/opina/",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({estimar:true,pregunta:q})});
+    const p=r.ok?(await r.json()).pct:null;
+    return typeof p==="number"&&p>=0&&p<=100?p:null;
+  }catch(e){return null;}
 }
 async function recuperarItem(q){
   if(API_OK===false)return null;
@@ -1755,7 +1786,8 @@ async function conversar(q){
   let fi=0;const ticker=setInterval(()=>{
     const t=$("#tickertxt");if(t)t.textContent=FRASES[++fi%FRASES.length];},1400);
   $("#estado").textContent="preparando la mesa…";
-  const [ctx,anc]=await Promise.all([contexto(q),MODO==="sondeo"?recuperarItem(q):null]);
+  const [ctx,anc,pctEst]=await Promise.all([contexto(q),MODO==="sondeo"?recuperarItem(q):null,
+    MODO==="sondeo"&&!OPC?estimarPct(q):null]);
   /* ECP: respuesta del donante (el DANE la publica por persona). LAPOP y
      Latinobarómetro: sorteo desde los agregados de la celda (su licencia no
      permite más). Medido en 8 preguntas ciegas: error 21.2 → 6.3 pts. */
@@ -1764,9 +1796,13 @@ async function conversar(q){
   let CEL=null;
   if(anc&&!ecp){try{const f=await fetch("opinion/"+anc.codigo.replace(":","_")+".json");CEL=f.ok?await f.json():null;}catch(e){}}
   const vozAnc=r=>kAnc>=0?(R.por_id[r.id]?{v:R.por_id[r.id][kAnc]}:null):CEL?(v=>v===undefined?null:{v})(votoCelda(r,CEL,anc.codigo)):null;
+  /* sin ancla: postura sorteada con la estimación de analista (solo sondeo sí/no) */
+  const EST=!anc&&pctEst!=null?pctEst:null;
+  const ladoDe=r=>EST==null?undefined:(posturaEstimada(r,q,EST)??undefined);
   clearInterval(ticker);$("#ticker")?.remove();
   ctxBox(ctx);
   if(anc&&kAnc>=0)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>El DANE ya preguntó esto</b> (Encuesta de Cultura Política 2023): «${esc(anc.texto)}». Cada voz responde lo que respondió su donante real, una persona de su misma edad, sexo, educación y región.</div>`);
+  else if(EST!=null)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">🧭 <b>Nadie ha medido esto en Colombia.</b> Las posturas se reparten según una estimación de un modelo (en pruebas, se aleja unos 17 pts de la realidad): tómalo como exploración, no como encuesta.</div>`);
   else if(anc&&CEL)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>Esto ya se preguntó en Colombia</b> (${esc(anc.fuente||"")}): «${esc(anc.texto)}». Cada voz parte de cómo respondió gente real de su edad, sexo, educación y región. <span class="cita">Fuente: ${/^LAPOP/.test(anc.codigo)?'LAPOP Lab, <a href="https://www.vanderbilt.edu/lapop/" target="_blank" rel="noopener">Barómetro de las Américas</a> 2023':'Corporación <a href="https://www.latinobarometro.org" target="_blank" rel="noopener">Latinobarómetro</a>, 2024'}; tablas agregadas, uso no comercial.</span></div>`);
 
   if(MODO==="sondeo"){
@@ -1776,7 +1812,8 @@ async function conversar(q){
       const card=bubble(r,false),say=card.querySelector(".say");
       try{
         const va=vozAnc(r),vAnc=va?va.v:undefined;
-        const msgs=[{role:"system",content:persona(r,dosOf(r))+ctxPara(ctx)+(va?anclaItemDe(anc,vAnc):"")+sondeoInstr(r)},
+        const lado=ladoDe(r);
+        const msgs=[{role:"system",content:persona(r,dosOf(r),lado)+ctxPara(ctx)+(va?anclaItemDe(anc,vAnc):"")+(lado!==undefined?anclaEstimadaDe(lado):"")+sondeoInstr(r)},
           {role:"user",content:q+"\n\nRecuerda: cierra tu respuesta con la etiqueta [POSTURA: a_favor|en_contra|depende|ni_ni]."}];
         const raw=await flash(msgs);
         let [pos,txt]=postura(raw);
@@ -1785,7 +1822,7 @@ async function conversar(q){
           pos=postura(rr||"")[0];}
         if(!pos)pos=await clasificarPostura(q,txt);
         if(!['a_favor','en_contra','depende','ni_ni'].includes(pos)){pos='sin_postura';p.sin_postura=(p.sin_postura||0)+1;}else p[pos]++;
-        const gl=estiloDe(r).lean;
+        const gl=lado===undefined?estiloDe(r).lean:LEAN[lado?0:2];
         if(pos!=='sin_postura'&&pos!=='ni_ni'&&r.compromiso!=='indiferente'){obedN++;
           if((gl.includes('A FAVOR')&&pos==='a_favor')||(gl.includes('EN CONTRA')&&pos==='en_contra')||(gl.includes('dividido')&&pos==='depende'))obed++;}
         votos.push({pos,txt});

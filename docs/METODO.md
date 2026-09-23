@@ -266,3 +266,36 @@ confianza en el Congreso de LB para la de LAPOP).
 Archivos: `simcolombia/pipeline/fuentes_opinion.py` → `web/opinion/*.json`
 (agregados) y `web/banco.json` (búsqueda). Textos curados:
 `scripts/experimento/banco_fuentes.json`.
+
+## Sin ancla: postura con la estimación de un analista (22 sep 2026) — desplegada
+
+Si nadie midió la pregunta, las voces se equivocan mucho más de lo que
+creíamos: **38.6 pts** en 16 preguntas ciegas nuevas (16.8 en las 15 de antes).
+
+**Diagnóstico** (`scripts/experimento/calibracion.py`, 350 preguntas con cifra
+real de ECP, LAPOP y Latinobarómetro; paráfrasis coloquiales del enjambre GLM).
+Pedido como *analista* ("¿qué % diría que sí?"), el modelo casi no es
+pesimista: sesgo medio −1.8 a +2.6 pts, error 13.8 (DeepSeek y GLM promediados).
+El pesimismo aparece al actuar de persona. Calibrar la cifra no ayuda: el
+error es ruido, no sesgo (entrenar en dos encuestas y medir en la tercera lo
+empeora).
+
+**Lo desplegado.** El proxy pide la estimación (`estimar`, DeepSeek + GLM, ~$0.00003)
+y cada voz con opinión (no a los indiferentes) recibe su postura sorteada con
+ese %. Obediencia según la redacción (8 ítems, 50/50):
+
+| Redacción | Obedece SÍ / NO |
+|---|---|
+| "TU POSTURA SOBRE ESTA PREGUNTA: SÍ" | 53% / 58% |
+| "LO QUE RESPONDES… ya lo tienes decidido. Mucha gente como tú responde así" | 72% / 70% |
+| la anterior + el libreto alineado con la postura (lo desplegado) | **78% / 77%** |
+
+| Prueba ciega (16 ítems nuevos, regla fijada antes: ≥5 pts, ≤2 ítems peor >10) | Error |
+|---|---|
+| Voces sin ancla | 38.6 |
+| Voces con postura estimada | **25.1** · mejora 12/16 · ninguno peor >10 |
+| La estimación sola | 17.3 |
+
+Queda compresión: las voces aún tiran hacia su creencia (9 de cada 10 voces
+con "NO" asignado lo sostienen donde el modelo cree que no; "SÍ" contra su
+creencia, menos). El sitio lo dice: "Nadie ha medido esto en Colombia".
