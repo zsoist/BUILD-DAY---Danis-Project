@@ -9,8 +9,8 @@ Producto y límites: `README.md`, `docs/PRODUCT.md`. Método: `docs/METODO.md`.
 | Ruta | Qué | Se despliega |
 |---|---|---|
 | `web/` | el sitio: `index.html` (lógica) + `escena.js` (escenario 3D) + datos | sí (Vercel) |
-| `web/escenas/`, `web/gente/` | 17 fondos y 47 personajes pixel (HD-2D), generados | sí |
-| `scripts/escena/` | generar imágenes (OpenRouter) y recortar hojas de personajes | no |
+| `web/escenas/`, `web/gente/` | 17 fondos, 12 mesas regionales y 144 personajes pixel con 4 poses (`catalogo.json`) | sí |
+| `scripts/escena/` | generar imágenes, recortar hojas, catálogo, comprimir | no |
 | `api/opina.js` | única función; proxy a OpenRouter | sí |
 | `lib/filtro.mjs` | filtro de salida; **copiado** dentro de `api/opina.js` | no |
 | `simcolombia/` | pipeline de datos del DANE (ver su CLAUDE.md) | no |
@@ -61,6 +61,9 @@ node --test scripts/experimento/anclas.test.mjs     # antes de tocar la estimaci
   habría dicho "30% apoya invadir propiedad" (real: 11%).
 - **El prompt de la voz empieza por lo que es igual para todas** (`ORDEN_CACHE`):
   así el proveedor lo cachea. Texto propio de cada persona, después de las reglas.
+- **Imágenes nuevas: `openai/gpt-image-2.5-flare`, `quality:"low"`, `background:"transparent"`,
+  referencia en `input_references`** (~$0.005; Gemini Flash costaba 13×). Un
+  campo mal puesto (`input_images`) hace que el modelo ignore la referencia en silencio.
 - **`escena.js` solo muestra; no decide.** La lógica medida vive en `index.html`
   (el careo la extrae de ahí). Diseño: `DESIGN.md`.
 - **Docs cortos.** Tabla antes que párrafo. Si no cambia lo que alguien haría, fuera.

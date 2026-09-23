@@ -93,10 +93,12 @@ const GENTE = new Map();          // id → actor
 let JUEZ = null, MESA = null;
 let ALTO = 1.45;                 // metros de escena por persona (lo ajusta cada lugar)
 
-async function actor(id, url, alto = ALTO) {
-  const tex = await textura(url);
+/* cuadros=4: tira de poses (quieto, paso izq, paso der, mano arriba) */
+async function actor(id, url, alto = ALTO, cuadros = 1, estatico = false) {
+  let tex = await textura(url);
+  if (tex && cuadros > 1) { tex = tex.clone(); tex.repeat.set(1 / cuadros, 1); tex.needsUpdate = true; }
   const g = new THREE.Group();
-  const asp = tex ? tex.image.width / tex.image.height : 0.4;
+  const asp = tex ? tex.image.width / cuadros / tex.image.height : 0.4;
   const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, alphaTest: 0.5, color: tinte.clone() });
   const cuerpo = new THREE.Mesh(new THREE.PlaneGeometry(alto * asp, alto), mat);
   cuerpo.position.y = alto / 2;
@@ -104,7 +106,8 @@ async function actor(id, url, alto = ALTO) {
     new THREE.MeshBasicMaterial({ map: sombraTex, transparent: true, depthWrite: false }));
   som.rotation.x = -Math.PI / 2; som.position.y = 0.01;
   g.add(som, cuerpo);
-  g.userData = { id, cuerpo, alto, fase: Math.random() * 6.28, meta: null, vel: 3.1, habla: 0, llega: null };
+  g.userData = { id, cuerpo, alto, fase: Math.random() * 6.28, meta: null, vel: 2.6, habla: 0, llega: null,
+    cuadros, estatico, mano: 0, cuadro: 0 };
   scene.add(g);
   return g;
 }
@@ -116,6 +119,12 @@ function quitarTodos() {
   over.querySelectorAll(".globo,.marca,.cartel,.tablero,.juezdice").forEach(e => e.remove());
 }
 
+/* la mesa y las cosas de cada región (web/gente/catalogo.json, "utileria") */
+const UTIL_DE = { nacional: "bogota", bogota: "bogota", medellin: "antioquia", caribe: "caribe", sanandres: "insular_guajira",
+  guajira: "insular_guajira", cafetero: "cafetero", tatacoa: "cafetero", cali: "pacifico", choco: "pacifico", narino: "sur_andino",
+  popayan: "sur_andino", boyaca: "boyaca", santander: "santander", llanos: "llanos", amazonia: "amazonia" };
+function utileriaDe(k) { return window.CATALOGO?.utileria?.[UTIL_DE[k]] || null; }
+const COSAS = [[-4.7, -1.7], [4.9, -2.0], [-5.8, 0.7], [5.9, 0.5]];
 /* acomodos: dónde se para cada quien */
 function puestos(n, modo) {
   const P = [];
@@ -272,24 +281,34 @@ const API = {
     lugar(k || (modo === "sondeo" ? "estudio" : API.lugarDe(sel)));
     camObj.copy(CAM_BASE); miraObj.copy(MIRA_BASE);
     const acomodo = modo === "sondeo" ? "publico" : modo === "pais" ? "pie" : "mesa";
+    const U = utileriaDe(lugarActual);
     if (acomodo === "mesa") {
-      MESA = await actor("mesa", "escenas/mesa.webp", ALTO * .72);
+      MESA = await actor("mesa", "escenas/" + (U?.mesa || "mesa.webp"), ALTO * .72, 1, true);
       MESA.position.set(0, 0, 0.55);
+    }
+    if (U && acomodo !== "publico") {           // ambiente: hasta 3 cosas del lugar, a los lados
+      const cosas = U.cosas.slice(0, 3);
+      await Promise.all(cosas.map(async (c, i) => {
+        const a = await actor("cosa" + i, "escenas/" + c, ALTO * (i === 2 ? .7 : .85), 1, true);
+        a.position.set(COSAS[i][0], 0, COSAS[i][1]);
+        GENTE.set("__cosa" + i, a);
+      }));
     }
     const P = puestos(gente.length, acomodo);
     if (acomodo === "publico") {
-      JUEZ = await actor("juez", "gente/urbano_7.webp", ALTO * 1.1);
+      JUEZ = await actor("juez", "gente/urbano_7_poses.webp", ALTO * 1.1, 4);
       JUEZ.position.set(-3.35, 0, 1.15);
       // un podio delante de cada concursante: tapa de verdad (profundidad)
       await Promise.all(P.filter(p => p[2]).map(async ([x, z], i) => {
-        const podio = await actor("podio" + i, "escenas/podio.webp", ALTO * .6);
+        const podio = await actor("podio" + i, "escenas/podio.webp", ALTO * .6, 1, true);
         podio.position.set(x, 0, z + .42);
         podio.children[0].visible = false;          // el podio no lleva sombra de persona
         GENTE.set("__podio" + i, podio);
       }));
     }
     await Promise.all(gente.map(async (r, i) => {
-      const a = await actor(r.id, "gente/" + (r._spr || window.spriteDe?.(r) || "andino_0") + ".webp", ALTO * (.97 + (r.edad > 64 ? -.04 : 0) + (r.sexo === "mujer" ? -.03 : 0)));
+      const a = await actor(r.id, "gente/" + (r._spr || window.spriteDe?.(r) || "andino_0") + "_poses.webp",
+        ALTO * (.97 + (r.edad > 64 ? -.04 : 0) + (r.sexo === "mujer" ? -.03 : 0)), 4);
       const [x, z] = P[i];
       a.userData.meta = new THREE.Vector3(x, 0, z);
       const lado = x < 0 ? -1 : 1;
@@ -302,6 +321,7 @@ const API = {
   habla(r, txt, pos) {
     const a = GENTE.get(r.id); if (!a) return;
     a.userData.habla = performance.now() + Math.min(4200, 900 + txt.length * 22);
+    a.userData.mano = performance.now() + 1500;          // pide la palabra
     globo(a, `${r.nombre.split(" ")[0]} · ${r.edad}`, txt, pos);
     marca(a, pos);
     if (!QUIETO) {                // la cámara se acerca un poco a quien habla
@@ -342,7 +362,7 @@ const API = {
     const dice = document.createElement("div");
     dice.className = "juezdice";
     if (JUEZ) pegar(dice, JUEZ, 18); else over.append(dice);
-    const decir = s => { dice.textContent = s; if (JUEZ) JUEZ.userData.habla = performance.now() + 1100; };
+    const decir = s => { dice.textContent = s; if (JUEZ) { JUEZ.userData.habla = performance.now() + 1100; JUEZ.userData.mano = performance.now() + 900; } };
     decir(`¡Le preguntamos a ${n} colombianos sintéticos! Veamos qué dijeron…`);
     const lis = [...ol.children];
     for (let i = lis.length - 1; i >= 0; i--) {
@@ -393,17 +413,23 @@ function cuadroForzado() {
     if (!a) continue;
     const u = a.userData, c = u.cuerpo;
     a.quaternion.copy(camara.quaternion); a.rotation.x = 0; a.rotation.z = 0;   // siempre de frente
-    let brinco = 0;
+    let brinco = 0, anda = false;
+    if (u.estatico) { c.position.y = u.alto / 2; continue; }
     if (u.meta && (!u.llega || ahora > u.llega)) {
       tmp.subVectors(u.meta, a.position);
       const d = tmp.length();
       if (d > .03) {
         a.position.addScaledVector(tmp.normalize(), Math.min(d, u.vel * dt));
-        brinco = Math.abs(Math.sin(t * 13 + u.fase)) * .07;              // pasos
+        brinco = Math.abs(Math.sin(t * 9 + u.fase)) * .035;              // pasos
+        anda = true;
         c.scale.x = (tmp.x < 0 ? -1 : 1);                                // mira hacia donde camina
       } else { u.meta = null; c.scale.x = 1; }
     }
-    if (u.habla > ahora) brinco = Math.max(brinco, Math.abs(Math.sin(t * 16)) * .06);
+    if (u.habla > ahora && u.cuadros < 4) brinco = Math.max(brinco, Math.abs(Math.sin(t * 16)) * .06);
+    if (u.cuadros === 4) {
+      const f = anda ? [1, 0, 2, 0][Math.floor(t * 7.5 + u.fase) % 4] : u.mano > ahora ? 3 : 0;
+      if (f !== u.cuadro) { u.cuadro = f; c.material.map.offset.x = f / 4; }
+    }
     const resp = QUIETO ? 1 : 1 + Math.sin(t * 2.1 + u.fase) * .012;   // respira
     c.scale.y = resp;
     c.position.y = u.alto / 2 * resp + brinco;

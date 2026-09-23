@@ -682,8 +682,35 @@ function regionesDe(r){
   if(["91","97","95","86","18","94"].includes(d))return rural?["amaz","campo"]:["amaz","urb"];
   return rural?["campo"]:["urb"];
 }
+/* catálogo v2 (web/gente/catalogo.json): 144 personajes con 4 poses, de 12
+   regiones. Si aún no cargó, se usa la tabla de arriba. */
+let CATALOGO=null;
+fetch("gente/catalogo.json").then(r=>r.json()).then(c=>{CATALOGO=c;window.CATALOGO=c;}).catch(()=>{});
+function regionKey(r){
+  const d=r.dpto,rural=r.clase&&r.clase!=="cabecera";
+  const M={"11":["bogota"],"25":rural?["boyaca"]:["bogota","boyaca"],"15":["boyaca"],"05":["antioquia"],
+    "17":["cafetero"],"63":["cafetero"],"66":["cafetero"],"73":["cafetero"],"41":["cafetero"],
+    "68":["santander"],"54":["santander"],"52":["sur_andino"],"19":["sur_andino","pacifico"],"27":["pacifico"],
+    "76":rural?["pacifico","cafetero"]:["pacifico","cafetero","bogota"],"08":["caribe"],"13":["caribe","caribe_rural"],"47":["caribe"],
+    "20":["caribe_rural","caribe"],"23":["caribe_rural"],"70":["caribe_rural"],"44":["insular_guajira","caribe"],"88":["insular_guajira"],
+    "50":["llanos"],"85":["llanos"],"81":["llanos"],"99":["llanos"],"91":["amazonia"],"97":["amazonia"],"95":["amazonia"],
+    "86":["amazonia"],"18":["amazonia","cafetero"],"94":["amazonia"]};
+  return M[d]||["bogota"];
+}
+function familia(t){t=String(t||"").toLowerCase();for(const [k,rx] of Object.entries(OF))if(rx.test(t))return k;return null;}
 function spriteDe(r,usados){
   if(r._spr)return r._spr;
+  if(CATALOGO?.gente?.length){
+    const sx=r.sexo==="hombre"?"H":"M",reg=regionKey(r),fam=familia(r.ocupacion);
+    let mejor=[],top=-1e9;
+    for(const c of CATALOGO.gente){
+      if(c.s!==sx||c.o==="presentador")continue;
+      const p=(c.r.some(x=>reg.includes(x))?5:0)+3-Math.min(3,Math.abs(c.e-r.edad)/10)
+        +(fam&&familia(c.o)===fam?4:0)-(usados?.has(c.id)?9:0);
+      if(p>top+1e-9){top=p;mejor=[c.id];}else if(Math.abs(p-top)<1e-9)mejor.push(c.id);
+    }
+    if(mejor.length)return r._spr=mejor[Math.floor(h01(r.id+"|spr")*mejor.length)];
+  }
   const sx=r.sexo==="hombre"?"H":"M",e=r.edad<30?"j":r.edad<60?"a":"m",reg=regionesDe(r),of=String(r.ocupacion||"").toLowerCase();
   const orden={j:0,a:1,m:2};let mejor=[],top=-1;
   for(const [id,s,ed,rg,rx] of SPR){
