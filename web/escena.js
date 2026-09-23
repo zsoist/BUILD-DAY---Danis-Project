@@ -616,7 +616,9 @@ function lugar(k) {
   lugarActual = k;
   const siguiente = capaFondo[1 - capa];
   const img = new Image();
+  const turno = lugar.turno = (lugar.turno || 0) + 1;
   img.onload = () => {
+    if (turno !== lugar.turno) return;             // llegó tarde: ya se pidió otro fondo
     siguiente.style.backgroundImage = `url(escenas/${CIELOS[k] ? k + "_tierra" : k}.webp)`;
     siguiente.classList.add("on"); capaFondo[capa].classList.remove("on"); capa = 1 - capa;
   };
