@@ -1508,7 +1508,7 @@ async function boot(){
   try{
     // ORDEN: residents.json (el pesado, 1.3MB) primero y solo — es el que bloquea el
     // render; marginals/validacion (livianos) van después, en paralelo entre sí
-    try{RES=await jfetch("residents_v2.json?v=23");}
+    try{RES=await jfetch("residents_v2.json?v=24");}
     catch(e){RES=await jfetch("residents.json");}
     [MARG,VAL]=await Promise.all([
       jfetch("marginals.json").then(m=>m.departamentos),
