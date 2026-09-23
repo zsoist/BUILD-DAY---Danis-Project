@@ -541,7 +541,6 @@ html body #banner:hover{white-space:normal}
   #escena{height:56vh;min-height:360px;flex:0 0 auto}
   html body #qbar{flex-wrap:wrap;padding:8px 8px 8px 28px}
   html body #qin{flex:1 1 100%;font-size:16px !important}
-  #pie-dialogo{display:none}
   html body #encuesta{min-height:60vh}
   #lugar{left:10px;top:10px;padding:6px 12px 6px 24px}#lugar b{font-size:11px}
   #simtag{right:10px;top:10px;font-size:8.5px}
@@ -632,6 +631,87 @@ html body .resp.abierta .say{-webkit-line-clamp:unset;display:block}
 #dr-mapa{width:min(460px,calc(100vw - 24px))}
 #dr-mapa #navmap{flex:1 1 54%}
 @media (max-width:900px){.rotulo{max-width:calc(100% - 24px);top:auto;bottom:12px}.rotulo b{font-size:14px}.tablero.grande{top:8px}}
+
+/* ── pie del diálogo: voces, territorio, población ── */
+html body #pie-dialogo{display:flex;align-items:center;gap:10px;justify-content:flex-start;flex-wrap:wrap}
+.voces{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:20px;background:#121a4a;border:1px solid #f4ecd855;color:var(--crema);font-size:13px}
+.voces input{width:150px;accent-color:var(--oro);cursor:pointer}
+.voces b{font-family:"Silkscreen";font-size:14px;color:var(--oro);min-width:20px;text-align:right}
+.pie-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:20px;background:#121a4a;border:1px solid #f4ecd855;color:var(--crema);font-size:13px;cursor:pointer}
+.pie-btn:hover{border-color:var(--oro);color:var(--oro)}
+#pob-n{font-family:"Silkscreen";font-size:10px;background:var(--oro);color:#1a1300;border-radius:9px;padding:1px 6px}
+#qin.pide::placeholder{color:var(--oro)}#qbar:has(#qin.pide){box-shadow:0 0 0 2px var(--win-b),0 0 0 4px var(--oro),0 14px 32px #0009}
+/* ── modal de población ── */
+#pobmask{position:fixed;inset:0;z-index:40;background:#05081fcc;backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:18px}
+#pobmask[hidden]{display:none}
+#pobcard{width:min(1180px,100%);max-height:92vh;display:flex;flex-direction:column;animation:aparece .3s cubic-bezier(.2,.9,.3,1)}
+@keyframes aparece{from{opacity:0;transform:scale(.97)}}
+#pobcard header{display:flex;align-items:center;gap:18px;padding:16px 18px;border-bottom:2px solid #f4ecd833}
+#pobcard header small{font-family:"Silkscreen";font-size:9px;letter-spacing:.14em;color:var(--oro)}
+#pobcard h3{font-size:22px;color:var(--crema);font-weight:600}
+#pob-cuenta{margin-left:auto;text-align:right;line-height:1.2}
+#pob-cuenta b{display:block;font-family:"Silkscreen";font-size:22px;color:var(--oro)}
+#pob-cuenta span{font-size:12px;color:var(--tenue)}
+#pobcard .cierra{background:transparent;border:2px solid #f4ecd899;border-radius:4px;color:var(--crema);padding:4px 10px}
+#pob-pre{display:flex;flex-wrap:wrap;gap:6px;padding:12px 18px 4px}
+#pob-pre button{font-size:13px;padding:6px 12px;border-radius:16px;background:#0b1238;border:1px solid #f4ecd855;color:var(--crema);cursor:pointer}
+#pob-pre button:hover{border-color:var(--oro);color:var(--oro)}
+#pob-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;padding:12px 18px;overflow-y:auto}
+.pob-f{background:#0b1238;border:1px solid #3b4aa8;border-radius:6px;padding:10px 12px}
+.pob-f.dec{grid-column:span 2}
+.pob-f h4{display:flex;justify-content:space-between;align-items:center;font-family:"Silkscreen";font-size:9.5px;letter-spacing:.08em;color:var(--oro);margin-bottom:8px}
+.pob-f h4 button{background:none;border:0;color:var(--tenue);font:inherit;font-size:9px;cursor:pointer}
+.pob-o{display:flex;flex-direction:column;gap:3px}
+.pob-f.dec .pob-o{flex-direction:row;align-items:flex-end;height:110px;gap:4px}
+.pob-o button{position:relative;display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;border:1px solid transparent;background:#121a4a;color:var(--crema);font-size:13px;text-align:left;cursor:pointer;overflow:hidden}
+.pob-o button i{position:absolute;inset:0 auto 0 0;width:var(--w);background:#f4ecd81a;transition:width .35s ease-out}
+.pob-o button span,.pob-o button b{position:relative}
+.pob-o button b{margin-left:auto;font-family:"Silkscreen";font-size:10px;color:var(--tenue)}
+.pob-o button.on{border-color:var(--oro)}.pob-o button.on i{background:#fcd11640}
+.pob-o button.off{opacity:.45}
+.pob-f.dec .pob-o button{flex:1;flex-direction:column;justify-content:flex-end;height:100%;padding:4px 2px;text-align:center;gap:2px}
+.pob-f.dec .pob-o button i{inset:auto 0 0 0;width:auto;height:var(--w)}
+.pob-f.dec .pob-o button b{margin:0;font-size:8px}
+.pob-f.dec .pob-o button span{font-size:11px}
+#pobcard footer{display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:2px solid #f4ecd833}
+#pob-aviso{flex:1;font-size:13px;color:var(--tenue)}
+.pxbtn.oro{background:var(--oro);color:#1a1300;border-color:#fff4b0}
+/* ── mapa grande: mapa a la izquierda, lista a la derecha ── */
+html body #dr-mapa{width:min(1040px,calc(100vw - 24px));display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"t t" "m d" "l d"}
+#dr-mapa>h2{grid-area:t}
+html body #dr-mapa #navmap{grid-area:m;min-height:0;overflow:hidden;padding:12px;display:flex;flex-direction:column}
+html body #dr-mapa #navmap svg{flex:1;width:100%;height:100%;min-height:0;max-height:none}
+#dr-mapa #maplabel{grid-area:l}
+html body #dr-mapa #dptos{grid-area:d;border-top:0;border-left:2px solid #f4ecd833;flex:none;min-height:0}
+#dptolista{grid-template-columns:1fr 1fr}
+#dptolista h5{grid-column:1/-1;display:flex;align-items:center;gap:6px;font-family:"Silkscreen";font-size:9px;letter-spacing:.1em;color:var(--tenue);margin:8px 0 2px}
+#dptolista h5 i,#mapley i{width:10px;height:10px;border-radius:2px;background:var(--rg)}
+#mapley{display:flex;flex-wrap:wrap;gap:4px 12px;padding:8px 2px 0;font-size:11.5px;color:var(--tenue)}
+#mapley span{display:inline-flex;align-items:center;gap:5px}
+.rg1{--rg:#e9a23b}.rg2{--rg:#3bb6e9}.rg3{--rg:#8e7cf0}.rg4{--rg:#55c28a}.rg5{--rg:#2fbf9f}.rg6{--rg:#e07a4a}.rg7{--rg:#3fae4f}
+#navmap path[class*="rg"]{fill:color-mix(in srgb,var(--rg) 28%,#0f1640)}
+#navmap path.fav{fill:color-mix(in srgb,var(--si) 60%,#0f1640)!important}#navmap path.con{fill:color-mix(in srgb,var(--no) 60%,#0f1640)!important}#navmap path.dep{fill:color-mix(in srgb,var(--dep) 55%,#0f1640)!important}
+/* ── ficha del residente: ancha, dos columnas, y dónde queda en el DANE ── */
+html body #rcard{width:min(1100px,94vw);max-height:92vh;overflow:auto}
+html body #rcard .rkv{grid-template-columns:150px 1fr 150px 1fr;gap:12px 18px}
+.rdist{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:4px 0 10px;border-bottom:1px solid #f4ecd822;margin-bottom:4px}
+.rdist small{display:block;font-family:"Silkscreen";font-size:9px;letter-spacing:.1em;color:var(--oro);margin-bottom:6px}
+.rdist span{font-size:12.5px;color:var(--tenue)}
+.pasos{display:flex;gap:3px;margin-bottom:5px}
+.pasos i{flex:1;text-align:center;font-style:normal;font-family:"Silkscreen";font-size:9px;padding:5px 0;border-radius:3px;background:#121a4a;color:var(--tenue);border:1px solid #3b4aa8}
+.pasos i.bajo{background:#2fd08a2b}
+.pasos i.yo{background:var(--oro);color:#1a1300;border-color:#fff4b0;transform:scale(1.15)}
+.rdist .barra{position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,#2fd08a55,#fcd11655,#ff5a5f55);margin:6px 0 7px}
+.rdist .barra i{position:absolute;top:-4px;width:4px;height:20px;border-radius:2px;background:var(--oro);box-shadow:0 0 0 2px #1a1300;translate:-2px 0}
+@media (max-width:900px){
+  html body #dr-mapa{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr) auto minmax(0,1fr);grid-template-areas:"t" "m" "l" "d"}
+  html body #dr-mapa #dptos{border-left:0;border-top:2px solid #f4ecd833}
+  .pob-f.dec{grid-column:auto}
+  html body #rcard .rkv{grid-template-columns:110px 1fr}
+  .rdist{grid-template-columns:1fr}
+  .voces input{width:110px}
+  html body #pie-dialogo{display:flex}
+}
 </style>
 </head>
 <body>
@@ -664,12 +744,14 @@ html body .resp.abierta .say{-webkit-line-clamp:unset;display:block}
         <form id="qbar" class="ventana">
           <i class="cursor" aria-hidden="true">▶</i>
           <input id="qin" aria-label="Tu pregunta al país" placeholder="Pregúntale al país lo que quieras…" autocomplete="off">
-          <select id="nsel" aria-label="Cuántas voces">
-            <option value="8">8 voces</option><option value="12">12 voces</option><option value="20">20 voces</option>
-          </select>
           <button class="pxbtn" type="submit">PREGUNTAR</button>
         </form>
-        <div id="pie-dialogo"><div id="modohelp"></div><div id="selinfo"></div></div>
+        <div id="pie-dialogo">
+          <label class="voces" title="Cuántas personas responden">👥 <input type="range" id="nsel" min="2" max="20" value="8" aria-label="Cuántas voces"><b id="nsel-v">8</b><span>voces</span></label>
+          <button type="button" class="pie-btn" id="terrbtn" title="Elegir territorio">📍 <span id="terr-t">Bogotá D.C.</span></button>
+          <button type="button" class="pie-btn" id="pobbtn" title="Elegir a quién le preguntas">⚙ Población <b id="pob-n" hidden></b></button>
+          <div id="modohelp" hidden></div><div id="selinfo" hidden></div>
+        </div>
       </div>
     </div>
 
@@ -711,6 +793,13 @@ html body .resp.abierta .say{-webkit-line-clamp:unset;display:block}
   <div id="banner">⚠ SIMULACIÓN — residentes sintéticos: sus variables socioeconómicas se muestrean de personas reales encuestadas por el DANE (GEIH 2025–2026) y se ponderan a los totales oficiales; el nombre, la personalidad y las opiniones son generados. NO es una encuesta: ninguno de estos existe. Reporte de fidelidad: <a href="validacion_v2.json">validacion.json</a></div>
 </div>
 
+<div id="pobmask" hidden><section id="pobcard" class="ventana" role="dialog" aria-modal="true" aria-labelledby="pob-t">
+  <header><div><small>POBLACIÓN</small><h3 id="pob-t">¿A quién le preguntas?</h3></div>
+    <div id="pob-cuenta"></div><button type="button" class="cierra" id="pob-x" aria-label="Cerrar">✕</button></header>
+  <div id="pob-pre"></div>
+  <div id="pob-grid"></div>
+  <footer><span id="pob-aviso"></span><button type="button" class="pxbtn" id="pob-limpiar">LIMPIAR</button><button type="button" class="pxbtn oro" id="pob-ok">LISTO</button></footer>
+</section></div>
 <div id="rmask"><div id="rcard">
   <header><canvas id="rpx" width="16" height="16"></canvas><img id="rspr" alt="" hidden>
     <div><div class="nm" id="rnom"></div><div class="sub" id="rsub"></div></div>
@@ -889,14 +978,18 @@ async function pais(q){
   $("#ctrl").style.display="flex";  // en país también hay ■ CERRAR: corta las mesas en vuelo
   DECIDIDO={}; paintNav();
   $("#tally").innerHTML="";
-  cabecera("pais",q,"toca un departamento o recorre el país",[]);
+  cabecera("pais",q,SEL.size===1?"arranca la mesa de "+(MARG[cur]?.nombre||""):"recorre el país: una mesa por región",[]);
   $("#maptag").textContent="el país responde";
   $("#resps").innerHTML=`
     <div style="color:var(--dim);padding:2px 2px 8px">
       <b class="pxf" style="font-size:10px;color:var(--work)">EL PAÍS RESPONDE</b> ${esc(q)}</div>
-    <div id="mesa"><div class="hint">◂ toca un departamento en el mapa<br><br>
-      cada territorio arma su mesa de 4, conversa corto y CONCLUYE —
-      el mapa se va pintando con los veredictos</div></div>`;
+    <div id="mesa"></div>`;
+  $("#resps").firstElementChild?.remove();
+  abrirCajon("dr-mapa",false);
+  // no esperar a que alguien atine al mapa: con un territorio elegido, su mesa;
+  // con todo el país, el recorrido
+  if(SEL.size===1)setTimeout(()=>mesa(cur),50);
+  else setTimeout(recorrer,50);
 }
 async function mesa(cod){
   const cont=$("#mesa"),d=MARG[cod],dos=DOS[cod]||{};
@@ -1037,17 +1130,19 @@ function syncSel(){
   if(SEL.size===1)cur=[...SEL][0];
   $("#dptosel").value=SEL.size===1?cur:"CO";
   paintNav();selInfo();render();
-  ESC("vistaLugar",MODO,[...SEL]);pintaLista();
+  ESC("vistaLugar",MODO,[...SEL]);pintaLista();pintaTerr();
 }
 
 async function drawNav(){
   if(!GEO){try{GEO=await fetch("colombia.json").then(r=>r.json())}catch(e){return}}
   $("#navmap").innerHTML=`<div id="maptip"></div><svg viewBox="${GEO.viewBox}" role="group" aria-label="Mapa de Colombia: usa Tab y Enter para elegir territorio">${
-    Object.entries(GEO.paths).map(([c,p])=>`<path d="${p}" data-cod="${c}" role="button" tabindex="0" aria-label="${esc(MARG[c]?.nombre||c)}"/>`).join("")}</svg>`;
+    Object.entries(GEO.paths).map(([c,p])=>`<path d="${p}" data-cod="${c}" class="rg${macroDe(c)}" role="button" tabindex="0" aria-label="${esc(MARG[c]?.nombre||c)}"/>`).join("")}</svg>
+    <div id="mapley">${Object.entries(MACRO).map(([k,v])=>`<span class="rg${k}"><i></i>${esc(v)}</span>`).join("")}</div>`;
   const svg=$("#navmap svg");
   function elegir(cod){
     if(!cod)return;
-    if(MODO==="pais"&&PAIS.q){cur=cod;SEL=new Set([cod]);$("#dptosel").value=cod;selInfo();paintNav();render();mesa(cod);return;}
+    if(MODO==="pais"&&PAIS.q){cur=cod;SEL=new Set([cod]);$("#dptosel").value=cod;selInfo();paintNav();render();pintaTerr();abrirCajon("dr-mapa",false);mesa(cod);return;}
+    if(MODO==="pais"){cur=cod;SEL=new Set([cod]);syncSel();abrirCajon("dr-mapa",false);const i=$("#qin");i.placeholder="¿Qué le preguntas a "+(MARG[cod]?.nombre||"")+"?";i.focus();return;}
     if(SEL.has(cod)&&SEL.size>0)SEL.delete(cod);else SEL.add(cod);
     cur=cod; syncSel();
   }
@@ -1698,6 +1793,10 @@ function verResidente(r){
   if(r.peso)filas.push(["representa","~"+mil(Math.round(r.peso))+" colombianos","n∝población del dpto, piso 80"]);
   $("#rkv").innerHTML=filas.map(([k,v,s])=>
     `<b>${esc(k)}</b><span>${esc(v)}<span class="src">${esc(s)}</span></span>`).join("");
+  const dcl=decilDe(r),adultos=RES.filter(x=>x.edad>=18),pe=Math.round(100*adultos.filter(x=>x.edad<r.edad).length/Math.max(1,adultos.length));
+  $("#rkv").insertAdjacentHTML("afterbegin",`<div class="rdist"><div><small>INGRESO LABORAL · DECIL</small><div class="pasos">${
+    [1,2,3,4,5,6,7,8,9,10].map(d=>`<i class="${d===dcl?"yo":d<dcl?"bajo":""}">${d}</i>`).join("")}</div><span>${dcl?`gana más que ~${(dcl-1)*10}% de los adultos con ingreso laboral`:"sin ingreso laboral (hogar, estudio, pensión o busca trabajo)"}</span></div>
+    <div><small>EDAD · PERCENTIL</small><div class="barra"><i style="left:${pe}%"></i></div><span>mayor que el ${pe}% de los adultos sintéticos</span></div></div>`);
   $("#rmask").classList.add("open");
 }
 document.addEventListener("click",e=>{
@@ -2110,7 +2209,9 @@ function tally(p){
 }
 function muestraDe(sel,n){
   // muestra de los territorios elegidos (o todo el país), proporcional a población REAL
-  const codigos=sel.size?[...sel]:Object.keys(MARG);
+  // con filtros, solo territorios donde alguien cumple (si no, el sorteo se atasca)
+  const codigos=(sel.size?[...sel]:Object.keys(MARG)).filter(c=>RES.some(r=>r.dpto===c&&r.edad>=18&&pasa(r)));
+  if(!codigos.length)return [];
   const pesos=codigos.map(c=>[c,MARG[c]?.poblacion||1]);
   const tot=pesos.reduce((a,[,w])=>a+w,0);
   const out=[],usados=new Set();
@@ -2120,7 +2221,7 @@ function muestraDe(sel,n){
     for(const [c,w] of pesos){x-=w;if(x<=0){cod=c;break}}
     /* 18+: es el universo de la ECP contra la que se valida todo; con 16+ el
        sitio mostraba voces que ninguna medición respalda */
-    const pool=RES.filter(r=>r.dpto===cod&&r.edad>=18&&!usados.has(r.id));
+    const pool=RES.filter(r=>r.dpto===cod&&r.edad>=18&&pasa(r)&&!usados.has(r.id));
     if(pool.length){const r=pool[Math.floor(Math.random()*pool.length)];
       usados.add(r.id);out.push(r);}
   }
@@ -2149,10 +2250,11 @@ async function conversar(q){
   if(MODO==="pais")return pais(q);
   const nac=SEL.size!==1;
   const d=SEL.size===1?MARG[[...SEL][0]]:natMarg();
-  const n=Math.max(4,+($("#nsel")?.value||8));
+  const n=Math.min(20,Math.max(2,+($("#nsel")?.value||8)));
   const sample=muestraDe(SEL,n);
   $("#resps").innerHTML="";
-  cabecera(MODO,q,`${n} residentes de ${d.nombre}`,sample);
+  if(!sample.length){$("#resps").innerHTML=`<div class="bienvenida"><b>Nadie cumple esos filtros</b><p>Abre ⚙ Población y afloja alguno.</p></div>`;return;}
+  cabecera(MODO,q,`${sample.length} residentes de ${d.nombre}${filtrosActivos().length?" · "+resumenFiltro():""}`,sample);
   $("#tally").innerHTML="";
   const p={a_favor:0,en_contra:0,depende:0,ni_ni:0,sin_postura:0};
   const dosOf=r=>DOS[r.dpto]||{};
@@ -2359,22 +2461,84 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
 }
 boot();
 ESC("vista",MODO,[...SEL]);
+/* ═══ POBLACIÓN: a quién se le pregunta ═══
+   Por defecto, todo el país en proporción a su población real. Con filtros
+   la muestra deja de representar al país: la interfaz lo dice. */
+const MACRO={1:"Bogotá",2:"Caribe",3:"Oriente andino",4:"Centro andino",5:"Pacífico",6:"Orinoquía",7:"Amazonía"};
+function macroDe(d){if(["50","85","81","99"].includes(d))return 6;if(["91","97","95","86","18","94"].includes(d))return 7;return REGION_ECP[d]||3;}
+function ocupGrupo(r){const o=String(r.ocupacion||"").toLowerCase();
+  if(/hogar/.test(o))return "hogar";if(/buscando|desocup/.test(o))return "busca trabajo";
+  if(/pension|jubil/.test(o))return "pensionado";if(/inactiv|estudi|incapac/.test(o))return "inactivo";return "trabaja";}
+let DECILES=null;
+function decilDe(r){
+  if(!DECILES){const v=RES.filter(x=>x.edad>=18&&x.ingreso_m>0).map(x=>x.ingreso_m).sort((a,b)=>a-b);
+    DECILES=Array.from({length:9},(_,i)=>v[Math.floor(v.length*(i+1)/10)]);}
+  if(!(r.ingreso_m>0))return 0;let d=1;for(const t of DECILES)if(r.ingreso_m>t)d++;return d;}
+const FILTROS=[
+  {k:"sexo",t:"Sexo",o:[["hombre","hombres"],["mujer","mujeres"]],f:r=>r.sexo},
+  {k:"edad",t:"Edad",o:[["18-29","18–29"],["30-44","30–44"],["45-59","45–59"],["60+","60 o más"]],f:r=>r.edad<30?"18-29":r.edad<45?"30-44":r.edad<60?"45-59":"60+"},
+  {k:"region",t:"Región",o:Object.entries(MACRO).map(([k,v])=>[k,v]),f:r=>String(macroDe(r.dpto))},
+  {k:"zona",t:"Zona",o:[["cabecera","ciudad o pueblo"],["resto","rural"]],f:r=>r.clase||"cabecera"},
+  {k:"edu",t:"Educación",o:[["ninguna","ninguna"],["primaria","primaria"],["secundaria","secundaria"],["media","media"],["superior","superior"]],f:r=>r.educacion},
+  {k:"ocup",t:"Qué hace",o:[["trabaja","trabaja"],["hogar","oficios del hogar"],["busca trabajo","busca trabajo"],["inactivo","inactivo (incl. estudia)"],["pensionado","pensionado"]],f:ocupGrupo},
+  {k:"ingreso",t:"Ingreso laboral (decil DANE)",o:[["0","sin ingreso"],...[1,2,3,4,5,6,7,8,9,10].map(d=>[String(d),"d"+d])],f:r=>String(decilDe(r)),dec:1},
+  {k:"salud",t:"Salud",o:[["subsidiado","subsidiado"],["contributivo","contributivo"]],f:r=>r.regimen_salud},
+  {k:"compromiso",t:"Relación con la política",o:[["militante","militante"],["opinador","opina"],["desencantado","desencantado"],["indiferente","indiferente"]],f:r=>r.compromiso},
+  {k:"lean",t:"Aire político del territorio",o:[["derecha_uribismo","derecha"],["centro_tradicional","centro / tradicional"],["izquierda","izquierda"],["verdes_alternativos","verdes"],["otros_blanco_nulo","blanco / otros"]],f:r=>r.lean},
+];
+const FILTRO={};                 // k → Set de valores elegidos (vacío = todos)
+const PRESETS=[["Todo el país",{}],["Jóvenes 18–29",{edad:["18-29"]}],["Mayores de 60",{edad:["60+"]}],["Mujeres",{sexo:["mujer"]}],
+  ["Rurales",{zona:["resto"]}],["Costa Caribe",{region:["2"]}],["Universitarios",{edu:["superior"]}],["Ingresos bajos",{ingreso:["0","1","2","3"]}]];
+function pasa(r,salvo){for(const F of FILTROS){if(F.k===salvo)continue;const S=FILTRO[F.k];if(S&&S.size&&!S.has(F.f(r)))return false;}return true;}
+function filtrosActivos(){return FILTROS.filter(F=>FILTRO[F.k]?.size);}
+function resumenFiltro(){return filtrosActivos().map(F=>[...FILTRO[F.k]].map(v=>F.o.find(o=>o[0]===v)?.[1]||v).join("/")).join(" · ");}
+function pintaPob(){
+  const base=RES.filter(r=>r.edad>=18&&(!SEL.size||SEL.has(r.dpto)));
+  const cumplen=base.filter(r=>pasa(r)).length;
+  $("#pob-cuenta").innerHTML=`<b>${cumplen.toLocaleString("es-CO")}</b><span>de ${base.length.toLocaleString("es-CO")} adultos ${SEL.size?"del territorio":"del país"}</span>`;
+  $("#pob-pre").innerHTML=PRESETS.map(([n],i)=>`<button type="button" data-p="${i}">${esc(n)}</button>`).join("");
+  $("#pob-grid").innerHTML=FILTROS.map(F=>{
+    const otros=base.filter(r=>pasa(r,F.k)),c={};otros.forEach(r=>{const v=F.f(r);c[v]=(c[v]||0)+1;});
+    const max=Math.max(1,...F.o.map(([v])=>c[v]||0)),S=FILTRO[F.k];
+    return `<div class="pob-f${F.dec?" dec":""}"><h4>${esc(F.t)}${S?.size?`<button type="button" data-borrar="${F.k}">todos</button>`:""}</h4><div class="pob-o">${
+      F.o.map(([v,l])=>`<button type="button" data-k="${F.k}" data-v="${esc(v)}" class="${S?.size?(S.has(v)?"on":"off"):""}" style="--w:${Math.round(100*(c[v]||0)/max)}%"><i></i><span>${esc(l)}</span><b>${(c[v]||0).toLocaleString("es-CO")}</b></button>`).join("")}</div></div>`;}).join("");
+  const n=filtrosActivos().length;
+  $("#pob-aviso").textContent=n?`Muestra filtrada: ya no representa al país. ${cumplen<(+$("#nsel").value||8)?"Muy pocas personas cumplen.":""}`:"Todo el país, en proporción a su población real.";
+  $("#pob-n").hidden=!n;$("#pob-n").textContent=n;
+}
+function abrirPob(){pintaPob();$("#pobmask").hidden=false;$("#pob-ok").focus();}
+$("#pobbtn").onclick=abrirPob;
+$("#pob-x").onclick=$("#pob-ok").onclick=()=>{$("#pobmask").hidden=true;pintaPob();};
+$("#pob-limpiar").onclick=()=>{for(const k in FILTRO)delete FILTRO[k];pintaPob();};
+$("#pobmask").addEventListener("click",e=>{
+  if(e.target.id==="pobmask"){$("#pobmask").hidden=true;return;}
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.p!=null){for(const k in FILTRO)delete FILTRO[k];for(const [k,v] of Object.entries(PRESETS[+b.dataset.p][1]))FILTRO[k]=new Set(v);pintaPob();return;}
+  if(b.dataset.borrar){delete FILTRO[b.dataset.borrar];pintaPob();return;}
+  if(b.dataset.k){const S=(FILTRO[b.dataset.k]??=new Set());S.has(b.dataset.v)?S.delete(b.dataset.v):S.add(b.dataset.v);if(!S.size)delete FILTRO[b.dataset.k];pintaPob();}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#pobmask").hidden)$("#pobmask").hidden=true;});
+/* voces: slider de 2 a 20 */
+$("#nsel").addEventListener("input",()=>{$("#nsel-v").textContent=$("#nsel").value;});
+$("#terrbtn").onclick=()=>abrirCajon("dr-mapa",true);
+function pintaTerr(){const t=$("#terr-t");if(t)t.textContent=SEL.size===0?"Toda Colombia":SEL.size===1?(MARG[[...SEL][0]]?.nombre||""):SEL.size+" territorios";}
 /* LISTA DE DEPARTAMENTOS: tocar Bogotá en el mapa era casi imposible */
 function pintaLista(){
   const L=$("#dptolista");if(!L||!Object.keys(MARG).length)return;
   const f=($("#dptobusca")?.value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
   const E={a_favor:"fav",en_contra:"con",depende:"dep"};
-  L.innerHTML=Object.entries(MARG).sort((a,b)=>(b[1].poblacion||0)-(a[1].poblacion||0))
-    .filter(([c,d])=>d.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(f))
-    .map(([c,d])=>`<button type="button" role="listitem" data-cod="${c}" class="${E[DECIDIDO[c]]||""} ${SEL.has(c)?"sel":""} ${PAIS?.busy?.[c]?"hot":""}"><b>${esc(d.nombre)}</b><span>${((d.poblacion||0)/1e6).toLocaleString("es-CO",{maximumFractionDigits:1})} M</span></button>`).join("");
+  const filas=Object.entries(MARG).filter(([c,d])=>d.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(f));
+  L.innerHTML=Object.entries(MACRO).map(([k,v])=>{
+    const g=filas.filter(([c])=>String(macroDe(c))===k).sort((a,b)=>(b[1].poblacion||0)-(a[1].poblacion||0));
+    return g.length?`<h5 class="rg${k}"><i></i>${esc(v)}</h5>`+g.map(([c,d])=>`<button type="button" role="listitem" data-cod="${c}" class="${E[DECIDIDO[c]]||""} ${SEL.has(c)?"sel":""} ${PAIS?.busy?.[c]?"hot":""}"><b>${esc(d.nombre)}</b><span>${((d.poblacion||0)/1e6).toLocaleString("es-CO",{maximumFractionDigits:1})} M</span></button>`).join(""):"";}).join("");
 }
 $("#dptobusca")?.addEventListener("input",pintaLista);
 $("#dptolista")?.addEventListener("click",e=>{const b=e.target.closest("button[data-cod]");if(b)window.elegirDpto?.(b.dataset.cod);});
 /* recorrer el país: una mesa por región, una tras otra */
 const RECORRIDO=["11","05","76","08","68","52","50","13","19","91"];
-$("#recorrer")?.addEventListener("click",async()=>{
+async function recorrer(){
   if(MODO!=="pais"){$("#modo [data-m=pais]").click();}
-  if(!PAIS.q){const i=$("#qin");i.placeholder="Primero escribe la pregunta para el país…";i.focus();return;}
+  if(!PAIS.q){abrirCajon("dr-mapa",false);const i=$("#qin");i.placeholder="Escribe la pregunta para el país y dale PREGUNTAR…";i.focus();i.classList.add("pide");setTimeout(()=>i.classList.remove("pide"),1600);return;}
   const yo=PAIS;
   for(const c of RECORRIDO){
     if(PAIS!==yo||CONV.stop||MODO!=="pais")break;
@@ -2383,7 +2547,8 @@ $("#recorrer")?.addEventListener("click",async()=>{
     await mesa(c);
     await new Promise(r=>setTimeout(r,2500));
   }
-});
+}
+$("#recorrer")?.addEventListener("click",recorrer);
 /* el chat: si subes a leer, no te arrastra hacia abajo */
 $("#resps").addEventListener("scroll",()=>{const e=$("#resps");PEGADO=e.scrollHeight-e.scrollTop-e.clientHeight<80;if(PEGADO)$("#nuevas").hidden=true;});
 $("#nuevas").onclick=()=>{PEGADO=true;$("#resps").scrollTop=1e9;$("#nuevas").hidden=true;};
