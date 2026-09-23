@@ -27,7 +27,7 @@ while IFS= read -r f; do
     printf '  ⛔ %-44s NO IGNORADO\n' "$f"
     problemas=$((problemas+1))
   fi
-done < <(grep -rlE "$PATRON" . \
+done < <(grep -rIlE "$PATRON" . \
            --exclude-dir=.git --exclude-dir=node_modules \
            --exclude-dir=runs --exclude-dir=__pycache__ 2>/dev/null)
 
