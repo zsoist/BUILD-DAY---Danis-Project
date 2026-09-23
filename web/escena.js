@@ -125,6 +125,7 @@ async function actor(id, url, alto = ALTO, cuadros = 1, estatico = false) {
   const som = new THREE.Mesh(new THREE.PlaneGeometry(Math.max(alto * asp * 1.1, alto * .42), alto * 0.2),
     new THREE.MeshBasicMaterial({ map: sombraTex, transparent: true, depthWrite: false }));
   som.rotation.x = -Math.PI / 2; som.position.y = 0.01;
+  if (!tex) { cuerpo.visible = false; som.visible = false; }   // imagen rota: nada, no un bloque de color
   g.add(som, cuerpo);
   g.userData = { id, cuerpo, alto, fase: Math.random() * 6.28, meta: null, vel: 1.9, habla: 0, llega: null,
     cuadros, estatico, mano: 0, cuadro: 0 };
@@ -232,7 +233,7 @@ function globo(a, nombre, txt, pos) {
   const p = el.querySelector("p"), corto = idea(txt);
   if (QUIETO) { p.textContent = corto; return; }
   let i = 0; const paso = Math.max(1, Math.round(corto.length / 55));
-  const iv = setInterval(() => { i += paso; p.textContent = corto.slice(0, i); if (i >= corto.length) clearInterval(iv); }, 26);
+  const iv = setInterval(() => { if (!p.isConnected) { clearInterval(iv); return; } i += paso; p.textContent = corto.slice(0, i); if (i >= corto.length) clearInterval(iv); }, 26);
 }
 /* la idea: primera frase, hasta ~110 caracteres. Leer un párrafo en un globo
    no es un intercambio ágil; el completo queda en la conversación */
@@ -562,7 +563,7 @@ const cielo = (() => {
         g.drawImage(n.spr, Math.round(n.x), n.y);
       }
       if (ahora > proxAves) bandada(ahora);
-      aves = aves.filter(p => p.x > -60 && p.x < W + 60);
+      aves = aves.filter(p => p.x > -140 && p.x < W + 140);
       for (const p of aves) {
         p.x += p.v * dt; const F = FORMA[p.forma], fr = p.planea ? F[0] : F[(t * 5 + p.fase | 0) % 2];
         const y = Math.round(p.y + Math.sin(t * 2 + p.fase) * 1.5), x0 = Math.round(p.x);
@@ -745,6 +746,7 @@ function camara2d(dt, ahora) {
     VISTA.fxo = ini.fx - (e.clientX - ini.x) / VISTA.z; VISTA.fyo = ini.fy - (e.clientY - ini.y) / VISTA.z;
   });
   addEventListener("pointerup", () => { ini = null; });
+  addEventListener("pointercancel", () => { ini = null; });   // gesto cancelado (scroll, long-press): no queda enganchado
   host.addEventListener("dblclick", () => { VISTA.mano = 0; general(); });
   const bt = document.createElement("div"); bt.id = "zoomesc";
   bt.innerHTML = `<button type="button" data-z="1.25" aria-label="Acercar">+</button><button type="button" data-z=".8" aria-label="Alejar">−</button><button type="button" data-z="0" aria-label="Ver todo">⤢</button>`;
@@ -800,11 +802,12 @@ function hablaYa(r, txt, pos) {
 let turnos = false, enTurno = false, modoActual = "tertulia";
 const COLA = [];
 function siguienteTurno() {
+  const id = siguienteTurno.id = (siguienteTurno.id || 0) + 1;
   const t = COLA.shift();
   if (!t) { enTurno = false; return; }
   enTurno = true;
   hablaYa(...t);
-  setTimeout(siguienteTurno, QUIETO ? 400 : Math.min(3800, 1600 + idea(t[1]).length * 18));
+  setTimeout(() => { if (id === siguienteTurno.id) siguienteTurno(); }, QUIETO ? 400 : Math.min(3800, 1600 + idea(t[1]).length * 18));
 }
 /* ── API que usa el sitio ────────────────────────────────────────────── */
 const API = {
@@ -908,9 +911,9 @@ const API = {
     el.className = "cartel"; el.style.setProperty("--pc", COLOR[pos] || "#fcd116");
     const m = html.match(/^(<b>[\s\S]*?<\/b>)([\s\S]*)$/);
     el.innerHTML = m ? `${m[1]}<p>${m[2]}</p><small>completo en la conversación · clic para recoger</small>` : html;
-    el.onclick = () => el.classList.toggle("chico");
+    el.onclick = () => { clearTimeout(el._t); el.classList.toggle("chico"); };
     over.append(el);
-    setTimeout(() => el.classList.add("chico"), 9000);
+    el._t = setTimeout(() => el.classList.add("chico"), 9000);
     API.calma();
   },
   /* el show: el juez revela el tablero fila por fila */

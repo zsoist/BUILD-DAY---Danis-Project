@@ -516,7 +516,8 @@ html body .ronda{color:var(--tenue)}
 .cajon{position:fixed;top:calc(var(--top) + 12px);bottom:12px;width:min(430px,calc(100vw - 24px));z-index:30;display:flex;flex-direction:column;min-height:0;transition:transform .38s cubic-bezier(.2,.9,.25,1),visibility 0s .38s;visibility:hidden}
 .cajon.izq{left:12px;transform:translateX(calc(-100% - 30px))}
 .cajon.der{right:12px;transform:translateX(calc(100% + 30px))}
-.cajon.abierto{transform:none;visibility:visible;transition:transform .38s cubic-bezier(.2,.9,.25,1)}
+.cajon:not(.abierto){pointer-events:none}
+.cajon.abierto{transform:none;visibility:visible;pointer-events:auto;transition:transform .38s cubic-bezier(.2,.9,.25,1)}
 .cajon>h2{font-family:"Silkscreen";font-size:11px;color:var(--oro);padding:12px 14px;border-bottom:2px solid #f4ecd844;display:flex;align-items:center;gap:8px;text-transform:lowercase}
 .cajon>h2 b{color:var(--tenue);font-weight:400;margin-left:auto}
 .cajon>h2.sub{border-top:2px solid #f4ecd844}
@@ -811,6 +812,17 @@ html body #navmap #mtierra path.dep{fill:color-mix(in srgb,var(--dep) 55%,#12204
   html body .rotulo{top:52px;bottom:auto;left:50%;max-width:calc(100% - 20px);padding:5px 10px}
   html body .rotulo small{font-size:7.5px}html body .rotulo b{font-size:12px}
 }
+
+/* táctil: blancos de 40 px; el aviso de SIMULACIÓN se despliega al tocarlo (en una línea el enlace quedaba tras los puntos suspensivos) */
+@media (pointer:coarse){html body #modo button{min-height:40px}}
+@media (pointer:coarse){
+  #zoomesc button,#mapzoom button{min-width:40px;height:40px}
+  #banner a{display:inline-block;padding:6px 2px}
+}
+@media (max-width:900px){
+  #banner{cursor:pointer}
+  #banner.abierto{white-space:normal;text-overflow:clip;max-height:45vh;overflow:auto;line-height:1.45;padding-top:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+}
 </style>
 </head>
 <body>
@@ -889,7 +901,7 @@ html body #navmap #mtierra path.dep{fill:color-mix(in srgb,var(--dep) 55%,#12204
     <div id="muestra" aria-busy="true"><div class="fuente">cargando censo DANE…</div></div>
   </aside>
 
-  <div id="banner">⚠ SIMULACIÓN — residentes sintéticos: sus variables socioeconómicas se muestrean de personas reales encuestadas por el DANE (GEIH 2025–2026) y se ponderan a los totales oficiales; el nombre, la personalidad y las opiniones son generados. NO es una encuesta: ninguno de estos existe. Reporte de fidelidad: <a href="validacion_v2.json">validacion.json</a></div>
+  <div id="banner">⚠ SIMULACIÓN — residentes sintéticos: sus variables socioeconómicas se muestrean de personas reales encuestadas por el DANE (GEIH 2025–2026) y se ponderan a los totales oficiales; el nombre, la personalidad y las opiniones son generados. NO es una encuesta: ninguno de estos existe. Reporte de fidelidad: <a href="validacion_v2.json">validacion_v2.json</a></div>
 </div>
 
 <div id="pobmask" hidden><section id="pobcard" class="ventana" role="dialog" aria-modal="true" aria-labelledby="pob-t">
@@ -1082,11 +1094,7 @@ async function pais(q){
   $("#tally").innerHTML="";
   cabecera("pais",q,SEL.size===1?"arranca la mesa de "+(MARG[cur]?.nombre||""):"recorre el país: una mesa por región",[]);
   $("#maptag").textContent="el país responde";
-  $("#resps").innerHTML=`
-    <div style="color:var(--dim);padding:2px 2px 8px">
-      <b class="pxf" style="font-size:10px;color:var(--work)">EL PAÍS RESPONDE</b> ${esc(q)}</div>
-    <div id="mesa"></div>`;
-  $("#resps").firstElementChild?.remove();
+  $("#resps").innerHTML=`<div id="mesa"></div>`;   // la pregunta ya va en la cabecera
   abrirCajon("dr-mapa",false);
   // no esperar a que alguien atine al mapa: con un territorio elegido, su mesa;
   // con todo el país, el recorrido
@@ -1169,7 +1177,7 @@ Mesa de vecinos en ${d.nombre}. El tema es cómo les afecta A USTEDES, en SU ter
   resumirTurnos(q,transcript.map(t=>`${t.n}: ${t.t}`)).then(R=>{
     if(R.temas?.length&&document.body.contains(el))el.querySelector(".conclu")?.insertAdjacentHTML("beforeend",`<div class="temas">${R.temas.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`);
     if(PAIS===owner)(owner.data??={})[cod]={...(owner.data[cod]||{}),temas:R.temas||[]};});
-  setTimeout(()=>{if(MODO==="pais"&&PAIS===owner)abrirCajon("dr-mapa",true);},3200);
+  setTimeout(()=>{if(MODO==="pais"&&PAIS===owner&&!owner.recorre&&!document.querySelector(".cajon.abierto"))abrirCajon("dr-mapa",true);},3200);   // en el recorrido no tapa el escenario
   festejo(el);
   selloHumano(q,transcript,el);
   abajo();
@@ -1197,7 +1205,7 @@ function renderMesa(cod,dat,el){
     card.style.setProperty("--pc",COLORES[tr.p||"depende"]);
   });
   el.insertAdjacentHTML("beforeend",
-    `<div class="conclu" style="--pc:${COLORES[dat.pos]}"><b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(dat.concl)}</div>`);
+    `<div class="conclu" style="--pc:${COLORES[dat.pos]}"><b>EN QUÉ QUEDÓ ${esc(d.nombre).toUpperCase()}</b>${esc(dat.concl)}${dat.temas?.length?`<div class="temas">${dat.temas.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`:""}</div>`);
   festejo(el);
   abajo();
 }
@@ -1322,7 +1330,8 @@ function camaraControles(svg){
     if(!CAM.arrastro&&Math.hypot(dx,dy)<6)return;CAM.arrastro=true;
     const r=svg.getBoundingClientRect(),[x,y,w,h]=ini.vb,s=w/r.width;
     camara([Math.min(Math.max(x-dx*s,0),CAM.W-w),Math.min(Math.max(y-dy*s,0),CAM.H-h),w,h],true);});
-  addEventListener("pointerup",()=>{ini=null;setTimeout(()=>CAM.arrastro=false,0);});
+  const soltar=()=>{ini=null;setTimeout(()=>CAM.arrastro=false,0);};
+  addEventListener("pointerup",soltar);addEventListener("pointercancel",soltar);
 }
 
 async function drawNav(){
@@ -1388,8 +1397,8 @@ async function drawNav(){
   svg.addEventListener("mousemove",e=>hoverMapa(e.target.dataset?.cod||null,e));
   svg.addEventListener("mouseleave",()=>hoverMapa(null));
   svg.addEventListener("mousedown",e=>e.target.dataset?.cod&&e.target.classList.add("press"));
-  svg.addEventListener("pointerdown",e=>e.pointerType==="touch"&&hoverMapa(e.target.dataset?.cod||null,e));
-  svg.addEventListener("mouseup",()=>svg.querySelectorAll(".press").forEach(x=>x.classList.remove("press")));
+  svg.addEventListener("pointerdown",e=>{if(e.pointerType!=="touch")return;hoverMapa(e.target.dataset?.cod||null,e);clearTimeout(hoverMapa._t);hoverMapa._t=setTimeout(()=>hoverMapa(null),2600);});
+  addEventListener("mouseup",()=>svg.querySelectorAll(".press").forEach(x=>x.classList.remove("press")));
   /* links inversos: chips y burbujas iluminan su territorio en el mapa */
   document.addEventListener("mouseover",e=>{
     const chip=e.target.closest?.("#selinfo .chip");
@@ -1698,7 +1707,7 @@ function render(){
     :`<i style="color:var(--faint)">dossier en camino — lo está escribiendo el enjambre</i>`;
   const mu=$("#muestra");mu.innerHTML="";
   mine.slice(0,10).forEach(r=>{
-    const div=document.createElement("div");div.className="res";
+    const div=document.createElement("div");div.className="res";div.tabIndex=0;div.setAttribute("role","button");div.setAttribute("aria-label","ver ficha de "+r.nombre);
     RESBY[r.id]=r;div.dataset.rid=r.id;div.title="ver ficha DANE";
     const cv=document.createElement("canvas");retrato(cv,r.id,r.sexo,r.ocupacion,r.edad);
     div.append(cv);div.insertAdjacentHTML("beforeend",
@@ -2004,12 +2013,14 @@ function verResidente(r){
 }
 document.addEventListener("click",e=>{
   if(e.target.id==="rmask"){$("#rmask").classList.remove("open");return;}
+  const sel=window.getSelection();if(sel&&!sel.isCollapsed)return;
   const card=e.target.closest?.(".resp[data-rid],.seat[data-rid],.res[data-rid]");
   if(card&&RESBY[card.dataset.rid])verResidente(RESBY[card.dataset.rid]);
 });
 /* teclado: la ficha también abre con Enter/Espacio (delegado, sobrevive al repintado desde caché) */
 document.addEventListener("keydown",e=>{
   if(e.key!=="Enter"&&e.key!==" ")return;
+  if(e.target.closest?.("button,a,select,textarea,input,[contenteditable]"))return;
   const card=e.target.closest?.(".resp[data-rid],.seat[data-rid],.res[data-rid]");
   if(card&&RESBY[card.dataset.rid]){e.preventDefault();verResidente(RESBY[card.dataset.rid]);}
 });
@@ -2820,7 +2831,7 @@ const RECORRIDO=["11","05","76","08","68","52","50","13","19","91"];
 async function recorrer(){
   if(MODO!=="pais"){$("#modo [data-m=pais]").click();}
   if(!PAIS.q){abrirCajon("dr-mapa",false);const i=$("#qin");i.placeholder="Escribe la pregunta para el país y dale PREGUNTAR…";i.focus();i.classList.add("pide");setTimeout(()=>i.classList.remove("pide"),1600);return;}
-  const yo=PAIS;
+  const yo=PAIS;yo.recorre=true;
   for(const c of RECORRIDO){
     if(PAIS!==yo||CONV.stop||MODO!=="pais")break;
     if(yo.data?.[c])continue;
@@ -2853,6 +2864,7 @@ function abrirCajon(id,forzar){
   document.querySelector(`[data-cajon="${id}"]`)?.setAttribute("aria-expanded",String(abre));
 }
 document.querySelectorAll("[data-cajon]").forEach(b=>b.onclick=()=>abrirCajon(b.dataset.cajon));
+$("#banner").onclick=e=>{if(!e.target.closest("a"))$("#banner").classList.toggle("abierto");};
 document.querySelectorAll(".cajon .cierra").forEach(b=>b.onclick=()=>abrirCajon(b.closest(".cajon").id,false));
 document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".cajon.abierto").forEach(c=>abrirCajon(c.id,false));});
 /* ═══ RONDA 8 · efectos pixel premium ═══ */
