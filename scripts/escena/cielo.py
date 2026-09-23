@@ -24,18 +24,24 @@ ESC = Path(__file__).resolve().parents[2] / "web" / "escenas"
 TECHO = {"nacional": .21, "bogota": .5, "medellin": .24, "caribe": .35, "cafetero": .45, "llanos": .5,
          "amazonia": .40, "choco": .44, "santander": .5, "narino": .3, "popayan": .45, "cali": .45,
          "guajira": .33, "sanandres": .22}
+# panorámicas (<k>_pano.webp, 2048×896, para más de 9 personas): otro encuadre, otro techo
+TECHO.update({"nacional_pano": .3, "bogota_pano": .45, "medellin_pano": .2, "caribe_pano": .3, "cafetero_pano": .35,
+              "llanos_pano": .45, "amazonia_pano": .25, "choco_pano": .15, "santander_pano": .3, "popayan_pano": .3,
+              "cali_pano": .35, "guajira_pano": .12, "sanandres_pano": .15})
 # tatacoa (noche con vía láctea) y boyaca (cielo azul con montañas) ya tienen cielo vivo: se dejan
-TOL = {"nacional": 10, "bogota": 11}     # neblina lejana casi del color del cielo: tolerancia corta
-HORA = {"llanos": "tarde", "caribe": "tarde", "narino": "niebla", "amazonia": "bruma", "choco": "bruma"}
+TOL = {"nacional": 10, "bogota": 11, "nacional_pano": 10, "bogota_pano": 11, "popayan_pano": 24}     # neblina lejana casi del color del cielo: tolerancia corta
+LUZ = {"cafetero_pano": 45, "popayan_pano": 0}   # cenit oscuro: sin esto queda una nube negra
+HORA = {"llanos": "tarde", "caribe": "tarde", "llanos_pano": "tarde", "caribe_pano": "tarde", "cali_pano": "tarde",
+        "amazonia_pano": "bruma", "choco_pano": "bruma", "narino": "niebla", "amazonia": "bruma", "choco": "bruma"}
 
 
-def mascara(a, techo, tol=16):
+def mascara(a, techo, tol=16, luz=95):
     H, W, _ = a.shape
     lum = a.mean(2)
     cielo = np.zeros((H, W), bool)
     q = deque()
     for x in range(W):
-        if lum[0, x] > 110:
+        if lum[0, x] > luz + 15:
             cielo[0, x] = True
             q.append((0, x))
     lim = int(H * techo)
@@ -44,7 +50,7 @@ def mascara(a, techo, tol=16):
         for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             v, u = y + dy, x + dx
             if 0 <= v < lim and 0 <= u < W and not cielo[v, u] \
-                    and np.abs(a[v, u] - a[y, x]).sum() < tol and lum[v, u] > 95:
+                    and np.abs(a[v, u] - a[y, x]).sum() < tol and lum[v, u] > luz:
                 cielo[v, u] = True
                 q.append((v, u))
     return cielo
@@ -82,11 +88,15 @@ def main():
     for k, techo in TECHO.items():
         im = Image.open(ESC / f"{k}.webp").convert("RGBA")
         a = np.asarray(im.convert("RGB")).astype(int)
-        m = mascara(a, techo, TOL.get(k, 16))
+        m = mascara(a, techo, TOL.get(k, 16), LUZ.get(k, 95))
         # come 1 px del borde claro (el halo del cielo viejo pegado a los tejados)
         m = np.asarray(Image.fromarray(m.astype(np.uint8) * 255).filter(ImageFilter.MaxFilter(3))) > 127
         m &= np.arange(a.shape[0])[:, None] < int(a.shape[0] * techo)
         m = sin_islas(m, int(a.shape[0] * techo))
+        if m.mean() < .02:                 # cielo oscuro o sin cielo: se deja como está
+            (ESC / f"{k}_tierra.webp").unlink(missing_ok=True)
+            print(k, "sin cielo recortable")
+            continue
         rgba = np.asarray(im).copy()
         rgba[..., 3] = np.where(m, 0, 255)
         Image.fromarray(rgba).save(ESC / f"{k}_tierra.webp", lossless=False, quality=90, method=6)

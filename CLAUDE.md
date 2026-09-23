@@ -9,7 +9,7 @@ Producto y límites: `README.md`, `docs/PRODUCT.md`. Método: `docs/METODO.md`.
 | Ruta | Qué | Se despliega |
 |---|---|---|
 | `web/` | el sitio: `index.html` (lógica) + `escena.js` (escenario 3D) + datos | sí (Vercel) |
-| `web/escenas/`, `web/gente/` | 17 fondos, 12 mesas regionales y 144 personajes pixel con 4 poses (`catalogo.json`) | sí |
+| `web/escenas/`, `web/gente/` | 17 fondos + 16 panorámicos (`_pano`, más de 9 personas), cielos recortados (`_tierra`), 24 de ambiente (`amb/`), 12 mesas y 144 personajes con 4 poses | sí |
 | `scripts/escena/` | generar imágenes, recortar hojas, catálogo, comprimir | no |
 | `api/opina.js` | única función; proxy a OpenRouter | sí |
 | `lib/filtro.mjs` | filtro de salida; **copiado** dentro de `api/opina.js` | no |

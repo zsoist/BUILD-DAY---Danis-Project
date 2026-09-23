@@ -19,7 +19,7 @@ un espacio 3D. La interfaz es la de un JRPG de consola: ventanas de diálogo.
 | Cielo y ambiente | El cielo pálido se recorta (`scripts/escena/cielo.py`) y se pinta uno pixel vivo: tramado Bayer, nubes, pájaros del lugar. Animales, vehículos y transeúntes (`escenas/amb/`) solo si tienen sentido ahí; sus carriles se miden sobre la imagen (`AMB` en `escena.js`) |
 | Movimiento | La gente camina a su silla con sus cuadros de paso y levanta la mano al empezar a hablar. Nada se mueve sin motivo; `prefers-reduced-motion` apaga el caminar y la cámara |
 | Reparto | Hasta 9: herradura detrás de la mesa, pareja en x (nadie tapa a nadie). Más: la mesa con 7 y corrillos al fondo; los nombres solo de quien habla o al pasar el mouse |
-| Cámara | 2D sobre el diorama entero (`#mundo`): nunca mover la cámara 3D sola, se desalinea del piso pintado. Se acerca a quien habla (más con mucha gente); rueda, arrastre y doble clic a mano |
+| Cámara | 2D sobre el diorama entero (`#mundo`): nunca mover la cámara 3D sola, se desalinea del piso pintado. Se acerca a quien habla (más con mucha gente); rueda, arrastre y doble clic a mano. Con más de 9, fondo panorámico (2048×896): el mundo es más ancho que la ventana y la cámara lo recorre, entrando desde la izquierda |
 | Verdad | Cada vista dice si hay dato real detrás (📊) o es exploración (🧭). El aviso de SIMULACIÓN no se quita nunca |
 
 ## Tokens

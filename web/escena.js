@@ -38,6 +38,18 @@ const host = $("#escena");
 const capaFondo = [host.querySelector(".fondo.a"), host.querySelector(".fondo.b")];
 const over = host.querySelector("#esc-capa");
 const canvas = host.querySelector("#esc3d");
+/* el MUNDO es lo que se pinta (fondo, cielo, 3D); la ventana es lo que se ve. Con
+   un fondo normal son iguales; con uno panorámico (más de 9 personas) el mundo es
+   más ancho y la cámara 2D lo recorre */
+const PANOS = new Set(["nacional", "bogota", "medellin", "caribe", "cafetero", "llanos", "amazonia", "choco", "santander",
+  "narino", "popayan", "cali", "guajira", "sanandres", "boyaca", "tatacoa"]);
+const PISO_PANO = { sanandres: [.88, 1.0], llanos: [.85, 1.0], guajira: [.86, 1.0] };
+let IMG = { w: 1376, h: 768 }, PANO = false;
+const MUNDO = { w: 16, h: 9 };
+function mundoTam() {
+  const W = host.clientWidth || 16, H = host.clientHeight || 9;
+  MUNDO.h = H; MUNDO.w = PANO ? Math.max(W, Math.round(H * IMG.w / IMG.h)) : W;
+}
 const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: "high-performance", preserveDrawingBuffer: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -142,7 +154,7 @@ function puestos(n, modo) {
     }
     const CENTROS = [[-2.9, -3.7], [3.1, -3.9], [0.2, -6.2], [-3.6, -7.0], [3.9, -7.2]];
     grupos.slice(1).forEach((m, j) => {
-      const [cx, cz] = CENTROS[j % CENTROS.length], w = Math.min(1.7, .25 + m * .3);
+      const [cx0, cz] = CENTROS[j % CENTROS.length], cx = cx0 * (PANO ? 1.6 : 1), w = Math.min(1.7, .25 + m * .3);
       for (let i = 0; i < m; i++) {
         const x = m === 1 ? 0 : -w + 2 * w * i / (m - 1), k = x / (w + .5);
         P.push([cx + x, cz - .6 * Math.sqrt(1 - k * k) + (i % 2) * .14, false, j + 1]);
@@ -179,7 +191,7 @@ function pegar(el, a, dy = 0, ancla = "cabeza") {
   over.append(el);
 }
 function seguir() {
-  const W = canvas.clientWidth;
+  const W = host.clientWidth;
   for (const el of over.querySelectorAll("[data-dy]")) {
     const a = el.userData; if (!a || !a.parent) { el.remove(); continue; }
     const q = aPantalla(el.dataset.ancla === "pies" ? pies(a) : cabeza(a)), p = vistaA(q);
@@ -244,8 +256,8 @@ let pisoY = .82;
 function encuadrar() {
   /* el fondo va "cover" y pegado abajo: el piso pintado a fracción f de la
      imagen cae en pantalla donde lo dice el recorte real de este visor */
-  const r = host.getBoundingClientRect(), W = r.width || 16, H = r.height || 9;
-  const imgH = Math.max(H, W * 768 / 1376), yPx = H - (1 - pisoY) * imgH;
+  const W = MUNDO.w, H = MUNDO.h;
+  const imgH = Math.max(H, W * IMG.h / IMG.w), yPx = H - (1 - pisoY) * imgH;
   const objetivo = 1 - 2 * Math.min(.94, Math.max(.45, yPx / H)), p = new THREE.Vector3(0, 0, -.3);
   let lo = -6, hi = 8;
   for (let i = 0; i < 28; i++) {
@@ -260,8 +272,8 @@ function encuadrar() {
 /* un punto de la imagen de fondo (fracciones) → píxeles del visor, con el mismo
    recorte "cover" pegado abajo que hace el CSS */
 function imgAPantalla(fx, fy) {
-  const r = host.getBoundingClientRect(), W = r.width, H = r.height;
-  const k = Math.max(W / 1376, H / 768), iw = 1376 * k, ih = 768 * k;
+  const W = MUNDO.w, H = MUNDO.h;
+  const k = Math.max(W / IMG.w, H / IMG.h), iw = IMG.w * k, ih = IMG.h * k;
   return { x: (W - iw) / 2 + fx * iw, y: H - ih + fy * ih };
 }
 const CARA_TABLERO = [.196, .228, .496, .497];     // la cara del tablero pintado en estudio.webp
@@ -277,9 +289,9 @@ function ubicarTablero() {
 /* ¿el punto (x,z) del piso cae dentro del cuadro, sobre el piso, con la persona
    entera a la vista? Así nadie se sale de la imagen ni camina por las paredes */
 function caminable(x, z, alto = ALTO) {
-  const r = host.getBoundingClientRect(), H = r.height || 1;
+  const H = MUNDO.h || 1;
   const f = aPantalla(new THREE.Vector3(x, 0, z)), c = aPantalla(new THREE.Vector3(x, alto, z));
-  const fx = f.x / (r.width || 1), fy = f.y / H;
+  const fx = f.x / (MUNDO.w || 1), fy = f.y / H;
   return fx > .06 && fx < .94 && fy < .95 && fy > Math.max(.5, pisoY - .3) && c.y / H > .1;
 }
 function puntoLibre(cx, cz, radio, alto) {
@@ -359,8 +371,8 @@ const cielo = (() => {
   }
   function horizonte() {
     const c = CIELOS[k]; if (!c) return H;
-    const r = host.getBoundingClientRect(), kk = Math.max(r.width / 1376, r.height / 768), ih = 768 * kk;
-    return Math.min(H, Math.ceil((r.height - ih + c.horizonte * ih) / PX) + 2);
+    const kk = Math.max(MUNDO.w / IMG.w, MUNDO.h / IMG.h), ih = IMG.h * kk;
+    return Math.min(H, Math.ceil((MUNDO.h - ih + c.horizonte * ih) / PX) + 2);
   }
   function pintarDegradado() {
     if (!pal || !W) return;
@@ -395,7 +407,7 @@ const cielo = (() => {
     aves = []; proxAves = performance.now() + 2500 + Math.random() * 4000;
   }
   function bandada(ahora) {
-    const tipos = AVES[k]; if (!tipos || QUIETO) return;
+    const tipos = AVES[k.replace("_pano", "")]; if (!tipos || QUIETO) return;
     const [forma, a, b, v, n] = tipos[Math.random() < .7 ? 0 : tipos.length - 1];
     const hz = horizonte(), dir = Math.random() < .5 ? 1 : -1, y0 = hz * (.12 + Math.random() * .5);
     const cuantos = Math.max(1, Math.round(n * (.6 + Math.random() * .6)));
@@ -412,8 +424,8 @@ const cielo = (() => {
       pal = paleta(c); this.medir();
     },
     medir() {
-      const r = host.getBoundingClientRect(); if (!r.width) return;
-      W = cv.width = Math.ceil(r.width / PX); H = cv.height = Math.ceil(r.height / PX);
+      if (!MUNDO.w) return;
+      W = cv.width = Math.ceil(MUNDO.w / PX); H = cv.height = Math.ceil(MUNDO.h / PX);
       if (pal) { pintarDegradado(); sembrar(); }
     },
     cuadro(dt, t, ahora) {
@@ -438,7 +450,7 @@ const cielo = (() => {
   };
 })();
 // si el primer lugar se pintó antes de saber qué cielos hay, se vuelve a poner (ya con su cielo)
-fetch("escenas/cielos.json").then(r => r.json()).then(d => { Object.assign(CIELOS, d); const k = lugarActual; if (k) { lugarActual = null; lugar(k); } }).catch(() => {});
+fetch("escenas/cielos.json").then(r => r.json()).then(d => { Object.assign(CIELOS, d); const k = lugarActual; if (k) { lugarActual = null; lugar(k, PANO); } }).catch(() => {});
 
 /* ── ambiente: la vida del lugar que no tiene nada que ver con la tertulia ──
    Animales, vehículos y transeúntes coherentes con cada sitio (escenas/amb/*.webp,
@@ -475,7 +487,7 @@ const ambiente = (() => {
   const pant = (c, x, z) => { const p = new THREE.Vector3(x, 0, z).project(c); return [(p.x * .5 + .5), (-p.y * .5 + .5)]; };
   /* fracción de la imagen → profundidad del piso donde cae ese punto (bisección) */
   function zDe(fy) {
-    const c = camRef(), r = host.getBoundingClientRect(), obj = imgAPantalla(.5, fy).y / (r.height || 1);
+    const c = camRef(), r = host.getBoundingClientRect(), obj = imgAPantalla(.5, fy).y / (MUNDO.h || 1);
     let lo = -60, hi = 5;                          // más lejos = más arriba en pantalla
     for (let i = 0; i < 30; i++) { const m = (lo + hi) / 2; if (pant(c, 0, m)[1] < obj) lo = m; else hi = m; }
     return (lo + hi) / 2;
@@ -568,15 +580,15 @@ function enfocar(a, z, ms) {
 }
 function general() { VISTA.sigue = null; VISTA.zo = 1; }
 function camara2d(dt, ahora) {
-  const W = host.clientWidth, H = host.clientHeight;
+  const W = host.clientWidth, H = host.clientHeight, MW = MUNDO.w;
   if (VISTA.sigue && VISTA.sigue.parent && ahora < Math.max(VISTA.hasta, VISTA.mano)) {
     const u = VISTA.sigue.userData, p = aPantalla(new THREE.Vector3(VISTA.sigue.position.x, u.alto * .62, VISTA.sigue.position.z));
     VISTA.fxo = p.x; VISTA.fyo = p.y;
-  } else if (ahora > VISTA.mano) { general(); VISTA.fxo = W / 2; VISTA.fyo = H / 2; }
+  } else if (ahora > VISTA.mano) { general(); VISTA.fxo = MW / 2; VISTA.fyo = H / 2; }
   const k = QUIETO ? 1 : Math.min(1, dt * 2.2);          // se desliza, no salta
   VISTA.z += (VISTA.zo - VISTA.z) * k; VISTA.fx += (VISTA.fxo - VISTA.fx) * k; VISTA.fy += (VISTA.fyo - VISTA.fy) * k;
   const z = VISTA.z;
-  VISTA.tx = Math.min(0, Math.max(W - W * z, W / 2 - VISTA.fx * z));
+  VISTA.tx = Math.min(0, Math.max(W - MW * z, W / 2 - VISTA.fx * z));
   VISTA.ty = Math.min(0, Math.max(H - H * z, H * .55 - VISTA.fy * z));
   mundo.style.transform = `translate3d(${VISTA.tx.toFixed(1)}px,${VISTA.ty.toFixed(1)}px,0) scale(${z.toFixed(4)})`;
 }
@@ -594,7 +606,7 @@ function camara2d(dt, ahora) {
   let ini = null;
   host.addEventListener("pointerdown", e => { if (e.button === 0 && !e.target.closest("button,a,.cartel,.tablero")) ini = { x: e.clientX, y: e.clientY, fx: VISTA.fxo, fy: VISTA.fyo }; });
   addEventListener("pointermove", e => {
-    if (!ini || VISTA.zo <= 1.01) return;
+    if (!ini || (VISTA.zo <= 1.01 && MUNDO.w <= host.clientWidth + 2)) return;
     VISTA.sigue = null; VISTA.mano = performance.now() + 15000;
     VISTA.fxo = ini.fx - (e.clientX - ini.x) / VISTA.z; VISTA.fyo = ini.fy - (e.clientY - ini.y) / VISTA.z;
   });
@@ -610,23 +622,25 @@ function camara2d(dt, ahora) {
 })();
 /* ── lugar ───────────────────────────────────────────────────────────── */
 let lugarActual = null, capa = 0;
-function lugar(k) {
+function lugar(k, pano = false) {
   if (!LUGARES[k]) k = "nacional";
-  if (k === lugarActual) return;
-  lugarActual = k;
+  pano = !!pano && PANOS.has(k);
+  if (k === lugarActual && pano === PANO) return;
+  lugarActual = k; PANO = pano; IMG = pano ? { w: 2048, h: 896 } : { w: 1376, h: 768 };
+  const base = pano ? k + "_pano" : k, arch = `escenas/${CIELOS[base] ? base + "_tierra" : base}.webp`;
   const siguiente = capaFondo[1 - capa];
   const img = new Image();
   const turno = lugar.turno = (lugar.turno || 0) + 1;
   img.onload = () => {
     if (turno !== lugar.turno) return;             // llegó tarde: ya se pidió otro fondo
-    siguiente.style.backgroundImage = `url(escenas/${CIELOS[k] ? k + "_tierra" : k}.webp)`;
+    siguiente.style.backgroundImage = `url(${arch})`;
     siguiente.classList.add("on"); capaFondo[capa].classList.remove("on"); capa = 1 - capa;
   };
-  img.src = `escenas/${CIELOS[k] ? k + "_tierra" : k}.webp`;
-  cielo.poner(k);
+  img.src = arch;
+  cielo.poner(base);
   ambiente.poner(k);
   const [nom, sub, t] = LUGARES[k];
-  const [fy, esc] = PISO[k] || [.84, 1]; pisoY = fy; ALTO = 1.45 * esc; encuadrar();
+  const [fy, esc] = (pano ? PISO_PANO[k] || [.86, 1.0] : PISO[k]) || [.84, 1]; pisoY = fy; ALTO = 1.45 * esc; medir();
   tinte = new THREE.Color(t);
   for (const a of [...GENTE.values(), JUEZ, MESA]) a?.userData.cuerpo?.material.color.copy(tinte);
   const pl = $("#lugar");
@@ -669,7 +683,8 @@ const API = {
     modoActual = modo;
     API.turnos(modo === "sondeo");
     if (pregunta) API.titulo(pregunta, modo);
-    lugar(k || (modo === "sondeo" ? "estudio" : API.lugarDe(sel)));
+    lugar(k || (modo === "sondeo" ? "estudio" : API.lugarDe(sel)), modo !== "sondeo" && gente.length > 9);
+    if (PANO && !QUIETO) { VISTA.fx = host.clientWidth / 2; VISTA.mano = 0; general(); }   // entra desde la izquierda
     camObj.copy(CAM_BASE); miraObj.copy(MIRA_BASE);
     const acomodo = modo === "sondeo" ? "publico" : modo === "pais" ? "pie" : "mesa";
     const U = utileriaDe(lugarActual);
@@ -797,10 +812,13 @@ for (const [m, a] of (window.ESC_Q || []).splice(0)) API[m]?.(...a);
 function medir() {
   const r = host.getBoundingClientRect();
   if (!r.width) return;
-  renderer.setSize(r.width, r.height, false);
-  camara.aspect = r.width / r.height;
+  mundoTam();
+  mundo.style.width = MUNDO.w + "px"; mundo.style.right = "auto";
+  renderer.setSize(MUNDO.w, MUNDO.h, false);
+  camara.aspect = MUNDO.w / MUNDO.h;
   // en pantallas angostas, la cámara se aleja para que quepa la gente
-  CAM_BASE.z = camara.aspect < 1 ? 17.5 : camara.aspect < 1.4 ? 14.5 : 12.5;
+  const va = r.width / r.height;
+  CAM_BASE.z = va < 1 ? 17.5 : va < 1.4 ? 14.5 : 12.5;
   camara.updateProjectionMatrix();
   encuadrar(); ubicarTablero(); cielo.medir();
   clearTimeout(medir.t); medir.t = setTimeout(() => ambiente.recolocar(), 400);
