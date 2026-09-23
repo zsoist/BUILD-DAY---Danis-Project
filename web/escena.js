@@ -108,6 +108,8 @@ let ALTO = 1.45;                 // metros de escena por persona (lo ajusta cada
 /* cuadros=4: tira de poses (quieto, paso izq, paso der, mano arriba) */
 async function actor(id, url, alto = ALTO, cuadros = 1, estatico = false) {
   let tex = await textura(url);
+  // tiras de poses: 4 cuadros (de frente) u 8 (más lado y espalda); se cuenta por la proporción de la imagen
+  if (tex && cuadros >= 4) cuadros = tex.image.width / tex.image.height > 3.6 ? 8 : 4;
   if (tex && cuadros > 1) { tex = tex.clone(); tex.repeat.set(1 / cuadros, 1); tex.needsUpdate = true; }
   const g = new THREE.Group();
   const asp = tex ? tex.image.width / cuadros / tex.image.height : 0.4;
@@ -286,13 +288,90 @@ function ubicarTablero() {
   if (cabe) Object.assign(t.style, { left: a.x + "px", top: a.y + "px", width: w + "px", height: h + "px", fontSize: Math.max(10, Math.min(16, h / 12)) + "px" });
   else Object.assign(t.style, { left: "", top: "", width: "", height: "", fontSize: "" });
 }
+
+/* ── el piso pintado ─────────────────────────────────────────────────────
+   Por fondo, dónde EMPIEZA el suelo caminable: [fx, fy] en fracción de la imagen,
+   de izquierda a derecha (medido sobre cada imagen con una rejilla del 10 %). Por
+   encima de esa línea hay casas, muros, árboles, río o cielo: nadie camina ahí.
+   FRENTE: donde el piso se acaba por delante (el muelle del Atrato tiene agua). */
+const SUELO = {
+  nacional: [[0, .5], [.3, .47], [.6, .45], [1, .47]],
+  bogota: [[0, .93], [.1, .9], [.18, .78], [.3, .7], [.4, .64], [.5, .6], [.6, .64], [.7, .72], [.8, .8], [.9, .86], [1, .9]],
+  medellin: [[0, .9], [.08, .78], [.15, .72], [.6, .72], [.8, .74], [.87, .85], [1, .95]],
+  caribe: [[0, .78], [.12, .72], [.25, .66], [.4, .6], [.55, .63], [.75, .68], [.9, .72], [1, .8]],
+  cafetero: [[0, .8], [.05, .76], [.75, .74], [.78, .8], [1, .8]],
+  llanos: [[0, .52], [.4, .55], [.5, .6], [.95, .6], [1, .55]],
+  amazonia: [[0, .72], [.1, .64], [.2, .61], [.85, .61], [.9, .7], [1, .8]],
+  choco: [[0, .7], [1, .7]],
+  santander: [[0, .9], [.12, .85], [.2, .66], [.4, .62], [.7, .62], [.88, .66], [.92, .85], [1, .92]],
+  narino: [[0, .9], [.1, .78], [.2, .73], [.8, .73], [.9, .78], [1, .9]],
+  popayan: [[0, .75], [.1, .7], [.3, .66], [.5, .65], [.75, .68], [1, .74]],
+  cali: [[0, .64], [.3, .62], [.7, .62], [1, .63]],
+  guajira: [[0, .65], [.1, .57], [.2, .55], [.7, .56], [.75, .65], [.85, .78], [1, .8]],
+  sanandres: [[0, .72], [.12, .68], [.2, .62], [.7, .62], [.78, .7], [1, .75]],
+  boyaca: [[0, .72], [.12, .66], [.2, .57], [.6, .56], [.72, .62], [.85, .72], [1, .8]],
+  tatacoa: [[0, .72], [.15, .64], [.3, .62], [.85, .63], [.92, .72], [1, .8]],
+  nacional_pano: [[0, .52], [.5, .49], [1, .52]],
+  bogota_pano: [[0, .74], [.3, .72], [.4, .64], [.5, .58], [.6, .64], [.7, .72], [1, .74]],
+  medellin_pano: [[0, .75], [.05, .68], [.95, .68], [1, .75]],
+  caribe_pano: [[0, .66], [.3, .62], [.38, .52], [.48, .52], [.55, .6], [1, .66]],
+  cafetero_pano: [[0, .74], [.1, .72], [.3, .68], [.8, .68], [1, .72]],
+  llanos_pano: [[0, .52], [.4, .54], [.45, .56], [.75, .56], [1, .52]],
+  amazonia_pano: [[0, .66], [.2, .63], [.85, .63], [1, .66]],
+  choco_pano: [[0, .7], [1, .7]],
+  santander_pano: [[0, .64], [.3, .6], [.5, .58], [.9, .66], [1, .72]],
+  narino_pano: [[0, .8], [.1, .74], [.5, .68], [.9, .74], [1, .8]],
+  popayan_pano: [[0, .62], [.45, .62], [.6, .64], [.9, .72], [1, .74]],
+  cali_pano: [[0, .64], [.5, .61], [1, .63]],
+  guajira_pano: [[0, .54], [.3, .5], [.6, .52], [.65, .6], [.85, .6], [.9, .54], [1, .54]],
+  sanandres_pano: [[0, .6], [.2, .55], [.8, .55], [1, .6]],
+  boyaca_pano: [[0, .66], [.15, .6], [.4, .56], [.6, .56], [.85, .62], [1, .68]],
+  tatacoa_pano: [[0, .62], [.3, .58], [.7, .58], [1, .62]],
+};
+const FRENTE = { choco_pano: .8 };
+let sueloK = null;                                  // la clave del fondo puesto (k o k_pano)
+function sueloEn(fx) {
+  const L = SUELO[sueloK]; if (!L) return null;
+  for (let i = 1; i < L.length; i++) if (fx <= L[i][0]) {
+    const [a, b] = [L[i - 1], L[i]], t = (fx - a[0]) / Math.max(1e-6, b[0] - a[0]);
+    return a[1] + (b[1] - a[1]) * Math.min(1, Math.max(0, t));
+  }
+  return L[L.length - 1][1];
+}
+/* píxel del mundo → fracción de la imagen (lo inverso de imgAPantalla) */
+function aImagen(px, py) {
+  const W = MUNDO.w, H = MUNDO.h, k = Math.max(W / IMG.w, H / IMG.h), iw = IMG.w * k, ih = IMG.h * k;
+  return [(px - (W - iw) / 2) / iw, (py - (H - ih)) / ih];
+}
+/* fracción de la imagen → punto del piso 3D (rayo desde la cámara base) */
+const _rayo = new THREE.Raycaster(), _plano = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), _cam = new THREE.PerspectiveCamera();
+function imgAPiso(fx, fy) {
+  _cam.copy(camara); _cam.position.copy(CAM_BASE); _cam.lookAt(MIRA_BASE); _cam.updateMatrixWorld(); _cam.updateProjectionMatrix();
+  const p = imgAPantalla(fx, fy), v = new THREE.Vector2(p.x / MUNDO.w * 2 - 1, -(p.y / MUNDO.h) * 2 + 1);
+  _rayo.setFromCamera(v, _cam);
+  const q = new THREE.Vector3();
+  return _rayo.ray.intersectPlane(_plano, q) ? q : null;
+}
+/* por dónde se entra a la escena: el fondo de la calle (el punto más lejano del
+   piso) y las orillas del piso a los lados. Nunca desde una pared o el cielo. */
+function entradas() {
+  const L = SUELO[sueloK]; if (!L) return null;
+  let mejor = [.5, 1];
+  for (let fx = .05; fx <= .95; fx += .01) { const fy = sueloEn(fx); if (fy < mejor[1]) mejor = [fx, fy]; }
+  const fondo = imgAPiso(mejor[0], mejor[1] + .02);
+  const izq = imgAPiso(.02, Math.min(.96, sueloEn(.02) + .06)), der = imgAPiso(.98, Math.min(.96, sueloEn(.98) + .06));
+  return { fondo, izq, der };
+}
 /* ¿el punto (x,z) del piso cae dentro del cuadro, sobre el piso, con la persona
    entera a la vista? Así nadie se sale de la imagen ni camina por las paredes */
 function caminable(x, z, alto = ALTO) {
   const H = MUNDO.h || 1;
   const f = aPantalla(new THREE.Vector3(x, 0, z)), c = aPantalla(new THREE.Vector3(x, alto, z));
   const fx = f.x / (MUNDO.w || 1), fy = f.y / H;
-  return fx > .06 && fx < .94 && fy < .95 && fy > Math.max(.5, pisoY - .3) && c.y / H > .1;
+  if (!(fx > .03 && fx < .97 && fy < .97 && c.y / H > .06)) return false;
+  const [ix, iy] = aImagen(f.x, f.y), s0 = sueloEn(ix);
+  if (s0 === null) return fy < .95 && fy > Math.max(.5, pisoY - .3);            // estudio: la regla de antes
+  return iy > s0 + .012 && iy < (FRENTE[sueloK] || .985);
 }
 function puntoLibre(cx, cz, radio, alto) {
   for (let i = 0; i < 24; i++) {
@@ -513,13 +592,22 @@ const ambiente = (() => {
   function colocar(a, inicio) {
     const u = a.userData;
     if (u.amb === "cruza") {
-      const z = zDe(u.fy + (Math.random() - .5) * .015), [x0, x1] = bordes(z), dir = Math.random() < .5 ? 1 : -1, m = (x1 - x0) * .08 + 1.5;
-      a.position.set(dir > 0 ? x0 - m : x1 + m, 0, z);
-      u.meta = new THREE.Vector3(dir > 0 ? x1 + m : x0 - m, 0, z);
-      a.visible = true;
+      const fy = u.fy + (Math.random() - .5) * .015, z = zDe(fy), [x0, x1] = bordes(z), dir = Math.random() < .5 ? 1 : -1;
+      // el tramo del carril que es piso (en una calle angosta, solo el fondo de la calle): se entra y se sale por ahí
+      let a0 = 0, a1 = 1;
+      if (SUELO[sueloK]) { let d = null, h = null; for (let fx = 0; fx <= 1.0001; fx += .01) if (sueloEn(fx) < fy - .01) { if (d === null) d = fx; h = fx; }
+        if (d === null) { u.espera = performance.now() + 20000; return; } a0 = d; a1 = h; }
+      const xa = imgAPiso(a0, fy)?.x ?? x0, xb = imgAPiso(a1, fy)?.x ?? x1, m = a0 < .02 && a1 > .98 ? (x1 - x0) * .08 + 1.5 : 0;
+      a.position.set(dir > 0 ? Math.max(x0, xa) - m : Math.min(x1, xb) + m, 0, z);
+      u.meta = new THREE.Vector3(dir > 0 ? Math.min(x1, xb) + m : Math.max(x0, xa) - m, 0, z);
+      u.aparece = performance.now(); a.visible = true;
     } else {
-      const [f0, f1] = u.fy, z = zDe(f0 + Math.random() * (f1 - f0)), [x0, x1] = bordes(z), w = x1 - x0;
-      a.position.set(x0 + w * (.12 + Math.random() * .76), 0, z);
+      const [f0, f1] = u.fy;
+      for (let i = 0; i < 14; i++) {                 // un sitio del piso, no encima de un techo
+        const z = zDe(f0 + Math.random() * (f1 - f0)), [x0, x1] = bordes(z), w = x1 - x0;
+        a.position.set(x0 + w * (.12 + Math.random() * .76), 0, z);
+        if (caminable(a.position.x, a.position.z, u.alto)) break;
+      }
       u.casa = a.position.clone(); u.espera = performance.now() + (inicio ? Math.random() * 4000 : 2500 + Math.random() * 7000);
     }
   }
@@ -541,7 +629,7 @@ const ambiente = (() => {
         if (!u.meta && u.amb === "deambula" && ahora > u.espera && !QUIETO) {
           // un paso corto cerca de su casa: picotear, olfatear, cambiar de lado
           const q = u.casa.clone().add(new THREE.Vector3((Math.random() - .5) * 2.4, 0, (Math.random() - .5) * .8));
-          u.meta = q;
+          if (caminable(q.x, q.z, u.alto)) u.meta = q; else u.espera = ahora + 1500;   // no se sube a un techo
         }
         let anda = false;
         if (u.meta && !QUIETO) {
@@ -627,7 +715,7 @@ function lugar(k, pano = false) {
   pano = !!pano && PANOS.has(k);
   if (k === lugarActual && pano === PANO) return;
   lugarActual = k; PANO = pano; IMG = pano ? { w: 2048, h: 896 } : { w: 1376, h: 768 };
-  const base = pano ? k + "_pano" : k, arch = `escenas/${CIELOS[base] ? base + "_tierra" : base}.webp`;
+  const base = pano ? k + "_pano" : k; sueloK = base; const arch = `escenas/${CIELOS[base] ? base + "_tierra" : base}.webp`;
   const siguiente = capaFondo[1 - capa];
   const img = new Image();
   const turno = lugar.turno = (lugar.turno || 0) + 1;
@@ -701,7 +789,7 @@ const API = {
         GENTE.set("__cosa" + i, a);
       }));
     }
-    const P = puestos(gente.length, acomodo);
+    const P = puestos(gente.length, acomodo), ENT = acomodo === "publico" ? null : entradas();
     if (acomodo === "publico") {
       JUEZ = await actor("juez", "gente/urbano_7_poses.webp", ALTO * 1.1, 4);
       JUEZ.position.set(-3.35, 0, 1.15);
@@ -714,10 +802,16 @@ const API = {
       }));
     }
     await Promise.all(gente.map(async (r, i) => {
-      const a = await actor(r.id, "gente/" + (r._spr || window.spriteDe?.(r) || "andino_0") + "_poses.webp",
-        ALTO * (.97 + (r.edad > 64 ? -.04 : 0) + (r.sexo === "mujer" ? -.03 : 0)), 4);
+      const spr = r._spr || window.spriteDe?.(r) || "andino_0";
+      const nc = (window.CATALOGO?.gente || []).find(g => g.id === spr)?.d || 4;
+      const a = await actor(r.id, "gente/" + spr + "_poses.webp",
+        ALTO * (.97 + (r.edad > 64 ? -.04 : 0) + (r.sexo === "mujer" ? -.03 : 0)), nc);
       let [x, z] = P[i];
-      if (!caminable(x, z)) { const q = puntoLibre(x * .8, z, 1.5); if (q) { x = q.x; z = q.z; } }
+      if (!caminable(x, z)) {                             // el puesto cae en una pared: al piso más cercano
+        let q = null;
+        for (const rad of [.8, 1.5, 2.5, 4]) { q = puntoLibre(x, z, rad); if (q) break; }
+        if (q) { x = q.x; z = q.z; }
+      }
       a.userData.meta = new THREE.Vector3(x, 0, z);
       a.userData.casa = a.userData.meta.clone();
       a.userData.paseo = performance.now() + 14000 + Math.random() * 30000;
@@ -725,7 +819,11 @@ const API = {
       const fondo = i % 2 === 0;                          // unos llegan del fondo, otros por los lados
       if (QUIETO) a.position.set(x, 0, z);
       else {
-        if (fondo) a.position.set(x * .6 + (Math.random() - .5) * 2, 0, -6.5);
+        // llegan por donde se puede llegar: del fondo de la calle o por las orillas del piso
+        const E = ENT || {};
+        const o = fondo ? E.fondo : (x < 0 ? E.izq : E.der);
+        if (o) a.position.set(o.x + (Math.random() - .5) * .8, 0, o.z + (Math.random() - .5) * .4);
+        else if (fondo) a.position.set(x * .6 + (Math.random() - .5) * 2, 0, -6.5);
         else a.position.set((x < 0 ? -1 : 1) * 9, 0, z - 1);
         a.userData.llega = performance.now() + i * (acomodo === "publico" ? 420 : 200);
       }
@@ -881,17 +979,24 @@ function cuadroForzado() {
         a.position.addScaledVector(tmp.normalize(), Math.min(d, u.vel * dt));
         brinco = Math.abs(Math.sin(t * 9 + u.fase)) * .035;              // pasos
         anda = true;
-        if (Math.abs(tmp.x) > Math.abs(tmp.z) * .5) c.scale.x = (tmp.x < 0 ? -1 : 1);   // solo se voltea si de verdad va de lado
+        // hacia dónde mira: de lado (se refleja a la izquierda), de espaldas si se aleja, de frente si viene
+        u.dir = Math.abs(tmp.x) > Math.abs(tmp.z) * 1.1 ? "lado" : tmp.z < 0 ? "espalda" : "frente";
+        c.scale.x = u.dir === "lado" && tmp.x < 0 ? -1 : (u.cuadros === 8 || u.dir === "lado") ? 1 : c.scale.x;
+        if (u.cuadros < 8 && Math.abs(tmp.x) > Math.abs(tmp.z) * .5) c.scale.x = (tmp.x < 0 ? -1 : 1);
       } else {
-        u.meta = null; c.scale.x = 1;
+        u.meta = null; c.scale.x = 1; u.dir = null;
         if (u.sirve) { u.sirve = false; u.mano = ahora + 900; const e = document.createElement("div");
           e.className = "marca taza"; e.textContent = "☕"; pegar(e, a, -4); setTimeout(() => e.remove(), 1600); }
       }
     }
     if (u.habla > ahora && u.cuadros < 4) brinco = Math.max(brinco, Math.abs(Math.sin(t * 16)) * .06);
-    if (u.cuadros === 4) {
-      const f = anda ? [1, 0, 2, 0][Math.floor(t * 6 + u.fase) % 4] : u.mano > ahora ? 3 : 0;
-      if (f !== u.cuadro) { u.cuadro = f; c.material.map.offset.x = f / 4; }
+    if (u.cuadros >= 4) {
+      const k = Math.floor(t * 6 + u.fase);
+      const f = !anda ? (u.mano > ahora ? 3 : 0)
+        : u.cuadros === 8 && u.dir === "lado" ? 4 + k % 2
+        : u.cuadros === 8 && u.dir === "espalda" ? 6 + k % 2
+        : [1, 0, 2, 0][k % 4];
+      if (f !== u.cuadro) { u.cuadro = f; c.material.map.offset.x = f / u.cuadros; }
     }
     const resp = QUIETO ? 1 : 1 + Math.sin(t * 2.1 + u.fase) * .012;   // respira
     c.scale.y = resp;

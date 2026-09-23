@@ -29,7 +29,7 @@ TECHO.update({"nacional_pano": .3, "bogota_pano": .45, "medellin_pano": .2, "car
               "llanos_pano": .45, "amazonia_pano": .25, "choco_pano": .15, "santander_pano": .3, "popayan_pano": .3,
               "cali_pano": .35, "guajira_pano": .12, "sanandres_pano": .15})
 # tatacoa (noche con vía láctea) y boyaca (cielo azul con montañas) ya tienen cielo vivo: se dejan
-TOL = {"nacional": 10, "bogota": 11, "nacional_pano": 10, "bogota_pano": 11, "popayan_pano": 24}     # neblina lejana casi del color del cielo: tolerancia corta
+TOL = {"nacional": 10, "bogota": 11, "santander": 10, "nacional_pano": 10, "bogota_pano": 11, "popayan_pano": 24}     # neblina lejana casi del color del cielo: tolerancia corta
 LUZ = {"cafetero_pano": 45, "popayan_pano": 0}   # cenit oscuro: sin esto queda una nube negra
 HORA = {"llanos": "tarde", "caribe": "tarde", "llanos_pano": "tarde", "caribe_pano": "tarde", "cali_pano": "tarde",
         "amazonia_pano": "bruma", "choco_pano": "bruma", "narino": "niebla", "amazonia": "bruma", "choco": "bruma"}
