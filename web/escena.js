@@ -159,10 +159,17 @@ function pegar(el, a, dy = 0) {
   over.append(el);
 }
 function seguir() {
+  const W = canvas.clientWidth;
   for (const el of over.querySelectorAll("[data-dy]")) {
     const a = el.userData; if (!a || !a.parent) { el.remove(); continue; }
     const p = aPantalla(cabeza(a));
     el.style.transform = `translate(${Math.round(p.x)}px,${Math.round(p.y - (+el.dataset.dy || 0))}px)`;
+    const gv = el.firstElementChild;
+    if (gv && el.classList.contains("globo")) {
+      const w = gv.offsetWidth, m = 12;
+      const dx = Math.max(m - (p.x - w / 2), Math.min(0, W - m - (p.x + w / 2)));
+      gv.style.setProperty("--dx", Math.round(dx) + "px");
+    }
   }
 }
 
@@ -304,10 +311,14 @@ const API = {
   },
   calma() { camObj.copy(CAM_BASE); miraObj.copy(MIRA_BASE); },
   cartel(html, pos) {
-    over.querySelectorAll(".cartel").forEach(e => e.remove());
+    over.querySelectorAll(".cartel,.globo").forEach(e => e.remove());
     const el = document.createElement("div");
     el.className = "cartel"; el.style.setProperty("--pc", COLOR[pos] || "#fcd116");
-    el.innerHTML = html; over.append(el);
+    const m = html.match(/^(<b>[\s\S]*?<\/b>)([\s\S]*)$/);
+    el.innerHTML = m ? `${m[1]}<p>${m[2]}</p><small>completo en la conversación · clic para recoger</small>` : html;
+    el.onclick = () => el.classList.toggle("chico");
+    over.append(el);
+    setTimeout(() => el.classList.add("chico"), 9000);
     API.calma();
   },
   /* el show: el juez revela el tablero fila por fila */
