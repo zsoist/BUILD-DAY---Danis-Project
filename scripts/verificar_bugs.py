@@ -29,7 +29,7 @@ def main(run, como_json):
     for f in sorted((Path(run) / "artifacts").glob("*.json")):
         bugs = cargar(f)
         if bugs is None:
-            print(f"{f.name}: JSON inválido"); continue
+            print(f"{f.name}: JSON inválido", file=sys.stderr); continue
         for b in bugs:
             arch = RAIZ / b.get("archivo", "")
             texto = arch.read_text() if arch.is_file() else ""

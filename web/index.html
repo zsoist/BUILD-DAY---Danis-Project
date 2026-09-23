@@ -518,6 +518,7 @@ html body .ronda{color:var(--tenue)}
 .cajon.der{right:12px;transform:translateX(calc(100% + 30px))}
 .cajon:not(.abierto){pointer-events:none}
 .cajon.abierto{transform:none;visibility:visible;pointer-events:auto;transition:transform .38s cubic-bezier(.2,.9,.25,1)}
+@media (prefers-reduced-motion:reduce){.cajon,.cajon.abierto{transition:none}}
 .cajon>h2{font-family:"Silkscreen";font-size:11px;color:var(--oro);padding:12px 14px;border-bottom:2px solid #f4ecd844;display:flex;align-items:center;gap:8px;text-transform:lowercase}
 .cajon>h2 b{color:var(--tenue);font-weight:400;margin-left:auto}
 .cajon>h2.sub{border-top:2px solid #f4ecd844}
@@ -646,7 +647,7 @@ html body #pie-dialogo{display:flex;align-items:center;gap:10px;justify-content:
 /* ── modal de población ── */
 #pobmask{position:fixed;inset:0;z-index:40;background:#05081fcc;backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:18px}
 #pobmask[hidden]{display:none}
-#pobcard{width:min(1180px,100%);max-height:92vh;display:flex;flex-direction:column;animation:aparece .3s cubic-bezier(.2,.9,.3,1)}
+#pobcard{width:min(1180px,100%);max-height:92vh;max-height:92dvh;display:flex;flex-direction:column;animation:aparece .3s cubic-bezier(.2,.9,.3,1)}
 @keyframes aparece{from{opacity:0;transform:scale(.97)}}
 #pobcard header{display:flex;align-items:center;gap:18px;padding:16px 18px;border-bottom:2px solid #f4ecd833}
 #pobcard header small{font-family:"Silkscreen";font-size:9px;letter-spacing:.14em;color:var(--oro)}
@@ -814,7 +815,7 @@ html body #navmap #mtierra path.dep{fill:color-mix(in srgb,var(--dep) 55%,#12204
 }
 
 /* táctil: blancos de 40 px; el aviso de SIMULACIÓN se despliega al tocarlo (en una línea el enlace quedaba tras los puntos suspensivos) */
-@media (pointer:coarse){html body #modo button{min-height:40px}}
+@media (pointer:coarse){html body #modo button,#recorrer{min-height:40px}}
 @media (pointer:coarse){
   #zoomesc button,#mapzoom button{min-width:40px;height:40px}
   #banner a{display:inline-block;padding:6px 2px}
@@ -922,7 +923,7 @@ html body #navmap #mtierra path.dep{fill:color-mix(in srgb,var(--dep) 55%,#12204
 <div id="cfg" style="position:fixed;top:56px;right:8px;width:290px;z-index:9;display:none;
 background:var(--panel);border:var(--px) solid var(--grid);padding:14px;box-shadow:6px 6px 0 #000a">
   <label style="font-family:Silkscreen;font-size:8px;color:var(--faint)">openrouter key (encuesta)</label>
-  <input id="c-orkey" style="width:100%" placeholder="sk-or-v1-…">
+  <input id="c-orkey" type="password" autocomplete="off" spellcheck="false" style="width:100%" placeholder="sk-or-v1-…">
 </div>
 
 <script>
@@ -1335,7 +1336,7 @@ function camaraControles(svg){
 }
 
 async function drawNav(){
-  if(!GEO){try{GEO=await fetch("colombia.json").then(r=>r.json())}catch(e){return}}
+  if(!GEO){try{GEO=await fetch("colombia.json").then(r=>r.json())}catch(e){$("#navmap").innerHTML='<div class="fuente">no se pudo cargar el mapa — revisa tu conexión y recarga</div>';return}}
   if(GEO.paths["88"]&&!GEO._isla){GEO._isla=1;GEO.paths["88"]=GEO.paths["88"].replace(/(-?\d+\.?\d*),/g,(m,x)=>(+x+ISLA).toFixed(1)+",");}
   $("#navmap").innerHTML=`<div id="maptip"></div><div id="mapcam"><svg viewBox="${GEO.viewBox}" role="group" aria-label="Mapa de Colombia: usa Tab y Enter para elegir territorio">
     <rect class="isla" x="14" y="2" width="48" height="62" rx="3"/><text class="isla-t" x="38" y="72">SAN ANDRÉS</text>
@@ -1349,8 +1350,8 @@ async function drawNav(){
     if(!cod)return;
     if(MODO==="pais"&&PAIS.q){cur=cod;SEL=new Set([cod]);$("#dptosel").value=cod;selInfo();paintNav();render();pintaTerr();setTimeout(()=>abrirCajon("dr-mapa",false),700);mesa(cod);return;}
     if(MODO==="pais"){cur=cod;SEL=new Set([cod]);syncSel();setTimeout(()=>abrirCajon("dr-mapa",false),700);const i=$("#qin");i.placeholder="¿Qué le preguntas a "+(MARG[cod]?.nombre||"")+"?";i.focus();return;}
-    if(SEL.has(cod)&&SEL.size>0)SEL.delete(cod);else SEL.add(cod);
-    cur=cod; syncSel();
+    if(SEL.has(cod)&&SEL.size>0){SEL.delete(cod);cur=[...SEL].pop()||cod;}else{SEL.add(cod);cur=cod;}
+    syncSel();
   }
   window.elegirDpto=elegir;pintaLista();
   svg.addEventListener("click",e=>{if(CAM.arrastro)return;elegir(e.target.dataset?.cod)});
@@ -1363,7 +1364,7 @@ async function drawNav(){
   const estadoDe=cod=>{
     const path=svg.querySelector(`path[data-cod="${cod}"]`);
     if(path?.classList.contains("hot"))return "🟡 deliberando ahora…";
-    if(PAIS?.data?.[cod])return "✓ "+(PAIS.data[cod].concl||"").slice(0,70)+"…";
+    if(PAIS?.data?.[cod]){const t=PAIS.data[cod].concl||"";return "✓ "+(t?t.slice(0,70)+(t.length>70?"…":""):"sin conclusión aún");}
     if(DECIDIDO[cod])return ({a_favor:"quedó a favor",en_contra:"quedó en contra",depende:"quedó dividido"})[DECIDIDO[cod]];
     if(SEL.has(cod))return "en la muestra · click para quitar";
     return "click para sumarlo a la muestra";
@@ -1379,7 +1380,7 @@ async function drawNav(){
     if(cod)document.querySelector(`#mnombres [data-c="${cod}"]`)?.classList.add("hov");
     const tip=$("#maptip");
     if(!cod){tip.style.display="none";hovCod=null;
-      $("#maplabel").textContent=MARG[cur]?.nombre||"—";return;}
+      $("#maplabel").textContent=SEL.size?(MARG[cur]?.nombre||cur):"toda colombia";return;}
     hovCod=cod;
     svg.querySelector(`path[data-cod="${cod}"]`)?.classList.add("hov");
     const d=MARG[cod],dos=DOS[cod]||{};
@@ -2009,10 +2010,10 @@ function verResidente(r){
   $("#rkv").insertAdjacentHTML("afterbegin",`<div class="rdist"><div><small>INGRESO LABORAL · DECIL</small><div class="pasos">${
     [1,2,3,4,5,6,7,8,9,10].map(d=>`<i class="${d===dcl?"yo":d<dcl?"bajo":""}">${d}</i>`).join("")}</div><span>${dcl?`gana más que ~${(dcl-1)*10}% de los adultos con ingreso laboral`:"sin ingreso laboral (hogar, estudio, pensión o busca trabajo)"}</span></div>
     <div><small>EDAD · PERCENTIL</small><div class="barra"><i style="left:${pe}%"></i></div><span>mayor que el ${pe}% de los adultos sintéticos</span></div></div>`);
-  $("#rmask").classList.add("open");
+  $("#rmask").classList.add("open");const rc=$("#rcard");rc.tabIndex=-1;rc.focus({preventScroll:true});
 }
 document.addEventListener("click",e=>{
-  if(e.target.id==="rmask"){$("#rmask").classList.remove("open");return;}
+  if(e.target.id==="rmask"){if($("#rmask")._desdeMascara)$("#rmask").classList.remove("open");return;}
   const sel=window.getSelection();if(sel&&!sel.isCollapsed)return;
   const card=e.target.closest?.(".resp[data-rid],.seat[data-rid],.res[data-rid]");
   if(card&&RESBY[card.dataset.rid])verResidente(RESBY[card.dataset.rid]);
@@ -2058,7 +2059,7 @@ function tallyHTML(c,extra,etq){
 }
 /* las caras de la cabecera se tiñen con el voto de cada quien */
 function votoCara(rid,pos){const im=document.querySelector(`#pc-caras [data-rid="${rid}"]`);if(!im)return;
-  im.className="c-"+(pos||"sp");im.title=(RESBY[rid]?.nombre||"")+(pos?" · "+pos.replace("_"," "):"");}
+  im.className="c-"+(pos||"sp");im.title=(RESBY[rid]?.nombre||"")+(pos?" · "+({a_favor:"favorable",en_contra:"desfavorable",depende:"depende",ni_ni:"ni fu ni fa",sin_postura:"sin postura"}[pos]||pos):"");}
 function cabecera(modo,q,donde,gente){
   $("#pregcab").hidden=false;
   $("#pc-modo").textContent={sondeo:"LA PREGUNTA DEL SHOW",tertulia:"EL TEMA DE LA MESA",pais:"EL PAÍS RESPONDE"}[modo]||"LA PREGUNTA";
@@ -2330,10 +2331,12 @@ async function contexto1(q){
        ~30 s por pregunta, o sea ~100 preguntas al día con el tope de $10 para
        todo el público. Una sola: ~$0.02 y un tercio de la espera. */
     const terr=SEL.size&&SEL.size<=4?[...SEL].map(c=>MARG[c]?.nombre).filter(Boolean).join(", "):null;
+    let respondio=false;
     const c1=await pide("TEMA: "+q+" (Colombia, "+mesCO()+"). Cubre, una viñeta por lente: "+
       "(1) la noticia del momento; (2) cifras y datos duros: precios, porcentajes, fechas; "+
       "(3) qué dice la gente de a pie y las redes; (4) el antecedente en Colombia; "+
       "(5) "+(terr?"cómo toca esto a "+terr:"diferencias regionales")+".");
+    respondio=!!c1;
     const norm=s=>s.toLowerCase().normalize("NFD").replace(/[^a-z0-9 ]/g,"").slice(0,52);
     const vistos=new Set(),vi=[];
     for(const s of c1.split("\n").map(x=>x.trim())){
@@ -2343,7 +2346,7 @@ async function contexto1(q){
       vistos.add(k);vi.push(s);
       if(vi.length>=6)break;
     }
-    CTX.txt=vi.length?vi.join("\n"):null;
+    CTX.txt=vi.length?vi.join("\n"):null;CTX.respondio=respondio;
     /* Jev verifica el contexto antes de mostrarlo (fechas/consistencia) */
     if(CTX.txt){
       try{
@@ -2359,7 +2362,8 @@ async function contexto1(q){
       }catch(e){}
     }
   }catch(e){}
-  ctxGuardarLS(q,CTX.txt,CTX.ok);
+  // solo se guarda lo que la búsqueda de verdad contestó: una caída de red no es "sin noticias"
+  if(CTX.respondio)ctxGuardarLS(q,CTX.txt,CTX.ok);
   return CTX.txt;
 }
 function limpiaCtx(s){
@@ -2494,8 +2498,13 @@ async function conversar(q){
   let fi=0;const ticker=setInterval(()=>{
     const t=$("#tickertxt");if(t)t.textContent=FRASES[++fi%FRASES.length];},1400);
   $("#estado").textContent="preparando la mesa…";
-  const [ctx,anc,pctEst]=await Promise.all([contexto(q),MODO==="sondeo"?recuperarItem(q):null,
-    MODO==="sondeo"&&!OPC?estimarPct(q):null]);
+  let ctx,anc=null,pctEst=null;
+  try{[ctx,anc,pctEst]=await Promise.all([contexto(q),MODO==="sondeo"?recuperarItem(q):null,
+    MODO==="sondeo"&&!OPC?estimarPct(q):null]);}
+  catch(e){   // sin red: no dejar el "llegan los vecinos…" girando para siempre
+    clearInterval(ticker);$("#ticker")?.remove();$("#estado").textContent="";$("#ctrl").style.display="none";
+    const b=$("#qbar button");if(b)b.disabled=false;
+    $("#resps").insertAdjacentHTML("beforeend",`<div class="hint">No se pudo preparar la mesa. Revisa la conexión y vuelve a preguntar.</div>`);return;}
   /* ECP: respuesta del donante (el DANE la publica por persona). LAPOP y
      Latinobarómetro: sorteo desde los agregados de la celda (su licencia no
      permite más). Medido en 8 preguntas ciegas: error 21.2 → 6.3 pts. */
@@ -2530,6 +2539,7 @@ async function conversar(q){
           {role:"user",content:"Te faltó la etiqueta final. Responde SOLO la etiqueta [POSTURA: a_favor|en_contra|depende|ni_ni] que corresponde a lo que acabas de decir."}]),16);
           pos=postura(rr||"")[0];}
         if(!pos)pos=await clasificarPostura(q,txt);
+        if(run0!==RUN)return;   // llegó tarde: ya es otra pregunta
         if(!['a_favor','en_contra','depende','ni_ni'].includes(pos)){pos='sin_postura';p.sin_postura=(p.sin_postura||0)+1;}else p[pos]++;
         const gl=lado===undefined?estiloDe(r).lean:LEAN[lado?0:2];
         if(pos!=='sin_postura'&&pos!=='ni_ni'&&r.compromiso!=='indiferente'){obedN++;
@@ -2541,7 +2551,7 @@ async function conversar(q){
           if((af&&pos==="a_favor")||(!af&&pos==="en_contra"))s.sigue++;}
         typewriter(say,txt);ESC("habla",r,txt,pos);
         card.style.setProperty("--pc",COLORES[pos]||COLORES.depende);tally(p);
-      }catch(e){p.sin_postura=(p.sin_postura||0)+1;tally(p);say.classList.remove("thinking");say.textContent="(no contestó)";}
+      }catch(e){if(run0!==RUN)return;p.sin_postura=(p.sin_postura||0)+1;tally(p);say.classList.remove("thinking");say.textContent="(no contestó)";}
     }));
     window.__libreto={obed,obedN};   // se mide, no se muestra: no le dice nada a quien lee
     /* sin ancla, la cifra es la del analista: en 16 preguntas ciegas se alejó
@@ -2793,7 +2803,9 @@ $("#pobmask").addEventListener("click",e=>{
   if(b.dataset.borrar){delete FILTRO[b.dataset.borrar];pintaPob();return;}
   if(b.dataset.k){const S=(FILTRO[b.dataset.k]??=new Set());S.has(b.dataset.v)?S.delete(b.dataset.v):S.add(b.dataset.v);if(!S.size)delete FILTRO[b.dataset.k];pintaPob();}
 });
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#pobmask").hidden)$("#pobmask").hidden=true;});
+document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;
+  if(!$("#pobmask").hidden){$("#pobmask").hidden=true;e.stopImmediatePropagation();return;}
+  if($("#rmask").classList.contains("open")){$("#rmask").classList.remove("open");e.stopImmediatePropagation();}});
 /* voces: slider de 2 a 20 */
 $("#nsel").addEventListener("input",()=>{$("#nsel-v").textContent=$("#nsel").value;});
 $("#terrbtn").onclick=()=>abrirCajon("dr-mapa",true);
@@ -2846,7 +2858,7 @@ async function recorrer(){
   if(PAIS!==yo)return;
   const E={a_favor:"fav",en_contra:"con",depende:"dep"};
   $("#resps").insertAdjacentHTML("beforeend",tarjetaResumen("LO QUE DIJO EL PAÍS",R,[],{},
-    `${hechos.length} mesas de 7 · ${hechos.map(([c,v])=>`<span class="dchip ${E[v.pos]||""}">${esc(MARG[c]?.nombre||c)}</span>`).join("")}`));
+    `${hechos.length} mesas de 7 personas · ${hechos.map(([c,v])=>`<span class="dchip ${E[v.pos]||""}">${esc(MARG[c]?.nombre||c)}</span>`).join("")}`));
   ESC("cartel",`<b>LO QUE DIJO EL PAÍS</b>${esc((R.temas||[]).join(" · "))}${R.chocan?" — "+esc(R.chocan):""}`,"depende");
   abajo();
 }
@@ -2864,6 +2876,7 @@ function abrirCajon(id,forzar){
   document.querySelector(`[data-cajon="${id}"]`)?.setAttribute("aria-expanded",String(abre));
 }
 document.querySelectorAll("[data-cajon]").forEach(b=>b.onclick=()=>abrirCajon(b.dataset.cajon));
+$("#rmask").addEventListener("pointerdown",e=>{$("#rmask")._desdeMascara=e.target.id==="rmask";});   // arrastrar desde la ficha y soltar afuera no la cierra
 $("#banner").onclick=e=>{if(!e.target.closest("a"))$("#banner").classList.toggle("abierto");};
 document.querySelectorAll(".cajon .cierra").forEach(b=>b.onclick=()=>abrirCajon(b.closest(".cajon").id,false));
 document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".cajon.abierto").forEach(c=>abrirCajon(c.id,false));});

@@ -66,7 +66,7 @@ function textura(url) {
   if (!TEX.has(url)) TEX.set(url, new Promise(res => cargador.load(url, t => {
     t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false;
     t.colorSpace = THREE.SRGBColorSpace; res(t);
-  }, undefined, () => res(null))));
+  }, undefined, () => { TEX.delete(url); res(null); })));
   return TEX.get(url);
 }
 /* sombra: elipse suave pintada una vez */
@@ -732,14 +732,18 @@ function camara2d(dt, ahora) {
     if (e.target.closest(".cartel,.tablero,.globo")) return;
     e.preventDefault();
     const r = host.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
-    const zn = Math.min(2.4, Math.max(1, VISTA.zo * (e.deltaY < 0 ? 1.18 : .85)));
+    if (e.ctrlKey) return; const zn = Math.min(2.4, Math.max(1, VISTA.zo * (e.deltaY < 0 ? 1.18 : .85)));
     // el punto bajo el cursor se queda quieto
     const lx = (mx - VISTA.tx) / VISTA.z, ly = (my - VISTA.ty) / VISTA.z;
     VISTA.sigue = null; VISTA.zo = zn; VISTA.fxo = lx + (r.width / 2 - mx) / zn; VISTA.fyo = ly + (r.height * .55 - my) / zn;
     VISTA.mano = performance.now() + 15000;
   }, { passive: false });
   let ini = null;
-  host.addEventListener("pointerdown", e => { if (e.button === 0 && !e.target.closest("button,a,.cartel,.tablero")) ini = { x: e.clientX, y: e.clientY, fx: VISTA.fxo, fy: VISTA.fyo }; });
+  host.addEventListener("pointerdown", e => {
+    if (e.button !== 0 || !e.isPrimary || ini || e.target.closest("button,a,.cartel,.tablero")) return;   // un dedo manda; el segundo no reinicia
+    ini = { x: e.clientX, y: e.clientY, fx: VISTA.fxo, fy: VISTA.fyo };
+    if (e.pointerType === "mouse") try { host.setPointerCapture(e.pointerId); } catch (_) {}   // soltar fuera de la ventana también suelta
+  });
   addEventListener("pointermove", e => {
     if (!ini || (VISTA.zo <= 1.01 && MUNDO.w <= host.clientWidth + 2)) return;
     VISTA.sigue = null; VISTA.mano = performance.now() + 15000;
@@ -747,7 +751,7 @@ function camara2d(dt, ahora) {
   });
   addEventListener("pointerup", () => { ini = null; });
   addEventListener("pointercancel", () => { ini = null; });   // gesto cancelado (scroll, long-press): no queda enganchado
-  host.addEventListener("dblclick", () => { VISTA.mano = 0; general(); });
+  host.addEventListener("dblclick", e => { if (e.target.closest("button,a,.cartel,.tablero,.globo")) return; VISTA.mano = 0; general(); });
   const bt = document.createElement("div"); bt.id = "zoomesc";
   bt.innerHTML = `<button type="button" data-z="1.25" aria-label="Acercar">+</button><button type="button" data-z=".8" aria-label="Alejar">−</button><button type="button" data-z="0" aria-label="Ver todo">⤢</button>`;
   bt.onclick = e => { const b = e.target.closest("button"); if (!b) return; const f = +b.dataset.z;
@@ -795,7 +799,8 @@ function hablaYa(r, txt, pos) {
   const angosto = host.clientWidth < 640;
   enfocar(a, muchos > 9 ? 1.55 : angosto ? 1.4 : muchos > 5 ? 1.18 : 1.08, Math.min(5200, 2200 + idea(txt).length * 30));
   a.userData.placa?.classList.add("ve");
-  setTimeout(() => a.userData.placa?.classList.remove("ve"), 6000);
+  const h = a.userData._hablaN = (a.userData._hablaN || 0) + 1;
+setTimeout(() => { if (a.userData._hablaN === h) a.userData.placa?.classList.remove("ve"); }, 6000);
   globo(a, `${r.nombre.split(" ")[0]} · ${r.edad}`, txt, pos);
   marca(a, pos);
 }
@@ -817,6 +822,8 @@ const API = {
   },
   lugar,
   async escena({ modo, lugar: k, sel, gente, pregunta }) {
+    const gen = API.escena.gen = (API.escena.gen || 0) + 1;   // si llega otra escena, esta se retira
+    const vieja = () => gen !== API.escena.gen;
     quitarTodos();
     modoActual = modo;
     API.turnos(modo === "sondeo");
@@ -827,24 +834,30 @@ const API = {
     const acomodo = modo === "sondeo" ? "publico" : modo === "pais" ? "pie" : "mesa";
     const U = utileriaDe(lugarActual);
     if (acomodo === "mesa") {
-      MESA = await actor("mesa", "escenas/" + (U?.mesa || "mesa.webp"), ALTO * .72, 1, true);
+      const m = await actor("mesa", "escenas/" + (U?.mesa || "mesa.webp"), ALTO * .72, 1, true);
+      if (vieja()) { scene.remove(m); return; }
+      MESA = m;
       MESA.position.set(0, 0, 0.55 * escalaEscenario());
     }
     if (U && acomodo !== "publico") {           // ambiente: hasta 3 cosas del lugar, a los lados
       const cosas = U.cosas.slice(0, 3);
       await Promise.all(cosas.map(async (c, i) => {
         const a = await actor("cosa" + i, "escenas/" + c, ALTO * (i === 2 ? .7 : .85), 1, true);
+        if (vieja()) { scene.remove(a); return; }
         const e = escalaEscenario(); a.position.set(COSAS[i][0] * e, 0, COSAS[i][1] * e);
         GENTE.set("__cosa" + i, a);
       }));
     }
     const P = puestos(gente.length, acomodo), ENT = acomodo === "publico" ? null : entradas();
     if (acomodo === "publico") {
-      JUEZ = await actor("juez", "gente/urbano_7_poses.webp", ALTO * 1.1, 4);
+      const j = await actor("juez", "gente/urbano_7_poses.webp", ALTO * 1.1, 4);
+      if (vieja()) { scene.remove(j); return; }
+      JUEZ = j;
       JUEZ.position.set(-3.35, 0, 1.15);
       // un podio delante de cada concursante: tapa de verdad (profundidad)
       await Promise.all(P.filter(p => p[2]).map(async ([x, z], i) => {
         const podio = await actor("podio" + i, "escenas/podio.webp", ALTO * .6, 1, true);
+        if (vieja()) { scene.remove(podio); return; }
         podio.position.set(x, 0, z + .42);
         podio.children[0].visible = false;          // el podio no lleva sombra de persona
         GENTE.set("__podio" + i, podio);
@@ -855,6 +868,7 @@ const API = {
       const nc = (window.CATALOGO?.gente || []).find(g => g.id === spr)?.d || 4;
       const a = await actor(r.id, "gente/" + spr + "_poses.webp",
         ALTO * (.97 + (r.edad > 64 ? -.04 : 0) + (r.sexo === "mujer" ? -.03 : 0)), nc);
+      if (vieja()) { scene.remove(a); return; }
       let [x, z] = P[i];
       if (!caminable(x, z)) {                             // el puesto cae en una pared: al piso más cercano
         let q = null;
@@ -911,7 +925,9 @@ const API = {
     el.className = "cartel"; el.style.setProperty("--pc", COLOR[pos] || "#fcd116");
     const m = html.match(/^(<b>[\s\S]*?<\/b>)([\s\S]*)$/);
     el.innerHTML = m ? `${m[1]}<p>${m[2]}</p><small>completo en la conversación · clic para recoger</small>` : html;
-    el.onclick = () => { clearTimeout(el._t); el.classList.toggle("chico"); };
+    el.tabIndex = 0; el.setAttribute("role", "button"); el.setAttribute("aria-expanded", "true");
+el.onclick = () => { clearTimeout(el._t); const ch = el.classList.toggle("chico"); el.setAttribute("aria-expanded", String(!ch)); };
+el.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.onclick(); } };
     over.append(el);
     el._t = setTimeout(() => el.classList.add("chico"), 9000);
     API.calma();
@@ -919,7 +935,9 @@ const API = {
   /* el show: el juez revela el tablero fila por fila */
   async tablero({ titulo, n, filas, nota }) {
     // espera a que termine la ronda de turnos: el show no se pisa a sí mismo
-    while (enTurno) await new Promise(s => setTimeout(s, 300));
+    const gen = API.escena.gen;
+    while (enTurno) { await new Promise(s => setTimeout(s, 300)); if (gen !== API.escena.gen) return; }
+    if (gen !== API.escena.gen) return;
     VISTA.mano = 0; general();
     over.querySelectorAll(".tablero,.juezdice,.globo").forEach(e => e.remove());
     const t = document.createElement("div");

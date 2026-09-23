@@ -55,6 +55,14 @@ node --test scripts/experimento/anclas.test.mjs     # antes de tocar la estimaci
   manda el mismo cuerpo a ambos. Detalle: `docs/OPENROUTER.md`.
 - **Nunca copies el enjambre de vuelta aquí.** Dos copias a mano rompieron
   SWARMS dos veces en un día.
+- **Enjambre GLM: mira la línea `flota:` del resumen.** Con tareas largas GLM
+  razona 5–12k tokens aunque pidas effort low; con techo de 8k volvía vacío y
+  el reintento se iba callado a DeepSeek (7/8 y 9/9 así, 2026-09-23). SWARMS ya
+  lo arregla (techo 24k, ruta CoreWeave/BaseTen, vacío = reintento GLM). En el
+  plan usa `thinking:"none"`; si el resumen dice "respuestas vacías", revisa.
+- **Lo que propone el enjambre se verifica antes de aplicarse**
+  (`scripts/verificar_bugs.py` + el navegador): de 29 bugs de GLM, 8 eran falsos
+  y 7 arreglos habrían roto algo (`ReferenceError`, chequeo en el sitio equivocado).
 - **Nada que cambie lo que ve la gente sin medirlo contra la ECP.** Regla de
   despliegue fijada antes de ver datos y probada en ítems que no se usaron
   para calibrar (ver `docs/METODO.md`, mezcla). SSR solo parecía mejor y
