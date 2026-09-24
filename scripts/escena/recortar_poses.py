@@ -15,6 +15,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).parent))
 from recortar import ALTO, componentes, mascara  # noqa: E402
+from limpiar_borde import limpiar  # noqa: E402   (sin él queda un halo morado)
 
 
 def main(hoja, salida, ids):
@@ -66,8 +67,8 @@ def main(hoja, salida, ids):
         for col in range(4):
             c = cuadros.get(col, quieto)
             tira.alpha_composite(c, (col * ancho + (ancho - c.width) // 2, ALTO - c.height))   # pies abajo
-        tira.save(salida / f"{pid}_poses.webp", lossless=True)
-        quieto.save(salida / f"{pid}.webp", lossless=True)
+        limpiar(tira).save(salida / f"{pid}_poses.webp", lossless=True)
+        limpiar(quieto).save(salida / f"{pid}.webp", lossless=True)
         print(f"  {pid}: {len(cuadros)} poses")
 
 

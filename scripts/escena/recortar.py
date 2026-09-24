@@ -11,6 +11,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
+from limpiar_borde import limpiar   # el fondo magenta deja halo en el borde
+
 ALTO = 256          # alto final; se escala con vecino más cercano: el pixel queda nítido
 
 
@@ -81,7 +83,7 @@ def main(hojas, salida):
             esc = ALTO / spr.height
             spr = spr.resize((max(1, round(spr.width * esc)), ALTO), Image.NEAREST)
             base = salida / f"{hoja.stem}_{i}"
-            spr.save(str(base) + ".webp", lossless=True)
+            limpiar(spr).save(str(base) + ".webp", lossless=True)
         print(f"{hoja.stem}: {len(orden)} personajes")
 
 
