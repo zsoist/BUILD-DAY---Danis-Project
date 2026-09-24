@@ -902,7 +902,7 @@ html body #navmap #mtierra path.dep{fill:color-mix(in srgb,var(--dep) 55%,#12204
     <div id="muestra" aria-busy="true"><div class="fuente">cargando censo DANE…</div></div>
   </aside>
 
-  <div id="banner">⚠ SIMULACIÓN — residentes sintéticos: sus variables socioeconómicas se muestrean de personas reales encuestadas por el DANE (GEIH 2025–2026) y se ponderan a los totales oficiales; el nombre, la personalidad y las opiniones son generados. NO es una encuesta: ninguno de estos existe. Reporte de fidelidad: <a href="validacion_v2.json">validacion_v2.json</a></div>
+  <div id="banner">⚠ SIMULACIÓN — residentes sintéticos: sus variables socioeconómicas se muestrean de personas reales encuestadas por el DANE (GEIH 2025–2026) y se ponderan a los totales oficiales; el nombre, la personalidad y las opiniones son generados. NO es encuesta ni sondeo, y no tiene validez estadística: ninguno de estos existe. Nada electoral (Ley 2494 de 2025). Reporte de fidelidad: <a href="validacion_v2.json">validacion_v2.json</a></div>
 </div>
 
 <div id="pobmask" hidden><section id="pobcard" class="ventana" role="dialog" aria-modal="true" aria-labelledby="pob-t">
@@ -2052,6 +2052,7 @@ function sondeoInstr(r){
   return "\nResponde la encuesta en 1-2 frases. La gente real opina de TODO: aunque la pregunta venga enredada o mal escrita, interprétala como buenamente se entienda (ayúdate del contexto de noticias) y TOMA PARTIDO sobre eso. El largo obedece tu temperamento: el seco despacha en una línea de 5-8 palabras, el parlanchín se extiende; que no midan todas las respuestas lo mismo. "+(M.despiste?"Puedes confesar que la pregunta te llegó enredada, pero igual opinas. ":"PROHIBIDO decir que no entendiste la pregunta, que no sabes de qué te hablan o que eso 'no te quita el sueño': interpreta y opina como haría la gente de verdad. ")+"Cierra SIEMPRE con [POSTURA: a_favor|en_contra|depende|ni_ni]. ni_ni SOLO si tu personaje es de los que la política ni le va ni le viene; depende solo si tu vida te parte genuinamente en dos; si tienes postura, dila clara. a_favor significa SÍ A LA PREGUNTA LITERAL tal como la entendiste (no al debate de las noticias). Tu marco social y tu inclinación asignada fijan tu lado: PROHIBIDO correrte al lado 'simpático' del debate.";
 }
 function tallyHTML(c,extra,etq){
+  if(POLITICO)return `<div class="estim">⚖️ Sin cifras en temas políticos (Ley 2494 de 2025) · no es encuesta ni sondeo</div>`;
   const [la,lb,ld]=etq||etiquetas();
   const seg=[["a_favor",la,"fav"],["en_contra",lb,"con"],["depende",ld,"dep"],["ni_ni","ni fu ni fa","nini"],["sin_postura","sin postura","sinp"]].filter(([k])=>c[k]);
   const barra=`<div class="hudbar">${seg.map(([k,l,cl])=>`<i class="${cl}" style="flex:${c[k]}"></i>`).join("")||'<i class="vacio" style="flex:1"></i>'}</div>`;
@@ -2467,6 +2468,13 @@ function abortar(C){
   $("#ctrl").style.display="none";$("#reloj").textContent="";
   const b=$("#qbar button");if(b)b.disabled=false;
 }
+/* Ley 2494 de 2025 (encuestas). Nada electoral; y en opinión política, cero cifras
+   simuladas: solo razones. El servidor rechaza lo electoral también (api/opina.js). */
+const sinTildes=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+const ELECTORAL=/\b(votaria|votarias|votaria usted|vota por|votar por|votaria por|va a votar|votara por|intencion de voto|por quien (vota|votaria|va a votar)|elegiria|elegirias|candidat|precandidat|presidenciable|favorabilidad|segunda vuelta|primera vuelta|ganar(a|ia)? las elecciones|quien (gana|ganara|ganaria) (la |las )?(eleccion|elecciones|presidencia|alcaldia|gobernacion))/;
+const POLITICA=/\b(gobierno|president|petro|uribe|cepeda|duque|santos|fajardo|congres|senad|camara de representantes|partido|pacto historico|centro democratico|alcald|gobernad|ministr|politic|reforma|paz total|izquierda|derecha|democracia|eleccion|registradur|cne|corte constitucional|fiscal|procurad|contralor|referendo|constituyente|oposicion|petrismo|uribismo|estado|instituciones|policia|ejercito|legaliz|despenaliz|aborto|eutanasia|matrimonio igualitario|pena de muerte|impuesto|subsidio|ley|leyes|proyecto de ley|politica publica|consulta popular|plebiscito|acuerdo de paz|farc|eln|guerrilla|paramilitar|voto|votar|votacion)/;
+let POLITICO=false;
+const AVISO_LEY=`<div class="ancla">⚖️ <b>Tema de opinión política.</b> Por la Ley 2494 de 2025, ColombIA no muestra cifras simuladas sobre política: aquí van las razones, no porcentajes. No es encuesta ni sondeo; sin validez estadística.</div>`;
 async function conversar(q){
   // al entrar: limpia la UI de cualquier corrida preemptada ANTES del dispatch
   // de modo — en PAÍS se sale temprano y nada más la tocaría.
@@ -2477,6 +2485,9 @@ async function conversar(q){
   if(API_OK===false&&!cfg.orkey){$("#resps").innerHTML=`<div style="color:var(--work);padding:16px">
     pega tu key de openrouter en AJUSTES para conversar</div>`;return;}
   abortarCorrida();
+  if(ELECTORAL.test(sinTildes(q))){POLITICO=false;$("#resps").innerHTML=`<div class="bienvenida"><b>ColombIA no simula preferencias electorales.</b><p>Nada de intención de voto, candidatos ni favorabilidad: la Ley 2494 de 2025 prohíbe publicar sondeos de voto, y esta es una simulación. Pregunta por un tema, no por un candidato.</p></div>`;$("#tally").innerHTML="";return;}
+  POLITICO=POLITICA.test(sinTildes(q));
+  if(POLITICO&&MODO==="pais"){$("#resps").innerHTML=AVISO_LEY+`<div class="bienvenida"><p>En temas políticos el modo PAÍS no pinta el mapa. Usa SONDEO o TERTULIA para oír las razones.</p></div>`;$("#tally").innerHTML="";return;}
   OPC=opcionesDe(q);
   if(MODO==="pais")return pais(q);
   const nac=SEL.size!==1;
@@ -2513,7 +2524,7 @@ async function conversar(q){
   $("#estado").textContent="preparando la mesa…";
   let ctx,anc=null,pctEst=null;
   try{[ctx,anc,pctEst]=await Promise.all([contexto(q),MODO==="sondeo"?recuperarItem(q):null,
-    MODO==="sondeo"&&!OPC?estimarPct(q):null]);}
+    MODO==="sondeo"&&!OPC&&!POLITICO?estimarPct(q):null]);}
   catch(e){   // sin red: no dejar el "llegan los vecinos…" girando para siempre
     clearInterval(ticker);$("#ticker")?.remove();$("#estado").textContent="";$("#ctrl").style.display="none";
     const b=$("#qbar button");if(b)b.disabled=false;
@@ -2530,12 +2541,13 @@ async function conversar(q){
   const EST=!anc&&pctEst!=null?pctEst.pct:null;
   /* si la pregunta es partidista, cada voz parte de la estimación corrida según cómo
      votó su departamento en 2026 (medido contra 2018 y 2022: error 11→8 y 15→9,5 pts) */
-  const INCL=EST!=null&&pctEst.lado?await inclinacion():null;
+  const INCL=null;   // apagado (Ley 2494 de 2025): nada se corre por la votación de un territorio
   const pctDe=r=>{if(!INCL||INCL.dptos[r.dpto]==null)return EST;
     return Math.min(99,Math.max(1,EST+(pctEst.lado==="izquierda"?1:-1)*INCL.k*INCL.dptos[r.dpto]));};
   const ladoDe=r=>EST==null?undefined:(posturaEstimada(r,q,pctDe(r))??undefined);
   clearInterval(ticker);$("#ticker")?.remove();$("#estado").textContent="";
   ctxBox(ctx);
+  if(POLITICO)$("#resps").insertAdjacentHTML("afterbegin",AVISO_LEY);
   if(anc&&kAnc>=0)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>El DANE ya preguntó esto</b> (Encuesta de Cultura Política 2023): «${esc(anc.texto)}». Cada voz responde lo que respondió su donante real, una persona de su misma edad, sexo, educación y región.</div>`);
   else if(EST!=null)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">🧭 <b>Nadie ha medido esto en Colombia.</b> Las posturas se reparten según una estimación de un modelo (en pruebas, se aleja unos 17 pts de la realidad): tómalo como exploración, no como encuesta.</div>`);
   else if(anc&&CEL)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>Esto ya se preguntó en Colombia</b> (${esc(anc.fuente||"")}): «${esc(anc.texto)}». Cada voz parte de cómo respondió gente real de su edad, sexo, educación y región. <span class="cita">Fuente: ${/^LAPOP/.test(anc.codigo)?'LAPOP Lab, <a href="https://www.vanderbilt.edu/lapop/" target="_blank" rel="noopener">Barómetro de las Américas</a> 2023; tablas agregadas, uso no comercial.':/^LB:/.test(anc.codigo)?'Corporación <a href="https://www.latinobarometro.org" target="_blank" rel="noopener">Latinobarómetro</a>, 2024; tablas agregadas, uso no comercial.':`<a href="https://www.dane.gov.co" target="_blank" rel="noopener">DANE</a>, ${esc(anc.fuente||"")}; tablas agregadas.`}</span></div>`);
@@ -2582,7 +2594,7 @@ async function conversar(q){
       const uno=SEL.size===1&&INCL?[...SEL][0]:null, cifra=uno?pctDe({dpto:uno}):EST;
       const ajuste=INCL?(uno?` · corrida según cómo votó ${esc(MARG[uno]?.nombre||"")} en 2026`:" · cada voz, corrida según cómo votó su departamento"):"";
       $("#tally").insertAdjacentHTML("beforeend",`<div class="estim" title="Nadie ha medido esta pregunta en Colombia. La cifra es la estimación de un modelo actuando como analista de opinión; en pruebas se alejó en promedio 17 puntos de la realidad.${INCL?" Como la pregunta es partidista, se corre por departamento con la votación presidencial de 2026 (probado contra 2018 y 2022).":""}">🧭 ≈ <b>${Math.round(cifra)}%</b> ${esc(la)} · estimación de un modelo como analista (±17 pts en pruebas)${ajuste}, no es encuesta</div>`);}
-    const est=EST!=null?null:await estimacion(votos);
+    const est=EST!=null||POLITICO?null:await estimacion(votos);
     if(est&&isFinite(est.favor)){const [la]=etiquetas();
       $("#tally").insertAdjacentHTML("beforeend",`<div class="estim" title="Mezcla medida contra la ECP 2023 del DANE: pesa la etiqueta de cada voz y lo que dijo en sus palabras. No es una encuesta: no tiene margen de error.">≈ <b>${Math.round(100*est.favor)}%</b> ${esc(la)} entre quienes toman partido · estimación calibrada, no es encuesta</div>`);}
     /* EL JUEZ DEL SHOW: un modelo agrupa lo que dijeron; el conteo lo hace este
@@ -2597,8 +2609,9 @@ async function conversar(q){
           return {e:x.e,n:x.i.length,caras:x.i.map(k=>conTexto[k]?.spr).filter(Boolean),pos:Object.entries(c).sort((a,b)=>b[1]-a[1])[0]?.[0]};}).sort((a,b)=>b.n-a.n);
         const nota=(EST!=null?"🧭 Nadie ha medido esto: es exploración. ":anc?"📊 Las voces partieron de respuestas reales de una encuesta. ":"")+"Agrupa un modelo; cuenta el código.";
         if(J.titulo){ESC("titulo",J.titulo,"sondeo");$("#pc-q").textContent=J.titulo;}
-        ESC("tablero",{titulo:J.titulo?J.titulo.toUpperCase():"¿QUÉ DICEN LOS COLOMBIANOS?",n:conTexto.length,filas,nota});
-        $("#resps").insertAdjacentHTML("beforeend",`<div class="juicio"><b>EL JUEZ AGRUPÓ ${conTexto.length} RESPUESTAS</b><ol>${filas.map(f=>`<li>${esc(f.e)} · ${f.n}</li>`).join("")}</ol><small>${esc(nota)}</small></div>`);
+        if(!POLITICO)ESC("tablero",{titulo:J.titulo?J.titulo.toUpperCase():"¿QUÉ DICEN LOS COLOMBIANOS?",n:conTexto.length,filas,nota});
+        $("#resps").insertAdjacentHTML("beforeend",POLITICO?`<div class="juicio"><b>LAS RAZONES QUE APARECIERON</b><ol>${filas.map(f=>`<li>${esc(f.e)}</li>`).join("")}</ol><small>Sin conteos en temas políticos (Ley 2494 de 2025).</small></div>`
+          :`<div class="juicio"><b>EL JUEZ AGRUPÓ ${conTexto.length} RESPUESTAS</b><ol>${filas.map(f=>`<li>${esc(f.e)} · ${f.n}</li>`).join("")}</ol><small>${esc(nota)}</small></div>`);
         abajo();
       }}catch(e){}
       if(run0===RUN){
@@ -2697,13 +2710,13 @@ Tertulia de vecinos${SEL.size!==1?" de varias partes del país":" en "+r.dpto_no
       const resumen=[R.coinciden,R.chocan].filter(Boolean).join(" ");
       const seg=Math.round((Date.now()-CONV.start)/1000);
       const [la,lb,ld]=etiquetas();
-      const bando=(k,l)=>{const g=sample.filter(r=>postDe[r.id]===k);return g.length?`<div class="bando ${k}"><b>${g.length}</b><span>${esc(l)}</span>${g.map(r=>`<img src="gente/${spriteDe(r)}.webp" alt="" title="${esc(r.nombre)}">`).join("")}</div>`:"";};
+      const bando=(k,l)=>{const g=sample.filter(r=>postDe[r.id]===k);return g.length&&!POLITICO?`<div class="bando ${k}"><b>${g.length}</b><span>${esc(l)}</span>${g.map(r=>`<img src="gente/${spriteDe(r)}.webp" alt="" title="${esc(r.nombre)}">`).join("")}</div>`:"";};
       $("#resps").insertAdjacentHTML("beforeend",
         `<div class="cierre"><b class="ct">DE QUÉ HABLARON</b>
          ${R.temas?.length?`<div class="temas">${R.temas.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`:""}
          ${R.coinciden?`<p class="co"><i>🤝</i>${esc(R.coinciden)}</p>`:""}${R.chocan?`<p class="ch"><i>⚔</i>${esc(R.chocan)}</p>`:""}
          <div class="bandos">${bando("a_favor",la)}${bando("en_contra",lb)}${bando("depende",ld)}${bando("ni_ni","ni fu ni fa")}</div>
-         <small>${sample.length} voces · ${transcript.length} intervenciones · ${Math.floor(seg/60)}:${String(seg%60).padStart(2,"0")} · ${acordo?"casi todos en un mismo lado":"la mesa quedó repartida"} · conversación ilustrativa</small></div>`);
+         <small>${sample.length} voces · ${transcript.length} intervenciones · ${Math.floor(seg/60)}:${String(seg%60).padStart(2,"0")} · ${POLITICO?"sin conteos en temas políticos":acordo?"casi todos en un mismo lado":"la mesa quedó repartida"} · conversación ilustrativa</small></div>`);
       abajo();
       ESC("cartel",`<b>DE QUÉ HABLARON</b>${esc((R.temas||[]).join(" · "))}${R.chocan?" — "+esc(R.chocan):""}`,acordo?"a_favor":"depende");
       guardar("tertulia",cur,q,{posturas:p,resumen,temas:R.temas,acordo,rondas:ronda,
@@ -2776,7 +2789,6 @@ const FILTROS=[
   {k:"ingreso",t:"Cuánto gana por su trabajo",c:"#fcd116",o:[["0","no gana por trabajo","sin"],...[1,2,3,4,5,6,7,8,9,10].map(d=>[String(d),"d"+d,"plata"])],f:r=>String(decilDe(r)),dec:1},
   {k:"salud",t:"Salud",c:"#ff8fa3",o:[["subsidiado","subsidiado (no paga)","sub"],["contributivo","contributivo (paga)","contrib"]],f:r=>r.regimen_salud},
   {k:"compromiso",t:"Relación con la política",c:"#ffb86b",o:[["militante","militante","militante"],["opinador","opina","opina"],["desencantado","desencantado","desencantado"],["indiferente","indiferente","indiferente"]],f:r=>r.compromiso},
-  {k:"lean",t:"Aire político de su territorio",c:"#c3c9e8",o:[["derecha_uribismo","derecha","voto","#6c9bea"],["centro_tradicional","centro / tradicional","voto","#d9b44a"],["izquierda","izquierda","voto","#e07b72"],["verdes_alternativos","verdes / alternativos","voto","#5fbf7a"],["otros_blanco_nulo","blanco / otros","voto","#9aa3b8"]],f:r=>r.lean},
 ];
 function rangoCorto(d){decilDe({});const T=DECILES,m=v=>(v/1e6).toLocaleString("es-CO",{maximumFractionDigits:1});
   return d===1?"≤"+m(T[0])+"M":d===10?">"+m(T[8])+"M":m(T[d-2])+"–"+m(T[d-1])+"M";}
@@ -2842,6 +2854,7 @@ async function resumirTurnos(q,lineas){
   return {temas:[],coinciden:"",chocan:""};
 }
 function tarjetaResumen(titulo,R,gente,votoDe,pie){
+  if(POLITICO)gente=[];   // sin conteos por postura en temas políticos (Ley 2494 de 2025)
   const [la,lb,ld]=etiquetas();
   const bando=(k,l)=>{const g=gente.filter(r=>votoDe[r.id]===k);return g.length?`<div class="bando ${k}"><b>${g.length}</b><span>${esc(l)}</span>${g.map(r=>`<img src="gente/${spriteDe(r)}.webp" alt="" title="${esc(r.nombre)}">`).join("")}</div>`:"";};
   return `<div class="cierre"><b class="ct">${esc(titulo)}</b>

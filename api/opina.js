@@ -134,6 +134,13 @@ function anotar(tipo, modelo, j) {
   return j;
 }
 
+/* Ley 2494 de 2025 (encuestas): ColombIA no simula preferencias electorales.
+   Intención de voto, candidatos y favorabilidad se rechazan AQUÍ, en el servidor:
+   saltarse la página no sirve. La lista es amplia a propósito: mejor rechazar de
+   más que publicar un «sondeo» de voto (art. 3: prohibido). */
+const ELECTORAL = /\b(votaria|votarias|votaria usted|vota por|votar por|votaria por|va a votar|votara por|intencion de voto|por quien (vota|votaria|va a votar)|elegiria|elegirias|candidat|precandidat|presidenciable|favorabilidad|segunda vuelta|primera vuelta|ganar(a|ia)? las elecciones|quien (gana|ganara|ganaria) (la |las )?(eleccion|elecciones|presidencia|alcaldia|gobernacion))/;
+const sinTildes = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
 export default async function handler(req, res) {
   // deadline global: el abort SIEMPRE debe ganar a la plataforma (10s/15s por
   // defecto): si el presupuesto se agota, salimos con 502 JSON, no con 504 opaco.
@@ -269,6 +276,11 @@ export default async function handler(req, res) {
 
   const body = req.body || {};
   let messages = body.messages;
+  {
+    const usuario = Array.isArray(messages) ? messages.filter(m => m && m.role === "user").map(m => typeof m.content === "string" ? m.content : "") : [];
+    if (ELECTORAL.test(sinTildes([body.pregunta, ...usuario].join(" \n "))))
+      return res.status(403).json({ error: "electoral", detalle: "ColombIA no simula preferencias electorales (Ley 2494 de 2025)." });
+  }
 
   // ── RECUPERAR: ¿el DANE ya preguntó esto? ──────────────────────────────
   // Los LLM traen la creencia de que en Colombia nada funciona y no la corrigen
