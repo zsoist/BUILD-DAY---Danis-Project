@@ -3,6 +3,7 @@
 //   node scripts/escena/gpt_imagen.mjs <salida.png> <prompt.txt> [referencia.webp|png ...]
 // Campos que importan (probados): input_references [{type:"image_url",image_url:{url}}] (con input_images el modelo
 // ignora la referencia en silencio), background:"transparent", quality:"low".
+// Fondos de escena en HD: CALIDAD=high FONDO=opaque TAM=2048x896 (panorámico) o 1376x768.
 import fs from "node:fs";
 const [salida, promptFile, ...refs] = process.argv.slice(2);
 const k = process.env.OPENROUTER_API_KEY;
@@ -12,7 +13,8 @@ const t0 = Date.now();
 const r = await fetch("https://openrouter.ai/api/v1/images", {
   method: "POST", headers: { Authorization: "Bearer " + k, "Content-Type": "application/json" },
   body: JSON.stringify({ model: process.env.MODELO || "openai/gpt-image-2.5-flare", prompt: fs.readFileSync(promptFile, "utf8").trim(),
-    input_references: refs.map(f => ({ type: "image_url", image_url: { url: dataURL(f) } })), size: process.env.TAM || "1536x1024", quality: "low", background: "transparent" }),
+    input_references: refs.map(f => ({ type: "image_url", image_url: { url: dataURL(f) } })), size: process.env.TAM || "1536x1024", quality: process.env.CALIDAD || "low",
+    background: process.env.FONDO || "transparent" }),
 });
 const j = await r.json().catch(() => ({}));
 const b64 = j?.data?.[0]?.b64_json;

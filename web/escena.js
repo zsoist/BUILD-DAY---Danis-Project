@@ -11,7 +11,7 @@ const $ = s => document.querySelector(s);
 const QUIETO = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const LUGARES = {
   nacional: ["Plaza de Bolívar", "Bogotá", "#fff4e4"], bogota: ["La Candelaria", "Bogotá", "#fff1dc"],
-  caribe: ["Ciudad amurallada", "Cartagena", "#ffe4c8"], sanandres: ["San Andrés", "Mar de siete colores", "#fffbe8"],
+  caribe: ["Ciudad amurallada", "Cartagena", "#ffe4c8"], barranquilla: ["Gran Malecón del Río", "Barranquilla", "#fff1d6"], sanandres: ["San Andrés", "Mar de siete colores", "#fffbe8"],
   guajira: ["Alta Guajira", "La Guajira", "#fff0cf"], medellin: ["Comuna 13", "Medellín", "#fff4e6"],
   cafetero: ["Salento", "Eje cafetero", "#fffaf0"], cali: ["Bulevar del río", "Cali", "#ffe6c4"],
   choco: ["Río Atrato", "Quibdó", "#f2f2e4"], narino: ["Las Lajas", "Nariño", "#eef0f2"],
@@ -23,11 +23,11 @@ const LUGARES = {
 };
 /* dónde está el piso pintado de cada fondo (fracción desde arriba) y qué tan
    grande se ve la gente ahí: medido a ojo sobre cada imagen */
-const PISO = { nacional: [.80, 1.0], bogota: [.87, .9], caribe: [.85, .95], sanandres: [.86, .95], guajira: [.84, 1.0],
+const PISO = { nacional: [.80, 1.0], bogota: [.87, .9], caribe: [.85, .95], barranquilla: [.86, .95], sanandres: [.86, .95], guajira: [.84, 1.0],
   medellin: [.88, .9], cafetero: [.89, .92], cali: [.86, .95], choco: [.89, .95], narino: [.86, .9], popayan: [.87, .92],
   boyaca: [.85, .95], santander: [.87, .9], llanos: [.86, 1.0], amazonia: [.87, .95], tatacoa: [.87, .95], estudio: [.79, .88],
   sucre: [.85, 1.0] };
-const DPTO_LUGAR = { "11": "bogota", "05": "medellin", "13": "caribe", "08": "caribe", "47": "caribe", "20": "caribe",
+const DPTO_LUGAR = { "11": "bogota", "05": "medellin", "13": "caribe", "08": "barranquilla", "47": "caribe", "20": "caribe",
   "23": "caribe", "70": "sucre", "88": "sanandres", "44": "guajira", "17": "cafetero", "63": "cafetero", "66": "cafetero",
   "76": "cali", "27": "choco", "52": "narino", "19": "popayan", "15": "boyaca", "25": "boyaca", "68": "santander",
   "54": "santander", "50": "llanos", "85": "llanos", "81": "llanos", "99": "llanos", "91": "amazonia", "97": "amazonia",
@@ -43,7 +43,7 @@ const canvas = host.querySelector("#esc3d");
 /* el MUNDO es lo que se pinta (fondo, cielo, 3D); la ventana es lo que se ve. Con
    un fondo normal son iguales; con uno panorámico (más de 9 personas) el mundo es
    más ancho y la cámara 2D lo recorre */
-const PANOS = new Set(["nacional", "bogota", "medellin", "caribe", "cafetero", "llanos", "amazonia", "choco", "santander",
+const PANOS = new Set(["nacional", "bogota", "medellin", "caribe", "barranquilla", "cafetero", "llanos", "amazonia", "choco", "santander",
   "narino", "popayan", "cali", "guajira", "sanandres", "boyaca", "tatacoa", "sucre"]);
 const PISO_PANO = { sanandres: [.88, 1.0], llanos: [.85, 1.0], guajira: [.86, 1.0] };
 let IMG = { w: 1376, h: 768 }, PANO = false;
@@ -144,7 +144,7 @@ function quitarTodos() {
 }
 
 /* la mesa y las cosas de cada región (web/gente/catalogo.json, "utileria") */
-const UTIL_DE = { nacional: "bogota", bogota: "bogota", medellin: "antioquia", caribe: "caribe", sanandres: "insular_guajira",
+const UTIL_DE = { nacional: "bogota", bogota: "bogota", medellin: "antioquia", caribe: "caribe", barranquilla: "caribe", sanandres: "insular_guajira",
   guajira: "insular_guajira", cafetero: "cafetero", tatacoa: "cafetero", cali: "pacifico", choco: "pacifico", narino: "sur_andino",
   popayan: "sur_andino", boyaca: "boyaca", santander: "santander", llanos: "llanos", amazonia: "amazonia", sucre: "caribe_rural" };
 function utileriaDe(k) { return window.CATALOGO?.utileria?.[UTIL_DE[k]] || null; }
@@ -281,12 +281,12 @@ let pisoY = .82;
    alto del cuadro en el escenario (en la playa o el desierto el cuadro se ve desde
    arriba: la cámara sale de 6 a 8 m). */
 const HORIZ = {
-  nacional: [.40], bogota: [.52, 2.5], medellin: [.55], caribe: [.52], cafetero: [.50, 2.47],
-  llanos: [.47], amazonia: [.32], choco: [.30], santander: [.50, 1.62], narino: [.50],
+  nacional: [.59], bogota: [.52, 2.5], medellin: [.55], caribe: [.69], barranquilla: [.34], cafetero: [.50, 2.47],
+  llanos: [.47], amazonia: [.32], choco: [.30], santander: [.50, 1.62], narino: [.63],
   popayan: [.55, 1.8], cali: [.55], guajira: [.15], sanandres: [.12], boyaca: [.52], tatacoa: [.45],
-  nacional_pano: [.45], bogota_pano: [.56], medellin_pano: [.60], caribe_pano: [.50],
+  nacional_pano: [.59], bogota_pano: [.56], medellin_pano: [.60], caribe_pano: [.69], barranquilla_pano: [.34],
   cafetero_pano: [.55], llanos_pano: [.40], amazonia_pano: [.30], choco_pano: [.30],
-  santander_pano: [.55], narino_pano: [.55], popayan_pano: [.60], cali_pano: [.58],
+  santander_pano: [.55], narino_pano: [.63], popayan_pano: [.60], cali_pano: [.58],
   guajira_pano: [.20], sanandres_pano: [.20], boyaca_pano: [.55], tatacoa_pano: [.50],
   sucre: [.58, 1.66], sucre_pano: [.57, 1.6],   // Sincelejo: puerta del portal medida (2,4 m)
 };
@@ -345,32 +345,34 @@ function ubicarTablero() {
    encima de esa línea hay casas, muros, árboles, río o cielo: nadie camina ahí.
    FRENTE: donde el piso se acaba por delante (el muelle del Atrato tiene agua). */
 const SUELO = {
-  nacional: [[0, .5], [.3, .47], [.6, .45], [1, .47]],
+  nacional: [[0, 0.674], [0.1, 0.666], [0.2, 0.655], [0.3, 0.649], [0.4, 0.647], [0.5, 0.645], [0.6, 0.647], [0.7, 0.649], [0.8, 0.659], [0.9, 0.672], [1, 0.678]],   // Plaza de Bolívar HD: Justicia al norte, Capitolio al sur, Bolívar de pie
   bogota: [[0, .93], [.1, .9], [.18, .78], [.3, .7], [.4, .64], [.5, .6], [.6, .64], [.7, .72], [.8, .8], [.9, .86], [1, .9]],
   medellin: [[0, .9], [.08, .78], [.15, .72], [.6, .72], [.8, .74], [.87, .85], [1, .95]],
-  caribe: [[0, .78], [.12, .72], [.25, .66], [.4, .6], [.55, .63], [.75, .68], [.9, .72], [1, .8]],
+  caribe: [[0, 0.761], [0.1, 0.755], [0.2, 0.741], [0.3, 0.714], [0.4, 0.704], [0.5, 0.7], [0.6, 0.7], [0.7, 0.705], [0.8, 0.747], [0.9, 0.763], [1, 0.776]],   // Cartagena HD: Plaza de los Coches, Torre del Reloj, Portal de los Dulces
+  barranquilla: [[0, 0.752], [0.1, 0.746], [0.2, 0.73], [0.3, 0.73], [0.4, 0.73], [0.5, 0.73], [0.6, 0.73], [0.7, 0.73], [0.8, 0.73], [0.9, 0.752], [1, 0.755]],   // Gran Malecón: detrás de la baranda está el río
   cafetero: [[0, .8], [.05, .76], [.75, .74], [.78, .8], [1, .8]],
   llanos: [[0, .52], [.4, .55], [.5, .6], [.95, .6], [1, .55]],
   amazonia: [[0, .72], [.1, .64], [.2, .61], [.85, .61], [.9, .7], [1, .8]],
   choco: [[0, .7], [1, .7]],
   santander: [[0, .9], [.12, .85], [.2, .66], [.4, .62], [.7, .62], [.88, .66], [.92, .85], [1, .92]],
-  narino: [[0, .9], [.1, .78], [.2, .73], [.8, .73], [.9, .78], [1, .9]],
+  narino: [[0, 0.836], [0.1, 0.827], [0.2, 0.808], [0.3, 0.777], [0.4, 0.771], [0.5, 0.77], [0.6, 0.771], [0.7, 0.777], [0.8, 0.808], [0.9, 0.827], [1, 0.836]],   // Las Lajas HD: el santuario sobre el puente
   popayan: [[0, .75], [.1, .7], [.3, .66], [.5, .65], [.75, .68], [1, .74]],
   cali: [[0, .64], [.3, .62], [.7, .62], [1, .63]],
   guajira: [[0, .65], [.1, .57], [.2, .55], [.7, .56], [.75, .65], [.85, .78], [1, .8]],
   sanandres: [[0, .72], [.12, .68], [.2, .62], [.7, .62], [.78, .7], [1, .75]],
   boyaca: [[0, .72], [.12, .66], [.2, .57], [.6, .56], [.72, .62], [.85, .72], [1, .8]],
   tatacoa: [[0, .72], [.15, .64], [.3, .62], [.85, .63], [.92, .72], [1, .8]],
-  nacional_pano: [[0, .52], [.5, .49], [1, .52]],
+  nacional_pano: [[0, 0.685], [0.2, 0.665], [0.3, 0.65], [0.5, 0.645], [0.7, 0.65], [0.78, 0.67], [1, 0.685]],
   bogota_pano: [[0, .74], [.3, .72], [.4, .64], [.5, .58], [.6, .64], [.7, .72], [1, .74]],
   medellin_pano: [[0, .75], [.05, .68], [.95, .68], [1, .75]],
-  caribe_pano: [[0, .66], [.3, .62], [.38, .52], [.48, .52], [.55, .6], [1, .66]],
+  caribe_pano: [[0, 0.77], [0.25, 0.75], [0.3, 0.72], [0.45, 0.7], [0.65, 0.7], [0.7, 0.74], [0.85, 0.77], [1, 0.79]],
+  barranquilla_pano: [[0, 0.76], [0.2, 0.745], [0.22, 0.73], [0.75, 0.73], [0.78, 0.75], [1, 0.76]],
   cafetero_pano: [[0, .74], [.1, .72], [.3, .68], [.8, .68], [1, .72]],
   llanos_pano: [[0, .52], [.4, .54], [.45, .56], [.75, .56], [1, .52]],
   amazonia_pano: [[0, .66], [.2, .63], [.85, .63], [1, .66]],
   choco_pano: [[0, .7], [1, .7]],
   santander_pano: [[0, .64], [.3, .6], [.5, .58], [.9, .66], [1, .72]],
-  narino_pano: [[0, .8], [.1, .74], [.5, .68], [.9, .74], [1, .8]],
+  narino_pano: [[0, 0.87], [0.07, 0.84], [0.25, 0.82], [0.3, 0.78], [0.44, 0.77], [0.56, 0.77], [0.7, 0.78], [0.75, 0.82], [0.93, 0.84], [1, 0.87]],
   popayan_pano: [[0, .62], [.45, .62], [.6, .64], [.9, .72], [1, .74]],
   cali_pano: [[0, .64], [.5, .61], [1, .63]],
   guajira_pano: [[0, .54], [.3, .5], [.6, .52], [.65, .6], [.85, .6], [.9, .54], [1, .54]],
@@ -452,6 +454,7 @@ const cielo = (() => {
     bogota: [["paloma", "#8b8f9c", "#c9ccd6", 16, 4], ["golondrina", "#24222e", "#24222e", 26, 3]],
     medellin: [["golondrina", "#24222e", "#24222e", 26, 4], ["gallinazo", "#1c1a20", "#3a3640", 9, 2]],
     caribe: [["gaviota", "#f7f7f2", "#9aa2ad", 18, 4], ["alcatraz", "#6e6258", "#b9aea0", 11, 3]],
+    barranquilla: [["gaviota", "#f7f7f2", "#9aa2ad", 18, 4], ["alcatraz", "#6e6258", "#b9aea0", 11, 3]],
     sanandres: [["gaviota", "#f7f7f2", "#9aa2ad", 18, 5], ["alcatraz", "#6e6258", "#b9aea0", 11, 3]],
     guajira: [["flamenco", "#f08aa0", "#20181c", 13, 6], ["gaviota", "#f7f7f2", "#9aa2ad", 18, 3]],
     cafetero: [["loro", "#3fbf4a", "#f2d640", 22, 5], ["golondrina", "#24222e", "#24222e", 26, 3]],
@@ -501,7 +504,7 @@ const cielo = (() => {
     return c;
   }
   function horizonte() {
-    const c = CIELOS[k]; if (!c) return H;
+    const c = CIELOS[k]; if (!c || !IMG.w || !IMG.h) return H;   // fondo aún sin cargar: sin esto, NaN en las nubes
     const kk = Math.max(MUNDO.w / IMG.w, MUNDO.h / IMG.h), ih = IMG.h * kk;
     return Math.min(H, Math.ceil((MUNDO.h - ih + c.horizonte * ih) / PX) + 2);
   }
@@ -590,16 +593,17 @@ fetch("escenas/cielos.json").then(r => r.json()).then(d => { Object.assign(CIELO
    convierte a profundidad del piso 3D: la perspectiva escala sola.
    [sprite, alto en metros, comportamiento, fy de la imagen (o [min,max]), cuántos, velocidad m/s] */
 const AMB = {
-  nacional: [["paloma", .26, "deambula", [.56, .78], 5, .35], ["llama", 1.55, "cruza", .5, 1, .45], ["turista", 1.7, "cruza", .53, 1, .9], ["vendedor", 1.75, "cruza", .6, 1, .7]],
+  nacional: [["paloma", .26, "deambula", [.72, .9], 5, .35], ["llama", 1.55, "cruza", .72, 1, .45], ["turista", 1.7, "cruza", .76, 1, .9], ["vendedor", 1.75, "cruza", .82, 1, .7]],
   bogota: [["perro", .55, "deambula", [.66, .8], 1, .8], ["turista", 1.7, "cruza", .58, 1, .9], ["gato", .32, "deambula", [.62, .72], 1, .5], ["paloma", .26, "deambula", [.6, .74], 2, .35]],
   medellin: [["turista", 1.7, "cruza", .74, 2, .8], ["perro", .55, "deambula", [.76, .86], 1, .8], ["vendedor", 1.75, "cruza", .78, 1, .6]],
-  caribe: [["coche", 1.9, "cruza", .55, 1, 1.4], ["palenquera", 1.72, "cruza", .6, 1, .6], ["gato", .32, "deambula", [.62, .8], 1, .5], ["turista", 1.7, "cruza", .64, 1, .9]],
+  caribe: [["coche", 1.9, "cruza", .8, 1, 1.4], ["palenquera", 1.72, "cruza", .84, 1, .6], ["gato", .32, "deambula", [.8, .92], 1, .5], ["turista", 1.7, "cruza", .88, 1, .9]],
+  barranquilla: [["turista", 1.7, "cruza", .8, 1, .9], ["bici", 1.6, "cruza", .835, 1, 2.2], ["vendedor", 1.75, "cruza", .9, 1, .7], ["perro", .55, "deambula", [.8, .92], 1, .8]],
   cafetero: [["willys", 1.8, "cruza", .74, 1, 2.6], ["mula", 1.5, "cruza", .76, 1, .7], ["gallina", .4, "deambula", [.8, .9], 2, .45], ["perro", .55, "deambula", [.78, .9], 1, .8]],
   llanos: [["vaca", 1.4, "deambula", [.47, .53], 4, .25], ["llanero", 2.2, "cruza", .56, 1, 1.3], ["garza", .8, "deambula", [.58, .66], 2, .3], ["perro", .55, "deambula", [.65, .8], 1, .8]],
   amazonia: [["canoa", 1.1, "cruza", .55, 1, 1.6], ["garza", .8, "deambula", [.72, .8], 1, .3], ["perro", .55, "deambula", [.78, .88], 1, .8]],
   choco: [["canoa", 1.1, "cruza", .6, 1, 1.5], ["garza", .8, "deambula", [.74, .82], 1, .3], ["gallina", .4, "deambula", [.8, .9], 1, .45]],
   santander: [["burro", 1.2, "cruza", .67, 1, .6], ["gallina", .4, "deambula", [.72, .9], 2, .45], ["perro", .55, "deambula", [.72, .88], 1, .8]],
-  narino: [["turista", 1.7, "cruza", .74, 1, .8], ["gallinazo", .6, "deambula", [.76, .84], 1, .2], ["perro", .55, "deambula", [.76, .88], 1, .8]],
+  narino: [["turista", 1.7, "cruza", .84, 1, .8], ["gallinazo", .6, "deambula", [.8, .9], 1, .2], ["perro", .55, "deambula", [.82, .92], 1, .8]],
   popayan: [["bici", 1.6, "cruza", .7, 1, 2.2], ["perro", .55, "deambula", [.72, .88], 1, .8], ["turista", 1.7, "cruza", .72, 1, .9]],
   cali: [["vendedor", 1.75, "cruza", .7, 1, .6], ["bici", 1.6, "cruza", .72, 1, 2.2], ["paloma", .26, "deambula", [.72, .86], 3, .35], ["perro", .55, "deambula", [.74, .88], 1, .8]],
   guajira: [["chivo", .8, "deambula", [.58, .72], 3, .4], ["wayuu", 1.62, "cruza", .6, 1, .6], ["burro", 1.2, "cruza", .56, 1, .5]],

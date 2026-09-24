@@ -10,6 +10,16 @@
       "port": 8377
     },
     {
+      "name": "colombia-principal",
+      "runtimeExecutable": "/usr/bin/env",
+      "runtimeArgs": [
+        "PORT=8391",
+        "node",
+        "scripts/dev.mjs"
+      ],
+      "port": 8391
+    },
+    {
       "name": "visor-enjambre",
       "runtimeExecutable": "uvx",
       "runtimeArgs": [

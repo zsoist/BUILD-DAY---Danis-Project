@@ -23,15 +23,15 @@ ESC = Path(__file__).resolve().parents[2] / "web" / "escenas"
 # techo = fracción de la altura hasta donde puede llegar el cielo (medido a ojo en la hoja de control)
 TECHO = {"nacional": .21, "bogota": .5, "medellin": .24, "caribe": .35, "cafetero": .45, "llanos": .5,
          "amazonia": .40, "choco": .44, "santander": .5, "narino": .3, "popayan": .45, "cali": .45,
-         "guajira": .33, "sanandres": .22}
+         "guajira": .33, "sanandres": .22, "barranquilla": .3}
 # panorámicas (<k>_pano.webp, 2048×896, para más de 9 personas): otro encuadre, otro techo
 TECHO.update({"sucre": .45, "sucre_pano": .36, "nacional_pano": .3, "bogota_pano": .45, "medellin_pano": .2, "caribe_pano": .3, "cafetero_pano": .35,
               "llanos_pano": .45, "amazonia_pano": .25, "choco_pano": .15, "santander_pano": .3, "popayan_pano": .3,
-              "cali_pano": .35, "guajira_pano": .12, "sanandres_pano": .15})
+              "cali_pano": .35, "guajira_pano": .12, "sanandres_pano": .15, "barranquilla_pano": .3})
 # tatacoa (noche con vía láctea) y boyaca (cielo azul con montañas) ya tienen cielo vivo: se dejan
 TOL = {"nacional": 10, "bogota": 11, "santander": 10, "nacional_pano": 10, "bogota_pano": 11, "popayan_pano": 24, "sucre_pano": 12}     # neblina lejana casi del color del cielo: tolerancia corta
 LUZ = {"cafetero_pano": 45, "popayan_pano": 0, "sucre_pano": 0}   # cenit oscuro: sin esto queda una nube negra
-HORA = {"llanos": "tarde", "caribe": "tarde", "llanos_pano": "tarde", "caribe_pano": "tarde", "cali_pano": "tarde",
+HORA = {"llanos": "tarde", "llanos_pano": "tarde", "cali_pano": "tarde",   # Cartagena HD es de día (cielo azul)
         "amazonia_pano": "bruma", "choco_pano": "bruma", "narino": "niebla", "amazonia": "bruma", "choco": "bruma"}
 
 
