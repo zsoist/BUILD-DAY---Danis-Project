@@ -20,10 +20,10 @@ test("T del servidor = T medida (0.25)", () => {
 test("α del sitio = α elegido en calibración (0.75)", () => {
   assert.match(html, /const ALFA_MEZCLA=0\.75;/);
 });
-test("instrucción de estimar del servidor = la medida en calibracion.py", () => {
-  const cal = readFileSync(new URL("./calibracion.py", import.meta.url), "utf8");
-  const deCal = [...cal.slice(cal.indexOf("INSTR_ESTIMAR = (")).split(")\n")[0].matchAll(/"((?:[^"\\]|\\.)*)"/g)]
-    .map(m => m[1]).join("").replace(/\\"/g, '"');
+// La instrucción se midió en calibracion.py (retirado el 2026-09-24 junto con LAPOP y
+// Latinobarómetro; está en el historial de git). Su texto exacto queda congelado aquí.
+test("instrucción de estimar del servidor = la medida (instr_estimar_medida.txt)", () => {
+  const deCal = readFileSync(new URL("./instr_estimar_medida.txt", import.meta.url), "utf8");
   const deJs = JSON.parse('"' + js.match(/const INSTR_ESTIMAR = "((?:[^"\\]|\\.)*)";/)[1] + '"');
   assert.equal(deJs, deCal);
 });

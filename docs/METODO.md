@@ -232,7 +232,13 @@ con noticias en el contexto.
 ancla y manda la creencia del modelo. Las paráfrasis de prueba las escribió un
 modelo, no usuarios reales.
 
-## LAPOP y Latinobarómetro: el ancla fuera de la ECP (22 sep 2026) — desplegada
+## LAPOP y Latinobarómetro: el ancla fuera de la ECP (22 sep 2026) — RETIRADA el 24 sep 2026
+
+> **Retirada del producto el 2026-09-24:** sus licencias no permiten uso
+> comercial. Se borraron los agregados de `web/opinion/`, sus 240 preguntas del
+> banco y el código que los generaba (`fuentes_opinion.py`, `calibracion.py`,
+> `grupos.py`; están en el historial de git antes de este cambio). Lo que sigue
+> es el registro de lo que se midió.
 
 Mismo método, 240 preguntas más: economía, paz, corrupción, migración, Estados
 Unidos, aprobación del gobierno. Fuentes: LAPOP 2023 (1.493 colombianos) y

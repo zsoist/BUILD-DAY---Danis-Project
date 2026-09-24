@@ -122,7 +122,7 @@ La voz decía bien «cero tristeza» pero se etiquetaba `a_favor`: «¿triste ay
 5-7 % real. En las escalas ECV la postura la fija el corte del DANE, no el modelo: 10 % (20 voces).
 Solo ECV; las 40 escalas de LAPOP con corte siguen igual hasta medirlas.
 
-### Descartado: LAPOP por departamento
+### Descartado: LAPOP por departamento (y LAPOP/Latinobarómetro retirados del todo el 2026-09-24 por licencia)
 
 Sucre tiene 24 encuestados en LAPOP 2023: un margen propio con ±20 pts de error no le gana al regional
 y no hay contra qué validarlo (la ECP no publica departamento). Lección: el ejemplo del dialecto

@@ -90,12 +90,17 @@ node --test scripts/experimento/anclas.test.mjs     # antes de tocar la estimaci
 Los LLM (todos los probados) creen que en Colombia nada funciona y no se corrigen
 infiriendo; sí adoptan una postura dicha. Por eso el sondeo ancla en la respuesta
 real de un donante de la ECP cuando el DANE ya hizo la pregunta, o sorteando
-de los agregados de LAPOP/Latinobarómetro (`web/opinion/`). Si nadie la midió,
-cada voz recibe una postura sorteada con la estimación de un analista (acción
-`estimar`): como analista el modelo casi no es pesimista; como persona, sí. Si cambias
-`donantes_ecp.py`, `banco_ecp.py` o `fuentes_opinion.py`, regenera y vuelve a medir.
-**LAPOP/LB: a `web/` y a git solo agregados** (celdas ≥10); los microdatos y lo
-que sale por persona se quedan en `simcolombia/data/raw_v2/`.
+de agregados del DANE (`web/opinion/`). Si nadie la midió, cada voz recibe una
+postura sorteada con la estimación de un analista (acción `estimar`): como
+analista el modelo casi no es pesimista; como persona, sí. Si cambias
+`donantes_ecp.py` o `banco_ecp.py`, regenera y vuelve a medir.
+**Solo fuentes con licencia comercial abierta (DANE).** LAPOP y Latinobarómetro
+se retiraron el 2026-09-24: su licencia no permite uso comercial, y tampoco
+se vale construir con ellos bases derivadas, ni siquiera sintéticas. No volver
+a meterlos. Lo medido con ellos queda como historia en `docs/METODO.md`.
+**Ley 2494 de 2025 (encuestas):** nada electoral; en opinión política, cero
+cifras simuladas (solo razones). El proxy rechaza voto, candidatos y
+favorabilidad; no aflojarlo sin revisión legal.
 También anclan percepciones del DANE con geografía fina: ECV 2025 por departamento
 × zona y Pulso Social por ciudad (`fuentes_dane_percepcion.py`, anexos públicos).
 

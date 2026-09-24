@@ -2085,8 +2085,7 @@ function postura(txt){
    respondió SU donante real de la ECP 2023 (mismo sexo, edad, educación y
    región). Los LLM traen la creencia de que en Colombia nada funciona y no la
    corrigen solos; con esto, en 8 preguntas escritas como las teclea la gente,
-   el error en % de sí bajó de 23.8 a 5.0 pts; con LAPOP y Latinobarómetro,
-   de 21.2 a 6.3. Solo sondeo: es lo medido. */
+   el error en % de sí bajó de 23.8 a 5.0 pts. Solo sondeo: es lo medido. */
 function anclaItemDe(b,v){
   if(!b)return "";
   /* escala numérica con etiqueta solo en los extremos: sin decirla, «5» no
@@ -2098,12 +2097,11 @@ function anclaItemDe(b,v){
   const quien=b.fuente&&!/^ECP/.test(b.fuente)?`A LA ENCUESTA ${b.fuente.toUpperCase()}`:"AL DANE";
   return `\nLO QUE LE RESPONDISTE ${quien} (es tuyo: una persona real como tú lo contestó así). Te preguntaron: «${b.texto}». Respondiste: ${dijo}. Esa es tu postura sobre este tema: explícala desde tu vida.\n`;
 }
-/* LAPOP y Latinobarómetro permiten publicar solo estadística agregada, con
-   cita. web/opinion/ trae, por pregunta, las tablas de UNA variable que ellos
-   mismos publican: nacional, por región, sexo, edad y educación (grupos ≥30).
-   Cada voz combina las de su perfil (p ∝ nacional × Π tabla/nacional) y sortea
-   su respuesta con un hash de id + pregunta: determinista.
-   Tablas: simcolombia/pipeline/fuentes_opinion.py. */
+/* web/opinion/ trae, por pregunta del DANE (ECV, ECSC, Pulso Social), tablas
+   agregadas por celda. Cada voz combina las de su perfil (p ∝ nacional ×
+   Π tabla/nacional) y sortea su respuesta con un hash de id + pregunta.
+   LAPOP y Latinobarómetro se retiraron el 2026-09-24: su licencia no permite
+   uso comercial (ver CLAUDE.md). */
 const REGION_ECP={"11":1,"08":2,"13":2,"20":2,"23":2,"44":2,"47":2,"70":2,"88":2,
   "15":3,"25":3,"50":3,"54":3,"68":3,"81":3,"85":3,"99":3,"94":3,
   "05":4,"17":4,"18":4,"41":4,"63":4,"66":4,"73":4,"86":4,"91":4,"95":4,"97":4,
@@ -2472,7 +2470,7 @@ function abortar(C){
    simuladas: solo razones. El servidor rechaza lo electoral también (api/opina.js). */
 const sinTildes=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 const ELECTORAL=/\b(votaria|votarias|votaria usted|vota por|votar por|votaria por|va a votar|votara por|intencion de voto|por quien (vota|votaria|va a votar)|elegiria|elegirias|candidat|precandidat|presidenciable|favorabilidad|segunda vuelta|primera vuelta|ganar(a|ia)? las elecciones|quien (gana|ganara|ganaria) (la |las )?(eleccion|elecciones|presidencia|alcaldia|gobernacion))/;
-const POLITICA=/\b(gobierno|president|petro|uribe|cepeda|duque|santos|fajardo|congres|senad|camara de representantes|partido|pacto historico|centro democratico|alcald|gobernad|ministr|politic|reforma|paz total|izquierda|derecha|democracia|eleccion|registradur|cne|corte constitucional|fiscal|procurad|contralor|referendo|constituyente|oposicion|petrismo|uribismo|estado|instituciones|policia|ejercito|legaliz|despenaliz|aborto|eutanasia|matrimonio igualitario|pena de muerte|impuesto|subsidio|ley|leyes|proyecto de ley|politica publica|consulta popular|plebiscito|acuerdo de paz|farc|eln|guerrilla|paramilitar|voto|votar|votacion)/;
+const POLITICA=/\b(gobierno|president|petro|uribe|cepeda|duque|santos|fajardo|congres|senad|camara de representantes|partido|pacto historico|centro democratico|alcald|gobernad|ministr|politic|reforma|paz total|izquierda|derecha|democra|eleccion|electoral|poder judicial|relaciones entre colombia|derechos humanos|lideres sociales|registradur|cne|corte constitucional|fiscal|procurad|contralor|referendo|constituyente|oposicion|petrismo|uribismo|estado|instituciones|policia|ejercito|legaliz|despenaliz|aborto|eutanasia|matrimonio igualitario|pena de muerte|impuesto|subsidio|ley|leyes|proyecto de ley|politica publica|consulta popular|plebiscito|acuerdo de paz|farc|eln|guerrilla|paramilitar|voto|votar|votacion|corte|tribunal|fuerzas armadas|militar|jep|jurisdiccion|corrupcion|funcionari|gobiern|justicia|jueces|protesta|manifestacion|paro nacional|medios de comunicacion)/;
 let POLITICO=false;
 const AVISO_LEY=`<div class="ancla">⚖️ <b>Tema de opinión política.</b> Por la Ley 2494 de 2025, ColombIA no muestra cifras simuladas sobre política: aquí van las razones, no porcentajes. No es encuesta ni sondeo; sin validez estadística.</div>`;
 async function conversar(q){
@@ -2529,10 +2527,9 @@ async function conversar(q){
     clearInterval(ticker);$("#ticker")?.remove();$("#estado").textContent="";$("#ctrl").style.display="none";
     const b=$("#qbar button");if(b)b.disabled=false;
     $("#resps").insertAdjacentHTML("beforeend",`<div class="hint">No se pudo preparar la mesa. Revisa la conexión y vuelve a preguntar.</div>`);return;}
-  /* ECP: respuesta del donante (el DANE la publica por persona). LAPOP y
-     Latinobarómetro: sorteo desde los agregados de la celda (su licencia no
-     permite más). Medido en 8 preguntas ciegas: error 21.2 → 6.3 pts. */
-  const ecp=anc&&!/^(LAPOP|LB|ECV|EPS|ECSC):/.test(anc.codigo);   // ECP: donante por persona; el resto, celdas agregadas
+  /* ECP: respuesta del donante (el DANE la publica por persona). ECV, ECSC y
+     Pulso Social: sorteo desde los agregados de la celda del DANE. */
+  const ecp=anc&&!/^(ECV|EPS|ECSC):/.test(anc.codigo);   // ECP: donante por persona; el resto (DANE), celdas agregadas
   const R=ecp?await respuestasECP():null, kAnc=R?R.items.indexOf(anc.codigo):-1;
   let CEL=null;
   if(anc&&!ecp){try{const f=await fetch("opinion/"+anc.codigo.replace(":","_")+".json");CEL=f.ok?await f.json():null;}catch(e){}}
@@ -2550,7 +2547,7 @@ async function conversar(q){
   if(POLITICO)$("#resps").insertAdjacentHTML("afterbegin",AVISO_LEY);
   if(anc&&kAnc>=0)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>El DANE ya preguntó esto</b> (Encuesta de Cultura Política 2023): «${esc(anc.texto)}». Cada voz responde lo que respondió su donante real, una persona de su misma edad, sexo, educación y región.</div>`);
   else if(EST!=null)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">🧭 <b>Nadie ha medido esto en Colombia.</b> Las posturas se reparten según una estimación de un modelo (en pruebas, se aleja unos 17 pts de la realidad): tómalo como exploración, no como encuesta.</div>`);
-  else if(anc&&CEL)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>Esto ya se preguntó en Colombia</b> (${esc(anc.fuente||"")}): «${esc(anc.texto)}». Cada voz parte de cómo respondió gente real de su edad, sexo, educación y región. <span class="cita">Fuente: ${/^LAPOP/.test(anc.codigo)?'LAPOP Lab, <a href="https://www.vanderbilt.edu/lapop/" target="_blank" rel="noopener">Barómetro de las Américas</a> 2023; tablas agregadas, uso no comercial.':/^LB:/.test(anc.codigo)?'Corporación <a href="https://www.latinobarometro.org" target="_blank" rel="noopener">Latinobarómetro</a>, 2024; tablas agregadas, uso no comercial.':`<a href="https://www.dane.gov.co" target="_blank" rel="noopener">DANE</a>, ${esc(anc.fuente||"")}; tablas agregadas.`}</span></div>`);
+  else if(anc&&CEL)$("#resps").insertAdjacentHTML("afterbegin",`<div class="ancla">📊 <b>Esto ya se preguntó en Colombia</b> (${esc(anc.fuente||"")}): «${esc(anc.texto)}». Cada voz parte de cómo respondió gente real de su edad, sexo, educación y región. <span class="cita">Fuente: <a href="https://www.dane.gov.co" target="_blank" rel="noopener">DANE</a>, ${esc(anc.fuente||"")}; tablas agregadas.</span></div>`);
 
   if(MODO==="sondeo"){
     const run0=RUN;
