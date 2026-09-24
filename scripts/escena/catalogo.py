@@ -47,7 +47,7 @@ VIEJOS = {
     "caribe_0": ["H", 24, ["caribe", "caribe_rural"], "estudiante"], "caribe_1": ["M", 24, ["caribe", "caribe_rural"], "estudiante"],
     "caribe_2": ["H", 45, ["caribe", "caribe_rural"], "comerciante"], "caribe_3": ["M", 45, ["caribe", "pacifico"], "vendedora"],
     "caribe_4": ["H", 68, ["caribe", "caribe_rural"], "pescador"], "caribe_5": ["M", 70, ["caribe", "caribe_rural"], "ama de casa"],
-    "caribe_6": ["H", 35, ["caribe", "caribe_rural"], "mototaxista conductor"], "caribe_7": ["M", 40, TODAS, "docente profesora"],
+    "caribe_6": ["H", 35, ["caribe", "caribe_rural"], "mototaxista conductor"], "caribe_7": ["H", 40, ["caribe", "caribe_rural"], "mototaxista conductor"],
     "oriente_0": ["H", 45, ["llanos"], "ganadero"], "oriente_1": ["M", 35, ["llanos"], "comerciante"],
     "oriente_2": ["H", 24, ["llanos", "cafetero"], "jornalero agricultor"], "oriente_3": ["M", 40, ["insular_guajira"], "artesana"],
     "oriente_4": ["H", 45, ["insular_guajira"], "pastor comerciante"], "oriente_5": ["H", 40, ["amazonia"], "pescador agricultor"],
